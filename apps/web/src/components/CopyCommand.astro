@@ -1,0 +1,46 @@
+---
+import type { Locale } from '../lib/i18n.js';
+import { copy } from '../lib/i18n.js';
+import Icon from './Icon.astro';
+
+interface Props {
+  command: string;
+  locale: Locale;
+}
+
+const { command, locale } = Astro.props;
+const t = copy[locale];
+---
+
+<div class="command-box" data-command-box>
+  <span aria-hidden="true">$</span>
+  <code>{command}</code>
+  <button
+    type="button"
+    data-copy-command={command}
+    data-copy-label={t.copy}
+    data-copied-label={t.copied}
+  >
+    <Icon name="copy" size={16} />
+    <span>{t.copy}</span>
+  </button>
+</div>
+
+<script>
+  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-copy-command]')) {
+    if (button.dataset.bound === 'true') continue;
+    button.dataset.bound = 'true';
+    button.addEventListener('click', async () => {
+      const command = button.dataset.copyCommand;
+      if (!command) return;
+      await navigator.clipboard.writeText(command);
+      const label = button.querySelector('span');
+      if (label) label.textContent = button.dataset.copiedLabel ?? 'Copied';
+      button.classList.add('copied');
+      window.setTimeout(() => {
+        if (label) label.textContent = button.dataset.copyLabel ?? 'Copy';
+        button.classList.remove('copied');
+      }, 1600);
+    });
+  }
+</script>

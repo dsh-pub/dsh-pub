@@ -1,0 +1,25 @@
+---
+import { copy, type Locale } from '../lib/i18n.js';
+import Logo from './Logo.astro';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = copy[locale];
+---
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>
+      <Logo />
+      <p>{t.footerLine}</p>
+    </div>
+    <nav aria-label="Footer">
+      <a href={`/${locale}/plugins/`}>{t.plugins}</a>
+      <a href="https://github.com/deepseek-ai/deepseek-harness/tree/main/docs">{t.documentation}</a>
+      <a href="https://github.com/deepseek-ai/deepseek-harness">{t.source}</a>
+    </nav>
+  </div>
+</footer>

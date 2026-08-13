@@ -1,12 +1,11 @@
-# Web App
+# DSH Pub Web
 
-This app is intentionally empty.
+Astro static site for the bilingual DSH plugin registry.
 
-Choose a web stack only when the product needs one. Common options:
+```bash
+npm run dev --workspace @dsh-pub/web
+npm run build --workspace @dsh-pub/web
+```
 
-- Next.js
-- Vite + React
-- Astro
-- Remix
-
-After choosing a stack, keep all framework-specific files inside `apps/web`.
+Canonical pages live under `/en` and `/zh`. Catalog content is generated from a pinned
+DeepSeek Harness source revision by `packages/catalog`.

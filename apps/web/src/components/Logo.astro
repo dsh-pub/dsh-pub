@@ -1,0 +1,52 @@
+---
+interface Props {
+  compact?: boolean;
+}
+
+const { compact = false } = Astro.props;
+---
+
+<span class="brand" aria-label="dsh.pub">
+  <svg class="brand-mark" viewBox="0 0 44 44" aria-hidden="true">
+    <path d="M8 7h17l11 11v19H19L8 26V7Z" fill="currentColor" opacity=".2"></path>
+    <path d="M8 7h17v11H8V7Zm0 19h11v11L8 26Zm17-8h11v19H25V18Z" fill="currentColor"></path>
+    <path d="m19 18 6 6-6 6-6-6 6-6Z" class="brand-mark-seam"></path>
+  </svg>
+  {
+    !compact && (
+      <span class="brand-word">
+        dsh<span>.pub</span>
+      </span>
+    )
+  }
+</span>
+
+<style>
+  .brand {
+    align-items: center;
+    color: var(--brand-on-dark);
+    display: inline-flex;
+    gap: 0.65rem;
+    min-height: 44px;
+  }
+
+  .brand-mark {
+    height: 34px;
+    width: 34px;
+  }
+
+  .brand-mark-seam {
+    fill: var(--color-accent-bright);
+  }
+
+  .brand-word {
+    color: var(--color-text-on-dark);
+    font-size: 1.45rem;
+    font-weight: 560;
+    letter-spacing: -0.04em;
+  }
+
+  .brand-word span {
+    color: var(--color-accent-bright);
+  }
+</style>

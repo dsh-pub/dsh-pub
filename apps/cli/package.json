@@ -1,0 +1,34 @@
+{
+  "name": "dsh-pub",
+  "version": "0.1.1",
+  "description": "Install independently distributed DeepSeek Harness bundles from GitHub.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "dsh-pub": "./dist/bin.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "deepseek",
+    "deepseek-harness",
+    "dsh",
+    "plugin"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OneeMe/dsh-pub.git",
+    "directory": "apps/cli"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "test": "vitest run"
+  }
+}

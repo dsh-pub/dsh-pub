@@ -1,0 +1,7 @@
+node_modules/
+dist/
+build/
+coverage/
+.astro/
+.wrangler/
+apps/server/src/worker-configuration.d.ts

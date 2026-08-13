@@ -1,0 +1,65 @@
+---
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { copy, otherLocale, type Locale } from '../lib/i18n.js';
+import '../styles/global.css';
+
+interface Props {
+  locale: Locale;
+  title?: string;
+  description?: string;
+  showHeaderSearch?: boolean;
+  noIndex?: boolean;
+}
+
+const {
+  locale,
+  title,
+  description = copy[locale].siteDescription,
+  showHeaderSearch = true,
+  noIndex = false,
+} = Astro.props;
+const pageTitle = title ? `${title} · dsh.pub` : 'dsh.pub — DeepSeek Harness plugin registry';
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const alternatePath = Astro.url.pathname.replace(`/${locale}`, `/${otherLocale(locale)}`);
+---
+
+<!doctype html>
+<html lang={locale === 'zh' ? 'zh-CN' : 'en'}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#14243a" />
+    {noIndex && <meta name="robots" content="noindex" />}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="canonical" href={canonical} />
+    <link
+      rel="alternate"
+      hreflang={otherLocale(locale)}
+      href={new URL(alternatePath, Astro.site)}
+    />
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href={new URL(`/en${Astro.url.pathname.replace(/^\/(en|zh)/, '')}`, Astro.site)}
+    />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <title>{pageTitle}</title>
+    <script is:inline>
+      (() => {
+        const value = localStorage.getItem('dsh-theme');
+        if (value === 'light' || value === 'dark') document.documentElement.dataset.theme = value;
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <Header locale={locale} path={Astro.url.pathname} showSearch={showHeaderSearch} />
+    <main id="main-content"><slot /></main>
+    <Footer locale={locale} />
+  </body>
+</html>

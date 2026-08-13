@@ -1,0 +1,70 @@
+---
+import { copy, otherLocale, type Locale } from '../lib/i18n.js';
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
+
+interface Props {
+  locale: Locale;
+  path: string;
+  showSearch?: boolean;
+}
+
+const { locale, path, showSearch = true } = Astro.props;
+const t = copy[locale];
+const alternate = path.replace(`/${locale}`, `/${otherLocale(locale)}`);
+---
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="logo-link" href={`/${locale}/`}><Logo /></a>
+    {
+      showSearch && (
+        <form class="header-search" role="search" action={`/${locale}/plugins/`}>
+          <Icon name="search" size={17} />
+          <input type="search" name="q" aria-label={t.searchShort} placeholder={t.searchShort} />
+          <kbd>/</kbd>
+        </form>
+      )
+    }
+    <nav class="header-nav" aria-label="Primary">
+      <a class="nav-primary" href={`/${locale}/plugins/`}>{t.plugins}</a>
+      <a href="https://github.com/deepseek-ai/deepseek-harness/tree/main/docs">{t.documentation}</a>
+      <a class="language-link" href={alternate} hreflang={otherLocale(locale)}>{t.language}</a>
+      <a
+        class="icon-link"
+        href="https://github.com/deepseek-ai/deepseek-harness"
+        aria-label={t.github}
+      >
+        <Icon name="github" />
+      </a>
+      <button class="theme-toggle" type="button" aria-label="Toggle color theme" data-theme-toggle>
+        <Icon name="sun" />
+      </button>
+    </nav>
+  </div>
+</header>
+
+<script is:inline>
+  (() => {
+    const root = document.documentElement;
+    const stored = localStorage.getItem('dsh-theme');
+    if (stored === 'light' || stored === 'dark') root.dataset.theme = stored;
+    document.querySelector('[data-theme-toggle]')?.addEventListener('click', () => {
+      const isDark =
+        root.dataset.theme === 'dark' ||
+        (!root.dataset.theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      root.dataset.theme = isDark ? 'light' : 'dark';
+      localStorage.setItem('dsh-theme', root.dataset.theme);
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== '/' || event.metaKey || event.ctrlKey || event.altKey) return;
+      const target = event.target;
+      if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) return;
+      const input = document.querySelector('.header-search input, .hero-search input');
+      if (input instanceof HTMLInputElement) {
+        event.preventDefault();
+        input.focus();
+      }
+    });
+  })();
+</script>

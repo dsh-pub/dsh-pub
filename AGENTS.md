@@ -28,11 +28,14 @@ This is the shared Project/Mission context for every agent working in the reposi
 It is distinct from the project's domain glossary: resolved, project-specific terminology belongs in
 the root `CONTEXT.md` described under **Domain docs**.
 
-- **Background / Problem:** TBD — explain why the project exists and the problem it addresses.
-- **Goal:** TBD — state the project's long-term goal.
-- **Current Goal:** TBD — state the outcome that matters in the current stage.
+- **Background / Problem:** DeepSeek Harness has a broad plugin ecosystem, but its built-in modules and installable bundles are difficult to discover, compare, and understand from one trustworthy public surface.
+- **Goal:** Make dsh.pub the bilingual, source-backed registry and discovery layer for DeepSeek Harness plugins, with truthful installation semantics and transparent CLI-reported install counts.
+- **Current Goal:** Ship a Cloudflare-hosted MVP that catalogs the current built-in Harness modules, explains their capabilities, provides searchable English and Chinese pages, and measures successful CLI installs for genuinely installable Git repositories.
 - **Key Results:**
-  - TBD — add observable results that show progress toward the current goal.
+  - Every catalog entry is generated from or traceable to a GitHub source revision.
+  - English and Chinese home, catalog, and detail routes render as static pages and pass the repository quality gates.
+  - The CLI reports only completed installs, never blocks an otherwise successful install when telemetry fails, and honors `DO_NOT_TRACK` and `DISABLE_TELEMETRY`.
+  - The production site is reachable on `dsh.pub`, with install counts explicitly labeled as CLI-reported rather than unique users or repository downloads.
 
 ## Quality Gates
 

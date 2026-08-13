@@ -1,0 +1,40 @@
+---
+import type { CatalogEntry } from '../lib/catalog-types.js';
+
+interface Props {
+  entry: CatalogEntry;
+  compact?: boolean;
+}
+
+const { entry, compact = false } = Astro.props;
+const hasClient = Boolean(entry.runtime.client);
+const hasUi =
+  hasClient ||
+  entry.capabilities.uiContributions.length > 0 ||
+  ['ui', 'client-ui'].includes(entry.category);
+const hasTool = entry.capabilities.tools.length > 0 || ['tool', 'tools'].includes(entry.category);
+const hasData = ['storage', 'session', 'sessions'].includes(entry.category);
+const hasFlow =
+  ['workflow', 'orchestration', 'session', 'sessions'].includes(entry.category) ||
+  entry.type === 'bundle';
+const cells = [
+  ['HOST', entry.runtime.hostLoadable],
+  ['CLIENT', hasClient],
+  ['UI', hasUi],
+  ['TOOL', hasTool],
+  ['DATA', hasData],
+  ['FLOW', hasFlow],
+] as const;
+---
+
+<div class:list={['capability-bus', { compact }]} aria-label="Plugin runtime capabilities">
+  <span class="bus-line" aria-hidden="true"></span>
+  {
+    cells.map(([label, active]) => (
+      <span class:list={['bus-cell', { active }]} title={`${label}: ${active ? 'yes' : 'no'}`}>
+        <i aria-hidden="true" />
+        {label}
+      </span>
+    ))
+  }
+</div>

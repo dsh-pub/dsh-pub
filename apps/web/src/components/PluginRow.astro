@@ -1,0 +1,188 @@
+---
+import {
+  displayName,
+  installMetricSlug,
+  localized,
+  type CatalogEntry,
+} from '../lib/catalog-types.js';
+import { categoryLabel, typeLabel } from '../lib/categories.js';
+import { copy, type Locale } from '../lib/i18n.js';
+import CapabilityBus from './CapabilityBus.astro';
+
+interface Props {
+  entry: CatalogEntry;
+  locale: Locale;
+  compact?: boolean;
+}
+
+const { entry, locale, compact = false } = Astro.props;
+const t = copy[locale];
+const client = Boolean(entry.runtime.client);
+const uiCount = entry.capabilities.uiContributions.length;
+const toolCount = entry.capabilities.tools.length;
+const modeLabel = entry.distribution.installable
+  ? t.installable
+  : entry.type === 'bundle'
+    ? t.profileLayer
+    : t.included;
+---
+
+<article
+  class:list={['plugin-row', { compact }]}
+  data-plugin-row
+  data-search={`${entry.name} ${entry.slug} ${localized(entry.description, locale)} ${entry.category}`.toLocaleLowerCase()}
+  data-type={entry.type}
+  data-category={entry.category}
+  data-availability={entry.distribution.installable ? 'installable' : 'included'}
+  data-name={displayName(entry).toLocaleLowerCase()}
+>
+  <div class="plugin-main">
+    <div class="plugin-title-line">
+      <h3><a href={`/${locale}/plugins/${entry.slug}/`}>{displayName(entry)}</a></h3>
+      <span class:list={['tag', entry.distribution.installable && 'primary']}>{modeLabel}</span>
+    </div>
+    <p>{localized(entry.description, locale)}</p>
+    <div class="tag-row">
+      <span class="tag primary">{categoryLabel(entry.category, locale)}</span>
+      <span class="tag">{typeLabel(entry.type, locale)}</span>
+      {entry.runtime.configurable && <span class="tag">{t.configurable}</span>}
+      {client && <span class="tag">{t.webUi}</span>}
+      {entry.availability.profiles.slice(0, 2).map((profile) => <span class="tag">{profile}</span>)}
+    </div>
+    {!compact && <CapabilityBus entry={entry} compact />}
+  </div>
+  <dl class="plugin-facts">
+    <div>
+      <dt>{t.version}</dt>
+      <dd>{entry.version}</dd>
+    </div>
+    <div>
+      <dt>{client ? 'UI' : toolCount > 0 ? 'Tools' : t.type}</dt>
+      <dd>
+        {client ? Math.max(uiCount, 1) : toolCount > 0 ? toolCount : typeLabel(entry.type, locale)}
+      </dd>
+    </div>
+    <div>
+      <dt>{entry.distribution.installable ? t.cliInstalls : t.availability}</dt>
+      <dd>
+        {
+          entry.distribution.installable ? (
+            <span data-install-count={installMetricSlug(entry)}>—</span>
+          ) : entry.availability.defaultWeb === true ||
+            entry.availability.defaultWeb === 'enabled' ? (
+            'Web'
+          ) : (
+            t.included
+          )
+        }
+      </dd>
+    </div>
+  </dl>
+</article>
+
+<style>
+  .plugin-row {
+    border-top: 1px solid var(--color-rule);
+    display: grid;
+    gap: 2.4rem;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    padding: 1.55rem 0 1.7rem;
+  }
+
+  .plugin-row:last-child {
+    border-bottom: 1px solid var(--color-rule);
+  }
+
+  .plugin-title-line {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+  }
+
+  h3 {
+    font-family: var(--font-mono);
+    font-size: 1.08rem;
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    margin: 0;
+  }
+
+  .plugin-main > p {
+    color: var(--color-text-muted);
+    line-height: 1.58;
+    margin: 0.62rem 0 0.85rem;
+    max-width: 47rem;
+  }
+
+  .plugin-main :global(.capability-bus) {
+    margin-top: 1rem;
+  }
+
+  .plugin-facts {
+    align-items: center;
+    display: grid;
+    grid-template-columns: 1.05fr 0.8fr 1.15fr;
+    margin: 0;
+  }
+
+  .plugin-facts > div {
+    border-left: 1px solid var(--color-rule);
+    min-width: 0;
+    padding: 0 0.75rem;
+    text-align: center;
+  }
+
+  .plugin-facts dt {
+    color: var(--color-text-faint);
+    font-size: 0.65rem;
+    letter-spacing: 0.05em;
+    margin-top: 0.45rem;
+    text-transform: uppercase;
+  }
+
+  .plugin-facts dd {
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+    font-size: 0.86rem;
+    margin: 0 0 0.3rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .plugin-row.compact {
+    gap: 1.5rem;
+    grid-template-columns: minmax(0, 1fr) 260px;
+    padding: 1.25rem 0;
+  }
+
+  .plugin-row.compact .plugin-main > p {
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    display: -webkit-box;
+    margin-bottom: 0.7rem;
+    overflow: hidden;
+  }
+
+  @media (max-width: 880px) {
+    .plugin-row,
+    .plugin-row.compact {
+      gap: 1.25rem;
+      grid-template-columns: 1fr;
+    }
+
+    .plugin-facts {
+      max-width: 390px;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .plugin-facts {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .plugin-facts > div {
+      padding: 0 0.45rem;
+    }
+  }
+</style>

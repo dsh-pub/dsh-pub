@@ -1,0 +1,19 @@
+---
+const title = 'dsh.pub';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="refresh" content="0;url=/en/" />
+    <meta name="robots" content="noindex" />
+    <title>{title}</title>
+    <script is:inline>
+      const locale = navigator.language.toLowerCase().startsWith('zh') ? 'zh' : 'en';
+      location.replace(`/${locale}/`);
+    </script>
+  </head>
+  <body><a href="/en/">Continue to dsh.pub</a></body>
+</html>

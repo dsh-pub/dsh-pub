@@ -2,28 +2,28 @@
   "schemaVersion": 1,
   "module": "apps/web",
   "command": "npm run test",
-  "status": "no-measurable-source",
-  "files": 1,
+  "status": "measured",
+  "files": 5,
   "coverage": {
     "statements": {
-      "covered": 0,
-      "pct": null,
-      "total": 0
+      "covered": 75,
+      "pct": 26.32,
+      "total": 285
     },
     "branches": {
-      "covered": 0,
-      "pct": null,
-      "total": 0
+      "covered": 19,
+      "pct": 82.61,
+      "total": 23
     },
     "functions": {
-      "covered": 0,
-      "pct": null,
-      "total": 0
+      "covered": 7,
+      "pct": 58.33,
+      "total": 12
     },
     "lines": {
-      "covered": 0,
-      "pct": null,
-      "total": 0
+      "covered": 75,
+      "pct": 26.32,
+      "total": 285
     }
   }
 }

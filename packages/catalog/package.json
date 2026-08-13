@@ -1,0 +1,14 @@
+{
+  "name": "@dsh-pub/catalog",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./catalog": "./src/catalog.generated.json"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "test": "vitest run src/catalog.test.ts"
+  }
+}

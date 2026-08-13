@@ -1,0 +1,30 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "dsh-pub",
+  "main": "./apps/server/src/index.ts",
+  "compatibility_date": "2026-08-13",
+  "compatibility_flags": ["nodejs_compat"],
+  "routes": [
+    {
+      "pattern": "dsh.pub",
+      "custom_domain": true,
+    },
+  ],
+  "assets": {
+    "directory": "./apps/web/dist",
+    "binding": "ASSETS",
+    "run_worker_first": ["/", "/api/*"],
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "dsh-pub",
+      "database_id": "650b2c3f-5d7a-4da9-93c1-6d8ef73600ad",
+      "migrations_dir": "./migrations",
+    },
+  ],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 0.1,
+  },
+}

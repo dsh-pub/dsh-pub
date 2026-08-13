@@ -10,6 +10,8 @@ export default [
       '**/coverage/**',
       '**/.cache/**',
       '**/.next/**',
+      '**/.astro/**',
+      '**/.wrangler/**',
     ],
   },
   js.configs.recommended,
@@ -19,7 +21,9 @@ export default [
     languageOptions: {
       globals: {
         console: 'readonly',
+        fetch: 'readonly',
         process: 'readonly',
+        URL: 'readonly',
       },
     },
   },

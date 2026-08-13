@@ -1,33 +1,87 @@
 # Architecture
 
-## Repository Layers
+## Runtime and persistence boundaries
 
-```text
-apps/*       = deployable or runnable applications
-packages/*   = reusable libraries and stable internal boundaries
-e2e/*        = integration tests across assembled system boundaries
-evals/*      = evaluations that call real models
-docs/*       = durable project knowledge
-scripts/*    = local automation
-.github/*    = CI/CD and collaboration automation
+```mermaid
+flowchart LR
+    H[DeepSeek Harness GitHub source] -->|pinned checkout| S[Catalog sync]
+    S --> J[Generated catalog JSON]
+    J --> A[Astro static build]
+    A --> W[Cloudflare Workers Static Assets]
+    U[Developer] --> C[dsh-pub CLI]
+    C -->|resolve exact commit + validate bundle| G[Public plugin Git repository]
+    C -->|invoke| D[dsh plugin add]
+    C -. best effort intent/completion .-> API[Worker /api]
+    API --> DB[(Cloudflare D1)]
+    W --> U
+    DB --> API
 ```
 
-The template reserves stack-neutral application slots under `apps/android`, `apps/ios`, and `apps/web`. Select native or cross-platform frameworks only when a concrete product requires them. `apps/server` is the optional backend runtime.
+- GitHub owns plugin source, README content, and catalog provenance.
+- The generated JSON is a build artifact checked into this repository for deterministic static
+  builds.
+- Astro owns SEO-friendly English and Chinese pages; catalog filtering uses small client scripts.
+- The Worker runs before static assets only for `/`, `/api/*`, and explicitly configured routes.
+- D1 stores only install event state and aggregate counters. It does not store plugin code or user
+  identities.
 
-## Default Application Layout
-
-When a web stack is selected for `apps/web`, prefer this internal shape:
+## Repository layout
 
 ```text
-apps/web/
-├── src/
-│   ├── app/          # framework router or app shell
-│   ├── routes/       # thin route segments
-│   ├── features/     # business feature modules
-│   ├── services/     # client-side API wrappers
-│   ├── store/        # client state
-│   └── styles/       # app-level styles
-└── package.json
+apps/
+├── web/       Astro static site and browser interactions
+├── server/    Cloudflare Worker API and static-asset routing
+└── cli/       Git bundle installer and best-effort telemetry
+packages/
+└── catalog/   generated catalog, schema, and sync tests
+migrations/    D1 schema
 ```
 
-Keep route files thin. Move business logic into `features`, shared logic into `packages/domain`, and cross-app utilities into `packages/utils`.
+## Install protocol
+
+```mermaid
+sequenceDiagram
+    participant CLI as dsh-pub CLI
+    participant API as dsh.pub Worker
+    participant Git as GitHub
+    participant DSH as Native dsh CLI
+    participant D1
+
+    CLI->>Git: fetch requested ref at depth 1
+    CLI->>CLI: validate package.json dsh.bundle.patch and resolve exact commit
+    CLI->>CLI: remove temporary validation checkout
+    CLI->>API: POST install-intent(eventId, slug, exact commit)
+    Note over CLI,API: Failure is non-blocking
+    CLI->>DSH: dsh plugin --profile P add commit-pinned Git spec
+    alt native install succeeds
+        CLI->>API: POST install-completion(eventId)
+        API->>D1: pending -> completed + idempotent counter
+    else validation/install fails
+        CLI-->>CLI: exit non-zero; never send completion
+    end
+```
+
+The current built-in Harness bundle layers have no install events: they require the Harness
+monorepo's `workspace:` dependency graph and are not independently installable Git packages. For a
+future external bundle, the public number means exactly “completed installs reported by this CLI.”
+Direct clones, native `dsh plugin add`, offline use, and telemetry opt-out are intentionally
+invisible.
+
+## Web stack decision
+
+Astro static generation is selected over a client-only React/Vite app because the dominant objects
+are public catalog and detail pages that benefit from complete HTML, stable URLs, low JavaScript,
+and build-time localization. A server-rendered Next.js application would add runtime and deployment
+surface without an MVP need for authenticated or per-user rendering.
+
+## API surface
+
+| Method | Route                      | Purpose                                           |
+| ------ | -------------------------- | ------------------------------------------------- |
+| `POST` | `/api/install-intents`     | Idempotently record a pending CLI event           |
+| `POST` | `/api/install-completions` | Complete a known pending event and increment once |
+| `GET`  | `/api/plugins/:slug/stats` | Read a plugin's completed CLI install total       |
+
+All writes validate a UUID event id and catalog-style slug. CORS is limited to the production site
+and localhost development origins. Rate limiting and stronger abuse controls remain an operational
+layer; event IDs provide idempotency, not identity or proof of use.

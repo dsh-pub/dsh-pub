@@ -1,0 +1,806 @@
+---
+import { marked } from 'marked';
+import sanitizeHtml from 'sanitize-html';
+
+import CapabilityBus from '../../../components/CapabilityBus.astro';
+import CopyCommand from '../../../components/CopyCommand.astro';
+import Icon from '../../../components/Icon.astro';
+import {
+  displayName,
+  installMetricSlug,
+  localized,
+  sourceUrl,
+  type CatalogEntry,
+} from '../../../lib/catalog-types.js';
+import { marketplaceEntries } from '../../../lib/catalog.js';
+import { categoryLabel, typeLabel } from '../../../lib/categories.js';
+import { copy, locales, type Locale } from '../../../lib/i18n.js';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+export function getStaticPaths() {
+  return locales.flatMap((locale) =>
+    marketplaceEntries.map((entry) => ({
+      params: { lang: locale, slug: entry.slug },
+      props: { entry, locale },
+    })),
+  );
+}
+
+interface Props {
+  entry: CatalogEntry;
+  locale: Locale;
+}
+
+const { entry, locale } = Astro.props;
+const t = copy[locale];
+const description = localized(entry.description, locale);
+const source = sourceUrl(entry);
+const cliPackage = 'https://dsh.pub/cli/dsh-pub-0.1.1.tgz';
+const command = entry.distribution.installable
+  ? `npx --yes ${cliPackage} add ${new URL(entry.source.repository).pathname.replace(/^\//, '').replace(/\.git$/, '')} --ref ${entry.source.commit} --path ${entry.source.directory}`
+  : undefined;
+const distributionNote = localized(entry.distribution.note, locale);
+const readmeSource = localized(entry.docs?.readme, locale);
+const rawReadme = readmeSource ? await marked.parse(readmeSource, { gfm: true }) : '';
+const readme = sanitizeHtml(rawReadme, {
+  allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'details', 'summary']),
+  allowedAttributes: {
+    a: ['href', 'name', 'target', 'rel'],
+    img: ['src', 'alt', 'title', 'width', 'height'],
+    code: ['class'],
+  },
+  allowedSchemes: ['https', 'http'],
+  transformTags: {
+    a: sanitizeHtml.simpleTransform('a', { rel: 'nofollow noopener noreferrer' }, true),
+  },
+});
+const limitation = localized(entry.docs?.limitations, locale);
+const contributionCount =
+  entry.capabilities.tools.length +
+  entry.capabilities.uiContributions.length +
+  entry.capabilities.uiSlotsDeclared.length;
+const metricSlug = installMetricSlug(entry);
+---
+
+<BaseLayout locale={locale} title={displayName(entry)} description={description}>
+  <section class="package-masthead">
+    <div class="page-shell masthead-inner">
+      <div class="package-identity">
+        <p class="package-coordinate">
+          DSH / {entry.type.toUpperCase()} / {entry.category.toUpperCase()}
+        </p>
+        <div class="package-title">
+          <h1>{displayName(entry)}</h1>
+          <button
+            type="button"
+            class="copy-package"
+            title={`${t.copy} ${entry.name}`}
+            data-copy-package={entry.name}
+            ><Icon name="copy" size={17} /><span class="visually-hidden">{t.copy}</span></button
+          >
+        </div>
+        <p class="package-meta">
+          <span>v{entry.version}</span>
+          <span aria-hidden="true">•</span>
+          <a href={source}>deepseek-ai / deepseek-harness</a>
+          <span aria-hidden="true">•</span>
+          <code>{entry.source.commit.slice(0, 10)}</code>
+        </p>
+        <div class="tag-row masthead-tags">
+          <span class="tag primary">
+            {
+              entry.distribution.installable
+                ? t.installable
+                : entry.type === 'bundle'
+                  ? t.profileLayer
+                  : t.included
+            }
+          </span>
+          <span class="tag">{typeLabel(entry.type, locale)}</span>
+          <span class="tag">{categoryLabel(entry.category, locale)}</span>
+          {entry.runtime.configurable && <span class="tag">{t.configurable}</span>}
+          {entry.runtime.client && <span class="tag">{t.webUi}</span>}
+        </div>
+      </div>
+      <div class="masthead-bus">
+        <span>{t.runtime}</span>
+        <CapabilityBus entry={entry} />
+      </div>
+    </div>
+  </section>
+
+  <nav class="package-tabs" aria-label="Package sections">
+    <div class="page-shell tabs-inner">
+      <a class="active" href="#overview">{t.overview}</a>
+      <a href="#capabilities">{t.capabilities}</a>
+      <a href="#installing">{t.installing}</a>
+      <a href="#source">{t.sourceTab}</a>
+    </div>
+  </nav>
+
+  <div class="package-layout page-shell">
+    <article class="package-content">
+      <section id="overview" class="content-section introduction">
+        <p class="eyebrow">{t.overview}</p>
+        <h2>{displayName(entry)}</h2>
+        <p class="lead">{description}</p>
+        {
+          entry.distribution.installable ? (
+            <div class="install-callout" id="installing">
+              <div>
+                <span class="eyebrow">{t.install}</span>
+                <h3>
+                  {locale === 'zh' ? '从 GitHub 安装此组合包' : 'Install this bundle from GitHub'}
+                </h3>
+                <p>{t.installHelp}</p>
+              </div>
+              {command && <CopyCommand command={command} locale={locale} />}
+            </div>
+          ) : (
+            <div class="included-callout" id="installing">
+              <span class="coordinate">
+                {entry.type === 'bundle' ? 'BUILT-IN / PROFILE LAYER' : 'BUILT-IN / ATOMIC'}
+              </span>
+              <div>
+                <>
+                  <Icon name="check" size={19} />
+                  <p>{distributionNote || t.builtInNotice}</p>
+                </>
+              </div>
+            </div>
+          )
+        }
+      </section>
+
+      <section id="capabilities" class="content-section">
+        <p class="eyebrow">{t.capabilities}</p>
+        <h2>{t.contributions}</h2>
+        <div class="capability-table">
+          <div>
+            <span>Host</span>
+            <strong>{entry.runtime.hostLoadable ? 'Cordis loadable' : 'No host entry'}</strong>
+            <small>{entry.runtime.configurable ? t.configurable : 'Zero-config'}</small>
+          </div>
+          <div>
+            <span>Client / UI</span>
+            <strong>{entry.runtime.client ? t.webUi : 'Host only'}</strong>
+            <small>{entry.capabilities.uiContributions.length} contributions</small>
+          </div>
+          <div>
+            <span>Model tools</span>
+            <strong>{entry.capabilities.tools.length}</strong>
+            <small
+              >{
+                entry.capabilities.tools
+                  .slice(0, 2)
+                  .map((tool) => tool.name)
+                  .join(', ') || 'None declared'
+              }</small
+            >
+          </div>
+          <div>
+            <span>Profile state</span>
+            <strong
+              >{
+                entry.availability.defaultWeb === true
+                  ? 'enabled'
+                  : entry.availability.defaultWeb === false
+                    ? 'absent'
+                    : entry.availability.defaultWeb
+              }</strong
+            >
+            <small>{entry.availability.profiles.join(', ') || t.included}</small>
+          </div>
+        </div>
+
+        {
+          entry.capabilities.uiContributions.length > 0 && (
+            <div class="contribution-list">
+              <h3>UI contributions</h3>
+              {entry.capabilities.uiContributions.map((item) => (
+                <div>
+                  <code>{item.slot}</code>
+                  <span>{item.component || item.id || 'component'}</span>
+                </div>
+              ))}
+            </div>
+          )
+        }
+        {
+          entry.capabilities.tools.length > 0 && (
+            <div class="contribution-list">
+              <h3>Model tools</h3>
+              {entry.capabilities.tools.map((tool) => (
+                <div>
+                  <code>{tool.name}</code>
+                  <span>{tool.description || 'Harness model tool'}</span>
+                </div>
+              ))}
+            </div>
+          )
+        }
+      </section>
+
+      <section class="content-section" id="readme">
+        <p class="eyebrow">README / {locale.toUpperCase()}</p>
+        <h2>{t.readme}</h2>
+        {
+          readme ? (
+            <div class="readme-content" set:html={readme} />
+          ) : (
+            <div class="readme-fallback">
+              <p>{description}</p>
+              <p>
+                {locale === 'zh'
+                  ? '完整双语 README 位于源仓库。本目录页优先展示可自动验证的运行时与分发事实。'
+                  : 'The complete bilingual README lives in the source repository. This registry page prioritizes runtime and distribution facts that can be verified automatically.'}
+              </p>
+              <a class="text-link" href={`${source}/README${locale === 'zh' ? '.zh' : ''}.md`}>
+                {t.openGitHub}
+                <Icon name="external" size={15} />
+              </a>
+            </div>
+          )
+        }
+      </section>
+
+      {
+        limitation && (
+          <section class="content-section limitation-section">
+            <p class="eyebrow">LIMITATIONS</p>
+            <h2>{t.limitations}</h2>
+            <p>{limitation}</p>
+          </section>
+        )
+      }
+    </article>
+
+    <aside class="package-sidebar" aria-label="Package metadata">
+      <section class="metric-panel">
+        <div>
+          <strong data-detail-install-count={metricSlug}
+            >{entry.distribution.installable ? '—' : 'N/A'}</strong
+          >
+          <span>{t.cliInstalls}</span>
+        </div>
+        <p>{t.cliInstallsHelp}</p>
+      </section>
+
+      <section>
+        <h2>{t.runtime}</h2>
+        <CapabilityBus entry={entry} compact />
+      </section>
+
+      <section>
+        <h2>{t.source}</h2>
+        <dl>
+          <div><dt>{t.version}</dt><dd>{entry.version}</dd></div>
+          <div><dt>{t.license}</dt><dd>{entry.license}</dd></div>
+          <div><dt>{t.type}</dt><dd>{typeLabel(entry.type, locale)}</dd></div>
+          <div><dt>{t.capability}</dt><dd>{categoryLabel(entry.category, locale)}</dd></div>
+          <div><dt>Commit</dt><dd><code>{entry.source.commit.slice(0, 10)}</code></dd></div>
+          <div><dt>Path</dt><dd><code>{entry.source.directory}</code></dd></div>
+        </dl>
+        <a class="source-button" href={source} id="source">
+          <Icon name="github" size={17} />{t.openGitHub}<Icon name="external" size={14} />
+        </a>
+      </section>
+
+      <section>
+        <h2>{t.profiles}</h2>
+        <div class="tag-row">
+          {
+            entry.availability.profiles.length > 0 ? (
+              entry.availability.profiles.map((profile) => (
+                <span class="tag primary">{profile}</span>
+              ))
+            ) : (
+              <span class="tag">{t.included}</span>
+            )
+          }
+        </div>
+      </section>
+
+      <section class="sidebar-coordinate">
+        <span>REGISTRY RECORD</span>
+        <strong>{String(contributionCount).padStart(2, '0')} / {entry.slug.slice(0, 16)}</strong>
+      </section>
+    </aside>
+  </div>
+</BaseLayout>
+
+<script>
+  const copyPackageButton = document.querySelector<HTMLButtonElement>('[data-copy-package]');
+  copyPackageButton?.addEventListener('click', async () => {
+    const value = copyPackageButton.dataset.copyPackage;
+    if (value) await navigator.clipboard.writeText(value);
+  });
+
+  const installCount = document.querySelector<HTMLElement>('[data-detail-install-count]');
+  const slug = installCount?.dataset.detailInstallCount;
+  if (installCount && slug && installCount.textContent !== 'N/A') {
+    fetch(`/api/plugins/${encodeURIComponent(slug)}/stats`)
+      .then((response) =>
+        response.ok ? response.json() : Promise.reject(new Error('stats unavailable')),
+      )
+      .then((data: { total?: number }) => {
+        installCount.textContent = new Intl.NumberFormat().format(data.total ?? 0);
+      })
+      .catch(() => undefined);
+  }
+</script>
+
+<style>
+  .package-masthead {
+    background: var(--color-navy-950);
+    color: var(--color-text-on-dark);
+    padding: 3.2rem 0 2.5rem;
+  }
+
+  .masthead-inner {
+    align-items: end;
+    display: grid;
+    gap: 3rem;
+    grid-template-columns: minmax(0, 1fr) minmax(330px, 470px);
+  }
+
+  .package-coordinate {
+    color: var(--color-blue-300);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    margin: 0 0 0.85rem;
+  }
+
+  .package-title {
+    align-items: center;
+    display: flex;
+    gap: 0.8rem;
+  }
+
+  .package-title h1 {
+    font-family: var(--font-mono);
+    font-size: clamp(1.85rem, 4vw, 3.1rem);
+    font-weight: 400;
+    letter-spacing: -0.045em;
+    line-height: 1.06;
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .copy-package {
+    background: transparent;
+    border: 0;
+    color: #91a3b8;
+    cursor: pointer;
+    padding: 0.55rem;
+  }
+
+  .package-meta {
+    align-items: center;
+    color: #a6b5c5;
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 0.82rem;
+    gap: 0.55rem;
+    margin: 1rem 0;
+  }
+
+  .package-meta a {
+    color: var(--color-blue-300);
+  }
+
+  .masthead-tags :global(.tag) {
+    background: rgb(255 255 255 / 7%);
+    border-color: rgb(255 255 255 / 16%);
+    color: #c6d3e1;
+  }
+
+  .masthead-tags :global(.tag.primary) {
+    color: var(--color-blue-300);
+  }
+
+  .masthead-bus > span {
+    color: #8fa1b5;
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+  }
+
+  .masthead-bus :global(.bus-cell i) {
+    background: var(--color-navy-950);
+  }
+
+  .masthead-bus :global(.bus-cell.active i) {
+    background: var(--color-blue-300);
+  }
+
+  .package-tabs {
+    background: var(--color-surface-subtle);
+    border-bottom: 1px solid var(--color-rule-strong);
+  }
+
+  .tabs-inner {
+    display: flex;
+    gap: 2.3rem;
+    min-height: 58px;
+    overflow-x: auto;
+  }
+
+  .tabs-inner a {
+    align-items: center;
+    border-bottom: 2px solid transparent;
+    color: var(--color-text-muted);
+    display: flex;
+    flex: none;
+    font-size: 0.88rem;
+    padding-top: 2px;
+  }
+
+  .tabs-inner a.active,
+  .tabs-inner a:hover {
+    border-bottom-color: var(--color-accent);
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .package-layout {
+    align-items: start;
+    display: grid;
+    gap: 3.5rem;
+    grid-template-columns: minmax(0, 1fr) 290px;
+    padding-top: 2.7rem;
+  }
+
+  .content-section {
+    border-bottom: 1px solid var(--color-rule);
+    padding: 0.5rem 0 3rem;
+    scroll-margin-top: 1rem;
+  }
+
+  .content-section + .content-section {
+    padding-top: 3rem;
+  }
+
+  .content-section h2 {
+    font-size: clamp(1.55rem, 2.8vw, 2.2rem);
+    font-weight: 460;
+    letter-spacing: -0.04em;
+    margin: 0.65rem 0 1.1rem;
+  }
+
+  .lead {
+    color: var(--color-text-muted);
+    font-size: 1.08rem;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+    max-width: 52rem;
+  }
+
+  .install-callout {
+    background: var(--color-surface-subtle);
+    border-left: 3px solid var(--color-accent);
+    display: grid;
+    gap: 1.2rem;
+    padding: 1.35rem 1.45rem 1.5rem;
+  }
+
+  .install-callout h3 {
+    font-size: 1.12rem;
+    margin: 0.4rem 0 0;
+  }
+
+  .install-callout p {
+    color: var(--color-text-muted);
+    margin: 0.35rem 0 0;
+  }
+
+  .included-callout {
+    background: var(--color-accent-soft);
+    border-left: 3px solid var(--color-accent);
+    padding: 1rem 1.2rem;
+  }
+
+  .included-callout .coordinate {
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+    font-size: 0.63rem;
+    letter-spacing: 0.07em;
+  }
+
+  .included-callout > div {
+    align-items: center;
+    display: flex;
+    gap: 0.6rem;
+  }
+
+  .included-callout p {
+    margin: 0.7rem 0;
+  }
+
+  .capability-table {
+    border-left: 1px solid var(--color-rule);
+    border-top: 1px solid var(--color-rule);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .capability-table > div {
+    border-bottom: 1px solid var(--color-rule);
+    border-right: 1px solid var(--color-rule);
+    display: grid;
+    min-height: 118px;
+    padding: 1rem 1.1rem;
+  }
+
+  .capability-table span {
+    color: var(--color-text-faint);
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    text-transform: uppercase;
+  }
+
+  .capability-table strong {
+    align-self: end;
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  .capability-table small {
+    color: var(--color-text-muted);
+    font-size: 0.74rem;
+    margin-top: 0.25rem;
+  }
+
+  .contribution-list {
+    margin-top: 2rem;
+  }
+
+  .contribution-list h3 {
+    font-size: 0.92rem;
+    font-weight: 560;
+  }
+
+  .contribution-list > div {
+    border-top: 1px solid var(--color-rule);
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: minmax(130px, 0.55fr) 1fr;
+    padding: 0.75rem 0;
+  }
+
+  .contribution-list code {
+    color: var(--color-accent);
+    font-size: 0.78rem;
+    overflow-wrap: anywhere;
+  }
+
+  .contribution-list span {
+    color: var(--color-text-muted);
+    font-size: 0.83rem;
+  }
+
+  .readme-fallback {
+    color: var(--color-text-muted);
+    line-height: 1.75;
+  }
+
+  .readme-content {
+    color: var(--color-text-muted);
+    font-size: 0.96rem;
+    line-height: 1.72;
+    overflow-wrap: anywhere;
+  }
+
+  .readme-content :global(h1),
+  .readme-content :global(h2),
+  .readme-content :global(h3) {
+    color: var(--color-text);
+    font-weight: 520;
+    letter-spacing: -0.025em;
+    line-height: 1.25;
+    margin: 2rem 0 0.8rem;
+  }
+
+  .readme-content :global(h1) {
+    font-size: 1.65rem;
+  }
+  .readme-content :global(h2) {
+    font-size: 1.35rem;
+  }
+  .readme-content :global(h3) {
+    font-size: 1.1rem;
+  }
+
+  .readme-content :global(pre) {
+    background: var(--color-navy-950);
+    border: 1px solid #293b50;
+    border-radius: var(--radius-medium);
+    color: #e7f1fc;
+    line-height: 1.55;
+    overflow-x: auto;
+    padding: 1rem 1.1rem;
+  }
+
+  .readme-content :global(:not(pre) > code) {
+    background: var(--color-surface-subtle);
+    border: 1px solid var(--color-rule);
+    border-radius: 3px;
+    color: var(--color-text);
+    font-size: 0.86em;
+    padding: 0.08em 0.3em;
+  }
+
+  .readme-content :global(table) {
+    border-collapse: collapse;
+    display: block;
+    overflow-x: auto;
+    width: 100%;
+  }
+
+  .readme-content :global(th),
+  .readme-content :global(td) {
+    border: 1px solid var(--color-rule);
+    padding: 0.5rem 0.65rem;
+    text-align: left;
+  }
+
+  .readme-content :global(img) {
+    height: auto;
+    max-width: 100%;
+  }
+
+  .package-sidebar {
+    border-left: 1px solid var(--color-rule);
+    padding-left: 1.6rem;
+    position: sticky;
+    top: 1rem;
+  }
+
+  .package-sidebar > section {
+    border-bottom: 1px solid var(--color-rule);
+    padding: 0.3rem 0 1.4rem;
+  }
+
+  .package-sidebar > section + section {
+    padding-top: 1.4rem;
+  }
+
+  .package-sidebar h2 {
+    font-size: 0.84rem;
+    font-weight: 570;
+    margin: 0 0 1rem;
+  }
+
+  .metric-panel > div {
+    align-items: baseline;
+    display: flex;
+    gap: 0.6rem;
+  }
+
+  .metric-panel strong {
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+    font-size: 2rem;
+    font-weight: 400;
+  }
+
+  .metric-panel span {
+    color: var(--color-text-muted);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+  }
+
+  .metric-panel p {
+    color: var(--color-text-faint);
+    font-size: 0.71rem;
+    line-height: 1.5;
+    margin: 0.55rem 0 0;
+  }
+
+  .package-sidebar dl {
+    margin: 0;
+  }
+
+  .package-sidebar dl > div {
+    display: grid;
+    gap: 0.7rem;
+    grid-template-columns: 75px minmax(0, 1fr);
+    padding: 0.38rem 0;
+  }
+
+  .package-sidebar dt {
+    color: var(--color-text-faint);
+    font-size: 0.72rem;
+  }
+
+  .package-sidebar dd {
+    font-size: 0.75rem;
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .source-button {
+    align-items: center;
+    border: 1px solid var(--color-rule-strong);
+    color: var(--color-text);
+    display: flex;
+    font-size: 0.77rem;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-top: 1rem;
+    min-height: 40px;
+    padding: 0 0.7rem;
+  }
+
+  .source-button:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .sidebar-coordinate span,
+  .sidebar-coordinate strong {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+  }
+
+  .sidebar-coordinate span {
+    color: var(--color-text-faint);
+  }
+
+  .sidebar-coordinate strong {
+    color: var(--color-text-muted);
+    font-weight: 400;
+    margin-top: 0.3rem;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 900px) {
+    .masthead-inner,
+    .package-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .masthead-bus {
+      max-width: 520px;
+    }
+
+    .package-sidebar {
+      border-left: 0;
+      display: grid;
+      gap: 0 2rem;
+      grid-template-columns: repeat(2, 1fr);
+      padding-left: 0;
+      position: static;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .package-masthead {
+      padding: 2.2rem 0 2rem;
+    }
+
+    .tabs-inner {
+      gap: 1.5rem;
+    }
+
+    .capability-table,
+    .package-sidebar {
+      grid-template-columns: 1fr;
+    }
+
+    .package-sidebar > section {
+      padding-top: 1.25rem;
+    }
+
+    .contribution-list > div {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

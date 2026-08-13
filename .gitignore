@@ -5,6 +5,8 @@ coverage/
 .next/
 .turbo/
 .cache/
+.astro/
+.wrangler/
 # macOS
 .DS_Store
 .AppleDouble

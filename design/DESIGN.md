@@ -1,229 +1,113 @@
-# 统一设计系统
+# DSH Pub Design Contract
 
-> 状态：初始化基线，等待真实产品上下文校准
->
-> 适用范围：`apps/web`、`apps/ios`、`apps/android` 与 `design/prototype`
->
-> 最近复核：2026-07-22
+> Status: MVP direction, 2026-08-13. Production Web is the current scope.
 
-本文件记录项目统一的视觉意图、使用规则和质量底线，供设计、工程与编码 Agent 共同遵循。它不是生产代码，也不替代产品需求或平台规范。
+## Product, audience, and task
 
-## 文档契约
+- **Subject:** A trusted technical registry for the DeepSeek Harness plugin system.
+- **First audience:** Developers choosing, inspecting, and installing Harness capabilities.
+- **Primary job:** Search by capability, compare runtime and distribution facts, then copy the
+  correct source or install action.
+- **Desired feeling:** Dense, precise, inspectable, and fast. Discovery should feel inviting without
+  making the registry look like a consumer app store.
 
-发生冲突时，按以下职责判断，而不是简单让某个文件覆盖全部内容：
+## Reference translation
 
-1. 根目录 `AGENTS.md` 的 **Project Context** 定义产品、用户和当前目标。
-2. 本文件定义设计理由、语义角色、交互规则和跨端约束。
-3. `tokens.css` 是当前共享 token **精确值**的唯一真实来源。
-4. `prototype/` 是可运行的设计样例，不是生产组件库，也不自动构成产品需求。
-5. `prototype/mobile-screen-model.js` 是移动端单屏原型与整体流程共享屏幕内容和跳转目标的唯一真实来源。
-6. `apps/*` 负责把共享意图适配为各平台的生产实现，并服从目标平台的交互惯例。
+Browser inspection of pub.dev establishes three structural anchors:
 
-本文中的“必须”是不可绕过的基线；“应该”是默认选择，偏离时需要记录理由；“可以”表示允许的局部变体。
+1. A branded, search-first landing surface followed by curated discovery sections.
+2. A catalog with a persistent filter rail, dense result rows, visible facts, and ranking controls.
+3. A detail page with package identity and tabs above a README column, plus a stable metrics and
+   metadata rail.
 
-## Overview（设计概览）
+DSH Pub reuses those information patterns, not pub.dev's Dart identity or exact artwork. From an AI
+plugin-market pattern it adds capability categories, visible “what this contributes” tags, and an
+install action close to each independently installable result. SkillsMP contributed its breadcrumb,
+metric-band, curated-list, and repository-source cues; the resulting page keeps DSH-specific
+capability anatomy and does not reproduce SkillsMP branding.
 
-### 默认命题
+## Two-pass plan
 
-- **对象：** 一个刚完成初始化、正在建立首套界面的数字产品。
-- **用户：** 需要同时校准 Web 与 App 体验的产品、设计和工程团队。
-- **目标感受：** 精确、可信、克制，但不冰冷。
-- **视觉隐喻：** 产品设计工作台。
-- **标志性元素：** “校准轨道”连接 Web 与 App 预览，表达它们来自同一系统；它是唯一的强装饰元素。
+### Pass 1 — content, tokens, and hierarchy
 
-这只是模板的初始化风格，不是所有产品都应沿用的品牌答案。完成 **Project Context** 后，必须用真实用户需求重写本节；未经用户验证的命题应标记为假设，不能写成事实。
+- Establish one catalog model and one localized string table before page styling.
+- Use one 4 px spacing scale and a desktop content width around 1180 px.
+- Use DeepSeek blue for links, selection, focus, and the single strongest action; use navy/graphite
+  surfaces and cool neutral rules for hierarchy.
+- Use IBM Plex Sans for Latin UI, PingFang/Noto Sans SC fallbacks for Chinese, and IBM Plex Mono for
+  commands, versions, counts, and capability coordinates.
+- Treat source revision, runtime type, distribution mode, and install-count semantics as primary
+  content, never footer caveats.
 
-### 设计原则
+### Pass 2 — composition and signature
 
-1. **从真实任务开始：** 页面先帮助用户完成关键任务，再表达品牌个性。
-2. **共享语义，不强求同形：** 颜色角色、层级、间距节奏与反馈含义跨端一致；布局和控件行为遵循各平台惯例。
-3. **层级主要来自排版与留白：** 阴影只表达真实抬升，不修补信息结构。
-4. **状态必须可理解：** 系统始终说明发生了什么、是否完成，以及下一步能做什么。
-5. **无障碍从设计开始：** 键盘、读屏、动态字体、对比度和减少动态效果不是发布前补丁。
+- Landing: compact utility header, circuit/seam field, centered registry mark, large search input,
+  and curated rows below it.
+- Catalog: filter rail on desktop, collapsible filters on mobile, and border-separated rows rather
+  than a generic card grid.
+- Detail: package masthead, tab strip, main documentation column, and right metadata rail.
+- Signature element: a **capability bus** that renders Host, Client/UI, Tool, Storage, and Workflow as
+  addressable cells connected by a thin rule. It expresses the Harness “everything is a plugin”
+  model and is reused in rows and detail pages.
+- Motion is limited to search/filter feedback, copy confirmation, and subtle bus-cell activation;
+  it is removed under `prefers-reduced-motion`.
 
-## Colors（颜色）
+## Palette and roles
 
-精确色值只在 `tokens.css` 中维护；本节只规定颜色承担的职责。
+Exact production values live in the Web stylesheet.
 
-- **墨蓝：** 主要文字和高对比界面。
-- **雾白：** 页面基础背景，减少大面积纯白造成的眩光。
-- **瓷白：** 可交互或抬升的表面。
-- **钴蓝：** 主操作、键盘焦点和关键选中状态；一个视图内不应出现多个同等级主操作。
-- **薄雾蓝：** 选中区域和低强度强调。
-- **珊瑚：** 需要注意但非破坏性的提示，不能自动等同于错误或危险。
+- **Registry navy:** header, search field framing, dark mode canvas.
+- **DeepSeek blue:** links, selected tabs, focus rings, and install action.
+- **Ice blue:** low-emphasis capability and verified/included states.
+- **Graphite:** page surfaces, code blocks, and dividers.
+- **Signal amber:** limitations and conditional availability only.
 
-状态不得只依赖颜色表达。文本、图标、形状或位置中至少还要有一种可感知差异。新增颜色前，先判断它是基础色、语义角色还是组件局部状态；可复用角色必须进入 `tokens.css`。
+No gradients, decorative glass, soft floating cards, or multiple competing accent colors.
 
-当前 token 只定义浅色主题。没有完整的语义色映射、对比度验证和平台适配前，不得宣称支持深色模式。
-
-## Typography（排版）
-
-- **展示字体：** `Avenir Next`，用于大标题和品牌短句；使用较紧字距，不用于长段正文。
-- **正文字体：** `Source Han Sans SC` / `PingFang SC`，用于中文正文、表单和按钮。
-- **数据字体：** `DIN Alternate`，用于刻度、状态和短数字，使“校准工作台”的隐喻落到细节中。
-
-字体栈必须提供系统回退，原型不能依赖网络字体才能正确阅读。正文应优先使用相对字号并允许系统缩放；界面不能因为文本放大、翻译变长或数据位数增加而截断关键内容。
-
-标题层级表达信息结构，不按视觉大小跳级。按钮与链接使用明确动词；错误文案说明问题和可执行的下一步，不责备用户。
-
-## Layout（布局与间距）
-
-共享空间系统以 `4px` 为基础单位。页面和组件优先使用 `tokens.css` 中的间距、布局宽度与触控目标；一次性的坐标和设备画框尺寸可以保留在原型专用 CSS 中，不得冒充共享 token。
-
-### Web
-
-- 桌面内容区最大宽度为 `1200px`，可按十二列思路组织。
-- 窄屏按阅读顺序纵向排列，理解关键任务不能依赖水平滚动。
-- 页面必须定义内容溢出、长文本、空数据和加载中的布局行为。
-
-### 移动端
-
-- 共享视觉语义需要映射到原生布局、安全区域、导航与输入方式，不机械复制网页结构。
-- iOS 优先采用平台熟悉的导航、控件反馈、动态字体和手势替代方案。
-- `mobile-flow.html` 是可拖拽、缩放的流程画布；每个节点必须是一张具体屏幕，连线表示真实跳转、条件分支或返回路径。
-- `mobile.html` 与 `mobile-flow.html` 必须通过各自的 Adapter 消费同一个 `mobile-screen-model.js`。Model 共享内容和 action target，HTML/CSS 仍分别负责单屏交互布局与流程审阅布局。
-- `prototype/runtime/` 只维护与产品无关的 Model 绑定和画布操作；业务状态、示例数据、屏幕坐标和品牌样式不得进入 Runtime。
-
-### 原型舞台
+## Layout sketches
 
 ```text
-┌──────────────────────────────────────────────────────┐
-│ 标识 / 原型状态                           操作入口    │
-├──────────────────────────────────────────────────────┤
-│ 设计命题                         说明 / 基础参数       │
-├─────────────── 校准轨道 ─────────────────────────────┤
-│ Web 预览（宽）                         App 预览（窄） │
-└──────────────────────────────────────────────────────┘
+LANDING
+┌─────────────────────────────────────────────────────────────┐
+│ dsh.pub         Plugins   Docs        中文 / theme / GitHub │
+├──────────────── search / circuit field ─────────────────────┤
+│                 [ Search 170 plugins... ]                   │
+│              Source-backed · bilingual · inspectable        │
+├─────────────────────────────────────────────────────────────┤
+│ Official bundles         three built-in profile-layer rows  │
+│ Explore capabilities     UI / Tools / Models / Storage ...  │
+│ Built into DSH           dense plugin rows                  │
+└─────────────────────────────────────────────────────────────┘
+
+DETAIL
+┌─────────────────────────────────────────────────────────────┐
+│ package / version / status      capability bus              │
+│ Overview  Capabilities  Installing  Source                  │
+├──────────────────────────────────────┬──────────────────────┤
+│ localized docs / capability tables  │ CLI installs         │
+│ model experience / limitations      │ profiles / source    │
+│                                      │ license / version     │
+└──────────────────────────────────────┴──────────────────────┘
 ```
 
-## Elevation & Depth（层级与深度）
+## Generic-pattern critique
 
-默认使用留白、边框和表面色差建立层级。阴影仅用于浮层、弹出内容或确实高于当前表面的元素；同一组件不得同时依赖重阴影、高饱和背景和粗边框制造层级。
+- Do not turn 170 modules into a wall of rounded cards. Registry comparison requires aligned rows
+  and stable metadata positions.
+- Do not use a giant slogan hero that pushes search below the fold. Search is the landing task.
+- Do not show invented ratings, likes, quality scores, publisher verification, or download history.
+- Do not put an install button on built-in atomic modules. Use “Included in DSH” and source/profile
+  actions instead.
+- Do not hide the distinction between host plugin, client UI, model tool, seam, library, and bundle
+  behind one generic “plugin” badge.
 
-浮层必须同时定义遮挡关系、关闭方式、键盘焦点顺序和小屏行为。仅有视觉抬升而没有交互语义的元素不使用大阴影。
+## Localization and accessibility
 
-## Shapes（形状）
-
-共享圆角来自 `tokens.css`。同一界面中的同类组件必须使用同一档圆角；胶囊形只用于短标签、筛选项和适合该轮廓的紧凑操作，不能成为所有容器的默认形状。
-
-形状应帮助识别层级或状态。纯装饰形状不能干扰点击区域、阅读顺序或内容对齐。
-
-## Motion（动效）
-
-动效必须解释层级、因果或状态变化，不能成为完成任务的前提。默认时长使用 `tokens.css` 中的 `180ms–420ms` 三档节奏：
-
-- 快速：悬停、按压和焦点反馈。
-- 中速：组件状态切换、局部展开和内容替换。
-- 慢速：页面首次编排或较大空间变化，每个流程只使用一次主导运动。
-
-动效不能独自传达信息，也不能无限循环抢占注意力。系统启用“减少动态效果”后，必须移除非必要位移、缩放和视差，并保留即时状态反馈。
-
-## Components（组件契约）
-
-可复用组件的设计说明必须同时覆盖以下内容，缺一项就不算完整：
-
-1. **用途：** 何时使用、何时不使用。
-2. **结构：** 必需区域、可选区域和内容约束。
-3. **变体：** 尺寸、层级或业务语义之间的差异。
-4. **状态：** 默认、悬停（仅适用平台）、焦点、按压、选中、禁用、加载、成功和错误中的适用项。
-5. **行为：** 鼠标、键盘、触控、读屏、内容溢出和响应式变化。
-6. **无障碍：** 名称、角色、值、焦点顺序、对比度和替代输入方式。
-
-### 基础约定
-
-- **按钮：** 一个视图内只保留一个最高优先级主操作；标签使用动词，加载时避免重复提交并说明进度。
-- **链接：** 用于导航，不伪装成提交操作；链接文字脱离上下文后仍应可理解。
-- **卡片：** 默认用边框或表面差建立边界；整卡可点击时，不再嵌套互相竞争的点击目标。
-- **表单：** 标签永久可见；占位符只提供示例；错误与字段关联，并保留用户已经输入的有效内容。
-- **导航：** 当前所在位置可被视觉和辅助技术识别；返回行为符合平台预期。
-- **反馈：** 空状态、错误、成功和加载都说明当前状态与下一步；不伪造用户、指标、日期或运行结果。
-
-平台原生控件已经满足需求时，应该优先使用并通过适配层映射共享 token。为了视觉一致而破坏熟悉行为、系统设置或辅助功能，不属于允许的定制。
-
-## Accessibility（无障碍基线）
-
-- Web 生产实现以 WCAG 2.2 AA 为最低目标；是否通过必须以真实检查结果为准。
-- 正文与背景保持足够对比度；图标、边框和焦点提示也要在相邻颜色中可辨认。
-- 所有操作可通过键盘完成，并显示不被浮层遮挡的 `:focus-visible` 焦点指示。
-- 触控目标默认不小于 `44 × 44px`；较小目标只有在平台规范允许且周围间距充分时使用。
-- 页面使用语义化标题、地标、控件名称和可理解的链接文字。
-- 支持读屏顺序、动态字体、横竖屏与 `prefers-reduced-motion`；关键操作必须提供拖拽或复杂手势之外的替代方式。
-- 自动化检查不能替代键盘、VoiceOver/读屏和真实设备上的人工验收。
-
-## Do's and Don'ts（边界）
-
-### 应该
-
-- 先完成 **Project Context**，再把模板命题改成真实产品设计方向。
-- 先复用语义 token，再增加新的共享角色。
-- 明确记录跨平台保持一致的意图，以及允许不同的原生行为。
-- 用真实内容、长文本、空状态、错误和关键交互验证原型。
-- 在提交设计系统变更时同步说明影响范围与验证结果。
-
-### 不应该
-
-- 不在 Markdown、原型和生产代码中重复维护同一批精确 token 值。
-- 不为 Web、iOS、Android 手工复制三份声称会自动同步的 token 文件。
-- 不用“现代、简洁、高级”等形容词替代可执行规则和明确边界。
-- 不把原型截图、静态页面可打开或自动化扫描通过等同于真实交互验收。
-- 不为单页便利静默覆盖系统规则；必要差异必须成为明确的 Variant 或设计决策。
-
-## Token 与跨端适配
-
-`tokens.css` 当前包含以下共享层级：
-
-- 基础色与语义色；
-- 展示、正文和数据排版；
-- 空间、形状和布局；
-- 深度、动效时长与缓动曲线。
-
-`tokens.css` 可直接服务 Web 与 HTML 原型；iOS、Android 并不直接消费 CSS，只共享它表达的设计决策。需要平台资源时，必须建立可追踪的单向生成或显式映射，例如：
-
-```text
-共享 token 源 → Web CSS
-               → Swift / SwiftUI 适配
-               → Android / Compose 适配
-```
-
-Google Labs 的 `DESIGN.md` 格式仍处于 alpha，并允许在 Markdown 前置 YAML 中嵌入 token。当前项目暂不嵌入，避免它与 `tokens.css` 形成双重真实来源。若未来采用该格式或 DTCG `tokens.json`，应先决定新的唯一源并加入生成、差异检查和迁移流程。
-
-## 变更流程
-
-1. **描述原因：** 关联真实用户问题、产品目标或平台约束。
-2. **判断层级：** 修改的是设计命题、语义角色、共享 token、组件规则，还是单页布局。
-3. **更新源头：** 理由与规则写入本文；精确共享值写入 `tokens.css`；两种移动端原型共用的屏幕内容和 action target 写入 `mobile-screen-model.js`；页面专用实现留在对应目录。
-4. **呈现影响：** 更新 `prototype/` 中受影响的 Web、移动端与流程样例。
-5. **验证结果：** 记录检查过的视口、交互方式、无障碍设置和目标平台。
-
-如果某个平台必须偏离共享规则，记录为 Variant，至少说明适用范围、理由、映射方式和验证方法。没有记录的局部覆盖视为设计债务。
-
-## 原型入口与验证
-
-- `prototype/index.html`：四个设计入口。
-- `prototype/tokens.html`：读取并陈列 `tokens.css` 的当前值。
-- `prototype/web.html`：Web 端入口页原型。
-- `prototype/mobile.html`：移动端入口页原型。
-- `prototype/mobile-flow.html`：移动端具体屏幕与跳转流程画布。
-- `prototype/mobile-screen-model.js`：两个移动端入口共享的屏幕内容与 action target。
-- `prototype/mobile.js`：单屏原型 Adapter。
-- `prototype/mobile-flow.js`：流程画布 Adapter。
-- `prototype/prototype.css`：原型共享样式。
-- `prototype/mobile-flow.css`：产品拥有的流程节点坐标与 iOS 屏幕样式。
-- `prototype/runtime/`：模板拥有、可同步的 Model 绑定与画布 Runtime。
-
-可直接打开 `design/prototype/index.html`。如果浏览器限制本地资源，从项目根目录启动静态文件服务：
-
-```bash
-python3 -m http.server 4173
-```
-
-每次设计系统变更至少运行 `mobile-screen-model.test.ts`，并检查一个桌面宽度、一个移动宽度、键盘操作和减少动态效果。涉及原生 App 时，还必须在目标模拟器或设备上检查动态字体、读屏与真实跳转。
-
-## 待产品化决策
-
-- `AGENTS.md` 中的产品背景、目标、当前目标和关键结果仍待填写。
-- 默认“产品设计工作台”视觉命题是否适合真实产品，仍待用户研究验证。
-- 深色模式、多品牌主题和正式的跨端 token 生成链尚未建立。
-- 组件库、图标系统、数据可视化与本地化规则应在真实需求出现后补充，不预先虚构。
-
-外部标准与成熟设计系统的调研依据、事实和取舍记录在 `docs/research.md`。
+- Canonical locale routes are `/en/...` and `/zh/...`; root redirects by `Accept-Language` with an
+  English fallback.
+- Language switching preserves the current catalog entry where possible.
+- Search result count uses a live region; filters are real form controls; copy buttons announce
+  success; all interactive states have `:focus-visible` styling.
+- At desktop, filter and metadata rails are complementary landmarks. At narrow widths they move
+  before/after the main content in reading order without horizontal scrolling.
+- Empty results explain which filters are active and provide a reset action.

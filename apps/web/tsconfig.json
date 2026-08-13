@@ -1,10 +1,12 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
     "composite": true,
-    "outDir": "dist",
-    "rootDir": "src",
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": ".astro/tsbuild",
+    "rootDir": ".",
     "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo"
   },
-  "include": ["src/**/*"]
+  "include": [".astro/types.d.ts", "src/**/*", "astro.config.mjs"]
 }

@@ -2,10 +2,16 @@
   "files": [],
   "references": [
     {
+      "path": "./apps/cli"
+    },
+    {
       "path": "./apps/server"
     },
     {
       "path": "./apps/web"
+    },
+    {
+      "path": "./packages/catalog"
     }
   ]
 }
