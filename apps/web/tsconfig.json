@@ -6,7 +6,7 @@
     "declarationMap": true,
     "outDir": ".astro/tsbuild",
     "rootDir": ".",
-    "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo"
+    "tsBuildInfoFile": ".astro/tsbuild/tsconfig.tsbuildinfo"
   },
   "include": [".astro/types.d.ts", "src/**/*", "astro.config.mjs"]
 }
