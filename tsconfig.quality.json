@@ -1,0 +1,19 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "declaration": false,
+    "declarationMap": false,
+    "noEmit": true,
+    "types": ["node", "vitest/globals"]
+  },
+  "include": [
+    "vitest.config.ts",
+    "vitest.e2e.config.ts",
+    "vitest.eval.config.ts",
+    "design/**/*.ts",
+    "e2e/**/*.ts",
+    "e2e/**/*.tsx",
+    "evals/**/*.ts",
+    "evals/**/*.tsx"
+  ]
+}

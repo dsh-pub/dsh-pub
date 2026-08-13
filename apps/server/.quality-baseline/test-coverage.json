@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "module": "apps/server",
+  "command": "npm run test",
+  "status": "measured",
+  "files": 1,
+  "coverage": {
+    "statements": {
+      "covered": 0,
+      "pct": 0,
+      "total": 6
+    },
+    "branches": {
+      "covered": 0,
+      "pct": 0,
+      "total": 1
+    },
+    "functions": {
+      "covered": 0,
+      "pct": 0,
+      "total": 1
+    },
+    "lines": {
+      "covered": 0,
+      "pct": 0,
+      "total": 6
+    }
+  }
+}

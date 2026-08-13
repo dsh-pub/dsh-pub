@@ -1,0 +1,20 @@
+# Non-executing starter. Rename only after Promptfoo and a real provider are configured.
+description: Product model-quality smoke evaluation
+
+prompts:
+  - '{{input}}'
+
+providers:
+  - id: file://providers/product.example.ts
+    label: product-api-v1
+    config:
+      baseUrl: '{{env.PRODUCT_EVAL_BASE_URL}}'
+      model: replace-with-production-model-id
+      providerVersion: product-api-v1
+
+tests: file://datasets/smoke.example.yaml
+
+outputPath:
+  - ../.cache/test-results/eval/results.json
+  - ../.cache/test-results/eval/report.html
+  - ../.cache/test-results/eval/results.junit.xml

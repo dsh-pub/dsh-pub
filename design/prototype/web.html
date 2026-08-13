@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="项目 Web 端入口页原型。" />
+    <title>Web 原型</title>
+    <link rel="stylesheet" href="../tokens.css" />
+    <link rel="stylesheet" href="./prototype.css" />
+  </head>
+  <body>
+    <header class="workbench-header shell">
+      <a class="brand" href="./index.html">
+        <span class="brand-mark" aria-hidden="true">PD</span>
+        <span>Product Design</span>
+      </a>
+      <a class="back-link" href="./index.html">← 返回设计目录</a>
+    </header>
+
+    <main class="page-main shell">
+      <header class="page-heading">
+        <div>
+          <p class="page-kicker">Web / Entry prototype</p>
+          <h1>桌面网页入口页。</h1>
+        </div>
+        <p>示例用于验证网页端的信息层级、主操作和响应式结构，不代表已经确定的产品能力。</p>
+      </header>
+
+      <article class="browser-frame" aria-label="Web 入口页原型">
+        <div class="browser-bar" aria-hidden="true">
+          <span class="window-dot"></span><span class="window-dot"></span
+          ><span class="window-dot"></span><span class="address"></span>
+        </div>
+        <div class="web-canvas">
+          <nav class="web-nav" aria-label="Web 原型导航">
+            <strong>Northstar</strong>
+            <div class="web-nav-links"><span>工作区</span><span>进展</span><span>设置</span></div>
+            <div class="web-actions">
+              <a class="button" href="#workspace">登录</a>
+              <a class="button button-primary" href="#workspace">创建工作区</a>
+            </div>
+          </nav>
+          <section class="web-hero" id="workspace">
+            <div class="web-hero-copy">
+              <div>
+                <p class="data-label">Today / Focus</p>
+                <h2>把重要工作带到清晰的下一步。</h2>
+                <p>将目标、进展和下一步放在同一个工作区，让每次打开产品都知道应该从哪里继续。</p>
+                <div class="button-row">
+                  <a class="button button-primary" href="#workspace">创建工作区</a>
+                  <a class="button" href="./mobile.html">查看移动端</a>
+                </div>
+              </div>
+            </div>
+            <aside class="web-hero-panel" aria-label="示例进展">
+              <p class="data-label">Current goal</p>
+              <strong class="web-metric">68%</strong>
+              <p>当前目标已经推进到可验证阶段。下一步：检查核心流程。</p>
+            </aside>
+          </section>
+        </div>
+      </article>
+    </main>
+
+    <footer class="workbench-footer shell">
+      <p>Prototype / Web viewport</p>
+      <a href="./mobile.html">继续查看移动端 →</a>
+    </footer>
+  </body>
+</html>

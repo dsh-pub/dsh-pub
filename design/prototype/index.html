@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="项目统一设计风格与跨端原型入口。" />
+    <title>设计目录</title>
+    <link rel="stylesheet" href="../tokens.css" />
+    <link rel="stylesheet" href="./prototype.css" />
+  </head>
+  <body>
+    <header class="workbench-header shell">
+      <a class="brand" href="./index.html" aria-label="返回设计目录">
+        <span class="brand-mark" aria-hidden="true">PD</span>
+        <span>Product Design</span>
+      </a>
+      <div class="header-meta" aria-label="页面状态">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span>Design directory</span>
+      </div>
+    </header>
+
+    <main class="portal shell">
+      <section class="portal-intro" aria-labelledby="page-title">
+        <p class="eyebrow">One system / Four views</p>
+        <h1 id="page-title">选择要查看的设计界面。</h1>
+        <p class="portal-summary">
+          从系统基础到跨端原型，每个入口只回答一个问题。修改真实产品前，先完成
+          <a href="../DESIGN.md">DESIGN.md</a> 中的产品设计上下文。
+        </p>
+      </section>
+
+      <nav class="portal-grid" aria-label="设计界面入口">
+        <a class="portal-button portal-system" href="./tokens.html">
+          <span class="portal-button-meta">
+            <span>System</span>
+            <span>CSS</span>
+          </span>
+          <span class="portal-button-content">
+            <strong>Tokens 陈列</strong>
+            <span>查看颜色、字体、间距、圆角和深度变量。</span>
+          </span>
+          <span class="portal-arrow" aria-hidden="true">↗</span>
+        </a>
+
+        <a class="portal-button portal-web" href="./web.html">
+          <span class="portal-button-meta">
+            <span>Web</span>
+            <span>1200</span>
+          </span>
+          <span class="portal-button-content">
+            <strong>Web 原型</strong>
+            <span>进入桌面网页的入口页与核心工作区。</span>
+          </span>
+          <span class="portal-arrow" aria-hidden="true">↗</span>
+        </a>
+
+        <a class="portal-button portal-mobile" href="./mobile.html">
+          <span class="portal-button-meta">
+            <span>App</span>
+            <span>390</span>
+          </span>
+          <span class="portal-button-content">
+            <strong>移动端原型</strong>
+            <span>进入移动端首页与关键操作界面。</span>
+          </span>
+          <span class="portal-arrow" aria-hidden="true">↗</span>
+        </a>
+
+        <a class="portal-button portal-flow" href="./mobile-flow.html">
+          <span class="portal-button-meta">
+            <span>Flow</span>
+            <span>End to end</span>
+          </span>
+          <span class="portal-button-content">
+            <strong>移动端整体流程</strong>
+            <span>查看从首次进入到完成目标的完整路径。</span>
+          </span>
+          <span class="portal-arrow" aria-hidden="true">↗</span>
+        </a>
+      </nav>
+    </main>
+
+    <footer class="workbench-footer shell">
+      <p>四个入口共享同一个 <code>tokens.css</code>。</p>
+      <a href="../DESIGN.md">阅读设计说明</a>
+    </footer>
+  </body>
+</html>

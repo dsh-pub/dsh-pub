@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="可缩放与拖拽的项目移动端完整界面流程原型。" />
+    <title>移动端整体流程</title>
+    <link rel="stylesheet" href="../tokens.css" />
+    <link rel="stylesheet" href="./prototype.css" />
+    <link rel="stylesheet" href="./runtime/flow-canvas.css" />
+    <link rel="stylesheet" href="./mobile-flow.css" />
+  </head>
+  <body class="flow-page">
+    <header class="workbench-header shell">
+      <a class="brand" href="./index.html">
+        <span class="brand-mark" aria-hidden="true">PD</span>
+        <span>Product Design</span>
+      </a>
+      <a class="back-link" href="./index.html">← 返回设计目录</a>
+    </header>
+
+    <main class="flow-canvas-main">
+      <section
+        class="flow-canvas"
+        data-flow-canvas
+        tabindex="0"
+        aria-label="可拖拽和缩放的移动端界面流程画布"
+      >
+        <header class="flow-canvas-heading">
+          <p class="page-kicker">App / Screen flow</p>
+          <h1>移动端整体流程</h1>
+          <p>每个画框是一张具体的 iOS 界面，箭头表示用户操作后的页面跳转。</p>
+        </header>
+
+        <div class="flow-controls" aria-label="画布缩放控制">
+          <button type="button" data-zoom-out aria-label="缩小画布">−</button>
+          <output data-zoom-label aria-live="polite">100%</output>
+          <button type="button" data-zoom-in aria-label="放大画布">＋</button>
+          <button class="flow-reset" type="button" data-zoom-reset>适应画布</button>
+        </div>
+
+        <p class="flow-help">拖拽移动 · 滚轮缩放 · 方向键平移</p>
+
+        <div class="flow-world" data-flow-world data-world-width="2200" data-world-height="1650">
+          <svg class="flow-connections" viewBox="0 0 2200 1650" aria-label="界面跳转连接线">
+            <defs>
+              <marker
+                id="arrow-primary"
+                viewBox="0 0 10 10"
+                refX="9"
+                refY="5"
+                markerWidth="8"
+                markerHeight="8"
+                orient="auto-start-reverse"
+              >
+                <path d="M 0 0 L 10 5 L 0 10 z"></path>
+              </marker>
+              <marker
+                id="arrow-branch"
+                viewBox="0 0 10 10"
+                refX="9"
+                refY="5"
+                markerWidth="8"
+                markerHeight="8"
+                orient="auto-start-reverse"
+              >
+                <path d="M 0 0 L 10 5 L 0 10 z"></path>
+              </marker>
+            </defs>
+
+            <g class="flow-route-primary">
+              <path d="M 370 584 H 500"></path>
+              <path d="M 770 584 H 900"></path>
+              <path d="M 1170 584 H 1300"></path>
+              <path d="M 1570 584 H 1700"></path>
+              <path d="M 1835 864 V 1014"></path>
+              <path d="M 1700 1294 H 1370"></path>
+              <path d="M 1100 1294 H 1035 V 864"></path>
+            </g>
+            <g class="flow-route-branch">
+              <path d="M 235 304 V 170 H 1035 V 304"></path>
+            </g>
+          </svg>
+
+          <span class="flow-route-label flow-route-label-new">创建第一个目标</span>
+          <span class="flow-route-label flow-route-label-existing">已有目标，直接继续</span>
+          <span class="flow-route-label flow-route-label-loop" data-model-screen="next"
+            ><span data-model-action-label="start"></span
+          ></span>
+
+          <article
+            class="flow-screen flow-screen-welcome"
+            data-flow-screen="welcome"
+            data-model-screen="welcome"
+          >
+            <header class="flow-screen-caption">
+              <span>01</span><strong data-model-field="caption"></strong>
+            </header>
+            <div class="ios-device">
+              <div class="ios-statusbar"><span>9:41</span><span>● ◒ ▰</span></div>
+              <div class="ios-island" aria-hidden="true"></div>
+              <div class="ios-screen-body ios-welcome">
+                <div class="welcome-symbol" aria-hidden="true">
+                  <span data-model-field="brandMark"></span>
+                </div>
+                <p class="ios-overline" data-model-field="brandName"></p>
+                <h2 data-model-field="title"></h2>
+                <p data-model-field="body"></p>
+                <button
+                  class="ios-primary-button"
+                  type="button"
+                  data-model-action="startSetup"
+                  data-model-action-label="startSetup"
+                ></button>
+                <button
+                  class="ios-text-button"
+                  type="button"
+                  data-model-action="existingGoal"
+                  data-model-action-label="existingGoal"
+                ></button>
+              </div>
+              <div class="ios-home-indicator" aria-hidden="true"></div>
+            </div>
+          </article>
+
+          <article
+            class="flow-screen flow-screen-goal"
+            data-flow-screen="goal"
+            data-model-screen="goal"
+          >
+            <header class="flow-screen-caption">
+              <span>02</span><strong data-model-field="caption"></strong>
+            </header>
+            <div class="ios-device">
+              <div class="ios-statusbar"><span>9:41</span><span>● ◒ ▰</span></div>
+              <div class="ios-island" aria-hidden="true"></div>
+              <div class="ios-screen-body">
+                <div class="ios-nav">
+                  <button
+                    type="button"
+                    data-model-action="cancel"
+                    data-model-action-label="cancel"
+                  ></button
+                  ><span data-model-field="step"></span>
+                </div>
+                <p class="ios-overline" data-model-field="overline"></p>
+                <h2 data-model-field="title"></h2>
+                <label class="ios-field">
+                  <span data-model-field="goalLabel"></span>
+                  <strong data-model-field="goalValue"></strong>
+                </label>
+                <p class="ios-label" data-model-field="periodLabel"></p>
+                <div class="ios-chip-row">
+                  <span data-model-field="periodShort"></span
+                  ><span class="is-selected" data-model-field="periodSelected"></span
+                  ><span data-model-field="periodLong"></span>
+                </div>
+                <div class="ios-spacer"></div>
+                <button
+                  class="ios-primary-button"
+                  type="button"
+                  data-model-action="continue"
+                  data-model-action-label="continue"
+                ></button>
+              </div>
+              <div class="ios-home-indicator" aria-hidden="true"></div>
+            </div>
+          </article>
+
+          <article
+            class="flow-screen flow-screen-home"
+            data-flow-screen="home"
+            data-model-screen="home"
+          >
+            <header class="flow-screen-caption">
+              <span>03</span><strong data-model-field="caption"></strong>
+            </header>
+            <div class="ios-device">
+              <div class="ios-statusbar"><span>9:41</span><span>● ◒ ▰</span></div>
+              <div class="ios-island" aria-hidden="true"></div>
+              <div class="ios-screen-body">
+                <div class="ios-title-row">
+                  <div>
+                    <p class="ios-overline" data-model-field="dateLabel"></p>
+                    <h2 data-model-field="title"></h2>
+                  </div>
+                  <span class="ios-avatar" data-model-field="avatarLabel"></span>
+                </div>
+                <div class="ios-focus-card">
+                  <span data-model-field="focusLabel"></span>
+                  <strong data-model-field="focusGoal"></strong>
+                  <div class="ios-progress"><i style="width: 68%"></i></div>
+                  <small data-model-field="progressMeta"></small>
+                </div>
+                <p class="ios-label" data-model-field="nextLabel"></p>
+                <button class="ios-task-row is-active" type="button" data-model-action="primary">
+                  <i></i
+                  ><span
+                    ><strong data-model-action-label="primary"></strong
+                    ><small data-model-field="primaryTaskMeta"></small></span
+                  ><b>›</b>
+                </button>
+                <button class="ios-task-row" type="button">
+                  <i></i
+                  ><span
+                    ><strong data-model-field="secondaryTask"></strong
+                    ><small data-model-field="secondaryTaskMeta"></small></span
+                  ><b>›</b>
+                </button>
+                <nav class="ios-tabbar" aria-label="示例 App 导航">
+                  <span class="is-current">◉<small data-model-field="tabToday"></small></span>
+                  <span>◫<small data-model-field="tabProgress"></small></span>
+                  <span>○<small data-model-field="tabProfile"></small></span>
+                </nav>
+              </div>
+              <div class="ios-home-indicator" aria-hidden="true"></div>
+            </div>
+          </article>
+
+          <article
+            class="flow-screen flow-screen-task"
+            data-flow-screen="task"
+            data-model-screen="task"
+          >
+            <header class="flow-screen-caption">
+              <span>04</span><strong data-model-field="caption"></strong>
+            </header>
+            <div class="ios-device">
+              <div class="ios-statusbar"><span>9:41</span><span>● ◒ ▰</span></div>
+              <div class="ios-island" aria-hidden="true"></div>
+              <div class="ios-screen-body">
+                <div class="ios-nav">
+                  <button
+                    type="button"
+                    data-model-action="back"
+                    data-model-action-label="back"
+                  ></button
+                  ><button type="button" data-model-field="overflowLabel"></button>
+                </div>
+                <p class="ios-overline" data-model-field="overline"></p>
+                <h2 data-model-field="title"></h2>
+                <p class="ios-body-copy" data-model-field="body"></p>
+                <div class="ios-duration">
+                  <span data-model-field="durationLabel"></span
+                  ><strong data-model-field="durationValue"></strong>
+                </div>
+                <div class="ios-checklist">
+                  <label
+                    ><i class="is-done">✓</i><span data-model-field="checklistReady"></span
+                  ></label>
+                  <label><i></i><span data-model-field="checklistJourney"></span></label>
+                  <label><i></i><span data-model-field="checklistBlocker"></span></label>
+                </div>
+                <div class="ios-spacer"></div>
+                <button
+                  class="ios-primary-button"
+                  type="button"
+                  data-model-action="complete"
+                  data-model-action-label="complete"
+                ></button>
+              </div>
+              <div class="ios-home-indicator" aria-hidden="true"></div>
+            </div>
+          </article>
+
+          <article
+            class="flow-screen flow-screen-complete"
+            data-flow-screen="complete"
+            data-model-screen="complete"
+          >
+            <header class="flow-screen-caption">
+              <span>05</span><strong data-model-field="caption"></strong>
+            </header>
+            <div class="ios-device">
+              <div class="ios-statusbar"><span>9:41</span><span>● ◒ ▰</span></div>
+              <div class="ios-island" aria-hidden="true"></div>
+              <div class="ios-screen-body ios-complete">
+                <div class="complete-check" aria-hidden="true">✓</div>
+                <p class="ios-overline" data-model-field="overline"></p>
+                <h2 data-model-field="title"></h2>
+                <p data-model-field="body"></p>
+                <div class="complete-result">
+                  <span data-model-field="resultLabel"></span
+                  ><strong data-model-field="resultValue"></strong
+                  ><small data-model-field="streakLabel"></small>
+                </div>
+                <div class="ios-spacer"></div>
+                <button
+                  class="ios-primary-button"
+                  type="button"
+                  data-model-action="review"
+                  data-model-action-label="review"
+                ></button>
+                <button
+                  class="ios-text-button"
+                  type="button"
+                  data-model-action="later"
+                  data-model-action-label="later"
+                ></button>
+              </div>
+              <div class="ios-home-indicator" aria-hidden="true"></div>
+            </div>
+          </article>
+
+          <article
+            class="flow-screen flow-screen-review"
+            data-flow-screen="review"
+            data-model-screen="review"
+          >
+            <header class="flow-screen-caption">
+              <span>06</span><strong data-model-field="caption"></strong>
+            </header>
+            <div class="ios-device">
+              <div class="ios-statusbar"><span>9:41</span><span>● ◒ ▰</span></div>
+              <div class="ios-island" aria-hidden="true"></div>
+              <div class="ios-screen-body">
+                <div class="ios-nav">
+                  <button type="button" data-model-field="closeLabel"></button
+                  ><span data-model-field="navTitle"></span>
+                </div>
+                <p class="ios-overline" data-model-field="overline"></p>
+                <h2 data-model-field="title"></h2>
+                <div class="review-stats">
+                  <span
+                    ><strong data-model-field="completedValue"></strong
+                    ><small data-model-field="completedLabel"></small
+                  ></span>
+                  <span
+                    ><strong data-model-field="streakValue"></strong
+                    ><small data-model-field="streakLabel"></small
+                  ></span>
+                  <span
+                    ><strong data-model-field="progressValue"></strong
+                    ><small data-model-field="progressLabel"></small
+                  ></span>
+                </div>
+                <label class="ios-note-field">
+                  <span data-model-field="noteLabel"></span>
+                  <p data-model-field="noteValue"></p>
+                </label>
+                <div class="ios-spacer"></div>
+                <button
+                  class="ios-primary-button"
+                  type="button"
+                  data-model-action="next"
+                  data-model-action-label="next"
+                ></button>
+              </div>
+              <div class="ios-home-indicator" aria-hidden="true"></div>
+            </div>
+          </article>
+
+          <article
+            class="flow-screen flow-screen-next"
+            data-flow-screen="next"
+            data-model-screen="next"
+          >
+            <header class="flow-screen-caption">
+              <span>07</span><strong data-model-field="caption"></strong>
+            </header>
+            <div class="ios-device">
+              <div class="ios-statusbar"><span>9:41</span><span>● ◒ ▰</span></div>
+              <div class="ios-island" aria-hidden="true"></div>
+              <div class="ios-screen-body">
+                <div class="ios-nav">
+                  <button type="button" data-model-field="backLabel"></button
+                  ><span data-model-field="navTitle"></span>
+                </div>
+                <p class="ios-overline" data-model-field="overline"></p>
+                <h2 data-model-field="title"></h2>
+                <div class="milestone-card is-selected">
+                  <i></i
+                  ><span
+                    ><strong data-model-field="firstMilestone"></strong
+                    ><small data-model-field="firstMilestoneMeta"></small
+                  ></span>
+                </div>
+                <div class="milestone-card">
+                  <i></i
+                  ><span
+                    ><strong data-model-field="secondMilestone"></strong
+                    ><small data-model-field="secondMilestoneMeta"></small
+                  ></span>
+                </div>
+                <div class="milestone-card">
+                  <i></i
+                  ><span
+                    ><strong data-model-field="customMilestone"></strong
+                    ><small data-model-field="customMilestoneMeta"></small
+                  ></span>
+                </div>
+                <div class="ios-spacer"></div>
+                <button
+                  class="ios-primary-button"
+                  type="button"
+                  data-model-action="start"
+                  data-model-action-label="start"
+                ></button>
+              </div>
+              <div class="ios-home-indicator" aria-hidden="true"></div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script src="./runtime/prototype-runtime.js"></script>
+    <script src="./runtime/flow-canvas.js"></script>
+    <script src="./mobile-screen-model.js"></script>
+    <script src="./mobile-flow.js"></script>
+  </body>
+</html>

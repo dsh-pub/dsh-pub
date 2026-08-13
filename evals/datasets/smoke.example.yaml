@@ -1,0 +1,25 @@
+# Non-executing example dataset. Replace its domain and expected behavior before activation.
+- description: Returns a useful answer for a representative user request
+  vars:
+    input: >-
+      Explain the product's primary workflow in three concise steps and identify
+      one limitation the user should know about.
+  metadata:
+    caseId: onboarding.explain-primary-workflow
+    datasetVersion: smoke-v1
+    rubricVersion: quality-v1
+    providerVersion: product-api-v1
+    assertionVersion: domain-v1
+    judgeVersion: replace-with-fixed-judge-v1
+  assert:
+    - type: javascript
+      value: file://assertions/domain.example.ts
+    - type: llm-rubric
+      value: file://rubrics/quality.example.md
+      threshold: 0.75
+      provider:
+        id: replace-with-fixed-judge-provider
+        config:
+          temperature: 0
+    - type: cost
+      threshold: 0.02

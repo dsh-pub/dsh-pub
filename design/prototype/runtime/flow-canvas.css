@@ -1,0 +1,200 @@
+/* Template-owned pan, zoom, focus, and route-canvas shell. */
+
+.flow-page {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.flow-page .workbench-header {
+  position: relative;
+  z-index: 20;
+  background: var(--color-background);
+}
+
+.flow-canvas-main {
+  height: calc(100vh - 5rem);
+}
+
+.flow-canvas {
+  --flow-grid-size: 24px;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--color-surface-raised);
+  background-image: radial-gradient(var(--color-border) 1.2px, transparent 1.2px);
+  background-position: 0 0;
+  background-size: var(--flow-grid-size) var(--flow-grid-size);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.flow-canvas.is-dragging {
+  cursor: grabbing;
+}
+
+.flow-canvas-heading {
+  position: absolute;
+  top: var(--space-5);
+  left: var(--layout-gutter);
+  z-index: 12;
+  width: min(25rem, calc(100% - (2 * var(--layout-gutter))));
+  padding: var(--space-4) var(--space-5);
+  border: var(--border-thin) solid color-mix(in srgb, var(--color-border-strong) 20%, transparent);
+  border-radius: var(--radius-medium);
+  background: color-mix(in srgb, var(--color-surface) 88%, transparent);
+  box-shadow: var(--shadow-small);
+  pointer-events: none;
+  backdrop-filter: blur(14px);
+}
+
+.flow-canvas-heading .page-kicker {
+  margin-bottom: var(--space-2);
+}
+
+.flow-canvas-heading h1 {
+  margin-bottom: var(--space-2);
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  letter-spacing: -0.04em;
+}
+
+.flow-canvas-heading > p:last-child {
+  margin-bottom: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-1);
+  line-height: 1.55;
+}
+
+.flow-controls {
+  position: absolute;
+  top: var(--space-5);
+  right: var(--layout-gutter);
+  z-index: 12;
+  display: flex;
+  min-height: var(--touch-target);
+  align-items: center;
+  overflow: hidden;
+  border: var(--border-thin) solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+  box-shadow: var(--shadow-small);
+  backdrop-filter: blur(14px);
+}
+
+.flow-controls button,
+.flow-controls output {
+  display: grid;
+  min-width: var(--touch-target);
+  height: var(--touch-target);
+  place-items: center;
+  border: 0;
+  border-right: var(--border-thin) solid var(--color-border);
+  background: transparent;
+  color: var(--color-text);
+}
+
+.flow-controls button {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.flow-controls button:hover {
+  background: var(--color-action-soft);
+}
+
+.flow-controls output {
+  min-width: 4rem;
+  color: var(--color-text-muted);
+  font-family: var(--font-data);
+  font-size: var(--font-size-0);
+}
+
+.flow-controls .flow-reset {
+  width: auto;
+  padding-inline: var(--space-4);
+  border-right: 0;
+  font-size: var(--font-size-1);
+}
+
+.flow-help {
+  position: absolute;
+  bottom: var(--space-5);
+  left: 50%;
+  z-index: 12;
+  margin: 0;
+  padding: var(--space-2) var(--space-4);
+  border: var(--border-thin) solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--color-surface) 88%, transparent);
+  color: var(--color-text-muted);
+  font-family: var(--font-data);
+  font-size: var(--font-size-0);
+  letter-spacing: 0.04em;
+  pointer-events: none;
+  transform: translateX(-50%);
+  backdrop-filter: blur(14px);
+}
+
+.flow-world {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+.flow-canvas.is-centering .flow-world {
+  transition: transform var(--duration-slow) var(--ease-standard);
+}
+
+.flow-connections {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.flow-connections path {
+  fill: none;
+  stroke: var(--color-action);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 3;
+  vector-effect: non-scaling-stroke;
+  marker-end: url(#arrow-primary);
+}
+
+.flow-connections #arrow-primary path {
+  fill: var(--color-action);
+  stroke: none;
+  marker-end: none;
+}
+
+.flow-connections .flow-route-branch path {
+  stroke: var(--color-notice);
+  stroke-dasharray: 10 10;
+  marker-end: url(#arrow-branch);
+}
+
+.flow-connections #arrow-branch path {
+  fill: var(--color-notice);
+  stroke: none;
+  marker-end: none;
+}
+
+.flow-route-label {
+  position: absolute;
+  z-index: 2;
+  padding: 0.35rem 0.65rem;
+  border: var(--border-thin) solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-family: var(--font-data);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}

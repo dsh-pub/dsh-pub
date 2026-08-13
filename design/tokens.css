@@ -1,0 +1,85 @@
+/*
+ * Canonical design tokens for web and app prototypes.
+ * Keep product-specific component styles out of this file.
+ */
+
+:root {
+  color-scheme: light;
+
+  /* Foundation palette */
+  --color-ink: #17313b;
+  --color-mist: #f2f7f8;
+  --color-porcelain: #ffffff;
+  --color-cobalt: #3567d6;
+  --color-cobalt-wash: #dfe9ff;
+  --color-coral: #df6c52;
+
+  /* Semantic color */
+  --color-text: var(--color-ink);
+  --color-text-muted: #5c737c;
+  --color-text-inverse: var(--color-porcelain);
+  --color-text-inverse-muted: #c8d5da;
+  --color-background: var(--color-mist);
+  --color-surface: var(--color-porcelain);
+  --color-surface-raised: #f9fbfc;
+  --color-surface-hover: #e5eef0;
+  --color-border: #bfd0d5;
+  --color-border-strong: #819aa3;
+  --color-action: var(--color-cobalt);
+  --color-action-hover: #2854bb;
+  --color-action-soft: var(--color-cobalt-wash);
+  --color-action-on-dark: #9ebaff;
+  --color-notice: var(--color-coral);
+  --color-notice-soft: #f8e5e0;
+  --color-focus: #6e93ee;
+
+  /* Typography */
+  --font-display: 'Avenir Next', Avenir, 'Segoe UI', sans-serif;
+  --font-body: 'Source Han Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-data: 'DIN Alternate', 'Roboto Mono', ui-monospace, monospace;
+  --font-size-0: 0.75rem;
+  --font-size-1: 0.875rem;
+  --font-size-2: 1rem;
+  --font-size-3: clamp(1.125rem, 1rem + 0.4vw, 1.375rem);
+  --font-size-4: clamp(1.5rem, 1.15rem + 1.1vw, 2.25rem);
+  --font-size-5: clamp(2.5rem, 1.7rem + 3.4vw, 5.5rem);
+  --line-height-tight: 0.98;
+  --line-height-heading: 1.15;
+  --line-height-body: 1.65;
+  --letter-spacing-tight: -0.045em;
+  --letter-spacing-label: 0.12em;
+
+  /* Spacing: 4px base unit */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+
+  /* Shape */
+  --radius-small: 0.5rem;
+  --radius-medium: 1rem;
+  --radius-large: 1.75rem;
+  --radius-pill: 999px;
+  --border-thin: 1px;
+  --border-strong: 2px;
+
+  /* Layout */
+  --layout-max: 75rem;
+  --layout-gutter: clamp(1rem, 4vw, 3rem);
+  --touch-target: 2.75rem;
+
+  /* Depth */
+  --shadow-small: 0 0.375rem 1rem rgb(23 49 59 / 8%);
+  --shadow-large: 0 1.5rem 4rem rgb(23 49 59 / 14%);
+
+  /* Motion */
+  --duration-fast: 180ms;
+  --duration-medium: 280ms;
+  --duration-slow: 420ms;
+  --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+}

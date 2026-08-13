@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="项目 CSS Design Tokens 陈列。" />
+    <title>Tokens 陈列</title>
+    <link rel="stylesheet" href="../tokens.css" />
+    <link rel="stylesheet" href="./prototype.css" />
+  </head>
+  <body>
+    <header class="workbench-header shell">
+      <a class="brand" href="./index.html">
+        <span class="brand-mark" aria-hidden="true">PD</span>
+        <span>Product Design</span>
+      </a>
+      <a class="back-link" href="./index.html">← 返回设计目录</a>
+    </header>
+
+    <main class="page-main shell">
+      <header class="page-heading">
+        <div>
+          <p class="page-kicker">System / tokens.css</p>
+          <h1>系统基础，一处定义。</h1>
+        </div>
+        <p>此页直接读取 CSS 自定义属性并呈现当前值，修改 `tokens.css` 后刷新即可看到结果。</p>
+      </header>
+
+      <section class="section-block" aria-labelledby="color-title">
+        <div class="section-heading">
+          <h2 id="color-title">基础色板</h2>
+          <p>颜色先定义身份，再通过语义 token 承担文字、表面、操作和状态职责。</p>
+        </div>
+        <div class="token-grid">
+          <article class="token-card" data-token="--color-ink">
+            <div class="token-swatch"></div>
+            <code class="token-name">--color-ink</code><code class="token-value"></code>
+          </article>
+          <article class="token-card" data-token="--color-mist">
+            <div class="token-swatch"></div>
+            <code class="token-name">--color-mist</code><code class="token-value"></code>
+          </article>
+          <article class="token-card" data-token="--color-porcelain">
+            <div class="token-swatch"></div>
+            <code class="token-name">--color-porcelain</code><code class="token-value"></code>
+          </article>
+          <article class="token-card" data-token="--color-cobalt">
+            <div class="token-swatch"></div>
+            <code class="token-name">--color-cobalt</code><code class="token-value"></code>
+          </article>
+          <article class="token-card" data-token="--color-cobalt-wash">
+            <div class="token-swatch"></div>
+            <code class="token-name">--color-cobalt-wash</code><code class="token-value"></code>
+          </article>
+          <article class="token-card" data-token="--color-coral">
+            <div class="token-swatch"></div>
+            <code class="token-name">--color-coral</code><code class="token-value"></code>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-block" aria-labelledby="type-title">
+        <div class="section-heading">
+          <h2 id="type-title">排版角色</h2>
+          <p>展示字体建立识别度，正文字体保证连续阅读，数据字体承载状态与刻度。</p>
+        </div>
+        <div class="type-grid">
+          <article class="type-card">
+            <div class="type-display-sample">清晰定义方向</div>
+            <p>Display / Avenir Next</p>
+          </article>
+          <article class="type-card">
+            <div class="type-body-sample">每一段内容都帮助用户理解并采取下一步行动。</div>
+            <p>Body / Source Han Sans SC</p>
+          </article>
+          <article class="type-card">
+            <div class="type-data-sample">68% / READY</div>
+            <p>Data / DIN Alternate</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-block" aria-labelledby="foundation-title">
+        <div class="section-heading">
+          <h2 id="foundation-title">空间、形状与深度</h2>
+          <p>4px 基准控制密度；圆角和阴影只在表达层级时使用。</p>
+        </div>
+        <div class="foundation-grid">
+          <article class="foundation-card">
+            <div class="spacing-bars" aria-hidden="true">
+              <span></span><span></span><span></span><span></span>
+            </div>
+            <h3>Spacing</h3>
+            <p>8 / 16 / 32 / 64</p>
+          </article>
+          <article class="foundation-card">
+            <div class="radius-samples" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+            <h3>Radius</h3>
+            <p>Small / Medium / Large</p>
+          </article>
+          <article class="foundation-card">
+            <div class="shadow-samples" aria-hidden="true"><span></span><span></span></div>
+            <h3>Depth</h3>
+            <p>Small / Large</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="workbench-footer shell">
+      <p>页面数值来自浏览器当前计算结果。</p>
+      <a href="../tokens.css">打开 tokens.css</a>
+    </footer>
+
+    <script>
+      const styles = getComputedStyle(document.documentElement);
+
+      document.querySelectorAll('[data-token]').forEach((card) => {
+        const tokenName = card.dataset.token;
+        const tokenValue = styles.getPropertyValue(tokenName).trim();
+        card.querySelector('.token-swatch').style.setProperty('--token-preview', tokenValue);
+        card.querySelector('.token-value').textContent = tokenValue;
+      });
+    </script>
+  </body>
+</html>

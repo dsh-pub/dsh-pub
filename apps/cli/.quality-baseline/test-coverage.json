@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "module": "apps/cli",
+  "command": "npm run test",
+  "status": "no-measurable-source",
+  "files": 0,
+  "coverage": {
+    "statements": {
+      "covered": 0,
+      "pct": null,
+      "total": 0
+    },
+    "branches": {
+      "covered": 0,
+      "pct": null,
+      "total": 0
+    },
+    "functions": {
+      "covered": 0,
+      "pct": null,
+      "total": 0
+    },
+    "lines": {
+      "covered": 0,
+      "pct": null,
+      "total": 0
+    }
+  }
+}

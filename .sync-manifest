@@ -1,0 +1,54 @@
+# Sync Manifest
+#
+# Lists files that should be synced from the template to existing projects.
+# Each line is: <sync-strategy> <path>
+#
+# Strategies:
+#   auto   — Safe to copy directly (structural config, scripts, hooks)
+#   review — Needs manual merge (may have project-specific changes)
+#
+# Lines starting with # are comments. Blank lines are ignored.
+
+# Editor & Git config
+auto .editorconfig
+auto .gitignore
+auto .prettierrc.json
+
+# Git hooks
+auto .githooks/pre-commit
+
+# CI workflows
+auto .github/workflows/eval.yml
+auto .github/workflows/test.yml
+
+# Lint & TypeScript config
+auto eslint.config.mjs
+auto tsconfig.base.json
+review tsconfig.json
+review tsconfig.quality.json
+
+# Test config
+auto vitest.config.ts
+auto vitest.e2e.config.ts
+auto vitest.eval.config.ts
+
+# Quality & bootstrap scripts
+auto scripts/bootstrap-project.mjs
+auto scripts/clean.mjs
+auto scripts/prepare-project.mjs
+auto scripts/run-app-e2e.mjs
+auto scripts/update-quality-baselines.mjs
+
+# Review-only prototype runtime — product models and pages stay project-owned
+auto design/prototype/runtime/prototype-runtime.js
+auto design/prototype/runtime/flow-canvas.js
+auto design/prototype/runtime/flow-canvas.css
+auto design/prototype/runtime/README.md
+
+# Agent rules — may have project-specific sections (e.g. ## Agent skills)
+review AGENTS.md
+
+# Structural docs — projects may customize
+review docs/architecture.md
+review docs/bootstrap.md
+review docs/quality-gates.md
