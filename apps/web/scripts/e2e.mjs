@@ -17,6 +17,9 @@ const sourceCatalog = JSON.parse(
 const communityCatalog = JSON.parse(
   await readFile(join(registryRoot, 'packages/catalog/src/community.generated.json'), 'utf8'),
 );
+const ecosystemCatalog = JSON.parse(
+  await readFile(join(registryRoot, 'packages/catalog/src/ecosystem.generated.json'), 'utf8'),
+);
 const marketplaceCount =
   sourceCatalog.entries.filter((entry) => entry.type === 'plugin' || entry.type === 'bundle')
     .length + communityCatalog.entries.length;
@@ -38,6 +41,7 @@ const contentTypes = {
   '.css': 'text/css; charset=utf-8',
   '.html': 'text/html; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
+  '.json': 'application/json; charset=utf-8',
   '.md': 'text/markdown; charset=utf-8',
   '.png': 'image/png',
   '.svg': 'image/svg+xml',
@@ -280,11 +284,38 @@ async function assertAgentGuide() {
     ) {
       throw new Error(`${path} does not render the animated Harness backdrop.`);
     }
+    if (!page.includes('https://dsh.pub/plugins.json')) {
+      throw new Error(`${path} does not direct agents to the static plugin index.`);
+    }
   }
 
   const llms = await responseBody('/llms.txt');
-  if (!llms.includes('https://dsh.pub/develop-plugin.md')) {
-    throw new Error('llms.txt does not advertise the Agent plugin-development guide.');
+  if (
+    !llms.includes('https://dsh.pub/develop-plugin.md') ||
+    !llms.includes('https://dsh.pub/plugins.json')
+  ) {
+    throw new Error('llms.txt does not advertise the Agent guides and static plugin index.');
+  }
+
+  const indexResponse = await fetch(`${origin}/plugins.json`);
+  const index = await indexResponse.json();
+  if (
+    !indexResponse.ok ||
+    indexResponse.headers.get('content-type') !== 'application/json; charset=utf-8' ||
+    index.schemaVersion !== 1 ||
+    index.totals?.registry !== marketplaceCount ||
+    index.totals?.ecosystem !== ecosystemCatalog.entries.length ||
+    !index.registry?.some(
+      (entry) =>
+        entry.slug === 'dsh-automation' &&
+        entry.source?.commit === '3c0188d7d94ed5b1e8caffeb73d7ac7ab34aabb3' &&
+        entry.install?.installable === true,
+    ) ||
+    !index.ecosystem?.some(
+      (entry) => entry.name === 'deepseek-harness' && entry.discoveryOnly === true,
+    )
+  ) {
+    throw new Error('The static plugin index is incomplete or inconsistent with catalog sources.');
   }
 }
 

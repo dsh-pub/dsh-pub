@@ -39,7 +39,7 @@ const ui =
         copyGuide: '复制指令',
         copiedGuide: '已复制',
         agentPrompt:
-          '在 dsh.pub 检索符合用户需求的 DeepSeek Harness 插件：优先搜索 /zh/plugins/?q=<关键词>&scope=registry 并核对来源、commit 与安装方式，必要时用 scope=ecosystem 扩大候选，并明确“收录不等于兼容、安全或可安装”。',
+          '读取 https://dsh.pub/plugins.json 检索 DeepSeek Harness 插件：先在 registry 中按 name、description、category、tools、uiSlots 和 source.repository 匹配，并核对 source.commit 与 install；需要扩大候选时再查看 ecosystem，且 discoveryOnly: true 只代表发现，不代表兼容或安全。',
         browseCases: '按使用场景探索',
         browseCasesBody: '从用户任务出发浏览公开 DSH 生态，再回到 Registry 核对来源与运行时事实。',
         candidates: '个公开候选',
@@ -74,7 +74,7 @@ const ui =
         copyGuide: 'Copy instructions',
         copiedGuide: 'Copied',
         agentPrompt:
-          'Find DeepSeek Harness plugins on dsh.pub: search /en/plugins/?q=<keywords>&scope=registry first and verify source, commit, and installation; use scope=ecosystem only to widen candidates, and state that indexing does not imply compatibility, safety, or installability.',
+          'Read https://dsh.pub/plugins.json to find DeepSeek Harness plugins: match name, description, category, tools, uiSlots, and source.repository in registry, then verify source.commit and install; check ecosystem only to widen candidates, where discoveryOnly: true does not imply compatibility or safety.',
         browseCases: 'Browse by use case',
         browseCasesBody:
           'Start from the job you need done, then return to Registry evidence before installing.',
