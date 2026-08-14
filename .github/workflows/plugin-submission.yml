@@ -84,6 +84,14 @@ jobs:
       pull-requests: write
 
     steps:
+      - name: Create update-branch token
+        id: submission-app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
+        with:
+          client-id: ${{ vars.GITHUB_APP_CLIENT_ID }}
+          permission-pull-requests: write
+          private-key: ${{ secrets.GITHUB_APP_PRIVATE_KEY_PKCS8 }}
+
       - name: Merge the validated pull request
         env:
           EXPECTED_BASE_SHA: ${{ needs.validate.outputs.base_sha }}
@@ -91,6 +99,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           REPOSITORY: ${{ github.repository }}
+          UPDATE_BRANCH_TOKEN: ${{ steps.submission-app-token.outputs.token }}
         shell: bash
         run: |
           [[ "$EXPECTED_BASE_SHA" =~ ^[a-f0-9]{40}$ ]]
@@ -100,7 +109,13 @@ jobs:
           test "$(gh api "repos/$REPOSITORY/pulls/$PR_NUMBER" --jq .base.ref)" = main
           test "$(gh api "repos/$REPOSITORY/pulls/$PR_NUMBER" --jq .draft)" = false
           test "$(gh api "repos/$REPOSITORY/pulls/$PR_NUMBER" --jq .state)" = open
-          test "$(gh api "repos/$REPOSITORY/git/ref/heads/main" --jq .object.sha)" = "$EXPECTED_BASE_SHA"
+          CURRENT_MAIN_SHA="$(gh api "repos/$REPOSITORY/git/ref/heads/main" --jq .object.sha)"
+          [[ "$CURRENT_MAIN_SHA" =~ ^[a-f0-9]{40}$ ]]
+          if [ "$CURRENT_MAIN_SHA" != "$EXPECTED_BASE_SHA" ]; then
+            GH_TOKEN="$UPDATE_BRANCH_TOKEN" gh api --method PUT "repos/$REPOSITORY/pulls/$PR_NUMBER/update-branch" \
+              -f expected_head_sha="$EXPECTED_HEAD_SHA" >/dev/null
+            exit 0
+          fi
           test "$(gh api --method PUT "repos/$REPOSITORY/pulls/$PR_NUMBER/merge" \
             -f sha="$EXPECTED_HEAD_SHA" \
             -f merge_method=merge \
@@ -112,7 +127,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
-      contents: write
+      contents: read
       pull-requests: read
 
     steps:
@@ -158,10 +173,19 @@ jobs:
         if: steps.sync.outputs.changed == 'true'
         run: npm run build
 
+      - name: Create catalog push token
+        if: steps.sync.outputs.changed == 'true'
+        id: catalog-app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
+        with:
+          client-id: ${{ vars.GITHUB_APP_CLIENT_ID }}
+          permission-contents: write
+          private-key: ${{ secrets.GITHUB_APP_PRIVATE_KEY_PKCS8 }}
+
       - name: Commit generated catalog
         if: steps.sync.outputs.changed == 'true'
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ steps.catalog-app-token.outputs.token }}
         shell: bash
         run: |
           git config user.name "dsh.pub catalog bot"

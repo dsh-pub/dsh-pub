@@ -43,6 +43,10 @@ describe('plugin submission workflow contract', () => {
       contents: 'read',
       'pull-requests': 'read',
     });
+    expect(JSON.stringify(workflow.jobs.validate.steps)).not.toContain('secrets.');
+    expect(JSON.stringify(workflow.jobs.validate.steps)).not.toContain(
+      'actions/create-github-app-token',
+    );
     const validateCheckout = workflow.jobs.validate.steps.find(
       (step: { name?: string }) => step.name === 'Checkout trusted registry source',
     );
@@ -55,19 +59,32 @@ describe('plugin submission workflow contract', () => {
     expect(workflow.jobs.validate.outputs.head_sha).toBe('${{ steps.process.outputs.head_sha }}');
   });
 
-  it('merges the unchanged validated PR with a merge commit, never a squash or force push', async () => {
+  it('refreshes a validated PR when main drifts, otherwise merges it without squash or force', async () => {
     const workflow = parse(await readFile(workflowPath, 'utf8'));
     const merge = workflow.jobs.merge;
+    const tokenStep = merge.steps.find(
+      (step: { name?: string }) => step.name === 'Create update-branch token',
+    );
     const mergeStep = merge.steps.find(
       (step: { name?: string }) => step.name === 'Merge the validated pull request',
     );
 
     expect(merge.needs).toBe('validate');
     expect(merge.permissions).toEqual({ contents: 'write', 'pull-requests': 'write' });
+    expect(tokenStep.uses).toBe(
+      'actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1',
+    );
+    expect(tokenStep.with).toEqual({
+      'client-id': '${{ vars.GITHUB_APP_CLIENT_ID }}',
+      'permission-pull-requests': 'write',
+      'private-key': '${{ secrets.GITHUB_APP_PRIVATE_KEY_PKCS8 }}',
+    });
     expect(mergeStep.env).toMatchObject({
       EXPECTED_BASE_SHA: '${{ needs.validate.outputs.base_sha }}',
       EXPECTED_HEAD_SHA: '${{ needs.validate.outputs.head_sha }}',
+      GH_TOKEN: '${{ github.token }}',
       PR_NUMBER: '${{ github.event.pull_request.number }}',
+      UPDATE_BRANCH_TOKEN: '${{ steps.submission-app-token.outputs.token }}',
     });
     expect(mergeStep.run).toContain('pulls/$PR_NUMBER/merge');
     expect(mergeStep.run).toContain('merge_method=merge');
@@ -75,6 +92,25 @@ describe('plugin submission workflow contract', () => {
     expect(mergeStep.run).toContain('--jq .draft');
     expect(mergeStep.run).toContain('EXPECTED_BASE_SHA');
     expect(mergeStep.run).toContain('EXPECTED_HEAD_SHA');
+    expect(mergeStep.run).toContain('pulls/$PR_NUMBER/update-branch');
+    expect(mergeStep.run).toContain('-f expected_head_sha="$EXPECTED_HEAD_SHA"');
+    expect(mergeStep.run).toContain(
+      'GH_TOKEN="$UPDATE_BRANCH_TOKEN" gh api --method PUT "repos/$REPOSITORY/pulls/$PR_NUMBER/update-branch"',
+    );
+    expect(mergeStep.run.match(/GH_TOKEN="\$UPDATE_BRANCH_TOKEN"/g)).toHaveLength(1);
+    expect(mergeStep.run).toContain('if [ "$CURRENT_MAIN_SHA" != "$EXPECTED_BASE_SHA" ]');
+    expect(mergeStep.run.indexOf('--jq .head.sha')).toBeLessThan(
+      mergeStep.run.indexOf('pulls/$PR_NUMBER/update-branch'),
+    );
+    expect(mergeStep.run.indexOf('--jq .base.ref')).toBeLessThan(
+      mergeStep.run.indexOf('pulls/$PR_NUMBER/update-branch'),
+    );
+    expect(mergeStep.run.indexOf('--jq .state')).toBeLessThan(
+      mergeStep.run.indexOf('pulls/$PR_NUMBER/update-branch'),
+    );
+    expect(mergeStep.run.indexOf('pulls/$PR_NUMBER/update-branch')).toBeLessThan(
+      mergeStep.run.indexOf('pulls/$PR_NUMBER/merge'),
+    );
     expect(mergeStep.run).not.toContain('squash');
     expect(mergeStep.run).not.toMatch(/--force(?:-with-lease)?/);
   });
@@ -88,16 +124,33 @@ describe('plugin submission workflow contract', () => {
     const sync = integrate.steps.find(
       (step: { name?: string }) => step.name === 'Generate catalog from merged submissions',
     );
+    const build = integrate.steps.find(
+      (step: { name?: string }) => step.name === 'Build deployable workspace',
+    );
+    const token = integrate.steps.find(
+      (step: { name?: string }) => step.name === 'Create catalog push token',
+    );
     const push = integrate.steps.find(
       (step: { name?: string }) => step.name === 'Commit generated catalog',
     );
 
-    expect(integrate.permissions).toEqual({ contents: 'write', 'pull-requests': 'read' });
+    expect(integrate.permissions).toEqual({ contents: 'read', 'pull-requests': 'read' });
     expect(checkout.with).toMatchObject({
       'persist-credentials': false,
       ref: '${{ github.sha }}',
     });
     expect(sync.run).toBe('node scripts/sync-plugin-submissions.mjs');
+    expect(token.uses).toBe(
+      'actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1',
+    );
+    expect(token.with).toEqual({
+      'client-id': '${{ vars.GITHUB_APP_CLIENT_ID }}',
+      'permission-contents': 'write',
+      'private-key': '${{ secrets.GITHUB_APP_PRIVATE_KEY_PKCS8 }}',
+    });
+    expect(integrate.steps.indexOf(token)).toBeGreaterThan(integrate.steps.indexOf(build));
+    expect(integrate.steps.indexOf(token)).toBeLessThan(integrate.steps.indexOf(push));
+    expect(push.env.GH_TOKEN).toBe('${{ steps.catalog-app-token.outputs.token }}');
     expect(push.run).toContain('git push origin HEAD:main');
     expect(push.run).not.toMatch(/--force(?:-with-lease)?/);
   });

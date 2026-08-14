@@ -16,6 +16,39 @@ interface StoredEvent {
   version: string;
 }
 
+interface StoredSubmission {
+  error_code: string | null;
+  error_message: string | null;
+  id: string;
+  owner: string;
+  pull_request_number: number | null;
+  pull_request_url: string | null;
+  repo: string;
+  repository_key: string;
+  repository: string;
+  status: string;
+}
+
+class FakeWorkflow {
+  readonly calls: Array<{ id: string; params: unknown }> = [];
+  readonly instances = new Set<string>();
+  error: Error | undefined;
+  persistBeforeError = false;
+
+  async create(options: { id: string; params: unknown }) {
+    this.calls.push(options);
+    if (this.persistBeforeError) this.instances.add(options.id);
+    if (this.error) throw this.error;
+    this.instances.add(options.id);
+    return { id: options.id };
+  }
+
+  async get(id: string) {
+    if (!this.instances.has(id)) throw new Error('workflow instance not found');
+    return { id, status: async () => ({ status: 'running' }) };
+  }
+}
+
 class FakeStatement implements D1PreparedStatementLike {
   params: unknown[] = [];
 
@@ -35,6 +68,17 @@ class FakeStatement implements D1PreparedStatementLike {
       const total = this.database.stats.get(String(this.params[0]));
       return total === undefined ? null : ({ completed_total: total } as Row);
     }
+    if (sql.includes('FROM plugin_submissions WHERE id = ?1')) {
+      const submission = this.database.submissions.get(String(this.params[0]));
+      return submission === undefined ? null : ({ ...submission } as Row);
+    }
+    if (sql.includes('FROM plugin_submissions WHERE repository_key = ?1')) {
+      const key = String(this.params[0]);
+      const submission = [...this.database.submissions.values()].find(
+        (value) => value.repository_key === key && ['queued', 'creating_pr'].includes(value.status),
+      );
+      return submission === undefined ? null : ({ ...submission } as Row);
+    }
     throw new Error(`Unsupported first query: ${sql}`);
   }
 }
@@ -50,6 +94,7 @@ const result = <Row>(rows: Row[] = [], changes = 0): D1ResultLike<Row> => ({
 class FakeD1 implements D1DatabaseLike {
   readonly events = new Map<string, StoredEvent>();
   readonly stats = new Map<string, number>();
+  readonly submissions = new Map<string, StoredSubmission>();
 
   prepare(query: string) {
     return new FakeStatement(this, query);
@@ -76,6 +121,48 @@ class FakeD1 implements D1DatabaseLike {
       });
       return result<Row>([], 1);
     }
+    if (sql.startsWith('INSERT INTO plugin_submissions')) {
+      const [id, repository, owner, repo, suppliedKey] = statement.params.map(String);
+      const repositoryKey = suppliedKey || `${owner}/${repo}`.toLocaleLowerCase();
+      if (!id || !repository || !owner || !repo || !repositoryKey) {
+        throw new Error('Missing submission values');
+      }
+      if (this.submissions.has(id)) return result<Row>();
+      if (
+        [...this.submissions.values()].some(
+          (value) =>
+            value.repository_key === repositoryKey &&
+            ['queued', 'creating_pr'].includes(value.status),
+        )
+      ) {
+        return result<Row>();
+      }
+      this.submissions.set(id, {
+        error_code: null,
+        error_message: null,
+        id,
+        owner,
+        pull_request_number: null,
+        pull_request_url: null,
+        repo,
+        repository_key: repositoryKey,
+        repository,
+        status: 'queued',
+      });
+      return result<Row>([], 1);
+    }
+    if (sql.startsWith("UPDATE plugin_submissions SET status = 'failed'")) {
+      const errorCode = String(statement.params[0] ?? '');
+      const errorMessage = String(statement.params[1] ?? '');
+      const id = String(statement.params[2] ?? '');
+      if (!errorCode || !errorMessage || !id) throw new Error('Missing failure values');
+      const submission = this.submissions.get(id);
+      if (!submission) return result<Row>();
+      submission.status = 'failed';
+      submission.error_code = errorCode;
+      submission.error_message = errorMessage;
+      return result<Row>([], 1);
+    }
     if (sql.startsWith('UPDATE install_events')) {
       const [completionId, eventId] = statement.params.map(String);
       const event = eventId ? this.events.get(eventId) : undefined;
@@ -100,15 +187,21 @@ class FakeD1 implements D1DatabaseLike {
 }
 
 const eventId = 'bc7b48d3-1513-49ab-aa71-a0debe74d92b';
+const submissionId = '796c8a18-d7f3-47e1-9b91-a290d1ad44f8';
+const duplicateSubmissionId = '0efde98d-99a8-485f-9c62-b5c34f8a01f0';
 const slug = 'omdsh-dev--dsh-genui';
 
 const createEnv = () => {
   const db = new FakeD1();
+  const workflow = new FakeWorkflow();
   const env: WorkerBindings = {
     ASSETS: { fetch: async () => new Response('asset') },
     DB: db,
+    PLUGIN_SUBMISSION_WORKFLOW: workflow,
+    TURNSTILE_SECRET_KEY: 'turnstile-secret',
+    TURNSTILE_SITE_KEY: 'turnstile-site-key',
   };
-  return { db, env };
+  return { db, env, workflow };
 };
 
 const post = (path: string, body: unknown, origin?: string) =>
@@ -123,6 +216,16 @@ const post = (path: string, body: unknown, origin?: string) =>
 
 const sendIntent = (env: WorkerBindings, id = eventId) =>
   handleRequest(post('/api/install-intents', { eventId: id, slug, version: 'main' }), env);
+
+const verifiedTurnstileFetch = async (input: RequestInfo | URL, init?: RequestInit) => {
+  expect(String(input)).toBe('https://challenges.cloudflare.com/turnstile/v0/siteverify');
+  expect(JSON.parse(String(init?.body))).toMatchObject({
+    idempotency_key: submissionId,
+    response: 'verified-turnstile-token',
+    secret: 'turnstile-secret',
+  });
+  return Response.json({ action: 'plugin-submission', hostname: 'dsh.pub', success: true });
+};
 
 describe('install telemetry worker', () => {
   it('serves an embeddable registry badge with a truthful listing state', async () => {
@@ -271,5 +374,310 @@ describe('install telemetry worker', () => {
     await expect(intent.json()).resolves.toMatchObject({ error: 'plugin_not_found' });
     expect(stats.status).toBe(404);
     await expect(stats.json()).resolves.toMatchObject({ error: 'plugin_not_found' });
+  });
+});
+
+describe('plugin submission intake', () => {
+  it('publishes only the public Turnstile configuration', async () => {
+    const { env } = createEnv();
+
+    const response = await handleRequest(new Request('https://dsh.pub/api/submission-config'), env);
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      turnstileSiteKey: 'turnstile-site-key',
+    });
+  });
+
+  it('accepts one repository and starts a durable workflow', async () => {
+    const { db, env, workflow } = createEnv();
+    const request = post(
+      '/api/submissions',
+      {
+        repository: 'https://github.com/Example/dsh-clock',
+        turnstileToken: 'verified-turnstile-token',
+      },
+      'https://dsh.pub',
+    );
+    request.headers.set('Idempotency-Key', submissionId);
+
+    const response = await handleRequest(request, env, verifiedTurnstileFetch);
+
+    expect(response.status).toBe(202);
+    await expect(response.json()).resolves.toEqual({
+      id: submissionId,
+      repository: 'https://github.com/Example/dsh-clock',
+      status: 'queued',
+      statusUrl: `/api/submissions/${submissionId}`,
+    });
+    expect(db.submissions.get(submissionId)).toMatchObject({
+      owner: 'Example',
+      repo: 'dsh-clock',
+      status: 'queued',
+    });
+    expect(workflow.calls).toEqual([
+      {
+        id: submissionId,
+        params: {
+          owner: 'Example',
+          repo: 'dsh-clock',
+          repository: 'https://github.com/Example/dsh-clock',
+          submissionId,
+        },
+      },
+    ]);
+  });
+
+  it('returns an existing submission without redeeming Turnstile twice', async () => {
+    const { env, workflow } = createEnv();
+    const request = () => {
+      const value = post(
+        '/api/submissions',
+        {
+          repository: 'Example/dsh-clock',
+          turnstileToken: 'verified-turnstile-token',
+        },
+        'https://dsh.pub',
+      );
+      value.headers.set('Idempotency-Key', submissionId);
+      return value;
+    };
+    let verificationCalls = 0;
+    const fetcher = async (input: RequestInfo | URL, init?: RequestInit) => {
+      verificationCalls += 1;
+      if (verificationCalls > 1) throw new Error('Turnstile token was redeemed twice');
+      return verifiedTurnstileFetch(input, init);
+    };
+
+    const first = await handleRequest(request(), env, fetcher);
+    const duplicate = await handleRequest(request(), env, fetcher);
+
+    expect(first.status).toBe(202);
+    expect(duplicate.status).toBe(200);
+    expect(verificationCalls).toBe(1);
+    expect(workflow.calls).toHaveLength(1);
+  });
+
+  it('deduplicates the same repository across different idempotency keys', async () => {
+    const { env, workflow } = createEnv();
+    const submit = (id: string) => {
+      const request = post(
+        '/api/submissions',
+        {
+          repository: 'https://github.com/example/DSH-CLOCK',
+          turnstileToken: 'verified-turnstile-token',
+        },
+        'https://dsh.pub',
+      );
+      request.headers.set('Idempotency-Key', id);
+      return handleRequest(request, env, verifiedTurnstileFetch);
+    };
+
+    const first = await submit(submissionId);
+    const duplicate = await submit(duplicateSubmissionId);
+
+    expect(first.status).toBe(202);
+    expect(duplicate.status).toBe(200);
+    await expect(duplicate.json()).resolves.toMatchObject({ id: submissionId });
+    expect(workflow.calls).toHaveLength(1);
+  });
+
+  it.each(['pr_created', 'already_submitted'])(
+    'allows a new request after the previous submission reached %s',
+    async (status) => {
+      const { db, env, workflow } = createEnv();
+      db.submissions.set(submissionId, {
+        error_code: null,
+        error_message: null,
+        id: submissionId,
+        owner: 'Example',
+        pull_request_number: status === 'pr_created' ? 42 : null,
+        pull_request_url:
+          status === 'pr_created' ? 'https://github.com/dsh-pub/dsh-pub/pull/42' : null,
+        repo: 'dsh-clock',
+        repository_key: 'example/dsh-clock',
+        repository: 'https://github.com/Example/dsh-clock',
+        status,
+      });
+      const request = post(
+        '/api/submissions',
+        {
+          repository: 'https://github.com/Example/dsh-clock',
+          turnstileToken: 'verified-turnstile-token',
+        },
+        'https://dsh.pub',
+      );
+      request.headers.set('Idempotency-Key', duplicateSubmissionId);
+
+      const response = await handleRequest(request, env, async (_input, init) => {
+        expect(JSON.parse(String(init?.body))).toMatchObject({
+          idempotency_key: duplicateSubmissionId,
+        });
+        return Response.json({ action: 'plugin-submission', hostname: 'dsh.pub', success: true });
+      });
+
+      expect(response.status).toBe(202);
+      await expect(response.json()).resolves.toMatchObject({
+        id: duplicateSubmissionId,
+        status: 'queued',
+      });
+      expect(workflow.calls).toEqual([
+        {
+          id: duplicateSubmissionId,
+          params: expect.objectContaining({ submissionId: duplicateSubmissionId }),
+        },
+      ]);
+    },
+  );
+
+  it('returns the current asynchronous status and pull request URL', async () => {
+    const { db, env } = createEnv();
+    db.submissions.set(submissionId, {
+      error_code: null,
+      error_message: null,
+      id: submissionId,
+      owner: 'Example',
+      pull_request_number: 42,
+      pull_request_url: 'https://github.com/dsh-pub/dsh-pub/pull/42',
+      repo: 'dsh-clock',
+      repository_key: 'example/dsh-clock',
+      repository: 'https://github.com/Example/dsh-clock',
+      status: 'pr_created',
+    });
+
+    const response = await handleRequest(
+      new Request(`https://dsh.pub/api/submissions/${submissionId}`),
+      env,
+    );
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      id: submissionId,
+      prUrl: 'https://github.com/dsh-pub/dsh-pub/pull/42',
+      repository: 'https://github.com/Example/dsh-clock',
+      status: 'pr_created',
+      statusUrl: `/api/submissions/${submissionId}`,
+    });
+  });
+
+  it('only exposes allowlisted public error codes for failed submissions', async () => {
+    const { db, env } = createEnv();
+    db.submissions.set(submissionId, {
+      error_code: 'submission_automation_failed',
+      error_message: 'GitHub returned a private implementation detail.',
+      id: submissionId,
+      owner: 'Example',
+      pull_request_number: null,
+      pull_request_url: null,
+      repo: 'dsh-clock',
+      repository_key: 'example/dsh-clock',
+      repository: 'https://github.com/Example/dsh-clock',
+      status: 'failed',
+    });
+
+    const response = await handleRequest(
+      new Request(`https://dsh.pub/api/submissions/${submissionId}`),
+      env,
+    );
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body).toEqual({
+      errorCode: 'submission_automation_failed',
+      id: submissionId,
+      repository: 'https://github.com/Example/dsh-clock',
+      status: 'failed',
+      statusUrl: `/api/submissions/${submissionId}`,
+    });
+    expect(JSON.stringify(body)).not.toContain('private implementation detail');
+
+    db.submissions.get(submissionId)!.error_code = 'github_private_error';
+    const unknown = await handleRequest(
+      new Request(`https://dsh.pub/api/submissions/${submissionId}`),
+      env,
+    );
+    expect(await unknown.json()).not.toHaveProperty('errorCode');
+  });
+
+  it('records a failed dispatch instead of leaving a permanently queued task', async () => {
+    const { db, env, workflow } = createEnv();
+    workflow.error = new Error('workflow unavailable');
+    const request = post(
+      '/api/submissions',
+      { repository: 'Example/dsh-clock', turnstileToken: 'verified-turnstile-token' },
+      'https://dsh.pub',
+    );
+    request.headers.set('Idempotency-Key', submissionId);
+
+    const response = await handleRequest(request, env, verifiedTurnstileFetch);
+
+    expect(response.status).toBe(503);
+    await expect(response.json()).resolves.toMatchObject({ error: 'submission_start_failed' });
+    expect(db.submissions.get(submissionId)).toMatchObject({
+      error_code: 'submission_start_failed',
+      status: 'failed',
+    });
+  });
+
+  it('keeps a queued task when workflow creation succeeded but its response was lost', async () => {
+    const { db, env, workflow } = createEnv();
+    workflow.error = new Error('response lost');
+    workflow.persistBeforeError = true;
+    const request = post(
+      '/api/submissions',
+      { repository: 'Example/dsh-clock', turnstileToken: 'verified-turnstile-token' },
+      'https://dsh.pub',
+    );
+    request.headers.set('Idempotency-Key', submissionId);
+
+    const response = await handleRequest(request, env, verifiedTurnstileFetch);
+
+    expect(response.status).toBe(202);
+    expect(db.submissions.get(submissionId)?.status).toBe('queued');
+  });
+
+  it('rejects submission before writing D1 when Turnstile validation fails', async () => {
+    const { db, env, workflow } = createEnv();
+    const request = post(
+      '/api/submissions',
+      { repository: 'Example/dsh-clock', turnstileToken: 'invalid-token' },
+      'https://dsh.pub',
+    );
+    request.headers.set('Idempotency-Key', submissionId);
+
+    const response = await handleRequest(request, env, async () =>
+      Response.json({ 'error-codes': ['invalid-input-response'], success: false }),
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toMatchObject({ error: 'turnstile_failed' });
+    expect(db.submissions).toHaveLength(0);
+    expect(workflow.calls).toHaveLength(0);
+  });
+
+  it('rejects a valid-looking Turnstile result on an unapproved Worker hostname', async () => {
+    const { env } = createEnv();
+    const request = new Request('https://dsh-pub.example.workers.dev/api/submissions', {
+      body: JSON.stringify({
+        repository: 'Example/dsh-clock',
+        turnstileToken: 'verified-turnstile-token',
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+        'Idempotency-Key': submissionId,
+      },
+      method: 'POST',
+    });
+
+    const response = await handleRequest(request, env, async () =>
+      Response.json({
+        action: 'plugin-submission',
+        hostname: 'dsh-pub.example.workers.dev',
+        success: true,
+      }),
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toMatchObject({ error: 'turnstile_failed' });
   });
 });

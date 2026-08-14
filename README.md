@@ -12,9 +12,11 @@ DeepSeek Harness source
         │
         └── 3 manifest-declared bundles ──► built-in profile activation layers
 
-Plugin submission PR ──► static contract checks ──► automatic merge ──► trusted catalog sync
-                                                                            │
-                                                                            └─► Cloudflare Workers
+Browser submission ──► Turnstile ──► Worker + D1 ──► Cloudflare Workflow
+                                                        │
+                                                        └─► GitHub App ──► submission PR
+                                                                                  │
+                                      Cloudflare Workers ◄── main deploy ◄── automatic merge
         │
         └── community Git bundle ──► dshpub CLI ──► native dsh plugin add
                                                                 └─► D1 completed-install count
@@ -106,19 +108,39 @@ See [`apps/dsh-plugin/README.md`](apps/dsh-plugin/README.md) for its update and 
 
 ## Submit a plugin
 
-Use the bilingual submission page at [dsh.pub/submit](https://dsh.pub/en/submit/). It prepares one
-small `submissions/*.json` file in GitHub; proposing that file opens a Pull Request. The trusted
-submission workflow reads the file from the exact fork commit without checking out or executing fork
-code, resolves the plugin repository's current public default-branch commit, validates its committed
-bundle contract, and runs the complete dsh.pub quality gates. A passing Pull Request is merged with a
-merge commit, then a trusted `main` workflow regenerates and commits the catalog. The existing
-Cloudflare Workers Git integration deploys `main` automatically. Anyone may nominate a public
-repository; the Pull Request author is not treated as a verified publisher, and an existing
-repository/package-path coordinate cannot be overwritten through this flow.
+Use the bilingual submission page at [dsh.pub/submit](https://dsh.pub/en/submit/). The browser sends
+one public GitHub repository URL and a Turnstile token to the Worker. After verification, the Worker
+stores a submission job in D1, starts a Cloudflare Workflow, and immediately returns a status URL.
+The page polls that URL while the Workflow uses the repository-scoped dsh.pub GitHub App to create
+or find the corresponding `submissions/*.json` branch and Pull Request. The user does not need to
+fork the repository or click GitHub's **Propose changes** action.
+
+The trusted GitHub Actions submission workflow reads the submitted file from the exact Pull Request
+commit without checking out or executing untrusted plugin code. It resolves the plugin repository's
+current public default-branch commit, validates its committed bundle contract, and runs the complete
+dsh.pub quality gates. A passing Pull Request is merged with a merge commit, then a trusted `main`
+workflow regenerates and commits the catalog. The existing Cloudflare Workers Git integration
+deploys `main` automatically. Anyone may nominate a public repository; the submitter is not treated
+as a verified publisher, and an existing repository/package-path coordinate cannot be overwritten
+through this flow.
 
 The web submission page also generates Markdown and HTML badge snippets. The live badge reports
 `not listed` until the registry commit is deployed, then changes to `listed` (with a short cache).
 The Pull Request and the checked-in submission file provide the public audit trail.
+
+Repository automation uses the same GitHub App through two narrowly scoped tokens. Pull Request
+base-drift recovery requests only `pull_requests: write`; trusted catalog integration requests only
+`contents: write`, and only after lint, tests, E2E, and build have passed. Configure the repository
+variable `GITHUB_APP_CLIENT_ID` and repository secret `GITHUB_APP_PRIVATE_KEY_PKCS8` for those
+workflows. The App must be installed only on `dsh-pub/dsh-pub` with Contents and Pull requests read
+and write access. Pull Request validation never receives the App secret or token.
+
+Protect `main` with two active repository rulesets. `main-pr-gate` requires a Pull Request and lists
+only the dsh.pub GitHub App Integration as an `always` bypass actor, allowing trusted catalog jobs
+to make audited fast-forward commits. `main-ref-integrity` has no bypass actors and blocks deletion
+and non-fast-forward updates. Keeping these controls separate prevents the App, repository
+administrators, and GitHub Actions from bypassing deletion or force-push protection; do not add an
+administrator role or the GitHub Actions Integration to either bypass list.
 
 The `dsh-plugin` GitHub topic is synchronized every day at 01:00 Asia/Shanghai. The workflow takes a
 cutoff snapshot, pins each public default-branch commit, validates root bundle contracts without
@@ -155,17 +177,45 @@ browser. CI installs the same Chromium revision with its required OS dependencie
 ## Cloudflare deployment
 
 The Worker serves `apps/web/dist` as static assets and runs first only for `/` and `/api/*`. Plugin
-source and documentation stay in GitHub; D1 stores only install event state and aggregate counts.
+source and documentation stay in GitHub. D1 stores install event counters and submission job state;
+it never stores the GitHub App private key, installation tokens, or Workflow step credentials.
 Production Workers Builds watches every path on `dsh-pub/dsh-pub` `main`, runs `npm run build`, and
-deploys with `npx wrangler deploy`.
+deploys the static assets, HTTP API, D1 binding, and `PluginSubmissionWorkflow` in one Worker.
+
+Runtime bindings required by plugin submission are:
+
+| Binding                        | Purpose                                                         |
+| ------------------------------ | --------------------------------------------------------------- |
+| `TURNSTILE_SITE_KEY`           | Public site key returned to the submission page                 |
+| `TURNSTILE_SECRET_KEY`         | Server-side Turnstile verification secret                       |
+| `GITHUB_APP_CLIENT_ID`         | GitHub App client ID used to sign an App JWT                    |
+| `GITHUB_APP_INSTALLATION_ID`   | Installation restricted to the dsh.pub repository               |
+| `GITHUB_APP_PRIVATE_KEY_PKCS8` | PKCS#8 PEM private key used only inside the Worker              |
+| `GITHUB_TARGET_REPOSITORY_ID`  | Numeric repository ID allowed when creating installation tokens |
+| `PLUGIN_SUBMISSION_WORKFLOW`   | Wrangler Workflow binding; configured in `wrangler.jsonc`       |
+| `DB`                           | Existing D1 binding; configured in `wrangler.jsonc`             |
+
+Keep deployment values out of source control. Configure the six string bindings above through
+Cloudflare secrets (the site key and numeric identifiers are not confidential, but treating the
+complete runtime set uniformly avoids environment drift):
 
 ```bash
-npx wrangler d1 create dsh-pub
-# Replace the placeholder database_id in wrangler.jsonc.
-npx wrangler d1 migrations apply dsh-pub --remote
 npm run build
+npx wrangler d1 migrations apply DB --remote
+npx wrangler secret put TURNSTILE_SITE_KEY
+npx wrangler secret put TURNSTILE_SECRET_KEY
+npx wrangler secret put GITHUB_APP_CLIENT_ID
+npx wrangler secret put GITHUB_APP_INSTALLATION_ID
+npx wrangler secret put GITHUB_APP_PRIVATE_KEY_PKCS8
+npx wrangler secret put GITHUB_TARGET_REPOSITORY_ID
 npx wrangler deploy
 ```
+
+This order is intentional: build first, migrate the production D1 database, configure runtime
+secrets, then deploy the Worker version that depends on the new schema and bindings. For local
+development, put non-production values in an ignored `.dev.vars` file. Never place a GitHub App
+private key or installation token in D1, a Workflow event payload, or a persisted Workflow step
+result.
 
 See [product decisions](docs/product.md), [architecture](docs/architecture.md), and
 [research evidence](docs/research.md).

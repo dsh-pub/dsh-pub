@@ -19,10 +19,18 @@ const pageCopy = {
     analyzer: 'Repository submission',
     formTitle: 'GitHub repository URL',
     repositoryHint: 'The installable DSH bundle must live at the repository root.',
-    submit: 'Create pull request',
+    submit: 'Submit repository',
     handoff:
-      'GitHub will add one pre-filled submission file in your fork. Propose the change to open the pull request and start the checks.',
+      'dsh.pub creates the pull request in the background. Keep this page open to receive its link.',
     ready: 'Repository ready',
+    queued: 'Submission queued. Preparing the pull request…',
+    creatingPr: 'Creating the pull request…',
+    prCreated: 'Pull request created. Automated checks have started.',
+    alreadySubmitted: 'This repository already has a submission on the registry branch.',
+    failed: 'The pull request could not be created. Please try again.',
+    pollTimedOut: 'This is taking longer than expected. Please try again.',
+    viewPullRequest: 'View Pull Request',
+    securityCheck: 'Complete the security check to submit.',
     invalidRepository: 'Enter a public GitHub repository such as owner/repository.',
     processTitle: 'Everything else is automatic',
     processBody: 'The repository remains the source of truth. dsh.pub never runs submitted code.',
@@ -55,10 +63,17 @@ const pageCopy = {
     analyzer: '提交仓库',
     formTitle: 'GitHub 仓库地址',
     repositoryHint: '可安装的 DSH 组合包需要位于仓库根目录。',
-    submit: '创建 Pull Request',
-    handoff:
-      'GitHub 会在你的 Fork 中加入一份预填的提交文件；确认 Propose changes 后即可创建 Pull Request 并开始检查。',
+    submit: '提交仓库',
+    handoff: 'dsh.pub 会在后台创建 Pull Request。请保持页面打开，以便接收链接。',
     ready: '仓库地址已就绪',
+    queued: '提交已进入队列，正在准备 Pull Request…',
+    creatingPr: '正在创建 Pull Request…',
+    prCreated: 'Pull Request 已创建，自动检查已经开始。',
+    alreadySubmitted: '这个仓库已经提交到 Registry 主分支。',
+    failed: 'Pull Request 创建失败，请重试。',
+    pollTimedOut: '处理时间超出预期，请重试。',
+    viewPullRequest: '查看 Pull Request',
+    securityCheck: '请先完成安全验证。',
     invalidRepository: '请输入公开的 GitHub 仓库，例如 owner/repository。',
     processTitle: '其他事情都由系统完成',
     processBody: '仓库始终是唯一事实来源；dsh.pub 不会执行提交的代码。',
@@ -91,6 +106,14 @@ const structuredData = {
 const clientCopy = {
   invalidRepository: t.invalidRepository,
   ready: t.ready,
+  queued: t.queued,
+  creatingPr: t.creatingPr,
+  prCreated: t.prCreated,
+  alreadySubmitted: t.alreadySubmitted,
+  failed: t.failed,
+  pollTimedOut: t.pollTimedOut,
+  viewPullRequest: t.viewPullRequest,
+  securityCheck: t.securityCheck,
   badgeAlt: t.badgeAlt,
   copied: t.copied,
 };
@@ -152,17 +175,25 @@ const clientCopy = {
             </span>
             <em id="repository-error" data-error></em>
           </label>
-          <a
+          <div class="turnstile-container" data-turnstile></div>
+          <button
+            type="submit"
             class="submit-button"
             aria-disabled="true"
-            data-submit-link
-            target="_blank"
-            rel="noopener noreferrer"
+            data-submit-button
+            disabled
           >
             <span>{t.submit}</span>
             <Icon name="arrow" size={16} />
-          </a>
-          <span class="ready-status" data-ready-status aria-live="polite"></span>
+          </button>
+          <span class="ready-status" data-ready-status aria-live="polite" role="status"></span>
+          <a
+            class="pull-request-link"
+            data-pull-request-link
+            hidden
+            target="_blank"
+            rel="noopener noreferrer">{t.viewPullRequest} <span aria-hidden="true">→</span></a
+          >
         </form>
         <p class="handoff-note">{t.handoff}</p>
       </section>
@@ -222,21 +253,77 @@ const clientCopy = {
 </BaseLayout>
 
 <script>
-  import { buildSubmissionArtifacts } from '../../lib/submission.js';
+  import {
+    buildSubmissionArtifacts,
+    createPluginSubmission,
+    getPluginSubmission,
+    getPluginSubmissionConfig,
+  } from '../../lib/submission.js';
 
   const root = document.querySelector<HTMLElement>('[data-submission]');
   const form = root?.querySelector<HTMLFormElement>('[data-submission-form]');
   const clientCopy = JSON.parse(root?.dataset.clientCopy ?? '{}') as Record<string, string>;
   const repository = form?.elements.namedItem('repository') as HTMLInputElement | null;
-  const submitLink = root?.querySelector<HTMLAnchorElement>('[data-submit-link]');
+  const submitButton = root?.querySelector<HTMLButtonElement>('[data-submit-button]');
   const readyStatus = root?.querySelector<HTMLElement>('[data-ready-status]');
+  const pullRequestLink = root?.querySelector<HTMLAnchorElement>('[data-pull-request-link]');
+  const turnstileContainer = root?.querySelector<HTMLElement>('[data-turnstile]');
   const badgePanel = document.querySelector<HTMLElement>('[data-badge-panel]');
   const badgeImage = badgePanel?.querySelector<HTMLImageElement>('[data-badge-image]');
   const copyStatus = badgePanel?.querySelector<HTMLElement>('[data-copy-status]');
   let touched = false;
+  let busy = false;
+  let submissionMessage = '';
+  let submissionIdempotencyKey: string | undefined;
+  let turnstileToken = '';
+  let turnstileWidgetId: string | undefined;
+
+  interface TurnstileApi {
+    render(
+      container: HTMLElement,
+      options: {
+        action: string;
+        callback(token: string): void;
+        'error-callback'(): void;
+        'expired-callback'(): void;
+        sitekey: string;
+      },
+    ): string;
+    reset(widgetId: string): void;
+  }
+
+  const turnstileGlobal = globalThis as typeof globalThis & { turnstile?: TurnstileApi };
+
+  const wait = (milliseconds: number) =>
+    new Promise<void>((resolve) => globalThis.setTimeout(resolve, milliseconds));
+  const maximumSubmissionPollAttempts = 60;
+
+  function showSubmissionState(state: Awaited<ReturnType<typeof getPluginSubmission>>) {
+    submissionMessage =
+      state.status === 'queued'
+        ? clientCopy.queued
+        : state.status === 'creating_pr'
+          ? clientCopy.creatingPr
+          : state.status === 'pr_created'
+            ? clientCopy.prCreated
+            : state.status === 'already_submitted'
+              ? clientCopy.alreadySubmitted
+              : clientCopy.failed;
+    if (pullRequestLink) {
+      if (state.status === 'pr_created' && state.prUrl) {
+        pullRequestLink.href = state.prUrl;
+        pullRequestLink.textContent = clientCopy.viewPullRequest;
+        pullRequestLink.hidden = false;
+      } else {
+        pullRequestLink.removeAttribute('href');
+        pullRequestLink.hidden = true;
+      }
+    }
+    if (readyStatus) readyStatus.textContent = submissionMessage;
+  }
 
   function render() {
-    if (!repository || !submitLink) return;
+    if (!repository || !submitButton) return;
     let artifacts;
     try {
       artifacts = buildSubmissionArtifacts({ repository: repository.value });
@@ -248,16 +335,20 @@ const clientCopy = {
     const error = root?.querySelector<HTMLElement>('[data-error]');
     if (error) error.textContent = touched && !artifacts ? clientCopy.invalidRepository : '';
     if (!artifacts) {
-      submitLink.removeAttribute('href');
-      submitLink.setAttribute('aria-disabled', 'true');
+      submitButton.disabled = true;
+      submitButton.setAttribute('aria-disabled', 'true');
       if (readyStatus) readyStatus.textContent = '';
       if (badgePanel) badgePanel.hidden = true;
       return;
     }
 
-    submitLink.href = artifacts.submissionUrl;
-    submitLink.setAttribute('aria-disabled', 'false');
-    if (readyStatus) readyStatus.textContent = clientCopy.ready;
+    const disabled = busy || !turnstileToken;
+    submitButton.disabled = disabled;
+    submitButton.setAttribute('aria-disabled', String(disabled));
+    if (readyStatus) {
+      readyStatus.textContent =
+        submissionMessage || (turnstileToken ? clientCopy.ready : clientCopy.securityCheck);
+    }
     if (badgePanel) badgePanel.hidden = false;
     if (badgeImage) {
       badgeImage.src = artifacts.badgeUrl;
@@ -270,15 +361,63 @@ const clientCopy = {
     }
   }
 
-  form?.addEventListener('submit', (event) => {
+  form?.addEventListener('submit', async (event) => {
     event.preventDefault();
+    if (busy || !repository) return;
     touched = true;
     render();
-    if (submitLink?.href && submitLink.getAttribute('aria-disabled') === 'false') {
-      submitLink.click();
+    try {
+      buildSubmissionArtifacts({ repository: repository.value });
+    } catch {
+      repository.focus();
       return;
     }
-    repository?.focus();
+    if (!turnstileToken) {
+      submissionMessage = clientCopy.securityCheck;
+      render();
+      return;
+    }
+    busy = true;
+    submissionMessage = clientCopy.queued;
+    submissionIdempotencyKey ??= crypto.randomUUID();
+    const token = turnstileToken;
+    turnstileToken = '';
+    if (pullRequestLink) pullRequestLink.hidden = true;
+    render();
+    try {
+      let state = await createPluginSubmission(
+        repository.value,
+        token,
+        fetch,
+        submissionIdempotencyKey,
+      );
+      showSubmissionState(state);
+      let pollAttempts = 0;
+      while (state.status === 'queued' || state.status === 'creating_pr') {
+        if (pollAttempts >= maximumSubmissionPollAttempts) {
+          submissionMessage = clientCopy.pollTimedOut;
+          submissionIdempotencyKey = undefined;
+          if (turnstileWidgetId) turnstileGlobal.turnstile?.reset(turnstileWidgetId);
+          break;
+        }
+        pollAttempts += 1;
+        await wait(1_000);
+        state = await getPluginSubmission(state.statusUrl);
+        showSubmissionState(state);
+      }
+      if (state.status === 'failed') {
+        submissionIdempotencyKey = undefined;
+        if (turnstileWidgetId) turnstileGlobal.turnstile?.reset(turnstileWidgetId);
+      }
+    } catch {
+      submissionMessage = clientCopy.failed;
+      submissionIdempotencyKey = undefined;
+      if (readyStatus) readyStatus.textContent = submissionMessage;
+      if (turnstileWidgetId) turnstileGlobal.turnstile?.reset(turnstileWidgetId);
+    } finally {
+      busy = false;
+      render();
+    }
   });
   repository?.addEventListener('blur', () => {
     touched = true;
@@ -290,7 +429,64 @@ const clientCopy = {
       form?.requestSubmit();
     }
   });
-  repository?.addEventListener('input', render);
+  repository?.addEventListener('input', () => {
+    submissionMessage = '';
+    submissionIdempotencyKey = undefined;
+    if (pullRequestLink) {
+      pullRequestLink.hidden = true;
+      pullRequestLink.removeAttribute('href');
+    }
+    render();
+  });
+
+  async function initializeTurnstile() {
+    if (!turnstileContainer) return;
+    try {
+      const config = await getPluginSubmissionConfig();
+      if (!turnstileGlobal.turnstile) {
+        await new Promise<void>((resolve, reject) => {
+          const script = document.createElement('script');
+          script.async = true;
+          script.defer = true;
+          script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+          script.addEventListener('load', () => resolve(), { once: true });
+          script.addEventListener('error', () => reject(new Error('Turnstile failed to load.')), {
+            once: true,
+          });
+          document.head.append(script);
+        });
+      }
+      const turnstile = turnstileGlobal.turnstile;
+      if (!turnstile) throw new Error('Turnstile failed to initialize.');
+      turnstileWidgetId = turnstile.render(turnstileContainer, {
+        action: 'plugin-submission',
+        sitekey: config.turnstileSiteKey,
+        callback(token) {
+          turnstileToken = token;
+          if (
+            submissionMessage !== clientCopy.failed &&
+            submissionMessage !== clientCopy.pollTimedOut
+          ) {
+            submissionMessage = '';
+          }
+          render();
+        },
+        'expired-callback'() {
+          turnstileToken = '';
+          submissionMessage = clientCopy.securityCheck;
+          render();
+        },
+        'error-callback'() {
+          turnstileToken = '';
+          submissionMessage = clientCopy.failed;
+          render();
+        },
+      });
+    } catch {
+      submissionMessage = clientCopy.failed;
+      render();
+    }
+  }
   for (const snippet of badgePanel?.querySelectorAll<HTMLElement>('[data-snippet]') ?? []) {
     snippet.querySelector('button')?.addEventListener('click', async () => {
       const value = snippet.querySelector('[data-snippet-value]')?.textContent ?? '';
@@ -304,6 +500,7 @@ const clientCopy = {
     });
   }
   render();
+  void initializeTurnstile();
 </script>
 
 <style>
@@ -478,6 +675,11 @@ const clientCopy = {
     padding-top: 0.4rem;
   }
 
+  .turnstile-container {
+    margin: 0.2rem 0 1rem;
+    min-height: 65px;
+  }
+
   .submit-button {
     align-items: center;
     background: var(--color-blue-600);
@@ -489,6 +691,8 @@ const clientCopy = {
     min-height: 54px;
     padding: 0 1.2rem;
     width: 100%;
+    border: 0;
+    cursor: pointer;
   }
 
   .submit-button:hover {
@@ -510,6 +714,18 @@ const clientCopy = {
     min-height: 1.1rem;
     padding-top: 0.45rem;
     text-align: center;
+  }
+
+  .pull-request-link {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 650;
+    margin-top: 0.5rem;
+    text-align: center;
+  }
+
+  .pull-request-link[hidden] {
+    display: none;
   }
 
   .repository-card .handoff-note {
