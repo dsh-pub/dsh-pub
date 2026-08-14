@@ -81,6 +81,24 @@ describe('directory query', () => {
     expect(result.entries.map((entry) => entry.slug)).toEqual(['beta-tools']);
   });
 
+  it('filters profile-only bundle layers as a first-class surface', () => {
+    const profile: DirectoryEntry = {
+      ...entries[1]!,
+      slug: 'delta-profile',
+      name: 'Delta profile',
+      provenance: 'built-in',
+      surfaces: ['profile'],
+      installable: false,
+    };
+
+    const result = queryDirectory([...entries, profile], {
+      ...defaultDirectoryQuery,
+      surface: 'profile',
+    });
+
+    expect(result.entries.map((entry) => entry.slug)).toEqual(['delta-profile']);
+  });
+
   it('sorts deterministically by name, topic, source, and capability density', () => {
     expect(
       queryDirectory(entries, { ...defaultDirectoryQuery, sort: 'name' }).entries.map(

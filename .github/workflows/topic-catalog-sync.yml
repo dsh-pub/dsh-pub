@@ -68,6 +68,7 @@ jobs:
           fi
           for path in "${changed[@]}"; do
             case "$path" in
+              apps/dsh-plugin/src/client/catalog.generated.json) ;;
               apps/server/src/installable-slugs.generated.json) ;;
               packages/catalog/src/community.generated.json) ;;
               packages/catalog/src/community.sources.json) ;;
@@ -78,6 +79,7 @@ jobs:
           git config user.name "dsh.pub catalog bot"
           git config user.email "catalog-bot@dsh.pub"
           git add \
+            apps/dsh-plugin/src/client/catalog.generated.json \
             apps/server/src/installable-slugs.generated.json \
             packages/catalog/src/community.generated.json \
             packages/catalog/src/community.sources.json \

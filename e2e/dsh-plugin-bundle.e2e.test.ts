@@ -43,5 +43,33 @@ describe('dsh.pub DSH plugin artifact', () => {
       throw new Error(`Unexpected platform module: ${id}`);
     });
     expect(exports?.apply).toEqual(expect.any(Function));
+
+    const registered: Array<{ options: Record<string, unknown>; component: unknown }> = [];
+    const disposers: unknown[] = [];
+    (exports?.apply as (ctx: unknown) => void)({
+      effect(factory: () => unknown) {
+        disposers.push(factory());
+      },
+      locale: {
+        register: () => () => undefined,
+        bind: () => (key: string) => key,
+      },
+      slots: {
+        inject: (_name: string, factory: () => unknown) => factory(),
+        register: (options: Record<string, unknown>, component: unknown) => {
+          registered.push({ options, component });
+          return () => undefined;
+        },
+      },
+    });
+    expect(registered).toHaveLength(1);
+    expect(registered[0]?.options).toMatchObject({
+      id: 'dsh-pub-directory',
+      locale: 'dshPub.directory',
+      name: 'settings.section',
+      order: 30,
+    });
+    expect(registered[0]?.component).toEqual(expect.any(Function));
+    expect(disposers).toEqual([expect.any(Function), expect.any(Function)]);
   });
 });

@@ -156,6 +156,7 @@ export function DirectorySection({ t }: DirectorySectionProps) {
             <option value="host">{t('host')}</option>
             <option value="client">{t('client')}</option>
             <option value="hybrid">{t('hybrid')}</option>
+            <option value="profile">{t('profile')}</option>
           </select>
         </div>
         <div className="dshpub-field">

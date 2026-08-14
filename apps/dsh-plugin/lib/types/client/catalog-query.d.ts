@@ -26,7 +26,7 @@ export interface DirectoryQuery {
     search: string;
     topic: 'all' | DirectoryTopic;
     provenance: 'all' | DirectoryProvenance;
-    surface: 'all' | Exclude<DirectorySurface, 'profile'> | 'hybrid';
+    surface: 'all' | DirectorySurface | 'hybrid';
     distribution: 'all' | 'installable' | 'included';
     type: 'all' | DirectoryEntryType;
     sort: DirectorySort;

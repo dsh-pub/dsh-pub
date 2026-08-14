@@ -12,12 +12,12 @@ const packageId = '@dsh-pub/plugin-directory';
 /** Required DSH client services. */
 export const inject = ['slots', 'locale'];
 
-function mountStyles(): void | (() => void) {
-  if (typeof document === 'undefined') return;
+function mountStyles(): () => void {
+  if (typeof document === 'undefined') return () => undefined;
   const existing = document.querySelector<HTMLStyleElement>(
     `style[data-plugin-css="${packageId}"]`,
   );
-  if (existing) return;
+  if (existing) return () => undefined;
 
   const tag = document.createElement('style');
   tag.dataset.plugin = packageId;

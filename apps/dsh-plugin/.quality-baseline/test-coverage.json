@@ -6,14 +6,14 @@
   "files": 7,
   "coverage": {
     "statements": {
-      "covered": 819,
-      "pct": 96.35,
-      "total": 850
+      "covered": 822,
+      "pct": 96.59,
+      "total": 851
     },
     "branches": {
-      "covered": 52,
-      "pct": 73.24,
-      "total": 71
+      "covered": 55,
+      "pct": 76.39,
+      "total": 72
     },
     "functions": {
       "covered": 11,
@@ -21,9 +21,9 @@
       "total": 25
     },
     "lines": {
-      "covered": 819,
-      "pct": 96.35,
-      "total": 850
+      "covered": 822,
+      "pct": 96.59,
+      "total": 851
     }
   }
 }

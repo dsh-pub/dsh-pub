@@ -44,6 +44,7 @@ describe('Topic catalog sync workflow contract', () => {
       (step: { name?: string }) => step.name === 'Commit generated catalog data',
     );
     for (const path of [
+      'apps/dsh-plugin/src/client/catalog.generated.json',
       'apps/server/src/installable-slugs.generated.json',
       'packages/catalog/src/community.generated.json',
       'packages/catalog/src/community.sources.json',

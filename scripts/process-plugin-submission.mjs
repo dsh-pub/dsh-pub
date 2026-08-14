@@ -1,15 +1,19 @@
+import { execFile } from 'node:child_process';
 import { appendFile, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { promisify } from 'node:util';
 
 import { createSubmissionUpdate, SubmissionError } from './lib/plugin-submission.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const paths = {
   catalog: join(root, 'packages/catalog/src/community.generated.json'),
+  directorySnapshot: join(root, 'apps/dsh-plugin/src/client/catalog.generated.json'),
   registry: join(root, 'apps/server/src/installable-slugs.generated.json'),
   sources: join(root, 'packages/catalog/src/community.sources.json'),
 };
+const generateDirectorySnapshot = promisify(execFile);
 const cacheRoot = join(root, '.cache/plugin-submission');
 const resultPath = join(cacheRoot, 'result.json');
 const commentPath = join(cacheRoot, 'comment.md');
@@ -100,10 +104,16 @@ try {
     await writeJson(paths.catalog, update.communityCatalog);
     await writeJson(paths.sources, update.communitySources);
     await writeJson(paths.registry, update.registry);
+    await generateDirectorySnapshot(
+      process.execPath,
+      ['--experimental-strip-types', join(root, 'apps/dsh-plugin/scripts/generate-catalog.ts')],
+      { cwd: root },
+    );
     for (const [sourcePath, relativePath] of [
       [paths.catalog, 'packages/catalog/src/community.generated.json'],
       [paths.sources, 'packages/catalog/src/community.sources.json'],
       [paths.registry, 'apps/server/src/installable-slugs.generated.json'],
+      [paths.directorySnapshot, 'apps/dsh-plugin/src/client/catalog.generated.json'],
     ]) {
       const target = join(artifactRoot, relativePath);
       await mkdir(dirname(target), { recursive: true });

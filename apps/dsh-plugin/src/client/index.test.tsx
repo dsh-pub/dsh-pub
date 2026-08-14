@@ -2,6 +2,7 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 
+import snapshot from './catalog.generated.json' with { type: 'json' };
 import { apply } from './index.js';
 
 describe('DSH client assembly', () => {
@@ -77,8 +78,9 @@ describe('DSH client assembly', () => {
     );
 
     expect(html).toContain('Discover the DSH ecosystem');
-    expect(html).toContain('735');
+    expect(html).toContain(`<strong>${snapshot.entries.length}</strong>`);
     expect(html).toContain('Search plugins');
+    expect(html).toContain('<option value="profile">profile</option>');
     expect(html).toContain('https://dsh.pub/en/plugins/');
     expect(html).not.toContain('<script');
   });
