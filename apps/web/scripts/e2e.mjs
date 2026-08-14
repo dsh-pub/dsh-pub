@@ -175,9 +175,24 @@ async function assertSeoSurface() {
       '"alternateName":["DeepSeek Harness Plugin Registry","DSH Plugin Registry"]',
     ) ||
     !homepage.includes('"@type":"SearchAction"') ||
+    !homepage.includes('"@type":"FAQPage"') ||
+    !homepage.includes('"name":"如何安装 DSH 插件？"') ||
+    !homepage.includes('id="faq-title"') ||
+    !homepage.includes('DeepSeek Harness 插件常见问题</h2>') ||
     !homepage.includes('googletagmanager.com/gtag/js?id=G-TEST123456')
   ) {
     throw new Error('The localized homepage SEO or conditional Analytics tag is incomplete.');
+  }
+
+  const englishHomepage = await responseBody('/en/');
+  if (
+    !englishHomepage.includes('DeepSeek Harness plugin FAQ') ||
+    !englishHomepage.includes(
+      'What is the difference between built-in and community DSH plugins?',
+    ) ||
+    !englishHomepage.includes('How should I choose a DeepSeek Harness plugin?')
+  ) {
+    throw new Error('The English homepage FAQ is incomplete.');
   }
 
   const registry = await responseBody('/en/plugins/');

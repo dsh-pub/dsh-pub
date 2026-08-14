@@ -18,9 +18,16 @@ export const copy = {
     registryGuideWhatTitle: 'What is the DSH plugin registry?',
     registryGuideWhatBody:
       'A source-backed catalog of built-in Harness modules and public community bundles. Each record exposes its source, version, license, runtime, tools, UI contributions, and availability.',
+    registryGuideDifferenceTitle:
+      'What is the difference between built-in and community DSH plugins?',
+    registryGuideDifferenceBody:
+      'Built-in modules and profile layers ship in the pinned Harness source snapshot and are activated through Harness. Community bundles live in public Git repositories, and only records with a valid distribution contract expose a pinned dshpub install command.',
     registryGuideInstallTitle: 'How do I install a DSH plugin?',
     registryGuideInstallBody:
       'Installable community bundles include a pinned npx dshpub command. Built-in modules already ship with DeepSeek Harness and do not need a separate install.',
+    registryGuideChooseTitle: 'How should I choose a DeepSeek Harness plugin?',
+    registryGuideChooseBody:
+      'Compare the source commit, license, runtime contributions, tools, UI slots, distribution mode, and review status. A catalog listing supports discovery; it is not a security audit, so inspect the repository and requested authority before running it.',
     registryGuidePublishTitle: 'How do I add a plugin?',
     registryGuidePublishBody:
       'Submit a public Git repository through the GitHub Issue queue. Automated checks validate the bundle contract before the registry adds the record and generates a project badge.',
@@ -138,9 +145,15 @@ export const copy = {
     registryGuideWhatTitle: '什么是 DSH 插件目录？',
     registryGuideWhatBody:
       '它收录 Harness 内置模块与公开社区组合包。每个条目都展示源码、版本、许可证、运行时、模型工具、UI 贡献和可用方式。',
+    registryGuideDifferenceTitle: 'DSH 内置模块与社区插件有什么区别？',
+    registryGuideDifferenceBody:
+      '内置模块和 Profile 层随固定的 Harness 源码快照提供，由 Harness 激活；社区组合包位于公开 Git 仓库中，只有具备有效分发契约的记录才会提供固定版本的 dshpub 安装命令。',
     registryGuideInstallTitle: '如何安装 DSH 插件？',
     registryGuideInstallBody:
       '可安装的社区组合包会提供固定版本的 npx dshpub 命令；内置模块已随 DeepSeek Harness 提供，无需单独安装。',
+    registryGuideChooseTitle: '如何选择 DeepSeek Harness 插件？',
+    registryGuideChooseBody:
+      '比较源码 commit、许可证、运行时贡献、模型工具、UI 插槽、分发方式和审核状态。目录收录只用于辅助发现，并不等于安全审计；运行前仍需检查仓库和它请求的权限。',
     registryGuidePublishTitle: '如何添加插件？',
     registryGuidePublishBody:
       '通过 GitHub Issue 队列提交公开仓库。自动检查会验证组合包契约，然后目录生成插件条目和项目 Badge。',
