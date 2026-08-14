@@ -12,6 +12,8 @@ flowchart LR
     T[Public DSH.Tools index] -->|discovery-only sync| E[Ecosystem JSON]
     J --> A[Astro static build]
     E --> A
+    J --> P[Compact DSH directory snapshot]
+    P --> DP[DSH Settings plugin]
     A --> W[Cloudflare Workers Static Assets]
     U[Developer] --> C[dshpub CLI]
     C -->|resolve exact commit + validate bundle| G[Public plugin Git repository]
@@ -27,6 +29,10 @@ flowchart LR
   canonical GitHub repository and carries no compatibility, installability, review, or safety claim.
 - The generated JSON is a build artifact checked into this repository for deterministic static
   builds.
+- The DSH plugin generator projects the same public `plugin` and `bundle` records into a smaller
+  checked-in snapshot. Its browser bundle reads only that local data, contributes one
+  `settings.section`, and has an empty Host `apply`; browsing performs no network fetch and loads no
+  third-party package.
 - Astro owns SEO-friendly English and Chinese pages; catalog filtering uses small client scripts.
 - The Worker runs before static assets only for `/`, `/api/*`, and explicitly configured routes.
 - D1 stores only install event state and aggregate counters. It does not store plugin code or user
@@ -36,11 +42,12 @@ flowchart LR
 
 ```text
 apps/
-├── web/       Astro static site and browser interactions
-├── server/    Cloudflare Worker API and static-asset routing
-└── cli/       Git bundle installer and best-effort telemetry
+├── web/        Astro static site and browser interactions
+├── server/     Cloudflare Worker API and static-asset routing
+├── cli/        Git bundle installer and best-effort telemetry
+└── dsh-plugin/ Read-only DSH Settings directory and committed client bundle
 packages/
-└── catalog/   generated Registry and ecosystem snapshots, schema, and sync tests
+└── catalog/    generated Registry and ecosystem snapshots, shared topics, schema, and sync tests
 migrations/    D1 schema
 ```
 

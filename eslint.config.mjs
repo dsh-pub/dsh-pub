@@ -12,6 +12,7 @@ export default [
       '**/.next/**',
       '**/.astro/**',
       '**/.wrangler/**',
+      'apps/dsh-plugin/lib/**',
     ],
   },
   js.configs.recommended,

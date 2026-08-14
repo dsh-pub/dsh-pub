@@ -3,27 +3,27 @@
   "module": "packages/catalog",
   "command": "npm run test",
   "status": "measured",
-  "files": 1,
+  "files": 2,
   "coverage": {
     "statements": {
-      "covered": 9,
+      "covered": 152,
       "pct": 100,
-      "total": 9
+      "total": 152
     },
     "branches": {
-      "covered": 2,
-      "pct": 100,
-      "total": 2
+      "covered": 7,
+      "pct": 87.5,
+      "total": 8
     },
     "functions": {
-      "covered": 1,
+      "covered": 3,
       "pct": 100,
-      "total": 1
+      "total": 3
     },
     "lines": {
-      "covered": 9,
+      "covered": 152,
       "pct": 100,
-      "total": 9
+      "total": 152
     }
   }
 }

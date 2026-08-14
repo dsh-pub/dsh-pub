@@ -1,0 +1,3 @@
+- insert:
+    - id: dsh-pub-directory
+      name: '@dsh-pub/plugin-directory'

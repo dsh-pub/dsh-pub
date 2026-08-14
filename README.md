@@ -24,7 +24,8 @@ Public plugin Issue ──► static contract checks ──► main ──► Cl
 apps/
 ├── web/       Astro static registry
 ├── server/    Cloudflare Worker install API and locale routing
-└── cli/       GitHub bundle installer (`dshpub`)
+├── cli/       GitHub bundle installer (`dshpub`)
+└── dsh-plugin/ In-DSH bilingual visual directory
 packages/
 └── catalog/   generated Harness snapshot and typed access
 migrations/    D1 event and aggregate schema
@@ -87,6 +88,19 @@ Telemetry is best-effort and can be disabled with `DO_NOT_TRACK=1` or `DISABLE_T
 The current three Harness bundles are built-in monorepo profile layers, not standalone Git
 packages: their `workspace:` dependencies require the Harness workspace. The catalog therefore
 shows them as **built-in profile layers** without an install command or install count.
+
+## DSH plugin directory
+
+The repository also ships `@dsh-pub/plugin-directory`, a read-only visual catalog inside DSH
+Settings. It bundles the same public plugin and bundle surface as the site, supports bilingual
+search, eight capability topics, provenance/runtime/distribution/type filters, and deterministic
+sorting without loading third-party code.
+
+```bash
+npx dshpub add dsh-pub/dsh-pub --path apps/dsh-plugin --profile web
+```
+
+See [`apps/dsh-plugin/README.md`](apps/dsh-plugin/README.md) for its update and verification flow.
 
 ## Submit a plugin
 

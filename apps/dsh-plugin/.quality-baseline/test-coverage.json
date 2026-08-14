@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "module": "apps/dsh-plugin",
+  "command": "npm run test",
+  "status": "measured",
+  "files": 7,
+  "coverage": {
+    "statements": {
+      "covered": 819,
+      "pct": 96.35,
+      "total": 850
+    },
+    "branches": {
+      "covered": 52,
+      "pct": 73.24,
+      "total": 71
+    },
+    "functions": {
+      "covered": 11,
+      "pct": 44,
+      "total": 25
+    },
+    "lines": {
+      "covered": 819,
+      "pct": 96.35,
+      "total": 850
+    }
+  }
+}
