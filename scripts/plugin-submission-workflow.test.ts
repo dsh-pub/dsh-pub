@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { parse } from 'yaml';
 
 const workflowPath = new URL('../.github/workflows/plugin-submission.yml', import.meta.url);
+const syncScriptPath = new URL('./sync-plugin-submissions.mjs', import.meta.url);
 
 describe('plugin submission workflow contract', () => {
   it('validates submission pull requests and syncs only merged submission files', async () => {
@@ -117,6 +118,7 @@ describe('plugin submission workflow contract', () => {
 
   it('regenerates the catalog from trusted main after the PR merge', async () => {
     const workflow = parse(await readFile(workflowPath, 'utf8'));
+    const syncScript = await readFile(syncScriptPath, 'utf8');
     const integrate = workflow.jobs.integrate;
     const checkout = integrate.steps.find(
       (step: { name?: string }) => step.name === 'Checkout merged submission',
@@ -140,6 +142,7 @@ describe('plugin submission workflow contract', () => {
       ref: '${{ github.sha }}',
     });
     expect(sync.run).toBe('node scripts/sync-plugin-submissions.mjs');
+    expect(syncScript).toContain('apps/dsh-plugin/scripts/generate-catalog.ts');
     expect(token.uses).toBe(
       'actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1',
     );

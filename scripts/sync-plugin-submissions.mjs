@@ -79,6 +79,11 @@ if (changed) {
   await writeJson(paths.catalog, communityCatalog);
   await writeJson(paths.sources, communitySources);
   await writeJson(paths.registry, registry);
+  await execFileAsync(
+    process.execPath,
+    ['--experimental-strip-types', join(root, 'apps/dsh-plugin/scripts/generate-catalog.ts')],
+    { cwd: root },
+  );
 }
 await writeOutput({ changed });
 console.log(JSON.stringify({ changed, submissions: names.length }));
