@@ -18,7 +18,7 @@
     "build:og": "node scripts/render-og-image.mjs",
     "e2e": "npm run e2e:integration && npm run e2e:template && npm run e2e:apps",
     "e2e:apps": "node scripts/run-app-e2e.mjs",
-    "e2e:integration": "vitest run --config vitest.e2e.config.ts --passWithNoTests",
+    "e2e:integration": "node scripts/verify-dsh-plugin-artifacts.mjs && vitest run --config vitest.e2e.config.ts --passWithNoTests",
     "e2e:template": "node e2e/template/run.mjs",
     "eval": "vitest run --config vitest.eval.config.ts",
     "clean": "node scripts/clean.mjs",

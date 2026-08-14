@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { parse } from 'yaml';
 
 const workflowPath = new URL('../.github/workflows/plugin-submission.yml', import.meta.url);
+const processorPath = new URL('./process-plugin-submission.mjs', import.meta.url);
 
 describe('plugin submission workflow contract', () => {
   it('accepts only newly opened Issues carrying the submission label', async () => {
@@ -68,5 +69,23 @@ describe('plugin submission workflow contract', () => {
       SUBMISSION_CHANGED: '${{ needs.validate.outputs.changed }}',
     });
     expect(workflow.jobs.report.needs).toContain('verify_deployment');
+  });
+
+  it('carries the in-DSH directory snapshot through validation and integration', async () => {
+    const workflow = parse(await readFile(workflowPath, 'utf8'));
+    const boundary = workflow.jobs.integrate.steps.find(
+      (step: { name?: string }) => step.name === 'Verify artifact file boundary',
+    );
+    const commit = workflow.jobs.integrate.steps.find(
+      (step: { name?: string }) => step.name === 'Commit validated catalog',
+    );
+    const processor = await readFile(processorPath, 'utf8');
+    const snapshotPath = 'apps/dsh-plugin/src/client/catalog.generated.json';
+
+    expect(boundary.run).toContain('test "${#changed[@]}" -eq 4');
+    expect(boundary.run).toContain(snapshotPath);
+    expect(commit.run).toContain(snapshotPath);
+    expect(processor).toContain('apps/dsh-plugin/scripts/generate-catalog.ts');
+    expect(processor).toContain(snapshotPath);
   });
 });

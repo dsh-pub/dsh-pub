@@ -8,5 +8,6 @@
     "rootDir": ".",
     "tsBuildInfoFile": ".astro/tsbuild/tsconfig.tsbuildinfo"
   },
-  "include": [".astro/types.d.ts", "src/**/*", "astro.config.mjs"]
+  "include": [".astro/types.d.ts", "src/**/*", "astro.config.mjs"],
+  "references": [{ "path": "../../packages/catalog" }]
 }

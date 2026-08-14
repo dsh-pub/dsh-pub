@@ -2,6 +2,9 @@
   "files": [],
   "references": [
     {
+      "path": "./apps/dsh-plugin"
+    },
+    {
       "path": "./apps/cli"
     },
     {

@@ -36,19 +36,21 @@ flowchart LR
     C -->|External bundle repo| E[Copy npx dshpub add command]
     E --> F[CLI validates and installs bundle]
     F --> G[CLI reports completed install]
+    B --> I[Browse the same directory inside DSH Settings]
 ```
 
 ## Product objects
 
-| Object          | User-facing meaning                              | Owned data or behavior                                    |
-| --------------- | ------------------------------------------------ | --------------------------------------------------------- |
-| Catalog entry   | A searchable Harness capability                  | Generated metadata plus GitHub source revision            |
-| Ecosystem entry | A public project discovered outside the Registry | DSH.Tools index metadata plus canonical GitHub repository |
-| Built-in plugin | A Cordis-loadable module shipped in Harness      | Profile membership, config, tools, UI slots               |
-| Profile bundle  | A patch layer that activates a profile           | Bundle patch and built-in profile membership              |
-| External bundle | An independently installable profile layer       | Git repository and CLI install command                    |
-| Install event   | One CLI-reported completed bundle installation   | D1 event id, slug, version/ref, status                    |
-| Locale page     | English or Chinese view of the same entry        | URL locale and localized source docs                      |
+| Object             | User-facing meaning                              | Owned data or behavior                                    |
+| ------------------ | ------------------------------------------------ | --------------------------------------------------------- |
+| Catalog entry      | A searchable Harness capability                  | Generated metadata plus GitHub source revision            |
+| Ecosystem entry    | A public project discovered outside the Registry | DSH.Tools index metadata plus canonical GitHub repository |
+| Built-in plugin    | A Cordis-loadable module shipped in Harness      | Profile membership, config, tools, UI slots               |
+| Profile bundle     | A patch layer that activates a profile           | Bundle patch and built-in profile membership              |
+| External bundle    | An independently installable profile layer       | Git repository and CLI install command                    |
+| Install event      | One CLI-reported completed bundle installation   | D1 event id, slug, version/ref, status                    |
+| Locale page        | English or Chinese view of the same entry        | URL locale and localized source docs                      |
+| Directory snapshot | Read-only in-DSH projection of public entries    | Compact bilingual metadata pinned at plugin build time    |
 
 ## Catalog layers
 
@@ -86,6 +88,9 @@ tested; they are not hand-authored marketing claims.
   lists passing repositories, and keeps machine-readable rejection reasons without executing
   third-party code.
 - Markdown and HTML registry badges whose live state is either `not listed` or `listed`.
+- An installable dsh.pub directory plugin that exposes the same public plugin and bundle records in
+  DSH Settings, with bilingual search, capability/source/runtime/distribution/type filtering, and
+  deterministic sorting. It is read-only and never loads third-party plugin code while browsing.
 
 ## Non-goals
 
