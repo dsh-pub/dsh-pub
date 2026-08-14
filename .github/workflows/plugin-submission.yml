@@ -128,7 +128,7 @@ jobs:
 
   integrate:
     name: Integrate merged submission
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
@@ -141,7 +141,7 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-          ref: ${{ github.sha }}
+          ref: ${{ github.event_name == 'workflow_dispatch' && 'main' || github.sha }}
 
       - name: Setup environment
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4

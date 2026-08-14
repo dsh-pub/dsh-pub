@@ -22,7 +22,7 @@ describe('plugin submission workflow contract', () => {
     expect(workflow.jobs.validate.if).toContain("github.event_name == 'pull_request_target'");
     expect(workflow.jobs.validate.if).toContain('github.event.pull_request.draft == false');
     expect(workflow.jobs.integrate.if).toBe(
-      "github.event_name == 'push' || github.event_name == 'workflow_dispatch'",
+      "github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')",
     );
   });
 
@@ -165,7 +165,7 @@ describe('plugin submission workflow contract', () => {
     expect(integrate.permissions).toEqual({ contents: 'read', 'pull-requests': 'read' });
     expect(checkout.with).toMatchObject({
       'persist-credentials': false,
-      ref: '${{ github.sha }}',
+      ref: "${{ github.event_name == 'workflow_dispatch' && 'main' || github.sha }}",
     });
     expect(sync.run).toBe('node scripts/sync-plugin-submissions.mjs');
     expect(syncScript).toContain('apps/dsh-plugin/scripts/generate-catalog.ts');
