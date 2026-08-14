@@ -174,8 +174,10 @@ an operational layer; event IDs provide idempotency, not identity or proof of us
 
 The GitHub App is installed only on `dsh-pub/dsh-pub`. Worker installation tokens are restricted to
 that repository ID and to Contents and Pull requests write access. GitHub Actions also needs the
-repository variable `GITHUB_APP_CLIENT_ID` and repository secret
-`GITHUB_APP_PRIVATE_KEY_PKCS8`. It mints separate short-lived tokens at the point of use:
+repository variable `DSH_PUB_APP_CLIENT_ID` and repository secret
+`DSH_PUB_APP_PRIVATE_KEY_PKCS8`. These Actions names avoid GitHub's reserved `GITHUB_` prefix; the
+Worker keeps its existing `GITHUB_APP_*` bindings. The App mints separate short-lived tokens at the
+point of use:
 
 | Workflow operation                   | App token permission   | Timing                                  |
 | ------------------------------------ | ---------------------- | --------------------------------------- |

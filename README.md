@@ -131,9 +131,11 @@ The Pull Request and the checked-in submission file provide the public audit tra
 Repository automation uses the same GitHub App through two narrowly scoped tokens. Pull Request
 base-drift recovery requests only `pull_requests: write`; trusted catalog integration requests only
 `contents: write`, and only after lint, tests, E2E, and build have passed. Configure the repository
-variable `GITHUB_APP_CLIENT_ID` and repository secret `GITHUB_APP_PRIVATE_KEY_PKCS8` for those
+variable `DSH_PUB_APP_CLIENT_ID` and repository secret `DSH_PUB_APP_PRIVATE_KEY_PKCS8` for those
 workflows. The App must be installed only on `dsh-pub/dsh-pub` with Contents and Pull requests read
-and write access. Pull Request validation never receives the App secret or token.
+and write access. These Actions names intentionally differ from the Worker's `GITHUB_APP_*`
+bindings because GitHub reserves the `GITHUB_` prefix. Pull Request validation never receives the
+App secret or token.
 
 Protect `main` with two active repository rulesets. `main-pr-gate` requires a Pull Request and lists
 only the dsh.pub GitHub App Integration as an `always` bypass actor, allowing trusted catalog jobs

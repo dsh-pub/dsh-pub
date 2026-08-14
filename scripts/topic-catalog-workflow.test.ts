@@ -53,9 +53,9 @@ describe('Topic catalog sync workflow contract', () => {
       'actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1',
     );
     expect(token.with).toEqual({
-      'client-id': '${{ vars.GITHUB_APP_CLIENT_ID }}',
+      'client-id': '${{ vars.DSH_PUB_APP_CLIENT_ID }}',
       'permission-contents': 'write',
-      'private-key': '${{ secrets.GITHUB_APP_PRIVATE_KEY_PKCS8 }}',
+      'private-key': '${{ secrets.DSH_PUB_APP_PRIVATE_KEY_PKCS8 }}',
     });
     expect(job.steps.indexOf(token)).toBeGreaterThan(job.steps.indexOf(build));
     expect(job.steps.indexOf(token)).toBeLessThan(job.steps.indexOf(commit));
