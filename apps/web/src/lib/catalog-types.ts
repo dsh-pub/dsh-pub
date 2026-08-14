@@ -21,6 +21,12 @@ export type CatalogProvenance =
       submittedAt: string;
       issue: string;
       statement: LocalizedText;
+    }
+  | {
+      status: 'community-automated';
+      discoveredVia: 'github-topic:dsh-plugin';
+      analyzedAt: string;
+      statement: LocalizedText;
     };
 
 export interface CatalogEntry {
@@ -33,6 +39,12 @@ export interface CatalogEntry {
   category: string;
   builtIn: boolean;
   provenance?: CatalogProvenance;
+  analysis?: {
+    method: 'automated-static-contract';
+    revision: 1;
+    status: 'verified';
+    checks: Record<string, boolean>;
+  };
   description: LocalizedText;
   docs?: {
     readme?: Partial<LocalizedText>;

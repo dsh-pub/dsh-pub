@@ -103,11 +103,14 @@ The web submission page also generates Markdown and HTML badge snippets. The liv
 `not listed` until the registry commit is deployed, then changes to `listed` (with a short cache).
 The successful Issue comment returns the same snippets for authors who submit directly on GitHub.
 
-The `dsh-plugin` GitHub topic remains useful for ecosystem discovery, but it is not an automatic
-submission queue. Listing proves only that a pinned public bundle contract and required committed
-files passed automated checks; it is not a human review, security audit, runtime smoke test, quality
-score, or official endorsement. Older records labeled `community-reviewed` retain their historical
-provenance.
+The `dsh-plugin` GitHub topic is synchronized every day at 01:00 Asia/Shanghai. The workflow takes a
+cutoff snapshot, pins each public default-branch commit, validates root bundle contracts without
+executing third-party code, updates the catalog and installable registry, and records accepted and
+rejected results in `packages/catalog/src/topic-analysis.generated.json`. Repositories added or
+updated after the cutoff are deferred to the next run. Listing proves only that a pinned public
+bundle contract and required committed files passed automated checks; it is not a human review,
+security audit, runtime smoke test, quality score, publisher identity check, or official
+endorsement. Older records labeled `community-reviewed` retain their historical provenance.
 
 The public metric means **CLI-reported completed installs**. It is not unique users, GitHub clone
 traffic, active usage, or installs performed directly through Git or the native DSH command.

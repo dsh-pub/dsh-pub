@@ -8,9 +8,12 @@ export const communityCatalog = rawCommunityCatalog as {
   source: {
     repository: string;
     generatedAt: string;
-    policy: 'curated-pinned-source-contracts' | 'pinned-source-contracts';
+    policy:
+      | 'curated-pinned-source-contracts'
+      | 'pinned-source-contracts'
+      | 'automated-pinned-source-contracts';
   };
-  totals: { reviewed: number; submitted?: number; installable: number };
+  totals: { reviewed: number; submitted?: number; automated?: number; installable: number };
   entries: CatalogEntry[];
 };
 

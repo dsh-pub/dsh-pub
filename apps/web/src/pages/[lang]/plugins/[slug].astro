@@ -58,14 +58,17 @@ const provenanceLabel =
     ? t.communityReviewed
     : provenance === 'community-submitted'
       ? t.communitySubmitted
-      : t.builtInSource;
+      : provenance === 'community-automated'
+        ? t.communityAutomated
+        : t.builtInSource;
 const sourceRel = provenance === 'built-in' ? undefined : 'ugc';
 const topic = topicForEntry(entry);
 const command = installCommand(entry);
 const distributionNote = localized(entry.distribution.note, locale);
 const provenanceStatement =
   entry.provenance?.status === 'community-reviewed' ||
-  entry.provenance?.status === 'community-submitted'
+  entry.provenance?.status === 'community-submitted' ||
+  entry.provenance?.status === 'community-automated'
     ? localized(entry.provenance.statement, locale)
     : t.builtInSourceHelp;
 const readmeSource = localized(entry.docs?.readme, locale);

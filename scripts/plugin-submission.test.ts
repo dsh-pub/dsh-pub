@@ -130,6 +130,7 @@ describe('GitHub Issue plugin integration', () => {
       runtime: { client: null, configurable: null, hostLoadable: null },
     });
     expect(update.communityCatalog.totals).toEqual({
+      automated: 0,
       installable: 1,
       reviewed: 0,
       submitted: 1,

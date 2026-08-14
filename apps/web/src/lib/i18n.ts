@@ -71,13 +71,14 @@ export const copy = {
     builtInSourceHelp: 'Shipped in the pinned deepseek-ai/deepseek-harness source snapshot.',
     communityReviewed: 'Community · source reviewed',
     communitySubmitted: 'Community · automated checks',
+    communityAutomated: 'Community · Topic auto-analysis',
     communityReviewNotice:
-      'Community records pin public source. Issue submissions pass automated bundle checks; selected older records were source reviewed. Neither is a security audit or official endorsement.',
+      'Community records pin public source. Topic discoveries and Issue submissions pass automated bundle checks; selected older records were source reviewed. None is a security audit or official endorsement.',
     communitySubmissionNotice:
       'This record came through the public Issue queue. Automated checks verified the public bundle contract and committed files, but did not verify publisher identity or runtime capabilities.',
     communityPlugins: 'Community additions',
     communityPluginsBody:
-      'Installable Git bundles from public Issue submissions and pinned community source records.',
+      'Installable Git bundles from daily GitHub Topic analysis, public Issue submissions, and pinned community source records.',
     notInspected: 'Not inspected',
     version: 'Version',
     license: 'License',
@@ -188,12 +189,14 @@ export const copy = {
     builtInSourceHelp: '随固定的 deepseek-ai/deepseek-harness 源码快照提供。',
     communityReviewed: '社区 · 源码契约已核对',
     communitySubmitted: '社区 · 已通过自动检查',
+    communityAutomated: '社区 · Topic 自动分析',
     communityReviewNotice:
-      '社区条目均固定到公开源码；Issue 提交会通过自动组合包检查，部分早期条目经过源码核对。两者都不等于安全审计或官方背书。',
+      '社区条目均固定到公开源码；Topic 自动发现与 Issue 提交会通过自动组合包检查，部分早期条目经过源码核对。以上都不等于安全审计或官方背书。',
     communitySubmissionNotice:
       '此条目来自公开 Issue 队列。自动检查验证公开组合包契约与已提交文件，但不验证发布者身份或运行时能力。',
     communityPlugins: '社区新增插件',
-    communityPluginsBody: '通过公开 Issue 提名或从社区源码记录收录的可安装 Git 组合包。',
+    communityPluginsBody:
+      '通过每日 GitHub Topic 分析、公开 Issue 提名或社区源码记录收录的可安装 Git 组合包。',
     notInspected: '未核对',
     version: '版本',
     license: '许可证',

@@ -76,6 +76,9 @@ tested; they are not hand-authored marketing claims.
 - A zero-account community submission flow: a bilingual page opens a structured GitHub Issue, machine-valid
   public bundles are integrated into `main`, and Cloudflare deploys them through the existing Git
   integration.
+- A daily `dsh-plugin` Topic intake: a cutoff snapshot statically validates root bundle contracts,
+  lists passing repositories, and keeps machine-readable rejection reasons without executing
+  third-party code.
 - Markdown and HTML registry badges whose live state is either `not listed` or `listed`.
 
 ## Non-goals

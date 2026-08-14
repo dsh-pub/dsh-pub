@@ -1,0 +1,87 @@
+name: Topic catalog sync
+
+on:
+  schedule:
+    - cron: '0 1 * * *'
+      timezone: 'Asia/Shanghai'
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: topic-catalog-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Sync dsh-plugin Topic
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+          ref: main
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          cache: npm
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Sync Topic catalog
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/sync-topic-catalog.mjs
+
+      - name: Run static checks
+        run: npm run lint
+
+      - name: Run unit tests
+        run: npm run test
+
+      - name: Install browser for E2E
+        run: npx playwright install --with-deps chromium
+
+      - name: Run integration tests
+        run: npm run e2e
+
+      - name: Build deployable workspace
+        run: npm run build
+
+      - name: Commit generated catalog data
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          mapfile -t changed < <(git diff --name-only)
+          if [[ "${#changed[@]}" -eq 0 ]]; then
+            echo "Topic catalog is already current."
+            exit 0
+          fi
+          for path in "${changed[@]}"; do
+            case "$path" in
+              apps/server/src/installable-slugs.generated.json) ;;
+              packages/catalog/src/community.generated.json) ;;
+              packages/catalog/src/community.sources.json) ;;
+              packages/catalog/src/topic-analysis.generated.json) ;;
+              *) echo "Unexpected generated path: $path" >&2; exit 1 ;;
+            esac
+          done
+          git config user.name "dsh.pub catalog bot"
+          git config user.email "catalog-bot@dsh.pub"
+          git add \
+            apps/server/src/installable-slugs.generated.json \
+            packages/catalog/src/community.generated.json \
+            packages/catalog/src/community.sources.json \
+            packages/catalog/src/topic-analysis.generated.json
+          git commit -m "chore(catalog): sync dsh-plugin topic"
+          gh auth setup-git
+          git push origin HEAD:main

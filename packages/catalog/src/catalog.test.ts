@@ -96,6 +96,9 @@ describe('Harness catalog snapshot', () => {
       submitted: communityCatalog.entries.filter(
         (entry) => entry.provenance?.status === 'community-submitted',
       ).length,
+      automated: communityCatalog.entries.filter(
+        (entry) => entry.provenance?.status === 'community-automated',
+      ).length,
       installable: communityCatalog.entries.filter((entry) => entry.distribution.installable)
         .length,
     });
@@ -114,9 +117,11 @@ describe('Harness catalog snapshot', () => {
       expect(entry.source.commit).toBe(source?.commit);
       expect(entry.source.directory).toBe(source?.directory);
       expect(entry.name).toBe(source?.packageName);
-      expect(['community-reviewed', 'community-submitted']).toContain(entry.provenance?.status);
-      expect(entry.provenance?.statement.en).toContain('not a security audit');
-      expect(entry.provenance?.statement.zh).toContain('不等于安全审计');
+      expect(['community-reviewed', 'community-submitted', 'community-automated']).toContain(
+        entry.provenance?.status,
+      );
+      expect(entry.provenance?.statement.en).toContain('security audit');
+      expect(entry.provenance?.statement.zh).toContain('安全审计');
       expect(entry.distribution).toMatchObject({
         installable: true,
         mode: 'git-bundle',

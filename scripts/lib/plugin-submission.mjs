@@ -535,6 +535,9 @@ export async function createSubmissionUpdate({
   const submitted = catalogEntries.filter(
     (candidate) => candidate.provenance?.status === 'community-submitted',
   ).length;
+  const automated = catalogEntries.filter(
+    (candidate) => candidate.provenance?.status === 'community-automated',
+  ).length;
   const slugs = catalogEntries.map((candidate) =>
     installMetricSlug({
       owner: new URL(candidate.source.repository).pathname.split('/').filter(Boolean)[0],
@@ -552,7 +555,7 @@ export async function createSubmissionUpdate({
         generatedAt: new Date(issue.updatedAt).toISOString(),
         policy: 'pinned-source-contracts',
       },
-      totals: { reviewed, submitted, installable: catalogEntries.length },
+      totals: { reviewed, submitted, automated, installable: catalogEntries.length },
       entries: catalogEntries,
     },
     communitySources: {

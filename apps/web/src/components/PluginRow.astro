@@ -33,10 +33,13 @@ const provenanceLabel =
     ? t.communityReviewed
     : provenance === 'community-submitted'
       ? t.communitySubmitted
-      : t.builtInSource;
+      : provenance === 'community-automated'
+        ? t.communityAutomated
+        : t.builtInSource;
 const provenanceStatement =
   entry.provenance?.status === 'community-reviewed' ||
-  entry.provenance?.status === 'community-submitted'
+  entry.provenance?.status === 'community-submitted' ||
+  entry.provenance?.status === 'community-automated'
     ? localized(entry.provenance.statement, locale)
     : t.builtInSourceHelp;
 ---

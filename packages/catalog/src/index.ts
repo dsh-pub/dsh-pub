@@ -17,6 +17,12 @@ export type CatalogProvenance =
       submittedAt: string;
       issue: string;
       statement: { en: string; zh: string };
+    }
+  | {
+      status: 'community-automated';
+      discoveredVia: 'github-topic:dsh-plugin';
+      analyzedAt: string;
+      statement: { en: string; zh: string };
     };
 
 export interface CatalogEntry {
@@ -29,6 +35,12 @@ export interface CatalogEntry {
   category: string;
   builtIn: boolean;
   provenance?: CatalogProvenance;
+  analysis?: {
+    method: 'automated-static-contract';
+    revision: 1;
+    status: 'verified';
+    checks: Record<string, boolean>;
+  };
   description: { en: string; zh: string };
   source: { repository: string; directory: string; commit: string };
   runtime: {
@@ -96,9 +108,12 @@ export interface CommunityCatalog {
   source: {
     repository: string;
     generatedAt: string;
-    policy: 'curated-pinned-source-contracts' | 'pinned-source-contracts';
+    policy:
+      | 'curated-pinned-source-contracts'
+      | 'pinned-source-contracts'
+      | 'automated-pinned-source-contracts';
   };
-  totals: { reviewed: number; submitted?: number; installable: number };
+  totals: { reviewed: number; submitted?: number; automated?: number; installable: number };
   entries: CatalogEntry[];
 }
 
