@@ -229,11 +229,11 @@ async function assertSeoSurface() {
   if (
     !brandResponse.ok ||
     brandResponse.headers.get('content-type') !== 'image/png' ||
-    brand.readUInt32BE(16) !== 256 ||
-    brand.readUInt32BE(20) !== 256 ||
+    brand.readUInt32BE(16) !== 384 ||
+    brand.readUInt32BE(20) !== 254 ||
     brand.readUInt8(25) !== 6
   ) {
-    throw new Error('The dsh.pub mascot must be a 256 × 256 RGBA PNG.');
+    throw new Error('The dsh.pub mascot must be a 384 × 254 RGBA PNG.');
   }
 }
 
