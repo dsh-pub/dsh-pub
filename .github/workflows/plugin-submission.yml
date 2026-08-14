@@ -58,8 +58,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: node scripts/process-plugin-submission.mjs
 
-      - name: Generate directory snapshot
-        run: npm run catalog:generate --workspace apps/dsh-plugin
+      - name: Generate directory artifacts
+        run: npm run build --workspace @dsh-pub/plugin-directory
 
       - name: Run static checks
         run: npm run lint
@@ -164,6 +164,10 @@ jobs:
         if: steps.sync.outputs.changed == 'true'
         run: npm run test
 
+      - name: Build deployable workspace
+        if: steps.sync.outputs.changed == 'true'
+        run: npm run build
+
       - name: Install browser for E2E
         if: steps.sync.outputs.changed == 'true'
         run: npx playwright install --with-deps chromium
@@ -171,10 +175,6 @@ jobs:
       - name: Run integration tests
         if: steps.sync.outputs.changed == 'true'
         run: npm run e2e
-
-      - name: Build deployable workspace
-        if: steps.sync.outputs.changed == 'true'
-        run: npm run build
 
       - name: Create catalog push token
         if: steps.sync.outputs.changed == 'true'
@@ -194,6 +194,7 @@ jobs:
           git config user.name "dsh.pub catalog bot"
           git config user.email "catalog-bot@dsh.pub"
           git add \
+            apps/dsh-plugin/lib/client.js \
             apps/dsh-plugin/src/client/catalog.generated.json \
             apps/server/src/installable-slugs.generated.json \
             packages/catalog/src/community.generated.json \

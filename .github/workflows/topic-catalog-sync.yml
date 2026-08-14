@@ -47,14 +47,14 @@ jobs:
       - name: Run unit tests
         run: npm run test
 
+      - name: Build deployable workspace
+        run: npm run build
+
       - name: Install browser for E2E
         run: npx playwright install --with-deps chromium
 
       - name: Run integration tests
         run: npm run e2e
-
-      - name: Build deployable workspace
-        run: npm run build
 
       - name: Create catalog push token
         id: catalog-app-token
@@ -76,6 +76,7 @@ jobs:
           fi
           for path in "${changed[@]}"; do
             case "$path" in
+              apps/dsh-plugin/lib/client.js) ;;
               apps/dsh-plugin/src/client/catalog.generated.json) ;;
               apps/server/src/installable-slugs.generated.json) ;;
               packages/catalog/src/community.generated.json) ;;
@@ -87,6 +88,7 @@ jobs:
           git config user.name "dsh.pub catalog bot"
           git config user.email "catalog-bot@dsh.pub"
           git add \
+            apps/dsh-plugin/lib/client.js \
             apps/dsh-plugin/src/client/catalog.generated.json \
             apps/server/src/installable-slugs.generated.json \
             packages/catalog/src/community.generated.json \

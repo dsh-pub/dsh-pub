@@ -54,8 +54,8 @@ describe('plugin submission workflow contract', () => {
     const process = workflow.jobs.validate.steps.find(
       (step: { name?: string }) => step.name === 'Inspect the fixed public source',
     );
-    const snapshot = workflow.jobs.validate.steps.find(
-      (step: { name?: string }) => step.name === 'Generate directory snapshot',
+    const artifacts = workflow.jobs.validate.steps.find(
+      (step: { name?: string }) => step.name === 'Generate directory artifacts',
     );
     const staticChecks = workflow.jobs.validate.steps.find(
       (step: { name?: string }) => step.name === 'Run static checks',
@@ -64,11 +64,11 @@ describe('plugin submission workflow contract', () => {
       'persist-credentials': false,
       ref: '${{ github.event.pull_request.base.sha }}',
     });
-    expect(snapshot.run).toBe('npm run catalog:generate --workspace apps/dsh-plugin');
+    expect(artifacts.run).toBe('npm run build --workspace @dsh-pub/plugin-directory');
     expect(workflow.jobs.validate.steps.indexOf(process)).toBeLessThan(
-      workflow.jobs.validate.steps.indexOf(snapshot),
+      workflow.jobs.validate.steps.indexOf(artifacts),
     );
-    expect(workflow.jobs.validate.steps.indexOf(snapshot)).toBeLessThan(
+    expect(workflow.jobs.validate.steps.indexOf(artifacts)).toBeLessThan(
       workflow.jobs.validate.steps.indexOf(staticChecks),
     );
     expect(source).not.toContain('ref: ${{ github.event.pull_request.head.sha }}');
@@ -145,6 +145,9 @@ describe('plugin submission workflow contract', () => {
     const build = integrate.steps.find(
       (step: { name?: string }) => step.name === 'Build deployable workspace',
     );
+    const e2e = integrate.steps.find(
+      (step: { name?: string }) => step.name === 'Run integration tests',
+    );
     const token = integrate.steps.find(
       (step: { name?: string }) => step.name === 'Create catalog push token',
     );
@@ -167,9 +170,11 @@ describe('plugin submission workflow contract', () => {
       'permission-contents': 'write',
       'private-key': '${{ secrets.DSH_PUB_APP_PRIVATE_KEY_PKCS8 }}',
     });
+    expect(integrate.steps.indexOf(build)).toBeLessThan(integrate.steps.indexOf(e2e));
     expect(integrate.steps.indexOf(token)).toBeGreaterThan(integrate.steps.indexOf(build));
     expect(integrate.steps.indexOf(token)).toBeLessThan(integrate.steps.indexOf(push));
     expect(push.env.GH_TOKEN).toBe('${{ steps.catalog-app-token.outputs.token }}');
+    expect(push.run).toContain('apps/dsh-plugin/lib/client.js');
     expect(push.run).toContain('git push origin HEAD:main');
     expect(push.run).not.toMatch(/--force(?:-with-lease)?/);
   });
