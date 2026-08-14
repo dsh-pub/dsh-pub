@@ -88,7 +88,7 @@ describe('Harness catalog snapshot', () => {
   });
 
   it('keeps the community collection separate, pinned, and source-contract reviewed', () => {
-    expect(communityCatalog.totals).toEqual({ reviewed: 5, installable: 5 });
+    expect(communityCatalog.totals).toEqual({ reviewed: 6, installable: 6 });
     expect(communityCatalog.entries).toHaveLength(communitySources.entries.length);
 
     const officialSlugs = new Set(catalog.entries.map((entry) => entry.slug));
@@ -131,6 +131,19 @@ describe('Harness catalog snapshot', () => {
       ],
     });
     expect(getCatalogEntry('dsh-cc-tui')?.capabilities.uiContributions).toEqual([]);
+    expect(getCatalogEntry('dsh-automation')?.capabilities).toMatchObject({
+      tools: [
+        { name: 'automation_create' },
+        { name: 'automation_list' },
+        { name: 'automation_update' },
+        { name: 'automation_runs' },
+        { name: 'automation_run_now' },
+        { name: 'automation_delete' },
+      ],
+      uiContributions: [
+        { slot: 'conversation.view', id: 'automation', component: 'AutomationView' },
+      ],
+    });
     expect(
       communityCatalog.entries
         .map((entry) => installMetricSlug(entry.source.repository, entry.source.directory))

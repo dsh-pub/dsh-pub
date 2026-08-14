@@ -1,12 +1,12 @@
 {
   "source": {
     "repository": "https://github.com/topics/dsh-plugin",
-    "generatedAt": "2026-08-13T17:28:12.000Z",
+    "generatedAt": "2026-08-14T05:40:16.000Z",
     "policy": "curated-pinned-source-contracts"
   },
   "totals": {
-    "reviewed": 5,
-    "installable": 5
+    "reviewed": 6,
+    "installable": 6
   },
   "entries": [
     {
@@ -175,6 +175,95 @@
         "limitations": {
           "en": "Binary, oversized, or workspace-escaping paths are skipped; mention tokens cannot contain whitespace.",
           "zh": "二进制、超限或逃逸工作区的路径会被跳过；提及 token 不能包含空格。"
+        }
+      }
+    },
+    {
+      "id": "github:titanwings/dsh-automation",
+      "slug": "dsh-automation",
+      "name": "@dsh-external/dsh-automation",
+      "version": "0.1.5",
+      "license": "MIT",
+      "type": "bundle",
+      "category": "orchestration",
+      "builtIn": false,
+      "provenance": {
+        "status": "community-reviewed",
+        "discoveredVia": "github-topic:dsh-plugin",
+        "reviewedAt": "2026-08-14",
+        "statement": {
+          "en": "Pinned source contract reviewed. This is not a security audit or official endorsement.",
+          "zh": "已核对固定版本的源码契约；这不等于安全审计或官方背书。"
+        }
+      },
+      "description": {
+        "en": "Runs recurring or one-shot coding tasks in fresh DSH agent sessions and manages them from the web UI or agent tools.",
+        "zh": "在全新的 DSH Agent Session 中运行周期或单次 Coding 任务，并通过 Web UI 或 Agent 工具管理。"
+      },
+      "source": {
+        "repository": "https://github.com/titanwings/dsh-automation",
+        "directory": "",
+        "commit": "3c0188d7d94ed5b1e8caffeb73d7ac7ab34aabb3"
+      },
+      "runtime": {
+        "hostLoadable": true,
+        "configurable": true,
+        "client": {
+          "platform": "web",
+          "injects": [
+            "@deepseek-ai/dsh-client-connection",
+            "@deepseek-ai/dsh-client-runtime",
+            "@deepseek-ai/dsh-client-locale",
+            "@deepseek-ai/dsh-client-ui-conversation"
+          ]
+        }
+      },
+      "capabilities": {
+        "tools": [
+          { "name": "automation_create" },
+          { "name": "automation_list" },
+          { "name": "automation_update" },
+          { "name": "automation_runs" },
+          { "name": "automation_run_now" },
+          { "name": "automation_delete" }
+        ],
+        "uiContributions": [
+          {
+            "slot": "conversation.view",
+            "id": "automation",
+            "component": "AutomationView"
+          }
+        ],
+        "uiSlotsDeclared": []
+      },
+      "availability": {
+        "profiles": ["web"],
+        "defaultWeb": "conditional",
+        "bundles": ["@dsh-external/dsh-automation"]
+      },
+      "distribution": {
+        "installable": true,
+        "mode": "git-bundle",
+        "activation": "profile-layer",
+        "note": {
+          "en": "The pinned root package declares dsh.bundle.patch and committed runtime output. Review does not imply a security audit.",
+          "zh": "固定版本的仓库根包声明了 dsh.bundle.patch，且提交了运行产物；收录不等于安全审计。"
+        }
+      },
+      "docs": {
+        "readmePath": "README.md",
+        "readmeZhPath": "README.zh-CN.md",
+        "readme": {
+          "en": "## What it adds\n\nA native Automations conversation view and six workspace-scoped agent tools create, inspect, update, run, and delete durable schedules. Every occurrence starts in a fresh root Agent and Session.",
+          "zh": "## 它增加了什么\n\n原生 Automations 会话视图与六个 workspace-scoped Agent 工具用于创建、查看、更新、执行和删除持久化计划。每次触发都会启动全新的 root Agent 与 Session。"
+        },
+        "modelExperience": {
+          "en": "Eligible root agents receive six automation management tools scoped to their exact registered workspace.",
+          "zh": "符合条件的 root Agent 会获得六个自动化管理工具，且仅作用于其准确注册的 workspace。"
+        },
+        "limitations": {
+          "en": "Runs are local-only, require the DSH Host to remain available, accept only read-only or workspace-write permissions, and do not provide automatic retries or exactly-once external side effects.",
+          "zh": "任务仅在本地运行，依赖 DSH Host 保持可用，只接受 read-only 或 workspace-write 权限，不提供自动重试或外部副作用的 exactly-once 保证。"
         }
       }
     },

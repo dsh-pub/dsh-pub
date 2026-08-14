@@ -5,6 +5,7 @@
     "omdsh-dev--dsh-at-file",
     "omdsh-dev--dsh-genui",
     "omdsh-dev--dsh-notification",
-    "omdsh-dev--dsh-open-in-vscode"
+    "omdsh-dev--dsh-open-in-vscode",
+    "titanwings--dsh-automation"
   ]
 }

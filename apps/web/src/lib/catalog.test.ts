@@ -25,7 +25,7 @@ describe('web catalog projection', () => {
       libraries: 34,
       bundles: 3,
     });
-    expect(installableEntries).toHaveLength(5);
+    expect(installableEntries).toHaveLength(6);
     expect(bundleEntries).toHaveLength(3);
     expect(builtInEntries.length).toBe(170);
     expect(bundleEntries.every((entry) => entry.distribution.activation === 'profile-layer')).toBe(
@@ -34,7 +34,7 @@ describe('web catalog projection', () => {
   });
 
   it('merges reviewed community entries without changing official totals', () => {
-    expect(communityEntries).toHaveLength(5);
+    expect(communityEntries).toHaveLength(6);
     expect(
       communityEntries.every((entry) => provenanceStatus(entry) === 'community-reviewed'),
     ).toBe(true);
@@ -46,8 +46,10 @@ describe('web catalog projection', () => {
 
   it('builds pinned root-repository install commands without an empty path flag', () => {
     const genui = communityEntries.find((entry) => entry.slug === 'dsh-genui');
+    const automation = communityEntries.find((entry) => entry.slug === 'dsh-automation');
     expect(genui).toBeDefined();
-    if (!genui) return;
+    expect(automation).toBeDefined();
+    if (!genui || !automation) return;
     const command = installCommand(genui);
     expect(command).toBe(
       'npx dshpub add omdsh-dev/dsh-genui --ref 57b4338222632f8ea81c2665d44e5f9e80b52686',
@@ -55,6 +57,9 @@ describe('web catalog projection', () => {
     expect(command).not.toContain('--path');
     expect(sourceUrl(genui)).toBe(
       'https://github.com/omdsh-dev/dsh-genui/tree/57b4338222632f8ea81c2665d44e5f9e80b52686',
+    );
+    expect(installCommand(automation)).toBe(
+      'npx dshpub add titanwings/dsh-automation --ref 3c0188d7d94ed5b1e8caffeb73d7ac7ab34aabb3',
     );
   });
 

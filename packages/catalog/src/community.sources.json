@@ -33,6 +33,17 @@
       "licensePath": "LICENSE"
     },
     {
+      "repository": "https://github.com/titanwings/dsh-automation",
+      "commit": "3c0188d7d94ed5b1e8caffeb73d7ac7ab34aabb3",
+      "directory": "",
+      "packageName": "@dsh-external/dsh-automation",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE"
+    },
+    {
       "repository": "https://github.com/omdsh-dev/dsh-notification",
       "commit": "3e33100f51f25f24cece20bfd3d50cfbde0cbca5",
       "directory": "",

@@ -115,9 +115,9 @@ async function assertSeoSurface() {
   const urls = [...sitemap.matchAll(/<loc>(https:\/\/dsh\.pub\/[^<]*)<\/loc>/g)].map(
     (match) => match[1],
   );
-  if (urls.length !== 356 || urls.includes('https://dsh.pub/')) {
+  if (urls.length !== 358 || urls.includes('https://dsh.pub/')) {
     throw new Error(
-      `Expected 356 indexable URLs without the locale redirect, received ${urls.length}.`,
+      `Expected 358 indexable URLs without the locale redirect, received ${urls.length}.`,
     );
   }
   if (!sitemap.includes('hreflang="en"') || !sitemap.includes('hreflang="zh-CN"')) {
@@ -246,13 +246,19 @@ try {
   );
   await assertPageOmits('/zh/plugins/dsh-genui/', '--path');
   await assertPage('/zh/plugins/dsh-genui/', '不等于安全审计');
+  await assertPage('/zh/plugins/dsh-automation/', 'titanwings / dsh-automation');
+  await assertPage(
+    '/zh/plugins/dsh-automation/',
+    'npx dshpub add titanwings/dsh-automation --ref 3c0188d7d94ed5b1e8caffeb73d7ac7ab34aabb3',
+  );
+  await assertPageOmits('/zh/plugins/dsh-automation/', '--path');
 
   const browser = await chromium.launch({ headless: true });
   try {
     const page = await browser.newPage();
     await page.goto(`${origin}/en/plugins/?provenance=community-reviewed`);
     await page.waitForFunction(
-      () => globalThis.document.querySelector('[data-result-count]')?.textContent?.trim() === '5',
+      () => globalThis.document.querySelector('[data-result-count]')?.textContent?.trim() === '6',
     );
     const browserState = await page.evaluate(() => {
       const rows = [...globalThis.document.querySelectorAll('[data-plugin-row]')];
@@ -273,8 +279,8 @@ try {
     });
     if (
       browserState.checked !== true ||
-      browserState.count !== '5' ||
-      browserState.visible !== 5 ||
+      browserState.count !== '6' ||
+      browserState.visible !== 6 ||
       !browserState.visibleAreCommunity ||
       !browserState.builtInsHidden ||
       !page.url().endsWith('/en/plugins/?provenance=community-reviewed')
