@@ -1,16 +1,21 @@
 {
   "schemaVersion": 1,
   "topic": "dsh-plugin",
-  "snapshotAt": "2026-08-14T10:54:58.095Z",
+  "snapshotAt": "2026-08-14T11:20:07.667Z",
+  "complete": false,
   "totals": {
-    "discovered": 1716,
-    "observed": 1720,
-    "listed": 541,
+    "discovered": 1734,
+    "observed": 1763,
+    "listed": 553,
     "preserved": 5,
-    "rejected": 1170
+    "deferred": 27,
+    "unresolved": 2,
+    "retainedUnresolved": 1,
+    "rejected": 1176
   },
   "entries": [
     {
+      "cached": true,
       "commit": "63a9872561ace74d446378a70c11f72dda3702bf",
       "repository": "https://github.com/01Virex/dsh-foxy-jumpscare",
       "status": "listed"
@@ -23,6 +28,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "3788ecbbdf9391d8ab0c29a18ed65bd59ca1c30f",
       "repository": "https://github.com/030611/dsh-context-provenance",
       "status": "listed"
@@ -49,6 +55,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "23725b2da50489ff67b7843ad5e23cfc542cacf2",
       "repository": "https://github.com/0lidaxiang/dsh-plugin-greet",
       "status": "listed"
@@ -75,18 +82,20 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "1cbca9ea673ef9198de93969b6917c8672a5ca0b",
       "repository": "https://github.com/121103qwq/dsh-vision-sidecar",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "4f7816e6f24a76f8e99eb0c23686eaf1a34d0862",
       "repository": "https://github.com/147228/dsh-black-whale",
       "status": "listed"
     },
     {
       "code": "missing_bundle_manifest",
-      "commit": "6a0fedfc4feeff41c322c654c018d359fdbedfe1",
+      "commit": "174f65d9135e932383a8f3a19fa522f16875a139",
       "message": "Root package.json does not declare dsh.bundle.patch.",
       "repository": "https://github.com/147228/dsh-xiaoyao-skins",
       "status": "rejected"
@@ -127,6 +136,11 @@
       "status": "rejected"
     },
     {
+      "commit": "0d15e07e03ef0a47dd418ec35bb0c41e5bcb250e",
+      "repository": "https://github.com/1738348785/dsh-plugin-text-translation",
+      "status": "listed"
+    },
+    {
       "code": "invalid_manifest",
       "commit": "fce84c05c131d6a3a8392c1240e3fd71a1931bc0",
       "message": "Root package.json must contain bounded npm name, version, and license strings.",
@@ -134,6 +148,14 @@
       "status": "rejected"
     },
     {
+      "code": "missing_bundle_manifest",
+      "commit": "fc1db3ba5f0b3c4ccb9da977274132ceac140bf0",
+      "message": "Root package.json does not declare dsh.bundle.patch.",
+      "repository": "https://github.com/1960697431/dsh-difficulty-router",
+      "status": "rejected"
+    },
+    {
+      "cached": true,
       "commit": "e387e337171e1d70aeb0f8a7100c718a7e3291da",
       "repository": "https://github.com/1a125/dsh-mcp-manager",
       "status": "listed"
@@ -146,6 +168,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "281a86471a6b5c2b2f326fe9b3e332bd82b737b9",
       "repository": "https://github.com/1na-ko/dsh-hdc-bridge",
       "status": "listed"
@@ -165,11 +188,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "3d1abb4860eb2ddfd2695e770b5b90fa6ce43168",
       "repository": "https://github.com/2303572348/deepseek-harness-memory",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "7e9788f485ea2d6f8e579895590a23db9da62d24",
       "repository": "https://github.com/237229953-create/dsh-vision",
       "status": "listed"
@@ -183,7 +208,7 @@
     },
     {
       "code": "missing_manifest",
-      "commit": "8734d589e3c15dc62799ade139435901545ba631",
+      "commit": "84d514daa48760bdc74331b265e2369a99d19bed",
       "message": "Repository does not contain a root package.json.",
       "repository": "https://github.com/2472786266-spec/deepseek-hsrness-devkit",
       "status": "rejected"
@@ -196,13 +221,12 @@
       "status": "rejected"
     },
     {
-      "code": "missing_bundle_manifest",
-      "commit": "c257577b8394afac30a1f73fc92392470bebd5dc",
-      "message": "Root package.json does not declare dsh.bundle.patch.",
+      "commit": "85d5e81dae20d1a82fa26b39dab2cc6ab178e46b",
       "repository": "https://github.com/2BingLing/dsh-market",
-      "status": "rejected"
+      "status": "deferred"
     },
     {
+      "cached": true,
       "commit": "119a12a12de3031ca4ab3b1e164eb01026197428",
       "repository": "https://github.com/318197375/dsh-bottom-stats",
       "status": "listed"
@@ -215,9 +239,9 @@
       "status": "rejected"
     },
     {
-      "code": "missing_bundle_manifest",
-      "commit": "eaf5511d9f55431d043f53cda11a600b3077d7e4",
-      "message": "Root package.json does not declare dsh.bundle.patch.",
+      "code": "missing_runtime",
+      "commit": "7fd729797236260bdc25eab9ed9708138a0c28ad",
+      "message": "The declared runtime entry is not committed.",
       "repository": "https://github.com/610la/dsh-notification-center",
       "status": "rejected"
     },
@@ -229,28 +253,32 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "1160f44899b9c82716b3e3f7c9564bc878be16ee",
       "repository": "https://github.com/918154429/dsh-codex-import",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "0092d95f4d36dd2759feb904eb61c810656b88cd",
       "repository": "https://github.com/940842546/dsh-usage-billing",
       "status": "listed"
     },
     {
       "code": "missing_runtime",
-      "commit": "8b28f145aaa282ce57b946303074109f1aa1bad0",
+      "commit": "bb7c76fbbb6ecfc665cccc0c1df7e9b698ea327a",
       "message": "The declared runtime entry is not committed.",
       "repository": "https://github.com/a179-sanae/dsh-code-check",
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "00d02fa73098bf9e27b345dd3a207f346b075262",
       "repository": "https://github.com/a903067276-rgb/dsh-file-mentions",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "4fcdccdcc4c25f94a11a8d38b6871e2056a9a16c",
       "repository": "https://github.com/a903067276-rgb/dsh-hud",
       "status": "listed"
@@ -278,12 +306,13 @@
     },
     {
       "code": "invalid_manifest",
-      "commit": "26e69e5d7cafba6a6077f1c0073f03ba13463184",
+      "commit": "25faf4776a083165adb2c42af456a5fd124aa9c4",
       "message": "Root package.json must contain bounded npm name, version, and license strings.",
       "repository": "https://github.com/Acidmoon/DIzzy-DSH",
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "2d4316ad5374c16edf72426ee02e8ee6450b1747",
       "repository": "https://github.com/acnlabs/dsh-plugin-acn",
       "status": "listed"
@@ -304,7 +333,7 @@
     },
     {
       "code": "missing_manifest",
-      "commit": "59fc5ae60554c1590ff346abbb486b9be6b64a64",
+      "commit": "24a8d70e966377e6bca0acb4a7a05b98252d0dda",
       "message": "Repository does not contain a root package.json.",
       "repository": "https://github.com/AdamPlatin123/awesome-dsh-plugins",
       "status": "rejected"
@@ -366,6 +395,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "44434e9048a0b427a1482021694c92f90e93456d",
       "repository": "https://github.com/agentic-control-plane/dsh-acp-plugin",
       "status": "listed"
@@ -378,21 +408,24 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "fca8da7fe5e5f60d5cc3903941baa74177862973",
       "repository": "https://github.com/Aidenwu0209/dsh-PaddleOCR-Skills",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "f94c15509cc6f3e19893ee39454b530f0c9ac99a",
       "repository": "https://github.com/Aidenwu0209/dsh-Unlimited-OCR-Skill",
       "status": "listed"
     },
     {
-      "commit": "0dc49e4c955374560e80ab588ff4dbdd4c3b2124",
+      "commit": "c2c3c36bbcc0841e1c910c00b46919824078df9b",
       "repository": "https://github.com/Aik358/dsh-auto-memory",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "3aafd8fd1e3a41c0a09e5ff3f84b517afd30b096",
       "repository": "https://github.com/AIMFllyYS/dsh-operating-context",
       "status": "listed"
@@ -405,21 +438,25 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "393cec166392d2d8aeee2452ef6b82a622e5202a",
       "repository": "https://github.com/akira399/dsh-godot-skill",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "e91c709ef48bc4522d4e55fae868877eee80ca1a",
       "repository": "https://github.com/akira399/dsh-plugin-publisher",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "c20646ad6d4ee4c4a0ef12163a074716e17a7ba5",
       "repository": "https://github.com/AKIRACOD/dsh-drag-and-drop",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "f6add3a3bf315f4bf4ba5a23810e5873eb00efbd",
       "repository": "https://github.com/akqwpeter-prog/dsh-media-skills",
       "status": "listed"
@@ -439,6 +476,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "74b12486712e985060ec5091a86dde1bd83758be",
       "repository": "https://github.com/Alexis-fish/dsh-projects",
       "status": "listed"
@@ -472,6 +510,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "95eebb99a7ba41466c033caa7396075e5902f0b9",
       "repository": "https://github.com/AllenCX/dsh-quant-workspace",
       "status": "listed"
@@ -491,6 +530,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "eb8c25c1cc8728e54cf5940b6bc696f38b2d10bd",
       "repository": "https://github.com/alooshxl/dsh-session-pins",
       "status": "listed"
@@ -510,19 +550,29 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "138979eb0b45937b3a157b652623d0f571d519f2",
       "repository": "https://github.com/Amengclass/dsh-memory",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "435e4d34345daa6ad54e37b1dec79f4abaee5c5c",
       "repository": "https://github.com/AmethystLuna/embedded-workbench",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "897e850a3c9c496ec11eedc37effcd734f45d45e",
       "repository": "https://github.com/AmethystLuna/logicprobe",
       "status": "listed"
+    },
+    {
+      "code": "missing_runtime",
+      "commit": "d3f4b694d1839fa25caa4a84a0ec0bec91556535",
+      "message": "The declared runtime entry is not committed.",
+      "repository": "https://github.com/amlyczz/dsh-lark-link",
+      "status": "rejected"
     },
     {
       "code": "missing_manifest",
@@ -539,6 +589,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "2f28338b29503f20d159b1f0123a985530134b6a",
       "repository": "https://github.com/AnacondaKC/dsh-douyin",
       "status": "listed"
@@ -558,6 +609,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "3990dd397aec128553c7391b6d083c556483bc12",
       "repository": "https://github.com/Andy294753951/dsh-plugin-gouden-leeuw-theme",
       "status": "listed"
@@ -598,16 +650,19 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "b9921da0db9698765dbf0a4cf920ef3ad8187af6",
       "repository": "https://github.com/Anionex/dsh-computer-use",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "944b1ac8f6b170b55b692a51ddfa3a09f1b97ff1",
       "repository": "https://github.com/Anionex/dsh-turn-rewind",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "a8dc71305dda0450602ca1eb3f86999373722611",
       "repository": "https://github.com/Anionex/dsh-vision-toolkit",
       "status": "listed"
@@ -621,12 +676,13 @@
     },
     {
       "code": "missing_bundle_manifest",
-      "commit": "36801c0ed12a5bddc3276eb42f131a638c0dbafa",
+      "commit": "06cb816b2869abd572992440d5576a523f9a87c3",
       "message": "Root package.json does not declare dsh.bundle.patch.",
       "repository": "https://github.com/antinomie1/deepseek-harness-desktop",
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "570ac8b54bd152b3f1be26cc0cc068f1a4eeb001",
       "repository": "https://github.com/anweat/dsh-browser",
       "status": "listed"
@@ -639,6 +695,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "8d9f4947530a08e9a2967a7847ae2f906c2d7b5b",
       "repository": "https://github.com/anweat/dsh-restart",
       "status": "listed"
@@ -651,16 +708,15 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "f8f388c75d11a5fbee673a4ab010c166098a989b",
       "repository": "https://github.com/anweat/dsh-web-search-pro",
       "status": "listed"
     },
     {
-      "code": "missing_bundle_manifest",
-      "commit": "dbb520f6e520f1e51685b55e766c78981858f190",
-      "message": "Root package.json does not declare dsh.bundle.patch.",
+      "commit": "e4e6f74d4c6235327e5b279d467cb96945d37a10",
       "repository": "https://github.com/anywhere-labs/deepseek-harness-desktop",
-      "status": "rejected"
+      "status": "deferred"
     },
     {
       "code": "missing_bundle_manifest",
@@ -670,11 +726,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "747a6ef921e37df2ec9d194276efcf0d615ecb04",
       "repository": "https://github.com/arcmosin/dsh-wordbox",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "36a943632b5f6363d76b98ad8c6ad851fc582429",
       "repository": "https://github.com/Areium/dsh-fail-logger",
       "status": "listed"
@@ -694,6 +752,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "5b4cbfd425885ed3f3ed93c796d5113847cc93b8",
       "repository": "https://github.com/arrow949/dsh-turn-approval",
       "status": "listed"
@@ -720,7 +779,7 @@
       "status": "rejected"
     },
     {
-      "commit": "36f27adb061ecec73414823642b7789626f7b204",
+      "commit": "36d8777fdf93d57e6beb14b809b28b0c9dd83874",
       "repository": "https://github.com/Asaiuta/dsh-session-hub",
       "status": "listed"
     },
@@ -746,6 +805,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "dfdb543e3982ed5d3f5612b3b0b2e2f6be0f0ed7",
       "repository": "https://github.com/asukasec/dsh-message-preview",
       "status": "listed"
@@ -766,12 +826,27 @@
     },
     {
       "code": "missing_bundle_manifest",
-      "commit": "5c3e1359e6e75f8f9a3ebddcd3c6cf7e505eb4e3",
+      "commit": "4e4a515b5918e1ede2d24fb98bb058afec2d1423",
+      "message": "Root package.json does not declare dsh.bundle.patch.",
+      "repository": "https://github.com/AuraxM/dsh-plugin-confirm-check",
+      "status": "rejected"
+    },
+    {
+      "code": "missing_bundle_manifest",
+      "commit": "4da8646414aeb0200588cb51db84c351f41451ac",
+      "message": "Root package.json does not declare dsh.bundle.patch.",
+      "repository": "https://github.com/AuraxM/dsh-plugin-doc-present",
+      "status": "rejected"
+    },
+    {
+      "code": "missing_bundle_manifest",
+      "commit": "a17a5f392c2061dc16cc4601b7bb280b49b85a20",
       "message": "Root package.json does not declare dsh.bundle.patch.",
       "repository": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin",
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "8526c9abad331d0e8a089b2bfcd727d26805148b",
       "repository": "https://github.com/awesome-dsh-plugin/dsh-find-plugin",
       "status": "listed"
@@ -784,18 +859,20 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "89da084ac1a13451bb12a22a5306a648ceac6ffb",
       "repository": "https://github.com/Axiaohungry/dsh-llm-codebuddy",
       "status": "listed"
     },
     {
-      "commit": "640f480d5024fd1dd3478622ee67482048ebf916",
+      "commit": "768428d227b66f8e97aabcadd8407079197d7aa2",
+      "previousCommit": "640f480d5024fd1dd3478622ee67482048ebf916",
       "repository": "https://github.com/Ayaka157/dsh-conversation-cost",
-      "status": "listed"
+      "status": "deferred"
     },
     {
       "code": "invalid_client",
-      "commit": "823a2ce4b271b38c048128d6301602b7b0643b0f",
+      "commit": "0c173060e054d909dec87ce0acac52e9a8a609c7",
       "message": "The declared client entry is not committed.",
       "repository": "https://github.com/Ayase34/gal-view",
       "status": "rejected"
@@ -819,6 +896,13 @@
       "commit": "1d100eda8949c30e5426143f6b607981a100b097",
       "message": "The declared runtime entry is not committed.",
       "repository": "https://github.com/baidd1011/dsh-code-impact",
+      "status": "rejected"
+    },
+    {
+      "code": "missing_manifest",
+      "commit": "487b62b86bf61303938aaac254716e19048525bd",
+      "message": "Repository does not contain a root package.json.",
+      "repository": "https://github.com/baiduzero/miqimiaomiaowu",
       "status": "rejected"
     },
     {
@@ -857,6 +941,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "ac475fa1c81e350eda53edce9fdf1a3126c5b7b5",
       "repository": "https://github.com/BeAChanger/dsh-openclaw-acp",
       "status": "listed"
@@ -890,6 +975,11 @@
       "status": "rejected"
     },
     {
+      "commit": "81a9e3b9b71fba52e71c18e1f48dc91fd667835f",
+      "repository": "https://github.com/bearllfleed/Dsh-FileExplorer",
+      "status": "deferred"
+    },
+    {
       "code": "missing_manifest",
       "commit": "7211caae8fea41b5feccb2225d5680540581854e",
       "message": "Repository does not contain a root package.json.",
@@ -911,11 +1001,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "64b20b12cd76ddb4d0e1d4ba9ee1264ed0d1e904",
       "repository": "https://github.com/beijingwahw/dsh-conv-export",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "bb8149e38ebac285f64e8bb74496bb3d8df7a917",
       "repository": "https://github.com/beijingwahw/dsh-conv-search",
       "status": "listed"
@@ -991,11 +1083,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "cc77e4c7abbba4295133c6149330c78a7bda4050",
       "repository": "https://github.com/benzhoupo/dsh-dardar",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "a8c5d75a7be3d6da58e8ae7a5425e98b6f3ec584",
       "repository": "https://github.com/benzhoupo/dsh-effort-config",
       "status": "listed"
@@ -1043,6 +1137,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "0591174730f32083e301de15dcc262b3ddc0f571",
       "repository": "https://github.com/bilbillm/deepseek-harness-angelina-themes",
       "status": "listed"
@@ -1055,26 +1150,31 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "f3e801edc0eb0f87be0987eb9ca4eec063c4ba96",
       "repository": "https://github.com/bill9109/dsh-101",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "f582d8ec88e5bbc2519da48554c659874b8e1ac9",
       "repository": "https://github.com/bill9109/dsh-conversation-share",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "788ef0c569982a6025a0756df7acc9b4a7963f57",
       "repository": "https://github.com/bill9109/dsh-drag-and-drop",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "865d2f6fc93f2e0d051d53df772646cb831a43ed",
       "repository": "https://github.com/bill9109/dsh-web-ui-notify",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "fb6fa96fed4b78f68ab0464c360dc4036105d0d8",
       "repository": "https://github.com/bill9109/dsh-webbridge",
       "status": "listed"
@@ -1087,11 +1187,9 @@
       "status": "rejected"
     },
     {
-      "code": "missing_manifest",
-      "commit": "9b94f2a7512a8d878c10ce22052a11489ded0efb",
-      "message": "Repository does not contain a root package.json.",
+      "commit": "a88bd75dc180388e39caa4e685cc1c9e6765d07a",
       "repository": "https://github.com/billLiao/awesome-dsh-plugin",
-      "status": "rejected"
+      "status": "deferred"
     },
     {
       "code": "missing_runtime",
@@ -1101,16 +1199,19 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "64b69f125139adc4310fd12a66e5051f4cd4bc89",
       "repository": "https://github.com/bitterSmilezzz/dsh-mac-desktop",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "48217917fb63f5476c40182bc20dcd03208d4f77",
       "repository": "https://github.com/bitterSmilezzz/dsh-model-selector",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "874b80376635d55a0e118c7663c804974c449384",
       "repository": "https://github.com/bitterSmilezzz/dsh-skill-manager",
       "status": "listed"
@@ -1123,21 +1224,25 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "1bbc45f6211c2173fdace24eb34256692cade349",
       "repository": "https://github.com/Blackspace2/dsh-math-copy",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "40ed6a8a7c8550e87fe853229b58ce8bda78bc50",
       "repository": "https://github.com/Blaczz/dsh-achievements",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "9bc602b0a2849eb6583e8cfff19fb71312639052",
       "repository": "https://github.com/Blaczz/dsh-deck-builder",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "2970030e6931b377f5b2509a7057c177b1ce5529",
       "repository": "https://github.com/Blaczz/dsh-soundscape",
       "status": "listed"
@@ -1151,7 +1256,7 @@
     },
     {
       "code": "missing_runtime",
-      "commit": "5e818f9b720043d9b093ff26544c6e87f4abcb30",
+      "commit": "a8822af6891800119ac5075e7a395eae72dfe90e",
       "message": "The declared runtime entry is not committed.",
       "repository": "https://github.com/BlockRunAI/dsh-clawrouter",
       "status": "rejected"
@@ -1171,6 +1276,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "9a1fa32ce0205eafb1fd144465ab060a62f9fd62",
       "repository": "https://github.com/blueWhalei/dsh-verify-gate",
       "status": "listed"
@@ -1183,6 +1289,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "94cbafe397073be3e6e8e5241d47db13e9323784",
       "repository": "https://github.com/bobcat848/dsh-calculator",
       "status": "listed"
@@ -1195,6 +1302,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "8dedce1ee1a463cfb21e2ac0d8518a8d3c67c5aa",
       "repository": "https://github.com/bobleer/dsh-acp-for-bitfun",
       "status": "listed"
@@ -1215,7 +1323,7 @@
     },
     {
       "code": "missing_runtime",
-      "commit": "20779490ab233d15e3a3332ed5cecd2a582a9ecf",
+      "commit": "0e81996a4114908489640fc1730307cb6c6d3754",
       "message": "The declared runtime entry is not committed.",
       "repository": "https://github.com/bowenliang123/dsh-context",
       "status": "rejected"
@@ -1228,16 +1336,15 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "17779fcb644ba75df5704962baacc79e0aa0e56a",
       "repository": "https://github.com/bpc-oss/dsh-web-billing",
       "status": "listed"
     },
     {
-      "code": "missing_bundle_manifest",
-      "commit": "0ef90ce8c3bfd176d4c5a047e243ff9e6dfe5c0d",
-      "message": "Root package.json does not declare dsh.bundle.patch.",
+      "commit": "947aa17c6c2b2430bcb0b756ead12cd33f113274",
       "repository": "https://github.com/bradeGithub/DSH-Plugins-Marketplace",
-      "status": "rejected"
+      "status": "deferred"
     },
     {
       "code": "missing_runtime",
@@ -1261,6 +1368,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "18cfc7f5b52bd1dfa2a6571376fa106b3973bacd",
       "repository": "https://github.com/brittanistrehlowll-oss/dsh-quota-panel",
       "status": "listed"
@@ -1274,7 +1382,7 @@
     },
     {
       "code": "missing_bundle_manifest",
-      "commit": "4effde30a34e2f1c28f2cf29ee0b03eeec694796",
+      "commit": "c52d053952de90652b50d9e9e689ef58b8047940",
       "message": "Root package.json does not declare dsh.bundle.patch.",
       "repository": "https://github.com/bruc3van/dsh-desktop",
       "status": "rejected"
@@ -1294,6 +1402,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "114f75999d8d477951cbd91ee4d1e0f5360d6627",
       "repository": "https://github.com/bugmaker2/dsh-plugin-template",
       "status": "listed"
@@ -1306,12 +1415,12 @@
       "status": "rejected"
     },
     {
-      "commit": "bb5b8f2b9063a792b07f6540bede839b9313c50a",
+      "commit": "7608f454aa758acaa20094c89f5af6b9c0c5e3a2",
       "repository": "https://github.com/bwndlct/dsh-session-audit",
       "status": "listed"
     },
     {
-      "commit": "1f455b10ab9d163de2dd84254490b5fcdd320f13",
+      "commit": "eb18389192e36934718877fd7c6eb397f5cf1cd4",
       "repository": "https://github.com/bwndlct/dsh-session-export",
       "status": "listed"
     },
@@ -1330,6 +1439,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "24b4b8114b73140d141314949ea5e9a2464bb211",
       "repository": "https://github.com/ByronLeeeee/dsh-legal-dashboard",
       "status": "listed"
@@ -1356,6 +1466,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "462ea667042ace016c9ce4baa2a6a2bf2b3556f8",
       "repository": "https://github.com/c3ll256/dsh-toy",
       "status": "listed"
@@ -1396,31 +1507,37 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "0a728eee93d065ff6743d7bbd50fa3b3c6ddc836",
       "repository": "https://github.com/CAOGGL/dsh-ding",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "f3f71e75d03def9f6aa2f10ba54eef31ada597b2",
       "repository": "https://github.com/caopu16/dsh-llm-kiro",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "b0d5a3d766eea8a2b361ec3626d64eb2d2c152c7",
       "repository": "https://github.com/caopu16/dsh-mcp-json",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "d522281fcdf81fb08984650800294b0058b89301",
       "repository": "https://github.com/Carpon39038/dsh-image-theme",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "e7d3bfbbac42f178590d6af797c630e6932debe5",
       "repository": "https://github.com/CaseyTso/analyze_image_tool",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "9ff1b958db07669304c7d8378a11657499f70e43",
       "repository": "https://github.com/causebefore/dsh-pomodoro",
       "status": "listed"
@@ -1433,7 +1550,7 @@
       "status": "rejected"
     },
     {
-      "commit": "6a8956678fc3746ed14b62bfee066ee8fc68f3cb",
+      "commit": "dde5c860eaef6346e15363bf76e99c839d032934",
       "repository": "https://github.com/ccch1mneyyy/dsh-TUI",
       "status": "listed"
     },
@@ -1452,6 +1569,13 @@
       "status": "rejected"
     },
     {
+      "code": "missing_bundle_manifest",
+      "commit": "c407a9ff132caa34465a8a7c60803baa11b9dbb4",
+      "message": "Root package.json does not declare dsh.bundle.patch.",
+      "repository": "https://github.com/Ceelog/dsh-plugins",
+      "status": "rejected"
+    },
+    {
       "code": "missing_runtime",
       "commit": "67cd99210c17564aff3183cae043ba7d2df085bc",
       "message": "The declared runtime entry is not committed.",
@@ -1459,16 +1583,24 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "ec937c3bff4de193da1d105862336a8bc710fbcf",
       "repository": "https://github.com/cesaryike/dsh-image-to-path",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "6a6908f12c5fe824603a0bb9936482106232b79f",
       "repository": "https://github.com/ch1bug/dsh-mimo-agent-tools",
       "status": "listed"
     },
     {
+      "commit": "872f7f92c256e916483449f8235faa22d74629c8",
+      "repository": "https://github.com/ch1bug/dsh-voice-mimo",
+      "status": "listed"
+    },
+    {
+      "cached": true,
       "commit": "7e979a5d7ee62dc0cb75b19c816141fabc9188c9",
       "repository": "https://github.com/ch1bug/dsh-wsl-bridge",
       "status": "listed"
@@ -1523,16 +1655,24 @@
       "status": "rejected"
     },
     {
+      "commit": "3f10cc7227fb2150fcea466cf7f36f20b91ec5bf",
+      "repository": "https://github.com/chendefine/dsh-plugins-plan-usage",
+      "status": "listed"
+    },
+    {
+      "cached": true,
       "commit": "1c92143990942f3f84d93266a51f70c2de01892e",
       "repository": "https://github.com/cheng-nan01/dsh-tool-playwright",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "a858eaaa116f83e0adbf546ce82c27a91e4d478e",
       "repository": "https://github.com/ChengChe106/dsh-session-cost",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "5ac6359f9b115efec3fc72b37fb3cac15d9a75f7",
       "repository": "https://github.com/ChengChe106/dsh-web-auto-open",
       "status": "listed"
@@ -1573,6 +1713,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "9d21edb93db84c6f0673f5f7943009be277535e8",
       "repository": "https://github.com/chenluyao680/dsh-plugin-control",
       "status": "listed"
@@ -1586,7 +1727,7 @@
     },
     {
       "code": "missing_bundle_manifest",
-      "commit": "4601223f5581a9e7ac4e546ff83727f660ee9af9",
+      "commit": "b341ccc4b13584249eb3f9895c75ce6fb8e20ffe",
       "message": "Root package.json does not declare dsh.bundle.patch.",
       "repository": "https://github.com/chenw2759-wq/dsh-easyssh",
       "status": "rejected"
@@ -1599,6 +1740,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "488bfb5d5ea2b69b7997ee20b31b98920c525da5",
       "repository": "https://github.com/chenw2759-wq/dsh-plugin-healthcheck",
       "status": "listed"
@@ -1611,11 +1753,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "8e4fabe22dd4721062edb06cc6ebf0477fd2d824",
       "repository": "https://github.com/Chi-hong22/dsh-latexcp",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "4723fd2f42617056017a97d761dfa3159b8e19d5",
       "repository": "https://github.com/Chi-hong22/dsh-mdbox",
       "status": "listed"
@@ -1649,11 +1793,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "f124a1544390c0d1d0904f3768b6554c14bc6879",
       "repository": "https://github.com/ChuanTianML/dsh-open-with",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "52ec86380fc8afa70f1ef68b65459bc2a2ac2347",
       "repository": "https://github.com/ChuanTianML/dsh-share",
       "status": "listed"
@@ -1673,18 +1819,20 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "4c6b464f58c417a62f28fc7e12c42dae6f7ef129",
       "repository": "https://github.com/chushixixin/dsh-harness-mcp-server",
       "status": "listed"
     },
     {
       "code": "missing_bundle_manifest",
-      "commit": "1763d3d1c7054e4ae958c2cf0f57ab92f9f51e9b",
+      "commit": "65bdf95dd6a02e1d3fd88ba1e1b03a1bc0de30c8",
       "message": "Root package.json does not declare dsh.bundle.patch.",
       "repository": "https://github.com/chyra-moon/deepseek-harness-desktop",
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "0e010ddb054e7e6b987c366fbf9b50a7f1c480e2",
       "repository": "https://github.com/ciceroyang/dsh-report-studio",
       "status": "listed"
@@ -1701,6 +1849,13 @@
       "commit": "5c5d0f2efccdda64d249421565b4be5646ec8dc8",
       "message": "Root package.json does not declare dsh.bundle.patch.",
       "repository": "https://github.com/Civitasv/dsh-plugin-colorscheme",
+      "status": "rejected"
+    },
+    {
+      "code": "missing_bundle_manifest",
+      "commit": "c69db7f4a91799ec88ff20816c531d7aadfd4513",
+      "message": "Root package.json does not declare dsh.bundle.patch.",
+      "repository": "https://github.com/Civitasv/dsh-plugin-open-editor",
       "status": "rejected"
     },
     {
@@ -1746,6 +1901,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "9511c7b961faafb35f31e6b0e297524bf377aeaf",
       "repository": "https://github.com/codeAnqiang-ma/dsh-superpowers",
       "status": "listed"
@@ -1759,7 +1915,7 @@
     },
     {
       "code": "missing_bundle_manifest",
-      "commit": "a1ff28e433f85dee447b8c1e7ac7b1062899626b",
+      "commit": "30a8d148ba8579ed7e59996506add691c6116853",
       "message": "Root package.json does not declare dsh.bundle.patch.",
       "repository": "https://github.com/coderPerseus/dsh-hub",
       "status": "rejected"
@@ -1808,7 +1964,7 @@
     },
     {
       "code": "missing_manifest",
-      "commit": "31b07b2439eef9e77c7a03fce40bdf940ae44f12",
+      "commit": "8070052fba29695c18819d0ea167f61656923cc8",
       "message": "Repository does not contain a root package.json.",
       "repository": "https://github.com/cooljser/dsh-plugin-portal",
       "status": "rejected"
@@ -1825,6 +1981,13 @@
       "commit": "23303e4639010fb82c977cfce34bcda982d6635f",
       "message": "Root package.json does not declare dsh.bundle.patch.",
       "repository": "https://github.com/cpj-dev/dsh-plugin-cc",
+      "status": "rejected"
+    },
+    {
+      "code": "missing_manifest",
+      "commit": "484f663b392fff4ace41dd70a76afdd982bc1ed1",
+      "message": "Repository does not contain a root package.json.",
+      "repository": "https://github.com/crabossss/dsh-desktop-pet",
       "status": "rejected"
     },
     {
@@ -1849,6 +2012,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "05f7a8eeff3fbc720417841bb733d276d8b1f67d",
       "repository": "https://github.com/CrazyShout/dsh-ssh-remote",
       "status": "listed"
@@ -1861,9 +2025,17 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "9e6b891c81d5302b424930f6634f0f682a19267a",
       "repository": "https://github.com/CriscolTheCoder/dsh-plugin-browser",
       "status": "listed"
+    },
+    {
+      "code": "missing_bundle_manifest",
+      "commit": "5582b6035563bf6146a35746b9259a0dbbca5e23",
+      "message": "Root package.json does not declare dsh.bundle.patch.",
+      "repository": "https://github.com/crTnT/dsh-plugin-suite",
+      "status": "rejected"
     },
     {
       "code": "missing_bundle_manifest",
@@ -1922,6 +2094,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "f2dd75d629a722e8735c75d0ef607b9ffdf7d6a4",
       "repository": "https://github.com/cui-stack/dsh-workspace-digest",
       "status": "listed"
@@ -1955,6 +2128,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "b908b2da458f751dcee8a57df688c088144ff5e1",
       "repository": "https://github.com/cyanseek/dsh-landscape",
       "status": "listed"
@@ -2009,6 +2183,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "1dd3dcd1ad152c6a4acd13eb94b5e5a4ec2b0337",
       "repository": "https://github.com/CZX2244/dsh-bilibili",
       "status": "listed"
@@ -2030,14 +2205,16 @@
     {
       "commit": "2bb46c8ba50a0d74d13d398349cf7095321ace72",
       "repository": "https://github.com/D-Robotics/dsh-plugin-rdk",
-      "status": "listed"
+      "status": "unresolved"
     },
     {
+      "cached": true,
       "commit": "25ab028307072e2745fbab3764b234aa893a71c5",
       "repository": "https://github.com/Da1dr1em/dsh-ego-browser",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "db96586db61f6e27dcd8769c1f543625f855888f",
       "repository": "https://github.com/dancingmemory/dskin",
       "status": "listed"
@@ -2064,6 +2241,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "3edab129bf7474093d634e9cfac2e5314161aa31",
       "repository": "https://github.com/Dbi-Eshuh/dsh-thinking-status-customizer",
       "status": "listed"
@@ -2090,13 +2268,17 @@
       "status": "rejected"
     },
     {
-      "code": "missing_bundle_manifest",
-      "commit": "47f943859bef60e4160492346772ded9b24f765a",
-      "message": "Root package.json does not declare dsh.bundle.patch.",
-      "repository": "https://github.com/deepseek-ai/deepseek-harness",
-      "status": "rejected"
+      "commit": "0ee57a0736af1a5bdeeb4e45403ee90b087dfffb",
+      "repository": "https://github.com/DEEP-IOS/dsh-humanizer",
+      "status": "listed"
     },
     {
+      "commit": "47f943859bef60e4160492346772ded9b24f765a",
+      "repository": "https://github.com/deepseek-ai/deepseek-harness",
+      "status": "deferred"
+    },
+    {
+      "cached": true,
       "commit": "fb854355b89e495ded090b9e2eb94c33430d2366",
       "repository": "https://github.com/Degurechaff57/dsh-openapi",
       "status": "listed"
@@ -2109,11 +2291,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "f14d34c02e2a5ba41247a5baf1524e4a2a7c38a0",
       "repository": "https://github.com/Demogorgon314/dsh-resume-plugin",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "06484a2b02682e631bd3b65f6a93f820d5dfa2c5",
       "repository": "https://github.com/detpecca/dsh-llm-wiki",
       "status": "listed"
@@ -2127,7 +2311,7 @@
     },
     {
       "code": "missing_bundle_manifest",
-      "commit": "25b1d8d2091216859a175303de01fde7dfa165d8",
+      "commit": "510754292a5c76e539833bacf58ff84820ebdf18",
       "message": "Root package.json does not declare dsh.bundle.patch.",
       "repository": "https://github.com/Devin-AXIS/iPolloWork",
       "status": "rejected"
@@ -2140,6 +2324,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "dce6b795430f725584f45ac83e3e1e56c7f6b2a1",
       "repository": "https://github.com/DGPisces/deepseek-harness-openai-oauth",
       "status": "listed"
@@ -2159,6 +2344,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "9e1fbdcce557b6ef4910a821a520c4d59d109b3d",
       "repository": "https://github.com/dHR-P/dsh-layout-tools",
       "status": "listed"
@@ -2179,7 +2365,7 @@
     },
     {
       "code": "missing_bundle_manifest",
-      "commit": "2444fc8c073eea69cc68d99d65db73e2762dd250",
+      "commit": "0d3aec2f5773068ec38b0cad6f8ed0d4e2d9550b",
       "message": "Root package.json does not declare dsh.bundle.patch.",
       "repository": "https://github.com/dingkaihu63/dsh-robotic-harness",
       "status": "rejected"
@@ -2199,6 +2385,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "3bf331e6974cf4f9d4a2aa963152196baab5f044",
       "repository": "https://github.com/Dino6021/dsh-usage-cost",
       "status": "listed"
@@ -2218,6 +2405,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "f41f2e4ada0d2cb859f43ac9df83fd6e0fbab59e",
       "repository": "https://github.com/djh2203/dsh-refined",
       "status": "listed"
@@ -2328,97 +2516,120 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "62af03d351b9b72b2dabeb83c384833048f6d287",
       "repository": "https://github.com/dongsheng123132/dsh-2origin",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "2820860ae3d80fb04382d13e11be0b5270929dbb",
       "repository": "https://github.com/dongsheng123132/dsh-action-parity",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "eb30acaf3461c1dd67f8879172ed76d2ef61db9a",
       "repository": "https://github.com/dongsheng123132/dsh-audit-bundle",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "2d314167f254053f9d9385937540df7c31a9d85b",
       "repository": "https://github.com/dongsheng123132/dsh-benchmark",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "0ea2f599d0c3c5f92d8bd5ba3ae106d49892c0c9",
       "repository": "https://github.com/dongsheng123132/dsh-cache-stabilizer",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "8cec5be70bd67442d52364400ac04cec31d3cf3c",
       "repository": "https://github.com/dongsheng123132/dsh-cad-review",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "5ede086782016af6068a6f2afbe3bff7f0da2877",
       "repository": "https://github.com/dongsheng123132/dsh-capability-receipt",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "d92feec97153d118c0947388ae49d46981ad0873",
       "repository": "https://github.com/dongsheng123132/dsh-cost",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "7acc5557fbf9c2d5563ea9edbd9bd9ff2637ef01",
       "repository": "https://github.com/dongsheng123132/dsh-lineage",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "340a38b0505b51b717b20244c597ec9257a33f25",
       "repository": "https://github.com/dongsheng123132/dsh-narrative-ledger",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "4a6ac7c96950be95103efd95a044c21821d2d94b",
       "repository": "https://github.com/dongsheng123132/dsh-policy-drift-proof",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "f2074dcf7af62d0e4b922a19fa8de0aed6dd65f9",
       "repository": "https://github.com/dongsheng123132/dsh-profile-lock-proof",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "b589b8d9d56ae468727234c618ae0d9a05d66809",
       "repository": "https://github.com/dongsheng123132/dsh-recovery-proof",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "25da74d2121a7e56337644d27dac9845c93bcf5a",
       "repository": "https://github.com/dongsheng123132/dsh-release-proof",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "e4e511a2411e7f11ae8910623f0af8b968f533ab",
       "repository": "https://github.com/dongsheng123132/dsh-surface-contract-proof",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "b37a63cae2654044942a5dd44b6f2bc8591f5ec6",
       "repository": "https://github.com/dongsheng123132/dsh-switch",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "4ce4af29c8724c5340b789fea77a9d653fdb2a52",
       "repository": "https://github.com/dongsheng123132/dsh-terminal",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "b23f0b46763043f9febf8471a46881472e793344",
       "repository": "https://github.com/dongsheng123132/dsh-windows-readiness-proof",
       "status": "listed"
     },
     {
-      "commit": "61ab7881e09c23a930e676cd9e450fdef436b14c",
+      "commit": "70ac32091aa5a44c79067cc0ebfd61541f66f271",
+      "repository": "https://github.com/dongsheng123132/dsh-xiapan-media",
+      "status": "listed"
+    },
+    {
+      "commit": "19672b5c7c06151d8d0af6760830ee2d27371665",
       "repository": "https://github.com/dongsheng123132/task-passport",
       "status": "listed"
     },
@@ -2466,12 +2677,20 @@
     },
     {
       "code": "missing_runtime",
+      "commit": "6c7c9a58ff93cef7117cbfc3b48a295039cd7c45",
+      "message": "The declared runtime entry is not committed.",
+      "repository": "https://github.com/drfccv/dsh-theme-neko",
+      "status": "rejected"
+    },
+    {
+      "code": "missing_runtime",
       "commit": "4637b81e998c2e908a216fc7f899207d6a021e10",
       "message": "The declared runtime entry is not committed.",
       "repository": "https://github.com/Drifter-yh/dsh-tool-policy",
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "baf8d166e27b36805da4884a1b30db997cdf9708",
       "repository": "https://github.com/drowned-fish1/deepseek-harness-skillx",
       "status": "listed"
@@ -2526,21 +2745,25 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "2d18515bf741f7832f42604b5b63e7ed146f8c21",
       "repository": "https://github.com/DTSFO/dsh-conversation-rewind",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "714d3404c9e1c67db2b80322e3db97ddbdb7186c",
       "repository": "https://github.com/DTSFO/dsh-model-modes",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "a87301955413f533cc606bcc76b65ccde5f0bf57",
       "repository": "https://github.com/duyefeng/dsh-browser",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "93f44d07d892aa7a6b7cfbf59da7cc9186b9bb43",
       "repository": "https://github.com/dylan121322/llm-adaptive",
       "status": "listed"
@@ -2554,17 +2777,19 @@
     },
     {
       "code": "missing_bundle_manifest",
-      "commit": "7343c5ec2d20c25abc4f45cc23adbba2c03d1765",
+      "commit": "eb762a570b172a06bc9242e1911e4b2c640c6f42",
       "message": "Root package.json does not declare dsh.bundle.patch.",
       "repository": "https://github.com/Easyhoov/deepseek-harness-desktop",
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "86b95abedb820b44be6501f38a8fc04f010aeb01",
       "repository": "https://github.com/echo-xianyu/dsh-better-chat-history",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "2fdb831de692d6e18ce032e5385bc8766dc8078e",
       "repository": "https://github.com/echo-xianyu/dsh-go-rotator",
       "status": "listed"
@@ -2591,13 +2816,14 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "096e3441a0709de1db7a4f72fdef16768ec51df5",
       "repository": "https://github.com/Elaina-real/dsh-tiered-approval",
       "status": "listed"
     },
     {
       "code": "missing_manifest",
-      "commit": "941e430d6d38f2340fd8fd1c8e20da1eb6d95082",
+      "commit": "b7c1a1491fb817ec6277a34bd806739901ad59b7",
       "message": "Repository does not contain a root package.json.",
       "repository": "https://github.com/Electricitysheep/dsh-handbook",
       "status": "rejected"
@@ -2610,11 +2836,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "3ba37a11c088ee1992d15d2e6bd1b738d62e7e92",
       "repository": "https://github.com/elementor-i/dsh-agentmemory",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "b69fa6ec8018e10b017645d5232f480f0f8354f3",
       "repository": "https://github.com/Elohia/dsh-plugin-mm-vision",
       "status": "listed"
@@ -2641,31 +2869,37 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "9ebb374308a5073f12db57e36746a0e44a798394",
       "repository": "https://github.com/Equinox7379/dsh-config-watch",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "b150bc868217d9d24c16438d5b0b7964e5f28420",
       "repository": "https://github.com/Equinox7379/dsh-daily-brief",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "42dff86317572ed6f6709b7ecbd07a7017cd646b",
       "repository": "https://github.com/Equinox7379/dsh-session-repair",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "f911a87b624df8b0bcdf3b5b55eca553525db7ac",
       "repository": "https://github.com/Equinox7379/dsh-skill-search",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "0cdadb019c95a4bf2227b01c9aa1f94931715f02",
       "repository": "https://github.com/Equinox7379/dsh-turn-watchdog",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "aa4811d565be48a25f679d29318cd56748f7302a",
       "repository": "https://github.com/Equinox7379/dsh-update-radar",
       "status": "listed"
@@ -2685,6 +2919,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "586831ab6333ffa78e4b31f1799429c822ad6197",
       "repository": "https://github.com/Ericwong5021/deepseek-plugin-store",
       "status": "listed"
@@ -2718,21 +2953,25 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "1e1965f51ace195272697ff55b9dc8d43798e6a6",
       "repository": "https://github.com/EvilIrving/dsh-context-proxy",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "7e5fb648ac9361e6705b4e139dda9da8fdb5eaac",
       "repository": "https://github.com/EvilIrving/dsh-proof",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "e51736ba583830462e0cca4d808ec3e0b7001bcd",
       "repository": "https://github.com/EvilIrving/dsh-repro",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "b65f244a0acbc4c1dabc1adb435accdd0ce877ee",
       "repository": "https://github.com/f0909172434/dsh-plugin-verified-search",
       "status": "listed"
@@ -2746,7 +2985,7 @@
     },
     {
       "code": "invalid_manifest",
-      "commit": "2eeaceda5d03154560241ee6bb40e5ef216460be",
+      "commit": "9eb72da5c88ae72affd29b3ec6aba7b50879cb9a",
       "message": "Root package.json must contain bounded npm name, version, and license strings.",
       "repository": "https://github.com/fakechris/dsh-track",
       "status": "rejected"
@@ -2780,6 +3019,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "6f4e6ab121ada7e3a6adfe6808a842de3cd1ff28",
       "repository": "https://github.com/feibi-mochi/deepseek-harness-wallet",
       "status": "listed"
@@ -2834,16 +3074,15 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "9426db4e857b992ab7714663b527fb678c7622f7",
       "repository": "https://github.com/fflow2023/dsh-usage-cost",
       "status": "listed"
     },
     {
-      "code": "missing_bundle_manifest",
-      "commit": "b912d6fa826c26e6c006d15a41ca1527ed916b3a",
-      "message": "Root package.json does not declare dsh.bundle.patch.",
+      "commit": "8cef3d7163e490a89261eb7623d577bb2ea67fa3",
       "repository": "https://github.com/Fisfzy/ego-browser",
-      "status": "rejected"
+      "status": "deferred"
     },
     {
       "code": "missing_bundle_manifest",
@@ -2867,11 +3106,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "6517cac8acd7dafbb7c6ddca5acf859ecde7e693",
       "repository": "https://github.com/fishlikewater/dsh-mcp-manager",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "a1fcb1c72b902c09b140f560bf2f689a5c8a93b2",
       "repository": "https://github.com/Fishquito7/dsh-skill-viewer",
       "status": "listed"
@@ -2912,17 +3153,19 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "586967423696dfec86d668c5604231aecccbe205",
       "repository": "https://github.com/fly3366/DeepJIT",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "d6afee4bb594164193b7e262d6539d0c55b54a8b",
       "repository": "https://github.com/flymysql/dsh-memory",
       "status": "listed"
     },
     {
-      "commit": "b582e79e5126d7f713f4907a018cc35951296f61",
+      "commit": "1ad7e3df85c05813b0a18c45608549aba9dad528",
       "repository": "https://github.com/flymysql/dsh-remote",
       "status": "listed"
     },
@@ -2934,16 +3177,18 @@
       "status": "rejected"
     },
     {
-      "commit": "0d82e4bd41c18844f7c2eb31e92fc2164a01aa33",
+      "commit": "c83b1121f5f691adbe36c1a75f2e189c20828270",
       "repository": "https://github.com/Flyvhidbwo/dsh-vision-proxy",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "76c1c5acbb9cc51584e14199d4fc588a4699f965",
       "repository": "https://github.com/forrestahha/dsh-voice-input",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "ff023e76d7f1c80f508bae00f315d854e5234ecd",
       "repository": "https://github.com/forrestsweet/dsh-agent-replay",
       "status": "listed"
@@ -2956,11 +3201,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "cbe3ab2c873a325180ab5c70163bd896ca655f67",
       "repository": "https://github.com/fountunt/dsh-session-cleaner",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "2c99d177db51bfa18683b4e3c13d125ec0200367",
       "repository": "https://github.com/franksong2702/dsh-codex-connect",
       "status": "listed"
@@ -2994,19 +3241,29 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "0a0f396240d955e787b9ad8d64c91fd0151bfb3f",
       "repository": "https://github.com/Frost-Reed/blocker-notify",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "a0abfaad1401a3ee83ec53db272ed98cde3f2531",
       "repository": "https://github.com/fryghost/deepseek-eyes",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "7af70bca08049834b6069c24c60e2fe6793ff0c7",
       "repository": "https://github.com/fuhefei/dsh-sentinel",
       "status": "listed"
+    },
+    {
+      "code": "missing_manifest",
+      "commit": "1e63eef6b61b1c23505ee2fbbf843fefe69ec3b9",
+      "message": "Repository does not contain a root package.json.",
+      "repository": "https://github.com/FuRongJun-1999/CommonTrustProtocol",
+      "status": "rejected"
     },
     {
       "code": "missing_manifest",
@@ -3037,26 +3294,31 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "216ad448872eb0c35dddce5dc7f9e156034d9ac5",
       "repository": "https://github.com/GengDaPeng/dsh-agent-message",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "51ca522982e44e2d4d01a5dfddc76c3a879ed3b9",
       "repository": "https://github.com/gezi-wen/sage-mem",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "79409854947d51cd456f5bb57ed481e84ed2dcec",
       "repository": "https://github.com/gezi-wen/sage-meta",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "21594b7c2216dd56a09ff0b2a75c314a07cb53a3",
       "repository": "https://github.com/gezi-wen/sage-persona",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "db97c0ea49767d7e73166d8d57a13e54970533e4",
       "repository": "https://github.com/Ghost011118/dsh-balance-meter",
       "status": "listed"
@@ -3069,6 +3331,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "c3030a6beac3a770711d1624e546a99aea014e54",
       "repository": "https://github.com/GIGHT111/dsh-workspace-inspector",
       "status": "listed"
@@ -3089,7 +3352,7 @@
     },
     {
       "code": "missing_manifest",
-      "commit": "1ee3b8d6a85b03d4ce49a895842922f2866b551a",
+      "commit": "67616cead4bbd046127b09c73de7d50a0fb1a87d",
       "message": "Repository does not contain a root package.json.",
       "repository": "https://github.com/gmryuuko/dsh-gui",
       "status": "rejected"
@@ -3109,11 +3372,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "b0b2c7da9c9c2247f469af97f1d5fdd3d1481c39",
       "repository": "https://github.com/GooodWei/context-vista",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "53909b1219dd042b87df077bb530d4a8b6b4fe9a",
       "repository": "https://github.com/gordonlu/dsh-context-lens",
       "status": "listed"
@@ -3196,6 +3461,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "9562b966d2fe058676fe3163533d003c6913d7cc",
       "repository": "https://github.com/gxpppp/dsh-search-mcp",
       "status": "listed"
@@ -3229,6 +3495,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "10480f4b72c58883accd472fa6773d25e0533b53",
       "repository": "https://github.com/haiyoucuv/dsh-model-provider-label",
       "status": "listed"
@@ -3241,11 +3508,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "2908d2dca74c2978a641d65544bdfff6b54d9eff",
       "repository": "https://github.com/Han-1413141/dsh-cost-meter",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "30a881be1e6c938a420c4afdbfd0ab70dc11c40d",
       "repository": "https://github.com/Han-1413141/dsh-sticky-disclosure",
       "status": "listed"
@@ -3265,6 +3534,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "8828a8df4386cad5d60f02a8ea8d0ada596dd31c",
       "repository": "https://github.com/Haoran2099/dsh-focal",
       "status": "listed"
@@ -3284,6 +3554,13 @@
       "status": "rejected"
     },
     {
+      "code": "missing_manifest",
+      "commit": "d366dd532f6dbb02b5240a137ab90b52a4d2fbcf",
+      "message": "Repository does not contain a root package.json.",
+      "repository": "https://github.com/HarcoChen/dsh-plugin-guide",
+      "status": "rejected"
+    },
+    {
       "code": "missing_bundle_manifest",
       "commit": "b4adb6fa5426d83709ba0f91c6c33abe00b0e586",
       "message": "Root package.json does not declare dsh.bundle.patch.",
@@ -3291,11 +3568,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "1a2b9dba8d010858e59ab10f9e6d60e1e9a9efbe",
       "repository": "https://github.com/hashdiana/dsh-archived-sessions",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "74f70c68cd7f9566585a381bedc354aa31312131",
       "repository": "https://github.com/hashdiana/dsh-token-usage",
       "status": "listed"
@@ -3351,7 +3630,7 @@
     },
     {
       "code": "missing_bundle_manifest",
-      "commit": "b77b63c5af42d47b44bb91d3bf33d58a0d1326ba",
+      "commit": "3c02aea229076ff55ae037a9be800594bc8540bc",
       "message": "Root package.json does not declare dsh.bundle.patch.",
       "repository": "https://github.com/hccccc01333/dsh-excel-chat",
       "status": "rejected"
@@ -3364,6 +3643,14 @@
       "status": "rejected"
     },
     {
+      "code": "missing_manifest",
+      "commit": "0c58b6099960bcdb5954295116b33a12c20b80a4",
+      "message": "Repository does not contain a root package.json.",
+      "repository": "https://github.com/hchao3335-maker/dsh-lan-gate",
+      "status": "rejected"
+    },
+    {
+      "cached": true,
       "commit": "a3f130852db0b7d86a819a22586b3f37029ae360",
       "repository": "https://github.com/He2way/dsh-task-console",
       "status": "listed"
@@ -3383,28 +3670,37 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "12b8b9f6bbaa86aebe9386b2e5c386ce7cb13784",
       "repository": "https://github.com/hellodigua/dsh-emoji",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "b4e5ad289d77fe099998566f007bf745853dff49",
       "repository": "https://github.com/hellodigua/dsh-share",
       "status": "listed"
     },
     {
+      "commit": "66c1d47dccad719c40111db1926c2f9ec8931e37",
+      "repository": "https://github.com/hellosky983/dsh-mc-launcher",
+      "status": "listed"
+    },
+    {
+      "cached": true,
       "commit": "8847ad07ea454ba752a84a83d3194f1dc8d5304c",
       "repository": "https://github.com/hellosky983/dsh-qrcode",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "ac5be8668e2a7e073086c35df3cff7df786c5b18",
       "repository": "https://github.com/hellosky983/dsh-skillradar",
       "status": "listed"
     },
     {
       "code": "missing_bundle_manifest",
-      "commit": "4b24dadbbd854a8f80f0571a012934dfdec4677f",
+      "commit": "688173bf8eed0612d5ad0c4afc1a0d704e5ca1fa",
       "message": "Root package.json does not declare dsh.bundle.patch.",
       "repository": "https://github.com/hellosz/dsh-ntfy",
       "status": "rejected"
@@ -3424,11 +3720,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "4a1fc8069dc083451fe7a34ba5c175a5c2966bfb",
       "repository": "https://github.com/HenC49/dsh-mcp-manager",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "5901b349a55e4aab9431877f63f67269b2d7b7b5",
       "repository": "https://github.com/herminger/dsh-web-search-responses",
       "status": "listed"
@@ -3441,16 +3739,14 @@
       "status": "rejected"
     },
     {
-      "commit": "ef0e7f34e37dd00ebf99df43ce464397f4067544",
+      "commit": "f433cce24d6f5fcd5cc762b2d6e46015f12804a3",
       "repository": "https://github.com/hi-wenw/dsh-telegram-channel",
       "status": "listed"
     },
     {
-      "code": "missing_bundle_manifest",
-      "commit": "4bb8605a385cab9f215b3740a93b8440d655cf7f",
-      "message": "Root package.json does not declare dsh.bundle.patch.",
+      "commit": "ff0c15475c098c30365b99c7d930b11c2ba5e7a5",
       "repository": "https://github.com/hialuoy/deepseek-harness-desktop",
-      "status": "rejected"
+      "status": "deferred"
     },
     {
       "code": "missing_bundle_manifest",
@@ -3509,6 +3805,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "6ff526595088d210a384291a2235f3e9169cc62c",
       "repository": "https://github.com/Hongcheng-LI/dsh-synbio",
       "status": "listed"
@@ -3521,6 +3818,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "86b17d39f36979aeb80e745349ebeeeca5ff6e0a",
       "repository": "https://github.com/HongzhongL/dsh-hotswap",
       "status": "listed"
@@ -3533,6 +3831,11 @@
       "status": "rejected"
     },
     {
+      "commit": "df3b89620032b8c738d889b664b7d2a7ba6faa6a",
+      "repository": "https://github.com/Hotsteel2901/dsh-client-ui-mobile-adapt",
+      "status": "deferred"
+    },
+    {
       "code": "missing_manifest",
       "commit": "dae0fe95d0cbadccffe2e6002947f35c2d854a6e",
       "message": "Repository does not contain a root package.json.",
@@ -3540,6 +3843,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "5762a21fa20dad5fc486ae6670c620b96adee92c",
       "repository": "https://github.com/Howe829/dsh-sonar",
       "status": "listed"
@@ -3559,16 +3863,19 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "6e041c52575af1c69497ef5be9a8a291adc0279f",
       "repository": "https://github.com/HsiangNianian/dsh-auto-continue",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "15d8c9ecadbf1faba5fe3ed14f920cb74975b20b",
       "repository": "https://github.com/Hu9956/dsh-codex-provider",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "47074316abfbe809757b10377f25c5dbb0630518",
       "repository": "https://github.com/huahai0202/dsh-better-archive",
       "status": "listed"
@@ -3581,11 +3888,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "c48a2f5ef2bf40a064b41902ea3c6a03884d28cb",
       "repository": "https://github.com/HuanLinOTO/dsh-plugin-anti-ads",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "5033e91b3f8dc50f1a03b5aa51b2e945ae1bc602",
       "repository": "https://github.com/HuanLinOTO/dsh-plugin-auto-blame",
       "status": "listed"
@@ -3598,16 +3907,19 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "9c66bd6a3f5f8253893b62dd6b49536cd2d1b090",
       "repository": "https://github.com/HuanLinOTO/dsh-plugin-d399",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "036b019165a46d38775c46b7363c53d9739c97c6",
       "repository": "https://github.com/HuanLinOTO/dsh-plugin-interpreters",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "caba035954be5bf011ccc9ce6ed8bcf080cebfe6",
       "repository": "https://github.com/HuanLinOTO/dsh-plugin-mineru",
       "status": "listed"
@@ -3620,26 +3932,36 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "24870ce245b55e91d4e113dee712a69738422bf8",
       "repository": "https://github.com/HuanLinOTO/dsh-plugin-sleep",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "63327c1a40522d288caba40d7dae7b7e5c53dc78",
       "repository": "https://github.com/HuanLinOTO/dsh-plugin-spur",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "c6e5d5cca9fb014bd00e3932c359056697bd5287",
       "repository": "https://github.com/HuanLinOTO/dsh-plugin-ya-workspace-sidebar",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "ff877d29aded4b7aace67abc862d1dfb199ecb01",
       "repository": "https://github.com/HuanLinOTO/dsh-plugin-yet-another-subagent",
       "status": "listed"
     },
     {
+      "commit": "97c37eddf7603653057574f695ce613dc820f623",
+      "repository": "https://github.com/huanyuLv/dsh-balance-tide",
+      "status": "listed"
+    },
+    {
+      "cached": true,
       "commit": "73799bf935ac2dc878fd35a54b79453d417d817f",
       "repository": "https://github.com/huashenglian/dsh-her-eyes",
       "status": "listed"
@@ -3659,19 +3981,20 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "b8df991aee538599b2c0d3a338e494de7b643667",
       "repository": "https://github.com/huguangyu666/dsh-plugin-session-import",
       "status": "listed"
     },
     {
       "code": "missing_bundle_manifest",
-      "commit": "e8c78f74b594dc0879cee52f6069ae6a9c966d38",
+      "commit": "c7f749db44ea1393f97248568931761cc62a71ce",
       "message": "Root package.json does not declare dsh.bundle.patch.",
       "repository": "https://github.com/huiliyi37/dsh-tianshu-build",
       "status": "rejected"
     },
     {
-      "commit": "3df7dec48a0d0189f8954ecc441814fb22e92007",
+      "commit": "7f7d19578c446a6cccff57b33691e805e2529210",
       "repository": "https://github.com/huiliyi37/dsh-tianshu-tui",
       "status": "listed"
     },
@@ -3690,6 +4013,12 @@
       "status": "rejected"
     },
     {
+      "commit": "1d7bf165bbce60d30132716d5d2271736322ae29",
+      "repository": "https://github.com/huolianJiao/dsh-quota-meter",
+      "status": "listed"
+    },
+    {
+      "cached": true,
       "commit": "b7e2b54dae8d8400fd24f55c3b7fcededbdd31d5",
       "repository": "https://github.com/hurry060215-tech/dsh-api-usage-bar",
       "status": "listed"
@@ -3744,6 +4073,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "88ac3def0e5a76f19e27bdf7effc099a7d33bb3e",
       "repository": "https://github.com/hyqhyq3/dsh-mcp-manager",
       "status": "listed"
@@ -3784,6 +4114,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "44b83c182aa02d1be8a0803e8446cb495f93cd8f",
       "repository": "https://github.com/icetomoyo/dsh_workflow",
       "status": "listed"
@@ -3796,6 +4127,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "b1080a1ee785917e0b6a1cc61b78cde10e8e54c6",
       "repository": "https://github.com/ihuajiu/dsh-plugin-finder",
       "status": "listed"
@@ -3844,12 +4176,13 @@
     },
     {
       "code": "missing_bundle_manifest",
-      "commit": "642ea2536b192b55967e26bbd5fa540a85af9e2f",
+      "commit": "0be61cc3dd95cae3b672dddc2c758bd6aabc210e",
       "message": "Root package.json does not declare dsh.bundle.patch.",
       "repository": "https://github.com/innocence1110/DeepSeek-Harness",
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "b851a236ae83851e773c38e24623b43303d3743a",
       "repository": "https://github.com/Isekai-Mfu/dsh-mimo-vision-hint",
       "status": "listed"
@@ -3862,6 +4195,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "6969c322dcf5b56b3c4f167981d9aa0d7a1fce88",
       "repository": "https://github.com/IT-coder-Yy/deepseek-git-guide",
       "status": "listed"
@@ -3874,9 +4208,9 @@
       "status": "rejected"
     },
     {
-      "code": "missing_bundle_manifest",
-      "commit": "9b9e58095e99d8b96058f7d8ff0ad4b4483d1628",
-      "message": "Root package.json does not declare dsh.bundle.patch.",
+      "code": "invalid_manifest",
+      "commit": "584fb2c543ffece4436ca11ea5d09dab8e44566c",
+      "message": "Root package.json must contain bounded npm name, version, and license strings.",
       "repository": "https://github.com/itr-del/dsh-feishu",
       "status": "rejected"
     },
@@ -3888,6 +4222,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "c64ff04a144fa4e68bdd56639bcc0736ee464ede",
       "repository": "https://github.com/jackuh105/remielle-dsh-plugin",
       "status": "listed"
@@ -3942,13 +4277,20 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "defe0b47e0d69c12ce586d4d85bfe4f3ec34edd3",
       "repository": "https://github.com/Jayden-X-L/forkprobe",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "4b9129368004d31df61bde930e9feb21a00b2633",
       "repository": "https://github.com/je00/dsh-codex-agent-bridge",
+      "status": "listed"
+    },
+    {
+      "commit": "57216378d0168dca98e6045c0e5ad01caba7e468",
+      "repository": "https://github.com/jelech/dsh-im-gateway",
       "status": "listed"
     },
     {
@@ -3959,6 +4301,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "fb9eb8d981c05ee55e8d7934e4688c9bef023b21",
       "repository": "https://github.com/jelly-000/dsh-balance-monitor",
       "status": "listed"
@@ -3971,6 +4314,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "a724da34b5c78a9b9ab4a5de79f5d2a05fac1745",
       "repository": "https://github.com/Jesse-njx/dsh-chatnode-wechat",
       "status": "listed"
@@ -4018,6 +4362,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "f59b4f03e7b36648b804fd07e57a53e276da5d81",
       "repository": "https://github.com/Jesse-njx/dsh-routines",
       "status": "listed"
@@ -4044,6 +4389,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "a080a6d104fb35573b61d4b99eadd47059559af9",
       "repository": "https://github.com/jiangnanquan/dsh-ux",
       "status": "listed"
@@ -4056,11 +4402,12 @@
       "status": "rejected"
     },
     {
-      "commit": "1b618ef75c130b7d4d2131beab8e5cc072ba11cb",
+      "commit": "8562fd6f77cea6c27f8f5629db3a5cc8c8acee1b",
       "repository": "https://github.com/Jiao-XXX/dsh-auto-approve",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "89603cee8a11e4efde923964be474d93c56c6969",
       "repository": "https://github.com/jiesou/dsh-stream-rules",
       "status": "listed"
@@ -4074,7 +4421,7 @@
     },
     {
       "code": "missing_manifest",
-      "commit": "7faf4d7ab9286ae09ca4983931623030b2955114",
+      "commit": "2df6a3634721bf961c897182c554ad1f447fe622",
       "message": "Repository does not contain a root package.json.",
       "repository": "https://github.com/jilian-dsh/dsh-rules-manager",
       "status": "rejected"
@@ -4094,6 +4441,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "8ee093f66d5ee95a9fe0f2811a3829218889b824",
       "repository": "https://github.com/jinhuang712/dsh-survey",
       "status": "listed"
@@ -4155,6 +4503,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "fef301f128fbd3e1c56cdeef3707c3f89a46f1ed",
       "repository": "https://github.com/Joeytisaly/dsh-web-search-tokenrhythm",
       "status": "listed"
@@ -4167,6 +4516,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "a13c2f5f0bbfceba0b124ba0d7b1a212771dc14f",
       "repository": "https://github.com/Jolly-J/dsh-deepseek-billing",
       "status": "listed"
@@ -4179,6 +4529,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "5bbdb08a1b43d05294fd87240b1584fe471a07a1",
       "repository": "https://github.com/jorinyang/dsh-doctor",
       "status": "listed"
@@ -4198,6 +4549,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "dc22538516fc82de80f70d76d0f6c197ff05c013",
       "repository": "https://github.com/juhe291/dsh-token-panel",
       "status": "listed"
@@ -4210,6 +4562,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "5768999dbbbb5088fd27f89c85970fe2f7b2c5c6",
       "repository": "https://github.com/JuneLearn/dsh-reasoning-settings",
       "status": "listed"
@@ -4250,7 +4603,7 @@
       "status": "rejected"
     },
     {
-      "commit": "6e9bb93221441894b89da970288c1ac9667c87fa",
+      "commit": "2d17465cb1a6a4821d218b637fb50b4841fe2880",
       "repository": "https://github.com/jyh20030112/dsh-visual-plugin",
       "status": "listed"
     },
@@ -4269,6 +4622,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "fe7b691f52bc1acd433095f4abc47fa0e577dd89",
       "repository": "https://github.com/kam74515-boop/dsh-everything-oauth",
       "status": "listed"
@@ -4281,8 +4635,14 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "05a3625f90dea5d8ddd305ac20fd946113ed2fe9",
       "repository": "https://github.com/kangjinghang/dsh-xueqiu",
+      "status": "listed"
+    },
+    {
+      "commit": "ac51bf01430f0629bd64aaf3730df41ecc63ba0a",
+      "repository": "https://github.com/kaotusi/dsh-task-notify",
       "status": "listed"
     },
     {
@@ -4321,6 +4681,11 @@
       "status": "rejected"
     },
     {
+      "commit": "d383e7cd2afc67aee5becceb2788fd0798da39c8",
+      "repository": "https://github.com/kc0ed/dsh-bottom-bar",
+      "status": "listed"
+    },
+    {
       "code": "missing_runtime",
       "commit": "23fe2b5caf6c8b54fb337206e7cb4a3861aa01cc",
       "message": "The declared runtime entry is not committed.",
@@ -4328,11 +4693,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "5b679e13d66b0fdab37ee7c180e1aab77e2e7ffc",
       "repository": "https://github.com/KeFan-J/dsh-chat-link",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "4f977fbd919b9165634053e09d670929a0384828",
       "repository": "https://github.com/KeFan-J/dsh-token-usage",
       "status": "listed"
@@ -4345,6 +4712,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "8428b822106d4c535d29aef291b3ef361c2bb382",
       "repository": "https://github.com/KekuKase/dsh-deepseek-status",
       "status": "listed"
@@ -4392,6 +4760,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "61817c21006f51bbdd6ab8dd252af56cac59b6e2",
       "repository": "https://github.com/kerwin2046/dsh-pin-recall",
       "status": "listed"
@@ -4404,16 +4773,19 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "0ef53a25106dee453b4d6214f1dcb6fb21e4976d",
       "repository": "https://github.com/KevinWen7415/dsh-virtual-workspace",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "15081be44ba7c22ba0253fa5dd62ef08dbeebe8a",
       "repository": "https://github.com/Kevoyuan/dsh-mac-vision",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "305e2c3979ed967e2ac31ee21dff65fe5155300c",
       "repository": "https://github.com/kezboardpj/dsh-skill-loader",
       "status": "listed"
@@ -4433,6 +4805,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "8e28ffa967ec906cff8965c150bb709ae8cc5b8f",
       "repository": "https://github.com/khiqwq/dsh-system-proxy",
       "status": "listed"
@@ -4445,6 +4818,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "13554dfcb170cd0a629c0ed9b6b0cdce0b01e075",
       "repository": "https://github.com/KinGao294/dsh-skin",
       "status": "listed"
@@ -4464,18 +4838,20 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "ffdd8ffd74448e36183efd3fd2a617d2ca3afc4a",
       "repository": "https://github.com/kirkchinese/Claudecode--DSH",
       "status": "listed"
     },
     {
       "code": "missing_manifest",
-      "commit": "c196274705817982839bfeffd5128e2e18a659cf",
+      "commit": "20d0fe5e3fdb70fdad953777bb833f52a1529d37",
       "message": "Repository does not contain a root package.json.",
       "repository": "https://github.com/KirschBluteX/engineer-software",
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "03a53466b1d7eaef18e5b35f9f0d8be4f5ff41f0",
       "repository": "https://github.com/KitDoesIt/dsh-compaction-instant",
       "status": "listed"
@@ -4489,12 +4865,13 @@
     },
     {
       "code": "missing_manifest",
-      "commit": "dca9cf7cf7ff4cc1c1e60fc420df0a76cb365e53",
+      "commit": "201a989df064429a0730da1cfda866187485ceb7",
       "message": "Repository does not contain a root package.json.",
       "repository": "https://github.com/knGear/dsh-mobile",
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "85f04d0f659ffbf746cf1c2ad0b8efa8cd643bbc",
       "repository": "https://github.com/knqiufan/powercontext-dsh",
       "status": "listed"
@@ -4521,6 +4898,13 @@
       "status": "rejected"
     },
     {
+      "code": "missing_runtime",
+      "commit": "6bff2b2b46d78c2e2fdf75e2ec777864c2b08070",
+      "message": "The declared runtime entry is not committed.",
+      "repository": "https://github.com/Kristin130/dsh-commandcode-provider",
+      "status": "rejected"
+    },
+    {
       "code": "missing_manifest",
       "commit": "cf6eb72c24aca3b24ca9d3fa1dfc3cfad47b724c",
       "message": "Repository does not contain a root package.json.",
@@ -4542,6 +4926,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "f457206b13545d4cbeb33b4871f5bf06ff34ed7d",
       "repository": "https://github.com/kunjinkao-os/dsh-mobile-gui-agent",
       "status": "listed"
@@ -4561,11 +4946,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "3ea46e1583eac426cc34e191ea811e71b0c8347e",
       "repository": "https://github.com/l541402398/dsh-file-uploads",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "a41c8cd9493f3fee495bf38587d0e192ad01f6df",
       "repository": "https://github.com/l541402398/dsh-top-leaderboard",
       "status": "listed"
@@ -4578,6 +4965,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "79f3ecb7af753a723156426629b7762060be9453",
       "repository": "https://github.com/lakeofsky347/dsh-vision",
       "status": "listed"
@@ -4591,7 +4979,7 @@
     },
     {
       "code": "missing_runtime",
-      "commit": "557e1962ef59879f69cc5ce0e49d344c85f91d31",
+      "commit": "8b9762bf054ce522a784a9bda3c2cabcbd39f619",
       "message": "The declared runtime entry is not committed.",
       "repository": "https://github.com/lanlandeli/dsh-usage-stats",
       "status": "rejected"
@@ -4632,21 +5020,25 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "e8495e0c37c046408c76329042f91d093ee9a14f",
       "repository": "https://github.com/Lbryany/dsh-codebuddy",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "57f8ad31ae14d1b444cf7b64548f3b0b0ea70b6f",
       "repository": "https://github.com/lco117/dsh-think-any-lang",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "75665efefaf717e8755b245111d87baad2f8c1bc",
       "repository": "https://github.com/leaveimagination/dsh-qwen-voice",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "33cd8e0c155127326939e05076ac3a479181a66e",
       "repository": "https://github.com/leavestring/awesome-dsh-background-plugin",
       "status": "listed"
@@ -4694,13 +5086,12 @@
       "status": "rejected"
     },
     {
-      "code": "missing_runtime",
-      "commit": "8ffe5cd00baaa3a12c313d184115e2bece273d6e",
-      "message": "The declared runtime entry is not committed.",
+      "commit": "cb914472bd71ea69013d0113a1f58aeead3ca65c",
       "repository": "https://github.com/lehhair/dsh-mobile",
-      "status": "rejected"
+      "status": "deferred"
     },
     {
+      "cached": true,
       "commit": "e20f690af2129303e17afd57c0d428b72aeb11be",
       "repository": "https://github.com/lehhair/dsh-split-panes",
       "status": "listed"
@@ -4727,8 +5118,31 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "5eea4062ccc8ad9de68c6cffd26492b9b31f7dad",
       "repository": "https://github.com/Leon0555/dsh-lan-access",
+      "status": "listed"
+    },
+    {
+      "code": "missing_bundle_manifest",
+      "commit": "6cc304d830950c7166e80317076aebf0b6ec0ac7",
+      "message": "Root package.json does not declare dsh.bundle.patch.",
+      "repository": "https://github.com/LeslieWylie/agent-loop-workflow",
+      "status": "rejected"
+    },
+    {
+      "commit": "91e95d7309c3a2447bff460d54682a74a3568a4c",
+      "repository": "https://github.com/LeslieWylie/dsh-agent-orchestration",
+      "status": "listed"
+    },
+    {
+      "commit": "d919daaa8eb00fca6eaeab10a4af0d33b0db0e5c",
+      "repository": "https://github.com/LeslieWylie/dsh-benchmark-evidence",
+      "status": "listed"
+    },
+    {
+      "commit": "8a54f869c1700beea8db93a6320eb988f750727b",
+      "repository": "https://github.com/LeslieWylie/dsh-memory-evidence",
       "status": "listed"
     },
     {
@@ -4739,9 +5153,22 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "03645bd3dd85ffef6be5067486dea8e5287b8e0a",
       "repository": "https://github.com/LeslieWylie/dsh-ops-kit",
       "status": "listed"
+    },
+    {
+      "commit": "6a903ee0d24860fd9f8992eca20f3728fdaf6b69",
+      "repository": "https://github.com/LeslieWylie/dsh-plugin-release",
+      "status": "listed"
+    },
+    {
+      "code": "missing_bundle_manifest",
+      "commit": "b3242731a0f52f8d44c144c28e6533180b0232e1",
+      "message": "Root package.json does not declare dsh.bundle.patch.",
+      "repository": "https://github.com/LeslieWylie/review-workflow",
+      "status": "rejected"
     },
     {
       "code": "missing_runtime",
@@ -4793,6 +5220,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "a22b3c143839e4ed75e98e64345e41fb02f8d9c0",
       "repository": "https://github.com/lhh010/dsh-minigames",
       "status": "listed"
@@ -4819,26 +5247,31 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "806b7d9b26cecc6524bc6abcc283b0adb5cde7e6",
       "repository": "https://github.com/lhmd/dsh-director-toolkit",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "c4e19742d4399e0282ab70829e412fb47bbb42a7",
       "repository": "https://github.com/lhmd/dsh-promotion-toolkit",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "ff3d231edb1aeb5516e4645981ba30580787d840",
       "repository": "https://github.com/Lhy723/dsh-self-evolution",
       "status": "listed"
     },
     {
-      "commit": "cfc26fbdf56286e83e010f51569f609fa3867acc",
+      "commit": "6dd3336895e87668fba767189c0e62f299eaa354",
+      "previousCommit": "cfc26fbdf56286e83e010f51569f609fa3867acc",
       "repository": "https://github.com/LiangYin233/dsh-provider-model-configurator",
-      "status": "listed"
+      "status": "deferred"
     },
     {
+      "cached": true,
       "commit": "719e6a337e0147ab73d84527cd52880759f0f828",
       "repository": "https://github.com/libinyam/dsh-vision-provider",
       "status": "listed"
@@ -4879,6 +5312,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "cedc81c9466fb485974c4e8503e6cc9907eeed89",
       "repository": "https://github.com/liliuCourier/dsh-chat-outline",
       "status": "listed"
@@ -4906,6 +5340,13 @@
     },
     {
       "code": "missing_runtime",
+      "commit": "d27941fee787cadfaa2d17e87dd372260b784919",
+      "message": "The declared runtime entry is not committed.",
+      "repository": "https://github.com/LingLambda/dsh-logger-panel",
+      "status": "rejected"
+    },
+    {
+      "code": "missing_runtime",
       "commit": "a43af5cd6f8a2a3c1e8f928a79c21a578e91e4a0",
       "message": "The declared runtime entry is not committed.",
       "repository": "https://github.com/LingLambda/dsh-undo",
@@ -4919,6 +5360,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "35b34ed6d4200740544170b6706121741ad9589a",
       "repository": "https://github.com/LingyeSoul/dsh-rider",
       "status": "listed"
@@ -4946,7 +5388,7 @@
     },
     {
       "code": "missing_manifest",
-      "commit": "aee16a59c1b6cf03fdf3e913fa15ef3f94c2dcec",
+      "commit": "bccd71c89cf3cce46d0dacf7baa74c81e34d84c7",
       "message": "Repository does not contain a root package.json.",
       "repository": "https://github.com/linqunxun/dsh-plugins",
       "status": "rejected"
@@ -4959,6 +5401,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "fb5184502a1ab1df6806e4fb14fc3a79bbb97f9d",
       "repository": "https://github.com/lire1131/dsh-undo-plugin",
       "status": "listed"
@@ -4971,11 +5414,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "1100695463972d31929c942d642a0d82ea98446a",
       "repository": "https://github.com/lisycotana/dsh-code-lens",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "9ecd3bcabd0f24c46942e3d733e4384bf359cd19",
       "repository": "https://github.com/lisycotana/dsh-workflow-worktree",
       "status": "listed"
@@ -4995,11 +5440,13 @@
       "status": "rejected"
     },
     {
-      "commit": "bb4e1b4499e1bb0410dc83bc3ab637209aeb70e4",
+      "commit": "d5b9856d0726dd812e5f29cc5851eafaf527bd97",
+      "previousCommit": "bb4e1b4499e1bb0410dc83bc3ab637209aeb70e4",
       "repository": "https://github.com/liustack/modlens",
-      "status": "listed"
+      "status": "deferred"
     },
     {
+      "cached": true,
       "commit": "3f52f34f697b3de06b1315a083440d384e665748",
       "repository": "https://github.com/liustack/modsearch",
       "status": "listed"
@@ -5033,11 +5480,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "73d08a87f1630c6301c45c0ab822f3a082bdcb23",
       "repository": "https://github.com/lj970926/dsh-plugin-mermaid",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "d4b55e03716a78cc50ef87ba7e0372d6c04214ac",
       "repository": "https://github.com/ljcscp/dsh-session-cost",
       "status": "listed"
@@ -5078,21 +5527,25 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "af4b73e9b46c122c4dc7f14691ef0d2b0064f993",
       "repository": "https://github.com/LKRCharon/dsh-cc-switch",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "565968fd385473026a07a1905ec0d905c8b91552",
       "repository": "https://github.com/LKRCharon/dsh-egress-guard",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "2de3efe8847bc2df24ee1ededa3a75acaab94816",
       "repository": "https://github.com/LKRCharon/dsh-research-library",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "052f8e216119344a1528814015fc0a273cedf916",
       "repository": "https://github.com/LnsiAxe/dsh-web-restart",
       "status": "listed"
@@ -5112,13 +5565,13 @@
       "status": "rejected"
     },
     {
-      "commit": "cfdfd9a6cdf016d3ef6cf143e2ffb620f093c7b4",
+      "commit": "cf36f61f708100d9f2c67db3a1722a8b85b53757",
       "repository": "https://github.com/loguhan/dsh-workshop",
       "status": "listed"
     },
     {
       "code": "missing_bundle_manifest",
-      "commit": "0fb5c67ba12aa42bcea75c2ae18f1d807fe8da6f",
+      "commit": "0086b2eb4787471e947329b126f84e22adfbc250",
       "message": "Root package.json does not declare dsh.bundle.patch.",
       "repository": "https://github.com/loki888666/dsh-mihome",
       "status": "rejected"
@@ -5173,6 +5626,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "cc24204b10d56af4a5589fb530003620c1567868",
       "repository": "https://github.com/longyu065/dsh-session-index",
       "status": "listed"
@@ -5199,6 +5653,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "211055668e43c78016810426ae8bbad851c7434d",
       "repository": "https://github.com/lordship12138-crypto/dsh-plugin-dedup",
       "status": "listed"
@@ -5225,31 +5680,36 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "8fb843012104323b79a3345730487484d597fb41",
       "repository": "https://github.com/loudMore/dsh-drop-to-path",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "6633a5847edf00e3d476fb38ddbf927d9e31fdee",
       "repository": "https://github.com/LQ-1123/paste-to-workspace",
       "status": "listed"
     },
     {
-      "commit": "754f5cf7fd1c3b499941fe051f757191d7ce9ce2",
+      "commit": "2a002b39905b66e2b71cc67a5ea4412694a8abbe",
       "repository": "https://github.com/ltao0829/dsh-task-notify",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "753de38d06cc180d807ea1303ff32078a9e35f65",
       "repository": "https://github.com/Luaphes/dsh-plugins-market",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "8b2ede6ccda65da20d57e5e1af995aa9e089dc04",
       "repository": "https://github.com/Luaphes/dsh-web-attention-badge",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "165a4905bde435d300873e1017d035377180bcbe",
       "repository": "https://github.com/Luck9Star/dsh-gateway-provider",
       "status": "listed"
@@ -5262,6 +5722,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "c5e80055a358033bbafdaaf1cb625791f23e2be5",
       "repository": "https://github.com/Luke-Yong/dsh-plugin-knowledge-graph",
       "status": "listed"
@@ -5281,6 +5742,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "e97981fd4eb22b0666c3d294b0da0a56f865b82e",
       "repository": "https://github.com/lunw/shopline-ai-toolkit-dsh",
       "status": "listed"
@@ -5293,6 +5755,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "13910b52eb1fb48ecb29eba63c706eb75fb2fe2f",
       "repository": "https://github.com/luoyu-xingu/dsh-background",
       "status": "listed"
@@ -5305,16 +5768,19 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "9a09866cd6694669d77f3db1745eef73f30b997a",
       "repository": "https://github.com/LvienOeria/dsh-desktop-launcher",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "1502f586e2017ec5f91a360480715999000c42b2",
       "repository": "https://github.com/LvienOeria/dsh-launcher",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "dcf54646d0ae10594e0beed22fc22d416ba1174d",
       "repository": "https://github.com/lvyuchuiyi/dsh-funpack",
       "status": "listed"
@@ -5362,18 +5828,20 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "f6df81141006d81eb1d27bad56bbdb9d22f1c11d",
       "repository": "https://github.com/lynx-gt/dsh-subagent-cwd",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "0c3e355a95b5dad42683e42fe245045e49ffb53b",
       "repository": "https://github.com/lynx-gt/dsh-subagent-tools",
       "status": "listed"
     },
     {
       "code": "missing_runtime",
-      "commit": "fda808dfda243cbf431c1f83e2699223c4c4e08a",
+      "commit": "b514709ae945dc809cfa562c24ccf9adbc0f0037",
       "message": "The declared runtime entry is not committed.",
       "repository": "https://github.com/lzszq/dsh-scholar",
       "status": "rejected"
@@ -5386,12 +5854,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "0c5352a325836267b4dc01b374655fb5f541a44c",
       "repository": "https://github.com/m-guo-2/dsh-delayed-task",
       "status": "listed"
     },
     {
-      "commit": "9c5c2456710794a9d60647017cf738939115deab",
+      "commit": "bfd18318022f36b3e40f4619d68e274b30727ff1",
       "repository": "https://github.com/mafeis/dsh-net-proxy",
       "status": "listed"
     },
@@ -5417,11 +5886,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "ec0fcf3ba91131b5e61cb876ddceb3f3a9ac199e",
       "repository": "https://github.com/malevrigns/dsh-session-stars",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "88b1e9fdabd29b7a4ac7487e0e2f6506332f3c66",
       "repository": "https://github.com/ManuSpurs/dsh-skin20260814",
       "status": "listed"
@@ -5483,6 +5954,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "640deef6198b00190c97d5d160df3fd2b83bb30d",
       "repository": "https://github.com/MAXeaglet/dsh-bash-terminal",
       "status": "listed"
@@ -5502,6 +5974,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "72123b6c3ac2c8bc0cec972bbe2daccc101d63e6",
       "repository": "https://github.com/MaYiFei1995/dsh-approval-comment",
       "status": "listed"
@@ -5514,6 +5987,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "21d60776be8a0bcd044056cf7d55335df8beed0f",
       "repository": "https://github.com/MC5lan/dsh-multimodal",
       "status": "listed"
@@ -5526,6 +6000,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "5fbb5ee565ab23b73c57e4d80be3ca5e83c78c50",
       "repository": "https://github.com/meme-dog/dsh-plugin-finder",
       "status": "listed"
@@ -5545,9 +6020,17 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "fa793c61f1b7f48029b9add2d69d63259cdeeb70",
       "repository": "https://github.com/Meredith2328/dsh-sticky-note",
       "status": "listed"
+    },
+    {
+      "code": "missing_bundle_manifest",
+      "commit": "b207f5633536782778801963c17c4401bf784b03",
+      "message": "Root package.json does not declare dsh.bundle.patch.",
+      "repository": "https://github.com/mervyn-teo/dsh-plugin-qr-connect",
+      "status": "rejected"
     },
     {
       "code": "missing_manifest",
@@ -5571,6 +6054,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "66d15bc35f73f46ba9f193a438b860a05beea46a",
       "repository": "https://github.com/MicroHEROX/dsh-Kimi-WebBridge",
       "status": "listed"
@@ -5597,6 +6081,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "14918e113d20add924372a36e0c374e80f792d48",
       "repository": "https://github.com/minatoAI/jina-web-search-dsh-plugin",
       "status": "listed"
@@ -5616,21 +6101,25 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "e3176cd157e93d5bea9d930275afa16e4c8867af",
       "repository": "https://github.com/Mingxi2077/dsh-plugin-review",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "fa1a932a8e0dda5d10458c276ae49f89a5c9f750",
       "repository": "https://github.com/Mintcolour/dsh-sidechat",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "ef98b23fd6e0d3af630100d507eb316d92af1f5d",
       "repository": "https://github.com/minybear/DeepSeek-Harness-Pet",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "5946301f992b7445d8dcb26bd9c89dc86246832b",
       "repository": "https://github.com/MirDie/dsh-xai",
       "status": "listed"
@@ -5643,33 +6132,38 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "65bd9b29d9700a09b4c8bd62c18640866c7a7b6f",
       "repository": "https://github.com/misakimiku2/dsh-cost-display",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "a4e1933a55b332c036c40382c342719b7658dabc",
       "repository": "https://github.com/mitao-su/dsh-playwright-cli",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "d893c845cd2c32c1e55d1639cbd344cd35f71683",
       "repository": "https://github.com/mitao-su/dsh-playwright-native",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "9349fe4e404b044818f874404a2ba9ed292d0b52",
       "repository": "https://github.com/mixin-ai/dsh-file-changes",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "e8ec829fca75d73f89fe3b1ef3f95d3366b0829c",
       "repository": "https://github.com/mixin-ai/dsh-git-branch-switcher",
       "status": "listed"
     },
     {
       "code": "missing_bundle_manifest",
-      "commit": "ceee63721338c0f3fa6be3b0202b3d7b24181b28",
+      "commit": "32abdf803c339dab06b9e46c6a31349e5221b2ed",
       "message": "Root package.json does not declare dsh.bundle.patch.",
       "repository": "https://github.com/Miyazawai/dsh-client-pricing",
       "status": "rejected"
@@ -5745,11 +6239,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "be5e97d6ea4e882067d9f3a6385f486f7f192e92",
       "repository": "https://github.com/Moeblack/dsh-prompt-studio",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "10520bdc94b8a621212d280a4a6c6820f28690bd",
       "repository": "https://github.com/Moeblack/dsh-skins",
       "status": "listed"
@@ -5769,31 +6265,33 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "e009771453c24fcd1d5bfd373106c3b5e6a16d82",
       "repository": "https://github.com/Mongfayi/dsh-local-filetree",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "7c8e2bd3b8afba7d26559cdce5151e9720bfdc2c",
       "repository": "https://github.com/Mongfayi/dsh-recall",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "310a02cf8b54c6bcb5b5c8047e99ff8ef593b217",
       "repository": "https://github.com/moon09300731/dsh-approval-gate",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "83e10a6aed11d56b8fc39b0ac5c1965a045d12a2",
       "repository": "https://github.com/moon09300731/dsh-vision-tools",
       "status": "listed"
     },
     {
-      "code": "missing_runtime",
-      "commit": "4b4e9f210a15f299edaa18c09829062afd5f968b",
-      "message": "The declared runtime entry is not committed.",
+      "commit": "0413888006dced6245e103b96378d377513ab5bc",
       "repository": "https://github.com/MoonShadow1976/chiral-pulse",
-      "status": "rejected"
+      "status": "deferred"
     },
     {
       "code": "missing_bundle_manifest",
@@ -5908,6 +6406,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "ed551a54dbf7f666e96b85f650cf01870117aba1",
       "repository": "https://github.com/mtaech/dsh-material-you",
       "status": "listed"
@@ -5920,18 +6419,20 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "8f2ec74406b4cd5f59b7d98f2ed949641326ce3c",
       "repository": "https://github.com/MuziIsabel/dsh-win-notify",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "64047f40cd023dfa1b64a74778244abbe6452e23",
       "repository": "https://github.com/MysaDC/dsh-plugin-description",
       "status": "listed"
     },
     {
       "code": "missing_manifest",
-      "commit": "f8d521b0265c538b97f26822b892ceb53c6ff571",
+      "commit": "8e9013f5d8d152f1d88654324501c3ec4ca4a430",
       "message": "Repository does not contain a root package.json.",
       "repository": "https://github.com/N0zoM1z0/th08",
       "status": "rejected"
@@ -5944,11 +6445,9 @@
       "status": "rejected"
     },
     {
-      "code": "invalid_client",
       "commit": "93bfbcc70f84a29fb601a378a19ec289d0a54f8b",
-      "message": "The declared client entry is not committed.",
       "repository": "https://github.com/Nagi-ovo/dsh-ads",
-      "status": "rejected"
+      "status": "deferred"
     },
     {
       "code": "missing_manifest",
@@ -5972,16 +6471,19 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "979dd5b7d563d7280e7b4147307490ea5e0ea361",
       "repository": "https://github.com/Nanki-nn/dsh-answer-pet",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "48a96350cc09ef8ea616abc44408f53e744b80de",
       "repository": "https://github.com/NanmiCoder/dsh-agent-teams",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "728d16234d59908007754901e8e1c6a32824caf5",
       "repository": "https://github.com/nekogpt/dsh-ui-quote-selection",
       "status": "listed"
@@ -6001,11 +6503,9 @@
       "status": "rejected"
     },
     {
-      "code": "missing_bundle_manifest",
-      "commit": "b04ccd1d13a68c49a5d1368d6287f7a11b28eed8",
-      "message": "Root package.json does not declare dsh.bundle.patch.",
+      "commit": "e11616da3dddc89e7181153a7cbe07d1a938e6c2",
       "repository": "https://github.com/nexu-io/open-design",
-      "status": "rejected"
+      "status": "deferred"
     },
     {
       "code": "missing_runtime",
@@ -6043,6 +6543,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "a57d237e03b6488875cb7cc2a90bf6a37512632d",
       "repository": "https://github.com/NigelYao/dsh-view-modes",
       "status": "listed"
@@ -6056,19 +6557,20 @@
     },
     {
       "code": "missing_bundle_manifest",
-      "commit": "456f6ca9fad007c557378574482240b63db5697c",
+      "commit": "d52284d5638d4d6d1b3a139d180eaf8eb5344310",
       "message": "Root package.json does not declare dsh.bundle.patch.",
       "repository": "https://github.com/NinjaSln-labs/dsh-plugins",
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "4dac8613b8d3f09ba3e24cb9750b93ea1fefd912",
       "repository": "https://github.com/nitrazepam01/dsh-web-search-tavily",
       "status": "listed"
     },
     {
       "code": "missing_license",
-      "commit": "dd3c815a4011debedc496feb8a69a72177ad38ce",
+      "commit": "0d29bc4735afa88edcf934287ba2af38d1567845",
       "message": "A committed root license file is required.",
       "repository": "https://github.com/Niuniu-Sir/dsh-data-ledger",
       "status": "rejected"
@@ -6088,6 +6590,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "81af50b885c2f28915ef3ceb55a5abfb96826475",
       "repository": "https://github.com/nonewind/dsh-spend",
       "status": "listed"
@@ -6100,13 +6603,14 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "8a3f2767f00ac7e20ae2594bfc6aa8884e91c4a0",
       "repository": "https://github.com/Noob-stupid/dsh-plugin-hub",
       "status": "listed"
     },
     {
       "code": "missing_manifest",
-      "commit": "6d531383cb7bba97420b5df7fa2dba78014f5699",
+      "commit": "0f0ce0316b855dede7656bf54fc41b23e97cc6bc",
       "message": "Repository does not contain a root package.json.",
       "repository": "https://github.com/NoWint/Oh-My-DSH",
       "status": "rejected"
@@ -6127,17 +6631,19 @@
     },
     {
       "code": "missing_manifest",
-      "commit": "8fcdd03235306339736de6f4a0a6517045861457",
+      "commit": "b6572b6c3eac917f1fae9c11e7860d7a828a77a2",
       "message": "Repository does not contain a root package.json.",
       "repository": "https://github.com/nutshellai-tech/mobius",
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "1ceb43a8781e06ec38573e686285b65101cf1301",
       "repository": "https://github.com/Nwflower/dsh-chat-import",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "f4f7c3b47414e465604fd4b71e286d3e89c811a2",
       "repository": "https://github.com/Nwflower/dsh-file-claim",
       "status": "listed"
@@ -6151,7 +6657,7 @@
     },
     {
       "code": "missing_license",
-      "commit": "49ff153b1c402d4a4f133ebfdeb0bda9c3870b4c",
+      "commit": "dcdf404b83b0c49ccc16a9389222ec513ae3b81d",
       "message": "A committed root license file is required.",
       "repository": "https://github.com/oceanxuikun/dsh-eva-theme-plugin",
       "status": "rejected"
@@ -6164,6 +6670,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "a12800eeb02eb6dd45f5e2cda6c7db3c16088883",
       "repository": "https://github.com/oil-oil/dsh-vision",
       "status": "listed"
@@ -6176,7 +6683,7 @@
       "status": "rejected"
     },
     {
-      "commit": "80b6ddb779a009d378a1c30c85dfef598f527997",
+      "commit": "1c8ea4981fcfdb58e8f9726058b950aaf8cc9404",
       "repository": "https://github.com/omdsh-dev/7d7d",
       "status": "listed"
     },
@@ -6188,6 +6695,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "a37edb01c3dbb0b19249cab3b93138ad529281ed",
       "repository": "https://github.com/omdsh-dev/dsh-annotation",
       "status": "listed"
@@ -6212,11 +6720,9 @@
       "status": "rejected"
     },
     {
-      "code": "missing_runtime",
       "commit": "dff1595e777ca0854ffe5f20e779d259a9c8e511",
-      "message": "The declared runtime entry is not committed.",
       "repository": "https://github.com/omdsh-dev/DSH-better-sidebar",
-      "status": "rejected"
+      "status": "deferred"
     },
     {
       "code": "missing_runtime",
@@ -6247,11 +6753,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "6e810f19d0d6ccc2f3cafe926cd69f10936bf5ac",
       "repository": "https://github.com/omdsh-dev/dsh-data-agent",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "c0b329e02cd0195f810a7c3608cb58701a7fe0f1",
       "repository": "https://github.com/omdsh-dev/dsh-deep-research",
       "status": "listed"
@@ -6305,17 +6813,19 @@
     },
     {
       "code": "missing_manifest",
-      "commit": "86f3a80be2c80cfd4d8d9401db0958fc1895ea69",
+      "commit": "a190f89c71a179e5b8748db5bba21465e47de2c9",
       "message": "Repository does not contain a root package.json.",
       "repository": "https://github.com/omdsh-dev/dsh-github-integration",
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "25210233b51d5691c5ba81aa58df5932542e7a01",
       "repository": "https://github.com/omdsh-dev/dsh-gomoku",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "82c958c945542064cbdf3eeb2bb408f95187bfc0",
       "repository": "https://github.com/omdsh-dev/dsh-hub",
       "status": "listed"
@@ -6335,11 +6845,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "9876349054f0fec33114f7f594b4901b7e9420f1",
       "repository": "https://github.com/omdsh-dev/dsh-inspect",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "01aba653f576658974b70514573c1f6b7b4ce4df",
       "repository": "https://github.com/omdsh-dev/dsh-kb-sieve",
       "status": "listed"
@@ -6366,11 +6878,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "16e1342ab232e7d1e995b42ef90b47e7890eed69",
       "repository": "https://github.com/omdsh-dev/dsh-minigames",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "18f6275c3983e5eebf33ac6292c3454b0847231e",
       "repository": "https://github.com/omdsh-dev/dsh-mnemon",
       "status": "listed"
@@ -6414,6 +6928,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "397aa26df241aca530aa65a08484a664f7d555ad",
       "repository": "https://github.com/omdsh-dev/dsh-plugin-check",
       "status": "listed"
@@ -6454,11 +6969,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "b1974e1ac18c5dfd83eef414ea0b1187d076e431",
       "repository": "https://github.com/omdsh-dev/dsh-security-audit",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "72065059cec89c5577b19ee8aaa26ebc2c34fbbf",
       "repository": "https://github.com/omdsh-dev/dsh-session-health",
       "status": "listed"
@@ -6485,51 +7002,61 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "701f6549b4e1b648351403dc8a18a9bc9a2b713d",
       "repository": "https://github.com/omdsh-dev/dsh-tool-calculator",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "93657cbf6a48be25f8d31a0abf24aa0c5658033a",
       "repository": "https://github.com/omdsh-dev/dsh-tool-csv",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "73c142e262275c5a278dc31e80bac7966fba168e",
       "repository": "https://github.com/omdsh-dev/dsh-tool-diff",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "5baa75fcbe980c8193c7117b9b67ed04a43b15d6",
       "repository": "https://github.com/omdsh-dev/dsh-tool-encoding",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "902bdf60da4d85bc014e46d32070970a62bb5532",
       "repository": "https://github.com/omdsh-dev/dsh-tool-json",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "51b9f2a9efa74e889fc2ef2ec036939b0853af6e",
       "repository": "https://github.com/omdsh-dev/dsh-tool-markdown",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "457c84fed7849003dd006145fe7838519c8fc132",
       "repository": "https://github.com/omdsh-dev/dsh-tool-regex",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "8d9a652144938012f03d1ef8b43e3728898152c9",
       "repository": "https://github.com/omdsh-dev/dsh-tool-schema",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "86d42cafd710aa7487c1da49e5cb8cdcae9b2ae9",
       "repository": "https://github.com/omdsh-dev/dsh-tool-stat",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "bc55c350f01679f25cf4c32e281455f14a81d3cd",
       "repository": "https://github.com/omdsh-dev/dsh-tool-time",
       "status": "listed"
@@ -6584,6 +7111,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "7b63a27edef055a1c35d97d97651e78d41ea8a2f",
       "repository": "https://github.com/omdsh-dev/omdsh-runtime",
       "status": "listed"
@@ -6624,13 +7152,13 @@
       "status": "rejected"
     },
     {
-      "commit": "d76e0d98b09ad1d08f2592ffd47161acb907bfc4",
+      "commit": "0640ca9ccd1b9ac12709b74aecf2a0e75c8bb4b1",
       "repository": "https://github.com/omdsh-dev/session-teleport",
       "status": "listed"
     },
     {
       "code": "missing_bundle_manifest",
-      "commit": "fdace9d6ca01e31b33a08ed0703964b1ad6b3be0",
+      "commit": "86e98729b92db0b9fe901c39e32bca74cf8c0f54",
       "message": "Root package.json does not declare dsh.bundle.patch.",
       "repository": "https://github.com/omdsh-dev/toybox",
       "status": "rejected"
@@ -6734,13 +7262,14 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "95b6105bea57ee69bf44bc61e3b519f6dc9e8fea",
       "repository": "https://github.com/orriduck/dsh-tui",
       "status": "listed"
     },
     {
       "code": "missing_bundle_manifest",
-      "commit": "78545b97d28a684693574c342f73781a63369ed2",
+      "commit": "eb38c4f3e9532a4d9d4fb7b5c6a6d3befc78d5c2",
       "message": "Root package.json does not declare dsh.bundle.patch.",
       "repository": "https://github.com/orxz/deepseek-harness-themes",
       "status": "rejected"
@@ -6767,7 +7296,7 @@
       "status": "rejected"
     },
     {
-      "commit": "d2d75f30cc4c45fb03014e3ae96d82a486897387",
+      "commit": "a319950489f8007351fe0eb772a763f5f18192c9",
       "repository": "https://github.com/ouyangyipeng/dsh-marketplace",
       "status": "listed"
     },
@@ -6828,51 +7357,61 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "61910a9b656df26ea6eff51cdf047e711a39f9e8",
       "repository": "https://github.com/PangYiMing/dsh-batch-regression",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "312c66ebba4b3f16fe85f8f24d0e72ea7a78dfcf",
       "repository": "https://github.com/PangYiMing/dsh-bisect-debug",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "5a4359c0ae4632d02b37cfb2e920a71a7642b15b",
       "repository": "https://github.com/PangYiMing/dsh-browser-control",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "4d9a2bb828166d14ecf19d0246699ccc5d601739",
       "repository": "https://github.com/PangYiMing/dsh-mobile-control",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "35911b26ff579bb1110497fe35dee3ece1e88540",
       "repository": "https://github.com/PangYiMing/dsh-port-guard",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "e91ad1055543ee1b80377e0407a60f80a74afecb",
       "repository": "https://github.com/PangYiMing/dsh-screenshot-diff",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "a2b9c2ee68f0b5f3d003c552c37543c0cdabe67a",
       "repository": "https://github.com/pangzi499/dsh-balance-stats",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "339970f463b74fee50f8369c9c85b84465a57d57",
       "repository": "https://github.com/ParticleLight/dsh-ultracode",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "d97974f4bc84a6148d3ab36048a37197646bdc21",
       "repository": "https://github.com/paul-yangmy/dsh-tavily-web-search",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "7e78ddafe155f08c0cae48edfd782f1e60cafab8",
       "repository": "https://github.com/peach0x33a/dsh-open-browser",
       "status": "listed"
@@ -6899,16 +7438,19 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "e49dda08012ce15bc3e4a15bad04d2ccb5ad066d",
       "repository": "https://github.com/PerryLink/dsh-background-agents",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "1990051485a7293ff086702414e2d08ec16720e8",
       "repository": "https://github.com/PerryLink/dsh-checkpoint-rewind",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "1c00376ba5dab1351d07dbabe81b266fa302ff1b",
       "repository": "https://github.com/PerryLink/dsh-claude-move",
       "status": "listed"
@@ -6921,11 +7463,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "eec55faada0edbfa2bf235d755ac3289581aac3d",
       "repository": "https://github.com/PerryLink/dsh-doublecheck",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "c5a55a39932662d47bbe89847f2744c5d6958bfb",
       "repository": "https://github.com/PerryLink/dsh-github",
       "status": "listed"
@@ -6945,6 +7489,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "b38eb2c3d7904a84360cc94c03a0757f6fefc6f3",
       "repository": "https://github.com/PerryLink/dsh-memento",
       "status": "listed"
@@ -7055,6 +7600,20 @@
       "status": "rejected"
     },
     {
+      "code": "missing_manifest",
+      "commit": "33d612035cf681c3e36899cef68025ed0cf11638",
+      "message": "Repository does not contain a root package.json.",
+      "repository": "https://github.com/Piccolo123/url-manager",
+      "status": "rejected"
+    },
+    {
+      "code": "missing_manifest",
+      "commit": "e561cbb15e983675eda58b7af794de82e2cc10a6",
+      "message": "Repository does not contain a root package.json.",
+      "repository": "https://github.com/Piccolo123/url-manager-mcp",
+      "status": "rejected"
+    },
+    {
       "code": "missing_runtime",
       "commit": "2f7dd01339325641af489715a1e4948e4d204afa",
       "message": "The declared runtime entry is not committed.",
@@ -7125,6 +7684,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "31478236f69a6d6ee3043238e7df50229ea5525c",
       "repository": "https://github.com/Player-MINEPIG/dsh-llm-codex-oauth",
       "status": "listed"
@@ -7141,6 +7701,13 @@
       "commit": "b5b5de14f01e941bd60e01e745243e38d28bb86d",
       "message": "Root package.json does not declare dsh.bundle.patch.",
       "repository": "https://github.com/PM-Shawn/Abu-Cowork",
+      "status": "rejected"
+    },
+    {
+      "code": "missing_bundle_manifest",
+      "commit": "bbae02c5908a9022411b482bab56975658c8a63d",
+      "message": "Root package.json does not declare dsh.bundle.patch.",
+      "repository": "https://github.com/poiuyjie/dsh-vision-opencode",
       "status": "rejected"
     },
     {
@@ -7186,11 +7753,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "44603946d35c46ce952a4b82f5e5558a6a59004b",
       "repository": "https://github.com/QCYTSN/dsh-dafeiyu",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "4c533668186a6dadb804b839a0e1b90b69fdabb2",
       "repository": "https://github.com/qing3a/dsh-event-auditor",
       "status": "listed"
@@ -7210,6 +7779,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "95eec9dcfdaab0fdcadbe86cdf187601a2225eec",
       "repository": "https://github.com/qing3a/dsh-tray",
       "status": "listed"
@@ -7257,11 +7827,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "710faf49ce9d2568f31537bd07b73ed5f4d83d03",
       "repository": "https://github.com/qiqikuaidianpao/mypet",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "39fe8c475630cc1565d6e11de6ee87bf2b505710",
       "repository": "https://github.com/qizhen2021/dsh-plugin-vision",
       "status": "listed"
@@ -7274,11 +7846,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "23a0ba5cccc8bc016a8d7e4382ad22aa47d1c3d0",
       "repository": "https://github.com/QT-Chen/dsh-mic-input",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "c3a6d0d9dee48616776737bae8f30c3c2b241090",
       "repository": "https://github.com/quan2005/dsh-plugin-jinji",
       "status": "listed"
@@ -7312,6 +7886,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "0ec5da351b246dfcbf9a91a3d0c7b7f2699370e6",
       "repository": "https://github.com/qyw233/dsh-deeplink",
       "status": "listed"
@@ -7352,6 +7927,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "f295de20d97c1d9296ea3f45f64ab4d042b4cb1d",
       "repository": "https://github.com/RainbowDashy/dsh-theme-palettes",
       "status": "listed"
@@ -7434,6 +8010,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "a1bfa69c17d9ec6e55e785d2defac8141b7d5e8c",
       "repository": "https://github.com/realguan/dsh-mermaid-preview",
       "status": "listed"
@@ -7446,6 +8023,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "affbdb04792d130af7beaf983f0237a1e8f3650f",
       "repository": "https://github.com/ReLuckyLucy/dsh_Rhine_Lab_themo",
       "status": "listed"
@@ -7472,6 +8050,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "7959dc0d3a953fef78205722b2c4ef4693c8454f",
       "repository": "https://github.com/reshuibuduo/dsh-tmcra-memory",
       "status": "listed"
@@ -7505,6 +8084,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "8523799c2b46f921aed7f8bc31077ffa396877a3",
       "repository": "https://github.com/RNlao/dsh-wallpaper",
       "status": "listed"
@@ -7517,6 +8097,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "26a46473a74ff1fde53f5c7409a7f9b4d3acc73d",
       "repository": "https://github.com/ropon/dsh-plugin-clawrouters",
       "status": "listed"
@@ -7529,6 +8110,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "6d98e9b26b60d343e9134e08b787555dfc0964c8",
       "repository": "https://github.com/RRRosmontis/dsh-qwen-mm",
       "status": "listed"
@@ -7548,6 +8130,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "95385ce6b08d529baea6383924087845fe8ac3cc",
       "repository": "https://github.com/Ruler4396/dsh-launcher-lifetime",
       "status": "listed"
@@ -7595,6 +8178,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "524164d761ce7d43357c3d2b5223baa2b4eac33d",
       "repository": "https://github.com/SajoLuo/dsh-trellis",
       "status": "listed"
@@ -7607,6 +8191,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "04f7ecac3e76de2c5157bd3dad90ebdd8e61e3c8",
       "repository": "https://github.com/sakikoTGW/pack-agent",
       "status": "listed"
@@ -7668,6 +8253,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "b719e716d4f68afc823d6ef6b825281ee597aa88",
       "repository": "https://github.com/Sanqi-normal/dsh-webui-market-plugin",
       "status": "listed"
@@ -7757,7 +8343,7 @@
       "status": "rejected"
     },
     {
-      "commit": "b0f604b8f413089644f797e4c2a1fa684194f0ae",
+      "commit": "2873da595a1d05b957d6bcbbc505bf582f86331a",
       "repository": "https://github.com/SenmuuuuW/dsh-whale-report",
       "status": "listed"
     },
@@ -7776,11 +8362,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "94a4bba9d0df1da6087c2fbab23c33ce8445d022",
       "repository": "https://github.com/Seryta/dsh-node-nav",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "b16fbf288ec72a714e71383a75679ba699c43ebc",
       "repository": "https://github.com/Sev7een/ds-api-usage",
       "status": "listed"
@@ -7801,7 +8389,7 @@
     },
     {
       "code": "missing_manifest",
-      "commit": "8ebc38db38f7afec52026c399b0f73a17e405aa4",
+      "commit": "f8c556b7d081b91f2d7c3657c62c8ba82031bdfd",
       "message": "Repository does not contain a root package.json.",
       "repository": "https://github.com/shaoeric/dsh-suggest",
       "status": "rejected"
@@ -7814,6 +8402,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "5651379aaace35db8a6553d87b35d3b0675b3848",
       "repository": "https://github.com/shaoyi1991/dsh-restart-web",
       "status": "listed"
@@ -7840,23 +8429,19 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "35d4c6e04e9f50c38e8f1339e9e9a1634ef1ce03",
       "repository": "https://github.com/sherconan/dsh-entity-dd",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "27a0a3ac201fe127bc7533fa0d928e45c48077f7",
       "repository": "https://github.com/sherconan/dsh-web-recon",
       "status": "listed"
     },
     {
-      "code": "missing_bundle_manifest",
-      "commit": "46b7d8fa9b1aea8ba04ec18b5f6bf7d274161426",
-      "message": "Root package.json does not declare dsh.bundle.patch.",
-      "repository": "https://github.com/SherlockGougou/dsh-workspace-mention",
-      "status": "rejected"
-    },
-    {
+      "cached": true,
       "commit": "eee756923c1f49a33ff9aa218a91c384fc44a210",
       "repository": "https://github.com/shi275773124/falsify-dsh",
       "status": "listed"
@@ -7897,11 +8482,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "7495fc47b69b1ddf3331e305aff7ddb9f2a5d2f9",
       "repository": "https://github.com/shuguang1994/project-blueprint",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "4b95dca5fa6ee9920026c10351de0aa5a2941609",
       "repository": "https://github.com/shujiTech/dsh-plugin-wepre",
       "status": "listed"
@@ -7914,6 +8501,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "7fd5963491f2f986385f38cfa4ebda56319c04da",
       "repository": "https://github.com/shyboy/dsh-k12-lesson-builder",
       "status": "listed"
@@ -7947,11 +8535,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "63d6607c0fd723394121fe0faca6c026a12ffbf0",
       "repository": "https://github.com/simon300000/dsh-auto",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "a324ecde201a219448c23c1c8bbd872bdab512b4",
       "repository": "https://github.com/Simon314620/dsh-turn-index",
       "status": "listed"
@@ -7978,6 +8568,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "7ab238541380bb194478df088607d5dc5c351b77",
       "repository": "https://github.com/SiYue-ZO/dsh-translator",
       "status": "listed"
@@ -8004,6 +8595,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "64f9df96c2b8d176b3eedaf3a1a509de8106bfb7",
       "repository": "https://github.com/sjscy05/dsh-task-progress-notifier",
       "status": "listed"
@@ -8030,6 +8622,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "7851490e39e67e3b974dff0d79c565ade194bf02",
       "repository": "https://github.com/SkySheep1999/dsh-polish-prompts",
       "status": "listed"
@@ -8063,6 +8656,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "a27fbbfcbd3c31455b42b98d0654c3c26d687e6b",
       "repository": "https://github.com/slhssb/dsh-advisor",
       "status": "listed"
@@ -8075,7 +8669,7 @@
       "status": "rejected"
     },
     {
-      "commit": "e9497b3d91c315d1a52fa5d273c28ed18b2fb3bb",
+      "commit": "a8140238f5043d8b05449841031d54db0a83ae65",
       "repository": "https://github.com/sliverp/DeepSeek-harness-dingtalk",
       "status": "listed"
     },
@@ -8087,16 +8681,19 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "1b9f375584f0e5fdb26038c42f623cf3ebdf3104",
       "repository": "https://github.com/sliverp/DeepSeek-harness-qqbot",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "0887563d15bf4d43a5a4c5101e91aecdc3d321f3",
       "repository": "https://github.com/sliverp/DeepSeek-harness-wecom",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "da13062a7c6d0e4f8fd8f1a6540ceee9a5296830",
       "repository": "https://github.com/sliverp/DeepSeek-harness-weixin",
       "status": "listed"
@@ -8137,6 +8734,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "793946a23be54e386680ae84f2fd728345ce048b",
       "repository": "https://github.com/smanx/dsh-conversation-indicator",
       "status": "listed"
@@ -8150,7 +8748,7 @@
     },
     {
       "code": "missing_runtime",
-      "commit": "09506d0a60f13fb04aaf18a7eddcc1575e6c1e9b",
+      "commit": "c52c84fe9999fa51a48a3dbc40634411762ccc3d",
       "message": "The declared runtime entry is not committed.",
       "repository": "https://github.com/SnowAmberX/dsh-role-router",
       "status": "rejected"
@@ -8177,6 +8775,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "e29afb7f4752ecb2045a90fccbee17b1549b3a48",
       "repository": "https://github.com/songqikong/dash",
       "status": "listed"
@@ -8210,6 +8809,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "55967fad750f86d0826068cb9cd228be03c943ba",
       "repository": "https://github.com/Sorwcyra/ds-vision-plugin",
       "status": "listed"
@@ -8243,6 +8843,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "030fed2eac519713a3950324fe8022489f1b03e0",
       "repository": "https://github.com/Spirtxiaoqi7/mindspace-dsh-session-memory",
       "status": "listed"
@@ -8262,6 +8863,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "ee10357362d6cc29e2ecf2686a32854bfc86a124",
       "repository": "https://github.com/SPYQWER1/dsh-imagecraft",
       "status": "listed"
@@ -8309,21 +8911,25 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "988fa84c56a49ce2f1baba6e2c0b0b6b0ba90554",
       "repository": "https://github.com/Starfie1d1272/dsh-builtin-toggles",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "653549e85eff6e7600186a873e66b0ea2dcb0ecd",
       "repository": "https://github.com/Stone623/ai_skills",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "364dafcaec0a75717517aad401eb6bf04247c38e",
       "repository": "https://github.com/Stormycry-cryp/dsh-AuthInOne",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "cd86d737de3c5ec75d4e9a909d81605b7b983b1f",
       "repository": "https://github.com/Sttrevens/dsh-cost-meter",
       "status": "listed"
@@ -8343,12 +8949,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "6ccdceb5184c2f71821676764e5109fec99af46b",
       "repository": "https://github.com/stushansusu/dsh-miku-skin",
       "status": "listed"
     },
     {
-      "commit": "0b0946a0d21b144b60de6ae888fd206d0331816d",
+      "commit": "f524d5dcf4221a1122b4550a4b87cb300ca272d9",
       "repository": "https://github.com/StyxNether/dsh-auto-approval",
       "status": "listed"
     },
@@ -8367,6 +8974,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "89f89ed8d50c94c73adb7d818988cdab74c5acde",
       "repository": "https://github.com/suimi8/dsh-test-runner",
       "status": "listed"
@@ -8380,12 +8988,20 @@
     },
     {
       "code": "missing_manifest",
+      "commit": "05da64c9536ede2c63b1325fbfc5baf0dc7b6aa0",
+      "message": "Repository does not contain a root package.json.",
+      "repository": "https://github.com/sundusk/mac-ballPet-DeepSeekHarness",
+      "status": "rejected"
+    },
+    {
+      "code": "missing_manifest",
       "commit": "4ff8be4abbc62321f282ede097eb66d30c2dbb4f",
       "message": "Repository does not contain a root package.json.",
       "repository": "https://github.com/Sunrisepeak/dsh-index",
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "bfb4231ab6ca748871d679bb2895631262a9685f",
       "repository": "https://github.com/sunshine-lang/dsh-pdf",
       "status": "listed"
@@ -8405,6 +9021,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "9f85d87ac58402d5864aa7bdbd8346c136589458",
       "repository": "https://github.com/sunshine-lang/dsh-weather",
       "status": "listed"
@@ -8424,11 +9041,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "8a9b4f9df2adfb4c622380e98483a355bf8e34de",
       "repository": "https://github.com/superclaude1/dsh-vision-android",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "b2f17e93fbf909e28d79a34077f54284b600fab8",
       "repository": "https://github.com/superslash-rico/dsh-plugin-slashx-gateway",
       "status": "listed"
@@ -8448,16 +9067,19 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "293157c56ac4f2fd966153a7f4d4d37862878308",
       "repository": "https://github.com/sybolization/agent-jit",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "08b51faefc2e00fd8c23126895329440ea9520a0",
       "repository": "https://github.com/synmindai/dsh-nanobananapro",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "fbc8716ad80b8d4407af772bef2d1ceaa3de2dfe",
       "repository": "https://github.com/synmindai/dsh-seedance2",
       "status": "listed"
@@ -8477,6 +9099,12 @@
       "status": "rejected"
     },
     {
+      "commit": "7233842936a6d727c07bd64d303779b375d2f787",
+      "repository": "https://github.com/TableRogue/dsh-message-navigator",
+      "status": "listed"
+    },
+    {
+      "cached": true,
       "commit": "544f57b16a2425b0831b225d98ff606083d2b43b",
       "repository": "https://github.com/tanf1ng/dsh-tool-hackernews",
       "status": "listed"
@@ -8496,11 +9124,9 @@
       "status": "rejected"
     },
     {
-      "code": "missing_bundle_manifest",
       "commit": "49f8a80302b17bae970851979a57e79ad7bae3e0",
-      "message": "Root package.json does not declare dsh.bundle.patch.",
       "repository": "https://github.com/taxueseek/argo",
-      "status": "rejected"
+      "status": "deferred"
     },
     {
       "code": "missing_manifest",
@@ -8510,6 +9136,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "e3af40e4be7264d44058546cc0fae3cd66ef3456",
       "repository": "https://github.com/tdf1995/dsh-plugin-vision",
       "status": "listed"
@@ -8529,6 +9156,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "d8eff1a51196b116808f69f40657977d2fbf0534",
       "repository": "https://github.com/Temoa/dsh-rules-paths",
       "status": "listed"
@@ -8576,11 +9204,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "af0a8e40dbe34f8e80fa116eb28132d85698606f",
       "repository": "https://github.com/TheTianzz/dsh-billing",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "06869b75ae6cd262e80197bf02b8e14b0390366e",
       "repository": "https://github.com/TheYoungChen/dsh-plugin-market",
       "status": "listed"
@@ -8593,6 +9223,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "d8f834c55f29b89774619fd56a9c79eae9a57ebc",
       "repository": "https://github.com/Thomas-key/dsh-skill-manager",
       "status": "listed"
@@ -8605,16 +9236,19 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "ce4daad54dcd174f5fb43a1bb290a29bb1ceec4f",
       "repository": "https://github.com/tianji-qingtian/dsh-composer-polish",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "121ee7d4d9f0b7e063ff1533d8ac20c2bf63f128",
       "repository": "https://github.com/tianji-qingtian/dsh-model-router",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "9b86b909738fe3cd367d918e2c2260a9287eb549",
       "repository": "https://github.com/tianji-qingtian/dsh-spec-loop",
       "status": "listed"
@@ -8655,11 +9289,9 @@
       "status": "rejected"
     },
     {
-      "code": "missing_manifest",
       "commit": "22d96a76e05b91939493f604a0a46198d0d7f978",
-      "message": "Repository does not contain a root package.json.",
       "repository": "https://github.com/titanwings/colleague-skill",
-      "status": "rejected"
+      "status": "deferred"
     },
     {
       "commit": "a622b1b1758c6dc6bd476dc66d74a20a4b6762a3",
@@ -8667,11 +9299,13 @@
       "status": "preserved"
     },
     {
+      "cached": true,
       "commit": "506493224a21510c3f9cc7329a17e84af20879dc",
       "repository": "https://github.com/titanwings/dsh-better-browser",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "c0fe880107aa09ef595a8b6fdac6d7099e4b46da",
       "repository": "https://github.com/titanwings/dsh-plannotator",
       "status": "listed"
@@ -8684,6 +9318,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "3968e8b2e46ac5373c87a6191d0520022a0ed010",
       "repository": "https://github.com/tjxj/dsh-wanghong-handwritten-ppt",
       "status": "listed"
@@ -8724,11 +9359,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "af6a8236addc5a671e77bafd225d096ad57c4f83",
       "repository": "https://github.com/TonyDua/dsh-web-search-exa",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "70f06d6f46e0ce3a65d0682069fa06088b5ef461",
       "repository": "https://github.com/Tostoevsky/TsienHsueShen",
       "status": "listed"
@@ -8748,18 +9385,27 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "97493a32c3713c707edb1534bf2b63346560c340",
       "repository": "https://github.com/Toukaiteio/dsh-plugin-installer",
       "status": "listed"
     },
     {
+      "code": "missing_bundle_manifest",
+      "commit": "172d0c33a557217b8928f47972ac8856cacd5f35",
+      "message": "Root package.json does not declare dsh.bundle.patch.",
+      "repository": "https://github.com/Townrain/dsh-precise-cache",
+      "status": "rejected"
+    },
+    {
+      "cached": true,
       "commit": "02d8bbe1a4a58908892b28ab5b706e85bbe24489",
       "repository": "https://github.com/Towzai/dsh-memory",
       "status": "listed"
     },
     {
       "code": "missing_runtime",
-      "commit": "6770a0d8d615308906536222fd92cb06be252ade",
+      "commit": "511b4c9a42f76fe984b0ce7f7b07cf567b6c64ec",
       "message": "The declared runtime entry is not committed.",
       "repository": "https://github.com/TQSY114514/dsh-ui-appearance",
       "status": "rejected"
@@ -8828,6 +9474,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "458f2210389ce1b7a80bfad0a080f85a779d4276",
       "repository": "https://github.com/TT-Wang/dsh-slice-agent-loop",
       "status": "listed"
@@ -8876,17 +9523,19 @@
     },
     {
       "code": "missing_runtime",
-      "commit": "d41c1a5f243a10b089c5a3c11216a4903d9c80de",
+      "commit": "bb1b38d039aee0cffe08e5f8445f54aa94b23ff2",
       "message": "The declared runtime entry is not committed.",
       "repository": "https://github.com/TtTRz/dsh-wecom",
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "59225be3d7c8e6382a557d3e043a544be2c3ce9b",
       "repository": "https://github.com/tttwh/dsh-plugin-audit",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "c4ed38ac1c4b5a46fe8ca1c5afa48a01e8382d37",
       "repository": "https://github.com/ttxl314/dsh-skill-lord-serf",
       "status": "listed"
@@ -8949,12 +9598,13 @@
     },
     {
       "code": "missing_runtime",
-      "commit": "ace706211ce3557f4539bf1356887ed64f306102",
+      "commit": "acab946482d887768714ec91adec271b9b22b305",
       "message": "The declared runtime entry is not committed.",
       "repository": "https://github.com/Uddoo/dsh-dashboard",
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "572a24c9b5c9787caec98810351f5cb17c82250e",
       "repository": "https://github.com/unitarylab/quantum-practices",
       "status": "listed"
@@ -8982,12 +9632,13 @@
     },
     {
       "code": "missing_runtime",
-      "commit": "e4c9f2b489247ac88de2eb250f3304d9af04f078",
+      "commit": "730309a34e50bf24cadb43eb5e41fc981d623b41",
       "message": "The declared runtime entry is not committed.",
       "repository": "https://github.com/urzeye/dsh-outline",
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "41650f0b52c593867dc352116204a0ad8f067498",
       "repository": "https://github.com/userInner/dsh-academic-research",
       "status": "listed"
@@ -9000,6 +9651,13 @@
       "status": "rejected"
     },
     {
+      "code": "missing_runtime",
+      "commit": "f5d27fdb426a7c9250a15612c91ef1707ea3d96b",
+      "message": "The declared runtime entry is not committed.",
+      "repository": "https://github.com/V1ki/dsh-plugin-subscriptions",
+      "status": "rejected"
+    },
+    {
       "code": "missing_bundle_manifest",
       "commit": "6aee95a62628c4c8865f9557fe7af70ca3cb75d1",
       "message": "Root package.json does not declare dsh.bundle.patch.",
@@ -9007,13 +9665,14 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "d80ede70d72ee6a0ca53363a33cbb1d539982ff0",
       "repository": "https://github.com/v587d/dsh-opencode-go-usage",
       "status": "listed"
     },
     {
       "code": "missing_bundle_manifest",
-      "commit": "e5392e872804dbf43782fb2da7967dd0ec175933",
+      "commit": "dcfb53bd781b5e0d52e97970ad86d7af9885e582",
       "message": "Root package.json does not declare dsh.bundle.patch.",
       "repository": "https://github.com/vcxmug/dsh-enhance",
       "status": "rejected"
@@ -9047,50 +9706,55 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "265ce76eda21b211dc4a4c8f30d73a6826f035ca",
       "repository": "https://github.com/vibeinging/dsh-tool-search",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "caadf1b831ae2643bd25a365cc1356c2100e7a05",
       "repository": "https://github.com/vibeinging/dsh-trace",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "bcae07a2684205b3ebbd3976493c9084c2e882a1",
       "repository": "https://github.com/vibeinging/dsh-turn-navigator",
       "status": "listed"
     },
     {
-      "code": "missing_bundle_manifest",
-      "commit": "67a4604f92a74c0bb799bd59c86a0f12fdf9b4bc",
-      "message": "Root package.json does not declare dsh.bundle.patch.",
+      "commit": "1f4b434a32bab7151e288d12c5d169be40260696",
       "repository": "https://github.com/vibeinging/dsh-work",
-      "status": "rejected"
+      "status": "deferred"
     },
     {
+      "cached": true,
       "commit": "eaf5f8bbfa6d0ba6b972195e57bd297f7d0b3b39",
       "repository": "https://github.com/visail/dsh-vision-tool",
       "status": "listed"
     },
     {
       "code": "missing_runtime",
-      "commit": "26c349e6b5784781d63cf4e625f0dbaf87bc2e0f",
+      "commit": "4e2d12bca8c2182d8e4572f72c37cf668e7820d8",
       "message": "The declared runtime entry is not committed.",
       "repository": "https://github.com/Visol-456/dsh-llm-fallback",
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "e7159369169526e92f75727b35d83029568b3a21",
       "repository": "https://github.com/vlln/dsh-loop",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "6e23640bd60c0157043ae5c29a6d80034287b41b",
       "repository": "https://github.com/vlln/dsh-navbar",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "4453da02d62289aeb19b046b4d2b5439dd4ce55a",
       "repository": "https://github.com/vlln/dsh-task-status",
       "status": "listed"
@@ -9104,8 +9768,9 @@
     },
     {
       "commit": "ecba322be408138fcc265588cacf00737154d31e",
+      "previousCommit": "ecba322be408138fcc265588cacf00737154d31e",
       "repository": "https://github.com/vlln/whale-girl",
-      "status": "listed"
+      "status": "deferred"
     },
     {
       "code": "missing_bundle_manifest",
@@ -9143,11 +9808,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "0114b0ec445c5bf5d528106136bd9cf4acf7e27b",
       "repository": "https://github.com/w2112515/dsh-plugin-development",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "189d5fec44c6178e7db026c91237cfcbabfb4489",
       "repository": "https://github.com/w769721503/dsh-plugin-store",
       "status": "listed"
@@ -9202,6 +9869,13 @@
       "status": "rejected"
     },
     {
+      "code": "missing_license",
+      "commit": "27c09e7264374360a153f11a51d7fd9284c35de8",
+      "message": "A committed root license file is required.",
+      "repository": "https://github.com/wangwei-wade/dsh-quote-annotate",
+      "status": "rejected"
+    },
+    {
       "code": "missing_bundle_manifest",
       "commit": "3ca7f7877245c8088bd8ca998186e9081949fa5c",
       "message": "Root package.json does not declare dsh.bundle.patch.",
@@ -9237,6 +9911,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "a99147b4a616b688dcdee1b6f062de1b94c7de67",
       "repository": "https://github.com/Way2LOose4/dsh-agent-pricing",
       "status": "listed"
@@ -9291,11 +9966,18 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "4ffb4af97b04c4e34bfe0b25842ddab1e9186237",
       "repository": "https://github.com/weiyuou-chowbus/dsh-git-status",
       "status": "listed"
     },
     {
+      "commit": "9900fad2cd3f565d623a2899e5daa0e30ffb14c0",
+      "repository": "https://github.com/wellorbetter/dsh-plugin-window-stats",
+      "status": "deferred"
+    },
+    {
+      "cached": true,
       "commit": "b58546acd53c16985eb099a3a49961a9a8f8b776",
       "repository": "https://github.com/wellorbetter/dsh-product-delivery-workflow",
       "status": "listed"
@@ -9343,6 +10025,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "651f66f7329d38353a4a97c16bf6a8e783d5ed97",
       "repository": "https://github.com/werifu/dsh-oai-oauth",
       "status": "listed"
@@ -9370,7 +10053,7 @@
     },
     {
       "code": "missing_bundle_manifest",
-      "commit": "5a993eda624d9ed069db94b6d5ac6a5ef98a97b2",
+      "commit": "f9012b27536bfe49dfcf043576c9bc142e26f862",
       "message": "Root package.json does not declare dsh.bundle.patch.",
       "repository": "https://github.com/white0dew/awesome-dsh-plugins",
       "status": "rejected"
@@ -9411,11 +10094,12 @@
       "status": "rejected"
     },
     {
-      "commit": "01076f1ad6dfc29b79019f6d8c98efc60c6d05c6",
+      "commit": "c4a78894fc87c73655b099364d1add4d177a5196",
       "repository": "https://github.com/Whning0513/deepseek-protocol-doctor",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "d24d72c5cebcd87a9226ac866b1e406cc74e92ff",
       "repository": "https://github.com/why913/dshx",
       "status": "listed"
@@ -9429,7 +10113,7 @@
     },
     {
       "code": "missing_bundle_manifest",
-      "commit": "8087fb96133eba99730070208d36d978b8fdcdb4",
+      "commit": "469af9591c74bbe0b0326a07080cabeea314a696",
       "message": "Root package.json does not declare dsh.bundle.patch.",
       "repository": "https://github.com/whyihaveyou/dsh-suite",
       "status": "rejected"
@@ -9470,6 +10154,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "1703f09915db1058b6031b31e52fd404560e0a78",
       "repository": "https://github.com/william-jin-cmu/dsh-stickers",
       "status": "listed"
@@ -9510,6 +10195,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "79fe7503390d641680bad8efade52782a3c31ced",
       "repository": "https://github.com/wingoo/codex-plugin-dsh",
       "status": "listed"
@@ -9550,6 +10236,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "c3c1f183559f6914513d64fc9b1e0501a8ae049b",
       "repository": "https://github.com/winyh/dsh-growth",
       "status": "listed"
@@ -9569,6 +10256,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "0acb73eb0db5522d58185f8b0668814e09d7daef",
       "repository": "https://github.com/WSL043/dsh-codex-subscription",
       "status": "listed"
@@ -9581,11 +10269,9 @@
       "status": "rejected"
     },
     {
-      "code": "missing_bundle_manifest",
-      "commit": "a5a3ff4aed98c079cdab4bf0e4d120b4dda37094",
-      "message": "Root package.json does not declare dsh.bundle.patch.",
+      "commit": "eb37a4906ad5b29ad2fbb3bfdb917f140feb6b5c",
       "repository": "https://github.com/wsxwj123/dsh-plugins",
-      "status": "rejected"
+      "status": "deferred"
     },
     {
       "code": "missing_manifest",
@@ -9595,6 +10281,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "ada1b30ba4f1ddc5d4a959796e1d5efac0cb0bda",
       "repository": "https://github.com/wuwangmao/dsh-qwen-multimodal",
       "status": "listed"
@@ -9614,6 +10301,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "fc67d8ae8d5989fd35625b7305f5c2634cc6b85b",
       "repository": "https://github.com/wuxiangru915/dsh-review-loop",
       "status": "listed"
@@ -9633,6 +10321,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "1b98ce5b56fbf1ae6ee010460aa787728c3fcd2c",
       "repository": "https://github.com/wuxinzhe/dsh-speech-sherpa",
       "status": "listed"
@@ -9652,6 +10341,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "5683060cec8e00d1125bc64c9512eee988814ce2",
       "repository": "https://github.com/xavier711/dsh-deepseek-usage",
       "status": "listed"
@@ -9664,6 +10354,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "b592793332643ccc45f06d338f194cf5be6018d9",
       "repository": "https://github.com/XCNXNXNX/dsh-portable-tavern",
       "status": "listed"
@@ -9676,6 +10367,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "03801a185e69ef9eaa38659b56176a5718283a3f",
       "repository": "https://github.com/Xenia0922/dsh-opencode-go-usage",
       "status": "listed"
@@ -9685,6 +10377,13 @@
       "commit": "dafc974d4584bc42f83ea1040270c4998a06ced7",
       "message": "A committed root license file is required.",
       "repository": "https://github.com/xiagaogaozi/dsh-silly-plugin",
+      "status": "rejected"
+    },
+    {
+      "code": "missing_runtime",
+      "commit": "a7b0a6e8a5e5c397e318712b7c88514441d77999",
+      "message": "The declared runtime entry is not committed.",
+      "repository": "https://github.com/xiajingchun/dsh-nebulagraph-v5",
       "status": "rejected"
     },
     {
@@ -9723,6 +10422,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "32c5271753cbbe31a76f351b36f1011531654ff0",
       "repository": "https://github.com/xiaomiba0904/dsh-obsidian-export",
       "status": "listed"
@@ -9791,6 +10491,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "c05d14faaa948ce22038c3f44a633dc342df738c",
       "repository": "https://github.com/xiaoyuyu6420/dsh-backup",
       "status": "listed"
@@ -9803,11 +10504,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "1946101995e86dacdd1fb6c2ee0d118ecace0a57",
       "repository": "https://github.com/Xilin3/dsh-prompt-persona",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "33e8a3216c25a3bddbfdad922d79e1ac5769e951",
       "repository": "https://github.com/XiLuovo/dsh-session-timeline",
       "status": "listed"
@@ -9841,11 +10544,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "bf3077254e1e47d92eb6d569c6d43d1a8c3b8bf0",
       "repository": "https://github.com/xingyingyuzhui/dsh-updater-ui",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "a5c514a1c53ed46035065f6fa546aa3f7acbb5af",
       "repository": "https://github.com/xinmo114514/dsh-prompt-optimizer",
       "status": "listed"
@@ -9865,6 +10570,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "935a267483a545c098b2be81b9cf0436085b0890",
       "repository": "https://github.com/XJungit/omdp",
       "status": "listed"
@@ -9889,6 +10595,11 @@
       "message": "The declared runtime entry is not committed.",
       "repository": "https://github.com/xluomo/dsh-mcp-settings",
       "status": "rejected"
+    },
+    {
+      "commit": "47da0753df2090bb8098be5a6fbacfbf98941ae0",
+      "repository": "https://github.com/xmanrui/dsh-feishu",
+      "status": "listed"
     },
     {
       "code": "missing_runtime",
@@ -9940,11 +10651,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "fb9c43b9ee5433a6e5718adab32701c5bbad2e17",
       "repository": "https://github.com/XuezuoYS/dsh-IamDeepSeekV4ga",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "22fd327dc47ad2c40461b0d60b3f6f63f5d5446b",
       "repository": "https://github.com/xwh-01/dsh-mediacrawler",
       "status": "listed"
@@ -9957,6 +10670,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "4714c7bf0e049abdd551686a7bdaf5cdb383570b",
       "repository": "https://github.com/XYZ1024-alt/dsh-side-panel",
       "status": "listed"
@@ -9969,6 +10683,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "0645b736bb0f1f423499a6f0c71379c72fc8fe77",
       "repository": "https://github.com/Yan-Zero/dsh-codex",
       "status": "listed"
@@ -9988,6 +10703,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "40e6ed8d85d96249278bfd6f7e0f13bd408d94bf",
       "repository": "https://github.com/yan9651688/dsh-file-checksum",
       "status": "listed"
@@ -10007,13 +10723,14 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "2691aaa79e62a7debb10a7a1419a902b1d5a9ca7",
       "repository": "https://github.com/yanglongyun/dsh-ramify",
       "status": "listed"
     },
     {
       "code": "missing_license",
-      "commit": "fd846edf61708e5376f6b124ca8a84f779736c01",
+      "commit": "12f43523d8d13ec82aca117b3179d9ff1f1e0fe1",
       "message": "A committed root license file is required.",
       "repository": "https://github.com/yangyongzhen/dsh-article-publish",
       "status": "rejected"
@@ -10041,7 +10758,7 @@
     },
     {
       "code": "missing_runtime",
-      "commit": "1cdca3deb5abb0323f31ab4f6ec7ff5ce9f1685a",
+      "commit": "add852e1e0e16a1143c44e59a89a5a0abf300303",
       "message": "The declared runtime entry is not committed.",
       "repository": "https://github.com/yangyue1974/dsh-plugin-audiolib",
       "status": "rejected"
@@ -10110,13 +10827,12 @@
       "status": "rejected"
     },
     {
-      "code": "missing_bundle_manifest",
       "commit": "85c1ea76c565e697f510cc45d82ebcb352458dd6",
-      "message": "Root package.json does not declare dsh.bundle.patch.",
       "repository": "https://github.com/yejiming/MuseAI",
-      "status": "rejected"
+      "status": "deferred"
     },
     {
+      "cached": true,
       "commit": "64fcc5600d1661999ec518742023115cbc503f81",
       "repository": "https://github.com/YELEBAI/dsh-plugin-marketplace",
       "status": "listed"
@@ -10129,21 +10845,21 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "f96e1b79c1f1dbb902717fa5668162365e62be4b",
       "repository": "https://github.com/yeshimei/dsh-sound",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "f83602fc8ea0f72c23389975991bfd16c8bbab7e",
       "repository": "https://github.com/yflmq001/dsh-cost-tracker",
       "status": "listed"
     },
     {
-      "code": "missing_bundle_manifest",
-      "commit": "d88df1907dd15cd24a85876d6727d8f9946a384b",
-      "message": "Root package.json does not declare dsh.bundle.patch.",
+      "commit": "de19f982df6ef9db328a028646354da50b6b7aa9",
       "repository": "https://github.com/yha9806/dsh-subagent-admission",
-      "status": "rejected"
+      "status": "deferred"
     },
     {
       "code": "missing_runtime",
@@ -10167,21 +10883,21 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "2ab23501ab972a450663b87b7d343a3e19f8e707",
       "repository": "https://github.com/yingjunnan/dsh-deepseek-quota",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "9be1394fa21ede8abe6e4f629bbf546bc6987a2d",
       "repository": "https://github.com/yinren112/dsh-plugin-connection-banner",
       "status": "listed"
     },
     {
-      "code": "invalid_manifest",
-      "commit": "d554614d689d88a04a513bd8033ca54efc912bff",
-      "message": "Root package.json must contain valid JSON.",
+      "commit": "0185fbd3ce7fca5cdb1946cf8e2f22942c5b2bc8",
       "repository": "https://github.com/yjh051108/dsh-engram-relay",
-      "status": "rejected"
+      "status": "listed"
     },
     {
       "code": "missing_runtime",
@@ -10254,6 +10970,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "0b35beea8950439ed4f0ebf4f709337f4e182fd5",
       "repository": "https://github.com/Yogioo/dsh-balance",
       "status": "listed"
@@ -10266,21 +10983,25 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "08f53427c9590e2fbc8da7f1622c998fe1bde028",
       "repository": "https://github.com/yoke233/dsh-openai-codex-auth",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "4178e9305461fba5c4a809bd9a9de8cd3251320f",
       "repository": "https://github.com/yoke233/dsh-pixel-whale",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "325c1821c4e61d8dabf1761e400184929af8063c",
       "repository": "https://github.com/yoke233/dsh-prime-agent",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "707b3f4ed8fc2301393dccdf537d531d128d449c",
       "repository": "https://github.com/yoke233/dsh-tool-monitor",
       "status": "listed"
@@ -10307,7 +11028,7 @@
       "status": "rejected"
     },
     {
-      "commit": "ad297cfe4ad6badf8af32f49ad04720eb728cf66",
+      "commit": "4b69971ddf76ef95d85e66a66f064621188d281c",
       "repository": "https://github.com/ysr666/dsh-vision-router",
       "status": "listed"
     },
@@ -10319,6 +11040,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "623315f6da4f2ade4ca51bfdc7248d389f8059d4",
       "repository": "https://github.com/yu-xin-c/dsh-project-wiki",
       "status": "listed"
@@ -10328,6 +11050,13 @@
       "commit": "c9c5a491419bbf1ca07f5700630fda295bed7919",
       "message": "Root package.json does not declare dsh.bundle.patch.",
       "repository": "https://github.com/yuanzehui313/dsh-workspace-enhance",
+      "status": "rejected"
+    },
+    {
+      "code": "missing_bundle_manifest",
+      "commit": "f6d207a781aa6c8135a99e9eece082be84512a99",
+      "message": "Root package.json does not declare dsh.bundle.patch.",
+      "repository": "https://github.com/Yuel25/dsh-desktop",
       "status": "rejected"
     },
     {
@@ -10359,11 +11088,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "efeb92e1bcfe54369f88b6e8a176ad87f87a17b0",
       "repository": "https://github.com/Yummyxl/dsh-eyecare",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "f78d7f8c85c0399791f4352b32e823b444e70707",
       "repository": "https://github.com/yumusb/dsh-opencode-go-usage",
       "status": "listed"
@@ -10376,6 +11107,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "263f40b3067d575e677a862894c8180a38d7081f",
       "repository": "https://github.com/yuqingsh/dsh-image-subagent",
       "status": "listed"
@@ -10388,11 +11120,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "faa7574c5a6989c254629ba33aae64860528206a",
       "repository": "https://github.com/Yuuz12/dsh-vision-helper",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "ded54941a4016f7efb0d78b815f6c1bfdec348ea",
       "repository": "https://github.com/Yuuz12/dsh-webui-auth",
       "status": "listed"
@@ -10426,7 +11160,7 @@
       "status": "rejected"
     },
     {
-      "commit": "1dcea91cc7134ba053a54a0b5ef8715cbf73f7a0",
+      "commit": "227604955e88b42dcbbe09430399fe6fd472a9cb",
       "repository": "https://github.com/yyh-001/dsh-expression",
       "status": "listed"
     },
@@ -10522,25 +11256,27 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "afb56fd1defbcd76ec1c70cd838fdb446937e5ab",
       "repository": "https://github.com/yyyyukari/dsh-plugin-workshop",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "f53a6ebb4b3dc1cb08b8d7a450d2a8a75cd1f2a1",
       "repository": "https://github.com/z21for99/silk-background",
       "status": "listed"
     },
     {
       "code": "missing_bundle_manifest",
-      "commit": "deba9c66d312ad724a57f97c0e2e9c6e990984e0",
+      "commit": "412be8ad173810f26869f106f0aa3fa04dc79920",
       "message": "Root package.json does not declare dsh.bundle.patch.",
       "repository": "https://github.com/Zalpha263/dsh-file-explorer",
       "status": "rejected"
     },
     {
       "code": "missing_bundle_manifest",
-      "commit": "9396675010aef40261c44cce4cdc103c63353aa8",
+      "commit": "363e7136165e70f987b5de7c8d17f15b4ed78b9b",
       "message": "Root package.json does not declare dsh.bundle.patch.",
       "repository": "https://github.com/Zalpha263/dsh-ui-beautify",
       "status": "rejected"
@@ -10560,6 +11296,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "5063d011fcb34915ee9e6bb3e54ca80d8c636750",
       "repository": "https://github.com/zbxzbx98/dsh-peak-alert",
       "status": "listed"
@@ -10580,7 +11317,7 @@
     },
     {
       "code": "missing_manifest",
-      "commit": "dfafb58a68e74c1f5532b9670e1ff03f1b75a296",
+      "commit": "a6f6ba50d222c6f88d0a28556a8c3112c9e985cc",
       "message": "Repository does not contain a root package.json.",
       "repository": "https://github.com/zdjmrq/dsh-attention-notifier",
       "status": "rejected"
@@ -10601,7 +11338,7 @@
     },
     {
       "code": "missing_license",
-      "commit": "5fae409ec8b768f28f6b2a4f1fe2c249e40a1c73",
+      "commit": "d6fd1449179a3e1ae1d19bc63d22d3362a9b9b94",
       "message": "A committed root license file is required.",
       "repository": "https://github.com/zealot00/dsh-zen",
       "status": "rejected"
@@ -10614,6 +11351,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "a5281c7fec4ebfbeb379a763cd4ba0f1528cd756",
       "repository": "https://github.com/Zenjibad/dsh-lan-uuid-fix",
       "status": "listed"
@@ -10626,12 +11364,12 @@
       "status": "rejected"
     },
     {
-      "commit": "1f1e41ea3107827c2c9c93d91828fece363b3a43",
+      "commit": "8257334ffd6c4d9d18040b1b33b46c11b2e70354",
       "repository": "https://github.com/Zephyr-vibe/dsh-archived-sessions",
       "status": "listed"
     },
     {
-      "commit": "9b20e56b98eee88f7682acd228e31e2b57198da4",
+      "commit": "1b1721b1bb79bf4d7f44bf8871cb817755540171",
       "repository": "https://github.com/Zephyr-vibe/dsh-personalize",
       "status": "listed"
     },
@@ -10643,11 +11381,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "b10fe9683e177d2f111e4fec67ba4ae2406c6a28",
       "repository": "https://github.com/ZeroHackz/GUI-SAM2Matting",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "f9b5087291a691dc02444b7d9dcff05033905a4d",
       "repository": "https://github.com/ZeroHackz/OpenFlowFrames",
       "status": "listed"
@@ -10667,16 +11407,19 @@
       "status": "rejected"
     },
     {
-      "commit": "42f50296415d5ace3bc336a52dd40ab2809b42b0",
+      "commit": "9e6fa25a54ab91bae9b0d3e4b3a91b24ed2661e3",
       "repository": "https://github.com/zh667/TokenLedger",
       "status": "listed"
     },
     {
-      "commit": "2b4aaca98ce718ec2a6dceed4a10f856278ee60c",
+      "code": "invalid_client",
+      "commit": "b16cf4c8113afa9844db0bae0a6cb4a3ba543667",
+      "message": "The declared client entry is not committed.",
       "repository": "https://github.com/zhang66633/dsh-plugin-installer",
-      "status": "listed"
+      "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "819ea0c4f523f2c3eedcd93ce6cf5cf1c4714612",
       "repository": "https://github.com/zhangxiang1993621/dsh-ws-files",
       "status": "listed"
@@ -10696,16 +11439,19 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "388585ff95a65e8a8b69324837a1c72f7d6e1de3",
       "repository": "https://github.com/zhangzheng25/dsh-token-monitor",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "42d0f21744d08d1d03462cfca29d5759a811ea4b",
       "repository": "https://github.com/zhangzujian/dsh-same-mode-sandbox-noop",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "f03bd2163b88b913c7169e88077ad2b362c8c33e",
       "repository": "https://github.com/zhangzujian/dsh-subprocess-inherit-environment",
       "status": "listed"
@@ -10718,6 +11464,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "8f65e467cab544baaa4f0b3740499105cb07f66e",
       "repository": "https://github.com/zhaoscsc/dsh-wikilink",
       "status": "listed"
@@ -10737,6 +11484,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "4a91502c106f7fed86981421c740566abf309977",
       "repository": "https://github.com/Zhenyu98/dsh-context-doctor",
       "status": "listed"
@@ -10749,16 +11497,15 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "f571dcb73e2b9a521b7e68373e4169635737969e",
       "repository": "https://github.com/zhouzhencheng07/dsh-tavily-search",
       "status": "listed"
     },
     {
-      "code": "missing_bundle_manifest",
-      "commit": "2af697e7cc70c73e553b9cd805a3b9cbccc550d7",
-      "message": "Root package.json does not declare dsh.bundle.patch.",
+      "commit": "696bd504c45217fdc395844d52e28e921f72cbfb",
       "repository": "https://github.com/zhu1090093659/dsh-web-ui",
-      "status": "rejected"
+      "status": "deferred"
     },
     {
       "code": "missing_bundle_manifest",
@@ -10768,11 +11515,13 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "2906fdac4cfec5fbaefba706cea9d4322cd1443e",
       "repository": "https://github.com/zhuiyueya/dsh-voice",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "7537348c7d2341359b834b3e176c10eedaf3ae64",
       "repository": "https://github.com/ZhuXinAI/sidesight",
       "status": "listed"
@@ -10785,46 +11534,55 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "6527cb64b11b7265ba576e195bd008a5aa066be5",
       "repository": "https://github.com/zimai233/dsh-adhd-copilot",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "54492515553fcf38a48f372e381bbf3252abcc38",
       "repository": "https://github.com/zimai233/dsh-exam-countdown",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "8e21469374ebe4241b515f95552b1d8db8b79bb8",
       "repository": "https://github.com/zimai233/dsh-figma-to-lottie",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "95ac2b739f7464386cb28c2b758cbc9382befe5a",
       "repository": "https://github.com/zimai233/dsh-image-search",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "48107ee57bc115af0165c20b464ef7adcfa6fc59",
       "repository": "https://github.com/zimai233/dsh-video-downloader",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "3622edd766f0c2c8319f64ab6891221c96865ac2",
       "repository": "https://github.com/zimai233/dsh-wash-calendar",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "7a8d968a1c76fe2a373a3690fb7cbf6c36cf533d",
       "repository": "https://github.com/zimixvx/dsh-archive-manager",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "db02f78654d347e48378a7f5a1b54d837643b5e3",
       "repository": "https://github.com/zimzaza4/dsh-bash-win",
       "status": "listed"
     },
     {
+      "cached": true,
       "commit": "b10bf235b327b78d0215ceb21ff35d3bf978d2ee",
       "repository": "https://github.com/ziyou979/dsh-llm-oauth",
       "status": "listed"
@@ -10858,7 +11616,7 @@
       "status": "rejected"
     },
     {
-      "commit": "392622d783bc8f0b7495d31d4e980bd93a2b9813",
+      "commit": "c7be795dc06fc7c1bdc67d78506bd3da12024f20",
       "repository": "https://github.com/zp-home/dsh-recommend",
       "status": "listed"
     },
@@ -10870,6 +11628,7 @@
       "status": "rejected"
     },
     {
+      "cached": true,
       "commit": "ff2e5dcb2ade3d37e72a6ec04618bf6dfdba3c38",
       "repository": "https://github.com/ZRui-C/dsh-content-studio",
       "status": "listed"
@@ -10896,11 +11655,9 @@
       "status": "rejected"
     },
     {
-      "code": "missing_runtime",
-      "commit": "59a42a18988923cf053f3ca7344f67d271b395bc",
-      "message": "The declared runtime entry is not committed.",
+      "commit": "bd74d556b3ccc527989117bd850eab18971c7014",
       "repository": "https://github.com/zytsyj/dsh-gpu",
-      "status": "rejected"
+      "status": "deferred"
     },
     {
       "code": "missing_bundle_manifest",

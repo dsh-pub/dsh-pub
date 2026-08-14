@@ -94,6 +94,7 @@ describe('GitHub Topic GraphQL client', () => {
         return next;
       },
       now: () => new Date('2026-08-14T00:30:00Z'),
+      sleep: async () => {},
       token: 'test-token',
     });
 
@@ -142,7 +143,7 @@ describe('GitHub Topic GraphQL client', () => {
     });
   });
 
-  it('fails closed when topic pagination drifts', async () => {
+  it('marks an empty drifting Topic pass as incomplete', async () => {
     const client = createGitHubTopicClient({
       fetch: async () =>
         response({
@@ -156,10 +157,78 @@ describe('GitHub Topic GraphQL client', () => {
           },
         }),
       now: () => new Date('2026-08-14T00:30:00Z'),
+      sleep: async () => {},
       token: 'test-token',
     });
 
-    await expect(client.discoverTopic('dsh-plugin')).rejects.toThrow('incomplete');
+    await expect(client.discoverTopic('dsh-plugin')).resolves.toMatchObject({
+      complete: false,
+      observedTotalCount: 2,
+      totalCount: 0,
+      unresolvedCount: 2,
+    });
+  });
+
+  it('marks a non-empty terminal page as incomplete when it is below totalCount', async () => {
+    const client = createGitHubTopicClient({
+      fetch: async () =>
+        response({
+          rateLimit: { cost: 1, remaining: 999, resetAt: '2026-08-14T02:00:00Z' },
+          topic: {
+            repositories: {
+              nodes: [
+                repositoryNode({
+                  commit: '1'.repeat(40),
+                  nameWithOwner: 'example/one',
+                  updatedAt: '2026-08-14T00:00:00Z',
+                }),
+              ],
+              pageInfo: { endCursor: null, hasNextPage: false },
+              totalCount: 2,
+            },
+          },
+        }),
+      now: () => new Date('2026-08-14T00:30:00Z'),
+      sleep: async () => {},
+      token: 'test-token',
+    });
+
+    await expect(client.discoverTopic('dsh-plugin')).resolves.toMatchObject({
+      complete: false,
+      observedTotalCount: 2,
+      repositories: [expect.objectContaining({ repository: 'https://github.com/example/one' })],
+      totalCount: 1,
+      unresolvedCount: 1,
+    });
+  });
+
+  it('restarts Topic pagination after a transient count drift', async () => {
+    let requests = 0;
+    const client = createGitHubTopicClient({
+      fetch: async () => {
+        requests += 1;
+        return response({
+          rateLimit: { cost: 1, remaining: 999, resetAt: '2026-08-14T02:00:00Z' },
+          topic: {
+            repositories: {
+              nodes: [],
+              pageInfo: { endCursor: null, hasNextPage: false },
+              totalCount: requests === 1 ? 1 : 0,
+            },
+          },
+        });
+      },
+      now: () => new Date('2026-08-14T00:30:00Z'),
+      sleep: async () => {},
+      token: 'test-token',
+    });
+
+    await expect(client.discoverTopic('dsh-plugin')).resolves.toMatchObject({
+      complete: true,
+      totalCount: 0,
+      unresolvedCount: 0,
+    });
+    expect(requests).toBe(2);
   });
 
   it('uses a cutoff snapshot and defers repositories updated during the run', async () => {
@@ -201,6 +270,9 @@ describe('GitHub Topic GraphQL client', () => {
     });
 
     await expect(client.discoverTopic('dsh-plugin')).resolves.toMatchObject({
+      deferredRepositories: [
+        expect.objectContaining({ repository: 'https://github.com/example/two' }),
+      ],
       observedTotalCount: 2,
       snapshotAt: '2026-08-14T00:30:00.000Z',
       totalCount: 1,
@@ -231,6 +303,79 @@ describe('GitHub Topic GraphQL client', () => {
 
     await expect(client.discoverTopic('dsh-plugin')).resolves.toMatchObject({ totalCount: 0 });
     expect(requests).toBe(2);
+  });
+
+  it('retries an HTTP rate limit response and honors Retry-After', async () => {
+    let requests = 0;
+    const waits: number[] = [];
+    const client = createGitHubTopicClient({
+      fetch: async () => {
+        requests += 1;
+        if (requests === 1) {
+          return new Response(JSON.stringify({ message: 'secondary rate limit' }), {
+            headers: { 'Content-Type': 'application/json', 'Retry-After': '2' },
+            status: 403,
+          });
+        }
+        return response({
+          rateLimit: { cost: 1, remaining: 999, resetAt: '2026-08-14T02:00:00Z' },
+          topic: {
+            repositories: {
+              nodes: [],
+              pageInfo: { endCursor: null, hasNextPage: false },
+              totalCount: 0,
+            },
+          },
+        });
+      },
+      now: () => new Date('2026-08-14T00:30:00Z'),
+      sleep: async (milliseconds) => {
+        waits.push(milliseconds);
+      },
+      token: 'test-token',
+    });
+
+    await expect(client.discoverTopic('dsh-plugin')).resolves.toMatchObject({ totalCount: 0 });
+    expect(requests).toBe(2);
+    expect(waits).toEqual([2_000]);
+  });
+
+  it('retries GraphQL rate limit errors returned with HTTP 200', async () => {
+    let requests = 0;
+    const waits: number[] = [];
+    const client = createGitHubTopicClient({
+      fetch: async () => {
+        requests += 1;
+        if (requests === 1) {
+          return new Response(
+            JSON.stringify({
+              data: null,
+              errors: [{ message: 'API rate limit exceeded for this resource.' }],
+            }),
+            { headers: { 'Content-Type': 'application/json' }, status: 200 },
+          );
+        }
+        return response({
+          rateLimit: { cost: 1, remaining: 999, resetAt: '2026-08-14T02:00:00Z' },
+          topic: {
+            repositories: {
+              nodes: [],
+              pageInfo: { endCursor: null, hasNextPage: false },
+              totalCount: 0,
+            },
+          },
+        });
+      },
+      now: () => new Date('2026-08-14T00:30:00Z'),
+      sleep: async (milliseconds) => {
+        waits.push(milliseconds);
+      },
+      token: 'test-token',
+    });
+
+    await expect(client.discoverTopic('dsh-plugin')).resolves.toMatchObject({ totalCount: 0 });
+    expect(requests).toBe(2);
+    expect(waits).toEqual([60_000]);
   });
 
   it('keeps the snapshot when a repository disappears before manifest inspection', async () => {

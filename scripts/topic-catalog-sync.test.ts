@@ -116,7 +116,7 @@ describe('GitHub Topic catalog sync', () => {
               readme: {
                 byteSize: 92,
                 oid: '7'.repeat(40),
-                text: '# dsh-clock\n\nAdds a clock panel.\n\n## Known limitations\n\nWeb only.',
+                text: '# dsh-clock\n\n![pixel](https://tracker.example/pixel.gif)\n<img src="https://tracker.example/raw.gif">\nAdds a clock panel.\n\n## Known limitations\n\nWeb only.',
               },
               readmeZh: null,
               runtime: { byteSize: 20, oid: '8'.repeat(40) },
@@ -189,6 +189,7 @@ describe('GitHub Topic catalog sync', () => {
       },
       source: { commit: '2'.repeat(40) },
     });
+    expect(result.catalog.entries[1].docs.readme.en).toBe('Adds a clock panel.');
     expect(result.analysis).toMatchObject({
       schemaVersion: 1,
       snapshotAt: '2026-08-14T00:30:00.000Z',
@@ -237,5 +238,77 @@ describe('GitHub Topic catalog sync', () => {
     });
     expect(rerun.catalog.entries[1].provenance.analyzedAt).toBe('2026-08-14');
     expect(rerun.sources.entries[1].automation.analyzedAt).toBe('2026-08-14');
+
+    const deferred = await syncTopicCatalogData({
+      analysis: rerun.analysis,
+      catalog: rerun.catalog,
+      github: {
+        discoverTopic: async () => ({
+          deferredRepositories: [
+            {
+              commit: '9'.repeat(40),
+              nameWithOwner: 'example/dsh-clock',
+              repository: 'https://github.com/example/dsh-clock',
+              updatedAt: '2026-08-16T00:31:00Z',
+            },
+          ],
+          observedTotalCount: 1,
+          repositories: [],
+          snapshotAt: '2026-08-16T00:30:00.000Z',
+          totalCount: 0,
+        }),
+        inspectBundles: async () => new Map(),
+      },
+      now: new Date('2026-08-16T01:00:00+08:00'),
+      reservedSlugs: ['dsh-clock'],
+      registry: rerun.registry,
+      sources: rerun.sources,
+      topic: 'dsh-plugin',
+    });
+    expect(deferred.catalog.entries).toHaveLength(2);
+    expect(deferred.catalog.entries[1].source.commit).toBe('2'.repeat(40));
+    expect(deferred.sources.entries[1].commit).toBe('2'.repeat(40));
+    expect(deferred.analysis).toMatchObject({
+      totals: { deferred: 1, discovered: 0, observed: 1 },
+    });
+    expect(deferred.analysis.entries).toContainEqual({
+      commit: '9'.repeat(40),
+      previousCommit: '2'.repeat(40),
+      repository: 'https://github.com/example/dsh-clock',
+      status: 'deferred',
+    });
+
+    const unresolved = await syncTopicCatalogData({
+      analysis: rerun.analysis,
+      catalog: rerun.catalog,
+      github: {
+        discoverTopic: async () => ({
+          complete: false,
+          deferredRepositories: [],
+          observedTotalCount: 1,
+          repositories: [],
+          snapshotAt: '2026-08-16T00:30:00.000Z',
+          totalCount: 0,
+          unresolvedCount: 1,
+        }),
+        inspectBundles: async () => new Map(),
+      },
+      now: new Date('2026-08-16T01:00:00+08:00'),
+      reservedSlugs: ['dsh-clock'],
+      registry: rerun.registry,
+      sources: rerun.sources,
+      topic: 'dsh-plugin',
+    });
+    expect(unresolved.catalog.entries).toHaveLength(2);
+    expect(unresolved.catalog.entries[1].source.commit).toBe('2'.repeat(40));
+    expect(unresolved.analysis).toMatchObject({
+      complete: false,
+      totals: { retainedUnresolved: 1, unresolved: 1 },
+    });
+    expect(unresolved.analysis.entries).toContainEqual({
+      commit: '2'.repeat(40),
+      repository: 'https://github.com/example/dsh-clock',
+      status: 'unresolved',
+    });
   });
 });

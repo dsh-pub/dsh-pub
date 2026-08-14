@@ -74,7 +74,9 @@ const provenanceStatement =
 const readmeSource = localized(entry.docs?.readme, locale);
 const rawReadme = readmeSource ? await marked.parse(readmeSource, { gfm: true }) : '';
 const readme = sanitizeHtml(rawReadme, {
-  allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'details', 'summary']),
+  allowedTags: sanitizeHtml.defaults.allowedTags.concat(
+    provenance === 'community-automated' ? ['details', 'summary'] : ['img', 'details', 'summary'],
+  ),
   allowedAttributes: {
     a: ['href', 'name', 'target', 'rel'],
     img: ['src', 'alt', 'title', 'width', 'height'],

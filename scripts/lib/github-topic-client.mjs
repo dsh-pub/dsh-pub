@@ -4,7 +4,9 @@ const API_URL = 'https://api.github.com/graphql';
 const BATCH_SIZE = 50;
 const INSPECTION_BATCH_SIZE = 20;
 const MAX_CONCURRENCY = 4;
-const RETRYABLE_STATUS = new Set([429, 502, 503, 504]);
+const RETRYABLE_STATUS = new Set([403, 429, 502, 503, 504]);
+const RATE_LIMIT_STATUS = new Set([403, 429]);
+const RATE_LIMIT_MESSAGE = /(?:rate limit|abuse detection|submitted too quickly)/i;
 
 const TOPIC_QUERY = `
   query TopicRepositories($topic: String!, $cursor: String) {
@@ -114,6 +116,21 @@ const batchQuery = (batch, mode) => {
 
 const unwrapObject = (repository, field) => repository?.[field] ?? null;
 
+const retryDelay = (response, attempt, rateLimited) => {
+  const retryAfter = response?.headers.get('retry-after');
+  if (retryAfter) {
+    const seconds = Number(retryAfter);
+    if (Number.isFinite(seconds) && seconds >= 0) return Math.max(1_000, seconds * 1_000);
+    const date = Date.parse(retryAfter);
+    if (Number.isFinite(date)) return Math.max(1_000, date - Date.now());
+  }
+  const reset = Number(response?.headers.get('x-ratelimit-reset'));
+  if (Number.isFinite(reset) && reset > 0) {
+    return Math.min(600_000, Math.max(1_000, reset * 1_000 - Date.now()));
+  }
+  return (rateLimited ? 60_000 : 1_000) * 2 ** attempt;
+};
+
 export function createGitHubTopicClient({
   fetch: fetcher,
   now = () => new Date(),
@@ -123,9 +140,9 @@ export function createGitHubTopicClient({
   if (!token) throw new Error('A GitHub token is required for complete Topic synchronization.');
 
   const request = async (query, variables) => {
-    let response;
     let lastError;
     for (let attempt = 0; attempt < 3; attempt += 1) {
+      let response;
       try {
         response = await fetcher(API_URL, {
           body: JSON.stringify({ query, variables }),
@@ -139,34 +156,47 @@ export function createGitHubTopicClient({
           method: 'POST',
           signal: globalThis.AbortSignal.timeout(30_000),
         });
-        if (response.ok || !RETRYABLE_STATUS.has(response.status)) break;
-        lastError = new Error(`GitHub GraphQL request failed with status ${response.status}.`);
       } catch (error) {
         lastError = error;
+        if (attempt < 2) await sleep(retryDelay(undefined, attempt, false));
+        continue;
       }
-      if (attempt < 2) await sleep(1_000 * 2 ** attempt);
-    }
-    if (!response?.ok) {
-      throw (
-        lastError ?? new Error(`GitHub GraphQL request failed with status ${response?.status}.`)
-      );
-    }
-    const payload = await response.json();
-    if (Array.isArray(payload.errors) && payload.errors.length) {
-      const onlyMissingRepositories = payload.errors.every(
-        (error) =>
-          typeof error?.message === 'string' &&
-          error.message.startsWith('Could not resolve to a Repository with the name') &&
-          Array.isArray(error.path) &&
-          typeof error.path[0] === 'string' &&
-          /^[mr]\d+$/.test(error.path[0]),
-      );
-      if (!onlyMissingRepositories) {
-        throw new Error(`GitHub GraphQL request failed: ${payload.errors[0].message}`);
+
+      if (!response.ok) {
+        lastError = new Error(`GitHub GraphQL request failed with status ${response.status}.`);
+        if (RETRYABLE_STATUS.has(response.status) && attempt < 2) {
+          await sleep(retryDelay(response, attempt, RATE_LIMIT_STATUS.has(response.status)));
+          continue;
+        }
+        throw lastError;
       }
+
+      const payload = await response.json();
+      if (Array.isArray(payload.errors) && payload.errors.length) {
+        const rateLimited = payload.errors.some(
+          (error) => typeof error?.message === 'string' && RATE_LIMIT_MESSAGE.test(error.message),
+        );
+        if (rateLimited && attempt < 2) {
+          lastError = new Error(`GitHub GraphQL request failed: ${payload.errors[0].message}`);
+          await sleep(retryDelay(response, attempt, true));
+          continue;
+        }
+        const onlyMissingRepositories = payload.errors.every(
+          (error) =>
+            typeof error?.message === 'string' &&
+            error.message.startsWith('Could not resolve to a Repository with the name') &&
+            Array.isArray(error.path) &&
+            typeof error.path[0] === 'string' &&
+            /^[mr]\d+$/.test(error.path[0]),
+        );
+        if (!onlyMissingRepositories) {
+          throw new Error(`GitHub GraphQL request failed: ${payload.errors[0].message}`);
+        }
+      }
+      if (!payload.data) throw new Error('GitHub GraphQL response did not contain data.');
+      return payload.data;
     }
-    if (!payload.data) throw new Error('GitHub GraphQL response did not contain data.');
-    return payload.data;
+    throw lastError ?? new Error('GitHub GraphQL request failed after retries.');
   };
 
   const readManifests = async (repositories) => {
@@ -227,30 +257,59 @@ export function createGitHubTopicClient({
     return { repositories, totalCount };
   };
 
+  const readCompleteTopicPass = async (topic) => {
+    let lastError;
+    let bestPass;
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      try {
+        const pass = await readTopicPass(topic);
+        if (pass.repositories.length === pass.totalCount) {
+          return { ...pass, complete: true, unresolvedCount: 0 };
+        }
+        if (!bestPass || pass.repositories.length > bestPass.repositories.length) bestPass = pass;
+        lastError = new Error('GitHub Topic discovery is incomplete.');
+      } catch (error) {
+        lastError = error;
+      }
+      if (attempt < 2) await sleep(1_000 * 2 ** attempt);
+    }
+    if (bestPass) {
+      return {
+        ...bestPass,
+        complete: false,
+        unresolvedCount: Math.max(0, bestPass.totalCount - bestPass.repositories.length),
+      };
+    }
+    throw lastError ?? new Error('GitHub Topic discovery is incomplete.');
+  };
+
   return {
     async discoverTopic(topic) {
       const cutoff = now();
       if (!(cutoff instanceof Date) || Number.isNaN(cutoff.valueOf())) {
         throw new Error('Topic snapshot cutoff is invalid.');
       }
-      const pass = await readTopicPass(topic);
-      if (pass.totalCount > 0 && pass.repositories.length === 0) {
-        throw new Error('GitHub Topic discovery is incomplete.');
-      }
-      const repositories = pass.repositories.filter((repository) => {
+      const pass = await readCompleteTopicPass(topic);
+      const repositories = [];
+      const deferredRepositories = [];
+      for (const repository of pass.repositories) {
         const updatedAt = new Date(repository.updatedAt);
         if (Number.isNaN(updatedAt.valueOf())) {
           throw new Error(`GitHub returned an invalid updatedAt for ${repository.repository}.`);
         }
-        return updatedAt <= cutoff;
-      });
+        (updatedAt <= cutoff ? repositories : deferredRepositories).push(repository);
+      }
       repositories.sort((a, b) => a.nameWithOwner.localeCompare(b.nameWithOwner));
+      deferredRepositories.sort((a, b) => a.nameWithOwner.localeCompare(b.nameWithOwner));
       await readManifests(repositories);
       return {
-        observedTotalCount: pass.totalCount,
+        complete: pass.complete,
+        deferredRepositories,
+        observedTotalCount: Math.max(pass.totalCount, pass.repositories.length),
         repositories,
         snapshotAt: cutoff.toISOString(),
         totalCount: repositories.length,
+        unresolvedCount: pass.unresolvedCount,
       };
     },
 

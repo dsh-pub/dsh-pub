@@ -181,7 +181,15 @@ const firstParagraph = (markdown) => {
   }
   return paragraph
     .join(' ')
+    .replace(/!\[[^\]]*]\([^)]*\)/g, '')
+    .replace(/!\[[^\]]*]\[[^\]]*]/g, '')
     .replace(/\[([^\]]+)]\([^)]*\)/g, '$1')
+    .replace(/<[^>]*>/g, ' ')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replace(/\s+/g, ' ')
+    .trim()
     .slice(0, 2_000);
 };
 
@@ -373,6 +381,20 @@ export async function syncTopicCatalogData({
   ) {
     throw new Error('GitHub Topic discovery is incomplete; refusing to update generated data.');
   }
+  const deferredRepositories = discovery.deferredRepositories ?? [];
+  const unresolvedCount = discovery.unresolvedCount ?? 0;
+  if (
+    !Array.isArray(deferredRepositories) ||
+    !Number.isSafeInteger(unresolvedCount) ||
+    unresolvedCount < 0 ||
+    (discovery.observedTotalCount !== undefined &&
+      discovery.observedTotalCount !==
+        discovery.totalCount + deferredRepositories.length + unresolvedCount)
+  ) {
+    throw new Error(
+      'GitHub Topic cutoff snapshot is incomplete; refusing to update generated data.',
+    );
+  }
 
   const analyzedAt = localDate(now);
   const reservedSlugSet = new Set(reservedSlugs);
@@ -392,11 +414,55 @@ export async function syncTopicCatalogData({
   );
   const cachedEntries = [];
   const cachedSources = [];
+  const deferredEntries = [];
+  const deferredSources = [];
+  const unresolvedEntries = [];
+  const unresolvedSources = [];
   const preservedCoordinates = new Set(
     preservedEntries.map((entry) => entry.source.repository.toLocaleLowerCase()),
   );
   const analysisEntries = [];
   const candidates = [];
+  const visibleCoordinates = new Set(
+    [...discovery.repositories, ...deferredRepositories].map((repository) =>
+      repository.repository.toLocaleLowerCase(),
+    ),
+  );
+
+  if (discovery.complete === false) {
+    for (const [coordinate, previousEntry] of previousAutomatedEntries) {
+      if (visibleCoordinates.has(coordinate)) continue;
+      const previousSource = previousAutomatedSources.get(coordinate);
+      if (!previousSource) {
+        throw new Error(
+          `Previous automated source is missing for ${previousEntry.source.repository}.`,
+        );
+      }
+      unresolvedEntries.push(previousEntry);
+      unresolvedSources.push(previousSource);
+      analysisEntries.push({
+        commit: previousEntry.source.commit,
+        repository: previousEntry.source.repository,
+        status: 'unresolved',
+      });
+    }
+  }
+
+  for (const repository of deferredRepositories) {
+    const coordinate = repository.repository.toLocaleLowerCase();
+    const previousEntry = previousAutomatedEntries.get(coordinate);
+    const previousSource = previousAutomatedSources.get(coordinate);
+    if (previousEntry && previousSource) {
+      deferredEntries.push(previousEntry);
+      deferredSources.push(previousSource);
+    }
+    analysisEntries.push({
+      commit: repository.commit,
+      ...(previousEntry ? { previousCommit: previousEntry.source.commit } : {}),
+      repository: repository.repository,
+      status: 'deferred',
+    });
+  }
 
   for (const repository of [...discovery.repositories].sort((a, b) =>
     a.repository.localeCompare(b.repository),
@@ -487,16 +553,26 @@ export async function syncTopicCatalogData({
     }
   }
 
-  const entries = [...preservedEntries, ...cachedEntries, ...automatedEntries];
+  const entries = [
+    ...preservedEntries,
+    ...deferredEntries,
+    ...unresolvedEntries,
+    ...cachedEntries,
+    ...automatedEntries,
+  ];
   const nextAnalysis = {
     schemaVersion: 1,
     topic,
     snapshotAt: discovery.snapshotAt,
+    complete: discovery.complete ?? true,
     totals: {
       discovered: discovery.totalCount,
       observed: discovery.observedTotalCount ?? discovery.totalCount,
       listed: analysisEntries.filter((entry) => entry.status === 'listed').length,
       preserved: analysisEntries.filter((entry) => entry.status === 'preserved').length,
+      deferred: analysisEntries.filter((entry) => entry.status === 'deferred').length,
+      unresolved: unresolvedCount,
+      retainedUnresolved: unresolvedEntries.length,
       rejected: analysisEntries.filter((entry) => entry.status === 'rejected').length,
     },
     entries: analysisEntries.sort((a, b) => a.repository.localeCompare(b.repository)),
@@ -516,7 +592,13 @@ export async function syncTopicCatalogData({
     sources: {
       ...sources,
       topic,
-      entries: [...preservedSources, ...cachedSources, ...automatedSources],
+      entries: [
+        ...preservedSources,
+        ...deferredSources,
+        ...unresolvedSources,
+        ...cachedSources,
+        ...automatedSources,
+      ],
     },
     registry: {
       ...registry,
