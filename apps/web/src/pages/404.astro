@@ -1,0 +1,54 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  locale="en"
+  title="Page not found"
+  description="This dsh.pub registry page does not exist. Browse the DeepSeek Harness plugin directory instead."
+  noIndex
+>
+  <section class="not-found page-shell">
+    <p class="eyebrow">DSH / REGISTRY / 404</p>
+    <h1>Page not found</h1>
+    <p>这个页面不存在。The registry coordinate you requested could not be found.</p>
+    <div class="actions">
+      <a href="/zh/plugins/">浏览中文目录</a>
+      <a href="/en/plugins/">Browse the directory</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found {
+    min-height: 60vh;
+    padding-block: clamp(5rem, 12vw, 9rem);
+  }
+
+  h1 {
+    font-size: clamp(3rem, 8vw, 6rem);
+    letter-spacing: -0.055em;
+    margin: 1rem 0;
+  }
+
+  p:not(.eyebrow) {
+    color: var(--color-text-muted);
+    font-size: 1.1rem;
+    max-width: 42rem;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+
+  .actions a {
+    background: var(--color-navy-900);
+    border-radius: 5px;
+    color: white;
+    padding: 0.8rem 1rem;
+    text-decoration: none;
+  }
+</style>

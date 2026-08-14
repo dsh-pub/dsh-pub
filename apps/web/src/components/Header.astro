@@ -28,7 +28,7 @@ const alternate = path.replace(`/${locale}`, `/${otherLocale(locale)}`);
     }
     <nav class="header-nav" aria-label="Primary">
       <a class="nav-primary" href={`/${locale}/plugins/`}>{t.plugins}</a>
-      <a href="https://github.com/deepseek-ai/deepseek-harness/tree/main/docs">{t.documentation}</a>
+      <a href="/develop-plugin.md">{t.documentation}</a>
       <a class="language-link" href={alternate} hreflang={otherLocale(locale)}>{t.language}</a>
       <a
         class="icon-link"

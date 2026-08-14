@@ -1,8 +1,18 @@
 import rawCatalog from '../../../../packages/catalog/src/catalog.generated.json';
+import rawCommunityCatalog from '../../../../packages/catalog/src/community.generated.json';
 
-import type { CatalogData, CatalogEntry } from './catalog-types.js';
+import { provenanceStatus, type CatalogData, type CatalogEntry } from './catalog-types.js';
 
 export const catalog = rawCatalog as CatalogData;
+export const communityCatalog = rawCommunityCatalog as {
+  source: {
+    repository: string;
+    generatedAt: string;
+    policy: 'curated-pinned-source-contracts';
+  };
+  totals: { reviewed: number; installable: number };
+  entries: CatalogEntry[];
+};
 
 const capabilityOverlays: Record<string, Partial<CatalogEntry['capabilities']>> = {
   'client-ui-trajectory': {
@@ -31,18 +41,22 @@ function enriched(entry: CatalogEntry): CatalogEntry {
   };
 }
 
-export const marketplaceEntries = catalog.entries
+const officialMarketplaceEntries = catalog.entries
   .filter((entry) => entry.type === 'plugin' || entry.type === 'bundle')
   .map(enriched);
+
+export const communityEntries = communityCatalog.entries.map(enriched);
+
+export const marketplaceEntries = [...officialMarketplaceEntries, ...communityEntries];
 
 export const installableEntries = marketplaceEntries.filter(
   (entry) => entry.distribution.installable,
 );
 
-export const bundleEntries = marketplaceEntries.filter((entry) => entry.type === 'bundle');
+export const bundleEntries = officialMarketplaceEntries.filter((entry) => entry.type === 'bundle');
 
-export const builtInEntries = marketplaceEntries.filter(
-  (entry) => entry.runtime.hostLoadable && !entry.distribution.installable,
+export const builtInEntries = officialMarketplaceEntries.filter(
+  (entry) => entry.runtime.hostLoadable && provenanceStatus(entry) === 'built-in',
 );
 
 const featuredFragments = [
@@ -80,6 +94,8 @@ export function entrySearchText(entry: CatalogEntry): string {
     entry.description.zh,
     entry.category,
     entry.type,
+    provenanceStatus(entry),
+    entry.source.repository,
     ...(entry.runtime.hostInjects ?? []),
     ...entry.capabilities.tools.map((tool) => tool.name),
     ...entry.capabilities.uiContributions.map((item) => item.slot),

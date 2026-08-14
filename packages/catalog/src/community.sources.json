@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "topic": "dsh-plugin",
+  "reviewedAt": "2026-08-14",
+  "policy": {
+    "discoveryOnly": true,
+    "statement": {
+      "en": "The GitHub topic is used for discovery only. Inclusion requires a pinned public commit, a package manifest with dsh.bundle.patch, a safe root-relative patch path, committed runtime output, and source documentation. This is not a security audit or official endorsement.",
+      "zh": "GitHub Topic 仅用于发现候选。收录要求固定公开 commit、package.json 声明 dsh.bundle.patch、补丁路径安全且相对仓库根目录、运行产物已提交并具有源码文档。这不等于安全审计或官方背书。"
+    }
+  },
+  "entries": [
+    {
+      "repository": "https://github.com/omdsh-dev/dsh-open-in-vscode",
+      "commit": "149f21aed3d05d2b392206394c4a023e35d694c7",
+      "directory": "",
+      "packageName": "dsh-open-in-vscode",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE"
+    },
+    {
+      "repository": "https://github.com/omdsh-dev/dsh-at-file",
+      "commit": "3c8408e8df06ebbd7126d1d7ebcf897ec92a3b86",
+      "directory": "",
+      "packageName": "dsh-at-file",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE"
+    },
+    {
+      "repository": "https://github.com/omdsh-dev/dsh-notification",
+      "commit": "3e33100f51f25f24cece20bfd3d50cfbde0cbca5",
+      "directory": "",
+      "packageName": "dsh-notification",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE"
+    },
+    {
+      "repository": "https://github.com/omdsh-dev/dsh-genui",
+      "commit": "57b4338222632f8ea81c2665d44e5f9e80b52686",
+      "directory": "",
+      "packageName": "@omdsh-dev/dsh-genui",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE"
+    },
+    {
+      "repository": "https://github.com/ccch1mneyyy/dsh-cc-tui",
+      "commit": "8516ffb3aac3ada74760eff9b8c14c65d344b67d",
+      "directory": "",
+      "packageName": "dsh-cc-tui",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/types/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE"
+    }
+  ]
+}

@@ -7,8 +7,12 @@ import CopyCommand from '../../../components/CopyCommand.astro';
 import Icon from '../../../components/Icon.astro';
 import {
   displayName,
+  installCommand,
   installMetricSlug,
   localized,
+  provenanceStatus,
+  seoDescription,
+  sourceCoordinate,
   sourceUrl,
   type CatalogEntry,
 } from '../../../lib/catalog-types.js';
@@ -34,12 +38,26 @@ interface Props {
 const { entry, locale } = Astro.props;
 const t = copy[locale];
 const description = localized(entry.description, locale);
+const rawDescription = await marked.parseInline(description, { gfm: true });
+const descriptionHtml = sanitizeHtml(rawDescription, {
+  allowedTags: ['a', 'br', 'code', 'del', 'em', 'strong'],
+  allowedAttributes: { a: ['href', 'target', 'rel'] },
+  allowedSchemes: ['https', 'http'],
+  transformTags: {
+    a: sanitizeHtml.simpleTransform('a', { rel: 'nofollow noopener noreferrer' }, true),
+  },
+});
+const hasLongDescription = description.length > (locale === 'zh' ? 300 : 520);
+const metaDescription = seoDescription(entry, locale);
 const source = sourceUrl(entry);
-const cliPackage = 'https://dsh.pub/cli/dsh-pub-0.1.1.tgz';
-const command = entry.distribution.installable
-  ? `npx --yes ${cliPackage} add ${new URL(entry.source.repository).pathname.replace(/^\//, '').replace(/\.git$/, '')} --ref ${entry.source.commit} --path ${entry.source.directory}`
-  : undefined;
+const sourceName = sourceCoordinate(entry);
+const provenance = provenanceStatus(entry);
+const command = installCommand(entry);
 const distributionNote = localized(entry.distribution.note, locale);
+const provenanceStatement =
+  entry.provenance?.status === 'community-reviewed'
+    ? localized(entry.provenance.statement, locale)
+    : t.builtInSourceHelp;
 const readmeSource = localized(entry.docs?.readme, locale);
 const rawReadme = readmeSource ? await marked.parse(readmeSource, { gfm: true }) : '';
 const readme = sanitizeHtml(rawReadme, {
@@ -59,10 +77,51 @@ const contributionCount =
   entry.capabilities.tools.length +
   entry.capabilities.uiContributions.length +
   entry.capabilities.uiSlotsDeclared.length;
-const metricSlug = installMetricSlug(entry);
+const metricSlug = entry.distribution.installable ? installMetricSlug(entry) : undefined;
+const canonical = `https://dsh.pub/${locale}/plugins/${entry.slug}/`;
+const inLanguage = locale === 'zh' ? 'zh-CN' : 'en';
+const structuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareSourceCode',
+    name: displayName(entry),
+    description: metaDescription,
+    url: canonical,
+    codeRepository: source,
+    version: entry.version,
+    license: entry.license,
+    runtimePlatform: 'DeepSeek Harness',
+    inLanguage,
+    isPartOf: { '@type': 'WebSite', name: 'dsh.pub', url: `https://dsh.pub/${locale}/` },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: locale === 'zh' ? '首页' : 'Home',
+        item: `https://dsh.pub/${locale}/`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: t.plugins,
+        item: `https://dsh.pub/${locale}/plugins/`,
+      },
+      { '@type': 'ListItem', position: 3, name: displayName(entry), item: canonical },
+    ],
+  },
+];
 ---
 
-<BaseLayout locale={locale} title={displayName(entry)} description={description}>
+<BaseLayout
+  locale={locale}
+  title={displayName(entry)}
+  description={metaDescription}
+  structuredData={structuredData}
+>
   <section class="package-masthead">
     <div class="page-shell masthead-inner">
       <div class="package-identity">
@@ -82,7 +141,7 @@ const metricSlug = installMetricSlug(entry);
         <p class="package-meta">
           <span>v{entry.version}</span>
           <span aria-hidden="true">•</span>
-          <a href={source}>deepseek-ai / deepseek-harness</a>
+          <a href={source}>{sourceName.replace('/', ' / ')}</a>
           <span aria-hidden="true">•</span>
           <code>{entry.source.commit.slice(0, 10)}</code>
         </p>
@@ -98,6 +157,9 @@ const metricSlug = installMetricSlug(entry);
           </span>
           <span class="tag">{typeLabel(entry.type, locale)}</span>
           <span class="tag">{categoryLabel(entry.category, locale)}</span>
+          <span class="tag" title={provenanceStatement}>
+            {provenance === 'community-reviewed' ? t.communityReviewed : t.builtInSource}
+          </span>
           {entry.runtime.configurable && <span class="tag">{t.configurable}</span>}
           {entry.runtime.client && <span class="tag">{t.webUi}</span>}
         </div>
@@ -113,7 +175,7 @@ const metricSlug = installMetricSlug(entry);
     <div class="page-shell tabs-inner">
       <a class="active" href="#overview">{t.overview}</a>
       <a href="#capabilities">{t.capabilities}</a>
-      <a href="#installing">{t.installing}</a>
+      <a href="#installing">{entry.distribution.installable ? t.installing : t.availability}</a>
       <a href="#source">{t.sourceTab}</a>
     </div>
   </nav>
@@ -123,7 +185,33 @@ const metricSlug = installMetricSlug(entry);
       <section id="overview" class="content-section introduction">
         <p class="eyebrow">{t.overview}</p>
         <h2>{displayName(entry)}</h2>
-        <p class="lead">{description}</p>
+        {
+          hasLongDescription ? (
+            <details class="technical-overview" data-technical-overview>
+              <summary>
+                <span class="technical-overview-label">{t.technicalOverview}</span>
+                <span class="technical-overview-preview" set:html={descriptionHtml} />
+                <span class="technical-overview-toggle">
+                  <span class="toggle-expand">{t.expandTechnicalOverview}</span>
+                  <span class="toggle-collapse">{t.collapseTechnicalOverview}</span>
+                </span>
+              </summary>
+              <div class="technical-overview-body" set:html={descriptionHtml} />
+            </details>
+          ) : (
+            <div class="lead" set:html={descriptionHtml} />
+          )
+        }
+        {
+          provenance === 'community-reviewed' && (
+            <div class="review-notice">
+              <Icon name="check" size={18} />
+              <p>
+                <strong>{t.communityReviewed}</strong> — {provenanceStatement}
+              </p>
+            </div>
+          )
+        }
         {
           entry.distribution.installable ? (
             <div class="install-callout" id="installing">
@@ -142,10 +230,13 @@ const metricSlug = installMetricSlug(entry);
                 {entry.type === 'bundle' ? 'BUILT-IN / PROFILE LAYER' : 'BUILT-IN / ATOMIC'}
               </span>
               <div>
-                <>
-                  <Icon name="check" size={19} />
+                <Icon name="check" size={19} />
+                <div>
+                  <strong>
+                    {entry.type === 'bundle' ? t.builtInProfileTitle : t.builtInModuleTitle}
+                  </strong>
                   <p>{distributionNote || t.builtInNotice}</p>
-                </>
+                </div>
               </div>
             </div>
           )
@@ -229,7 +320,7 @@ const metricSlug = installMetricSlug(entry);
             <div class="readme-content" set:html={readme} />
           ) : (
             <div class="readme-fallback">
-              <p>{description}</p>
+              <div set:html={descriptionHtml} />
               <p>
                 {locale === 'zh'
                   ? '完整双语 README 位于源仓库。本目录页优先展示可自动验证的运行时与分发事实。'
@@ -256,15 +347,28 @@ const metricSlug = installMetricSlug(entry);
     </article>
 
     <aside class="package-sidebar" aria-label="Package metadata">
-      <section class="metric-panel">
-        <div>
-          <strong data-detail-install-count={metricSlug}
-            >{entry.distribution.installable ? '—' : 'N/A'}</strong
-          >
-          <span>{t.cliInstalls}</span>
-        </div>
-        <p>{t.cliInstallsHelp}</p>
-      </section>
+      {
+        entry.distribution.installable ? (
+          <section class="metric-panel">
+            <div>
+              <strong data-detail-install-count={metricSlug}>—</strong>
+              <span>{t.cliInstalls}</span>
+            </div>
+            <p>{t.cliInstallsHelp}</p>
+          </section>
+        ) : (
+          <section class="distribution-panel">
+            <span class="distribution-panel-label">{t.distribution}</span>
+            <div class="distribution-panel-status">
+              <span class="distribution-panel-mark">
+                <Icon name="check" size={16} />
+              </span>
+              <strong>{entry.type === 'bundle' ? t.profileLayer : t.included}</strong>
+            </div>
+            <p>{entry.type === 'bundle' ? t.builtInProfileHelp : t.builtInModuleHelp}</p>
+          </section>
+        )
+      }
 
       <section>
         <h2>{t.runtime}</h2>
@@ -278,8 +382,12 @@ const metricSlug = installMetricSlug(entry);
           <div><dt>{t.license}</dt><dd>{entry.license}</dd></div>
           <div><dt>{t.type}</dt><dd>{typeLabel(entry.type, locale)}</dd></div>
           <div><dt>{t.capability}</dt><dd>{categoryLabel(entry.category, locale)}</dd></div>
+          <div>
+            <dt>{t.sourceScope}</dt>
+            <dd>{provenance === 'community-reviewed' ? t.communityReviewed : t.builtInSource}</dd>
+          </div>
           <div><dt>Commit</dt><dd><code>{entry.source.commit.slice(0, 10)}</code></dd></div>
-          <div><dt>Path</dt><dd><code>{entry.source.directory}</code></dd></div>
+          <div><dt>Path</dt><dd><code>{entry.source.directory || '.'}</code></dd></div>
         </dl>
         <a class="source-button" href={source} id="source">
           <Icon name="github" size={17} />{t.openGitHub}<Icon name="external" size={14} />
@@ -318,7 +426,7 @@ const metricSlug = installMetricSlug(entry);
 
   const installCount = document.querySelector<HTMLElement>('[data-detail-install-count]');
   const slug = installCount?.dataset.detailInstallCount;
-  if (installCount && slug && installCount.textContent !== 'N/A') {
+  if (installCount && slug) {
     fetch(`/api/plugins/${encodeURIComponent(slug)}/stats`)
       .then((response) =>
         response.ok ? response.json() : Promise.reject(new Error('stats unavailable')),
@@ -455,6 +563,22 @@ const metricSlug = installMetricSlug(entry);
     padding-top: 2.7rem;
   }
 
+  .review-notice {
+    align-items: flex-start;
+    background: #edf5f0;
+    border: 1px solid #bad0c2;
+    color: #315c49;
+    display: flex;
+    gap: 0.65rem;
+    margin-top: 1.35rem;
+    padding: 0.9rem 1rem;
+  }
+
+  .review-notice p {
+    line-height: 1.55;
+    margin: 0;
+  }
+
   .content-section {
     border-bottom: 1px solid var(--color-rule);
     padding: 0.5rem 0 3rem;
@@ -478,6 +602,98 @@ const metricSlug = installMetricSlug(entry);
     line-height: 1.7;
     margin-bottom: 2rem;
     max-width: 52rem;
+  }
+
+  .lead :global(code),
+  .technical-overview :global(code) {
+    background: var(--color-surface-subtle);
+    border: 1px solid var(--color-rule);
+    border-radius: 3px;
+    color: var(--color-text);
+    font-size: 0.86em;
+    overflow-wrap: anywhere;
+    padding: 0.08em 0.3em;
+  }
+
+  .technical-overview {
+    border-bottom: 1px solid var(--color-rule);
+    border-top: 1px solid var(--color-rule);
+    margin: 0 0 2rem;
+  }
+
+  .technical-overview summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 1rem 0 1.05rem;
+  }
+
+  .technical-overview summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .technical-overview-label {
+    color: var(--color-text-faint);
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.07em;
+    margin-bottom: 0.55rem;
+    text-transform: uppercase;
+  }
+
+  .technical-overview-preview {
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    color: var(--color-text-muted);
+    display: -webkit-box;
+    font-size: 1.04rem;
+    line-height: 1.72;
+    max-width: 52rem;
+    overflow: hidden;
+  }
+
+  .technical-overview-toggle {
+    align-items: center;
+    color: var(--color-accent);
+    display: flex;
+    font-family: var(--font-mono);
+    font-size: 0.71rem;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    width: max-content;
+  }
+
+  .technical-overview-toggle::after {
+    border-bottom: 1px solid currentColor;
+    border-right: 1px solid currentColor;
+    content: '';
+    height: 6px;
+    transform: rotate(45deg) translateY(-2px);
+    transition: transform var(--transition-fast);
+    width: 6px;
+  }
+
+  .technical-overview[open] .technical-overview-preview,
+  .technical-overview:not([open]) .toggle-collapse {
+    display: none;
+  }
+
+  .technical-overview[open] .toggle-expand {
+    display: none;
+  }
+
+  .technical-overview[open] .technical-overview-toggle::after {
+    transform: rotate(225deg) translate(-1px, -1px);
+  }
+
+  .technical-overview-body {
+    border-left: 2px solid var(--color-accent);
+    color: var(--color-text-muted);
+    font-size: 0.96rem;
+    line-height: 1.75;
+    margin: 0 0 1.25rem;
+    max-width: 52rem;
+    padding: 0.2rem 0 0.2rem 1rem;
   }
 
   .install-callout {
@@ -512,13 +728,27 @@ const metricSlug = installMetricSlug(entry);
   }
 
   .included-callout > div {
-    align-items: center;
+    align-items: flex-start;
     display: flex;
     gap: 0.6rem;
+    margin-top: 0.65rem;
+  }
+
+  .included-callout > div > :global(.icon) {
+    flex: none;
+    margin-top: 0.1rem;
+  }
+
+  .included-callout strong {
+    font-size: 0.96rem;
+    font-weight: 570;
   }
 
   .included-callout p {
-    margin: 0.7rem 0;
+    color: var(--color-text-muted);
+    font-size: 0.88rem;
+    line-height: 1.6;
+    margin: 0.3rem 0 0;
   }
 
   .capability-table {
@@ -700,6 +930,45 @@ const metricSlug = installMetricSlug(entry);
     font-size: 0.71rem;
     line-height: 1.5;
     margin: 0.55rem 0 0;
+  }
+
+  .distribution-panel-label {
+    color: var(--color-text-faint);
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.63rem;
+    letter-spacing: 0.07em;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+  }
+
+  .distribution-panel-status {
+    align-items: center;
+    display: flex;
+    gap: 0.65rem;
+  }
+
+  .distribution-panel-mark {
+    align-items: center;
+    background: var(--color-accent-soft);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 35%, var(--color-rule));
+    color: var(--color-accent);
+    display: inline-flex;
+    height: 30px;
+    justify-content: center;
+    width: 30px;
+  }
+
+  .distribution-panel-status strong {
+    font-size: 0.9rem;
+    font-weight: 560;
+  }
+
+  .distribution-panel p {
+    color: var(--color-text-faint);
+    font-size: 0.71rem;
+    line-height: 1.55;
+    margin: 0.65rem 0 0;
   }
 
   .package-sidebar dl {

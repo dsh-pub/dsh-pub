@@ -1,8 +1,11 @@
+import installableRegistry from './installable-slugs.generated.json' with { type: 'json' };
+
 const CLI_REPORTED_METRIC = 'CLI-reported completed installs';
 const MAX_BODY_BYTES = 4_096;
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const REGISTRY_SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*(?:--[a-z0-9]+(?:-[a-z0-9]+)*)+$/;
 const VERSION_PATTERN = /^[\x21-\x7e]{1,128}$/;
+const INSTALLABLE_SLUGS = new Set<string>(installableRegistry.slugs);
 
 export interface D1ResultLike<Row = Record<string, unknown>> {
   meta: { changes: number };
@@ -151,6 +154,14 @@ const validateSlug = (value: unknown) => {
   return value;
 };
 
+const validateInstallableSlug = (value: unknown) => {
+  const slug = validateSlug(value);
+  if (!INSTALLABLE_SLUGS.has(slug)) {
+    throw new ApiError(404, 'plugin_not_found', 'No installable registry entry exists for slug.');
+  }
+  return slug;
+};
+
 const validateVersion = (value: unknown) => {
   if (typeof value !== 'string' || !VERSION_PATTERN.test(value)) {
     throw new ApiError(
@@ -169,7 +180,7 @@ const createInstallIntent = async (request: Request, db: D1DatabaseLike, origin:
   }
 
   const eventId = validateEventId(body.eventId);
-  const slug = validateSlug(body.slug);
+  const slug = validateInstallableSlug(body.slug);
   const version = validateVersion(body.version);
   const results = await db.batch<InstallEventRow>([
     db
@@ -249,7 +260,7 @@ const completeInstall = async (request: Request, db: D1DatabaseLike, origin: str
 };
 
 const getStats = async (slugValue: string, db: D1DatabaseLike, origin: string | null) => {
-  const slug = validateSlug(decodeURIComponent(slugValue));
+  const slug = validateInstallableSlug(decodeURIComponent(slugValue));
   const row = await db
     .prepare('SELECT completed_total FROM plugin_stats WHERE slug = ?1')
     .bind(slug)

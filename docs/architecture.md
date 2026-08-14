@@ -8,7 +8,7 @@ flowchart LR
     S --> J[Generated catalog JSON]
     J --> A[Astro static build]
     A --> W[Cloudflare Workers Static Assets]
-    U[Developer] --> C[dsh-pub CLI]
+    U[Developer] --> C[dshpub CLI]
     C -->|resolve exact commit + validate bundle| G[Public plugin Git repository]
     C -->|invoke| D[dsh plugin add]
     C -. best effort intent/completion .-> API[Worker /api]
@@ -41,7 +41,7 @@ migrations/    D1 schema
 
 ```mermaid
 sequenceDiagram
-    participant CLI as dsh-pub CLI
+    participant CLI as dshpub CLI
     participant API as dsh.pub Worker
     participant Git as GitHub
     participant DSH as Native dsh CLI
@@ -82,6 +82,7 @@ surface without an MVP need for authenticated or per-user rendering.
 | `POST` | `/api/install-completions` | Complete a known pending event and increment once |
 | `GET`  | `/api/plugins/:slug/stats` | Read a plugin's completed CLI install total       |
 
-All writes validate a UUID event id and catalog-style slug. CORS is limited to the production site
-and localhost development origins. Rate limiting and stronger abuse controls remain an operational
-layer; event IDs provide idempotency, not identity or proof of use.
+Install intents and statistics also require a slug from the checked-in installable registry; this
+keeps arbitrary keys out of D1 but does not prove that a caller used the CLI. CORS is limited to the
+production site and localhost development origins. Rate limiting and stronger abuse controls remain
+an operational layer; event IDs provide idempotency, not identity or proof of use.

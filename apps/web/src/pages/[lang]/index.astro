@@ -7,6 +7,7 @@ import {
   bundleEntries,
   catalog,
   categoryCounts,
+  communityEntries,
   featuredEntries,
 } from '../../lib/catalog.js';
 import { categoryLabel } from '../../lib/categories.js';
@@ -25,9 +26,17 @@ const featured = featuredEntries.length >= 6 ? featuredEntries : builtInEntries.
 const categories = categoryCounts(builtInEntries).slice(0, 8);
 const clientCount =
   catalog.totals.client ?? catalog.entries.filter((entry) => entry.runtime.client).length;
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'dsh.pub',
+  url: `https://dsh.pub/${locale}/`,
+  description: t.siteDescription,
+  inLanguage: locale === 'zh' ? 'zh-CN' : 'en',
+};
 ---
 
-<BaseLayout locale={locale} showHeaderSearch={false}>
+<BaseLayout locale={locale} showHeaderSearch={false} structuredData={structuredData}>
   <section class="registry-hero">
     <svg
       class="circuit-field"
@@ -73,10 +82,7 @@ const clientCount =
       <div><strong>{catalog.totals.plugins}</strong><span>{t.countPlugins}</span></div>
       <div><strong>{clientCount}</strong><span>{t.countClient}</span></div>
       <div><strong>{catalog.totals.bundles}</strong><span>{t.countBundles}</span></div>
-      <p>
-        <span class="live-dot"></span>{t.updatedFrom}
-        <code>{catalog.source.commit.slice(0, 10)}</code>
-      </p>
+      <div><strong>{communityEntries.length}</strong><span>{t.countCommunity}</span></div>
     </div>
   </section>
 
@@ -103,11 +109,35 @@ const clientCount =
     )
   }
 
+  {
+    communityEntries.length > 0 && (
+      <section class="home-section page-shell">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">02 / COMMUNITY</span>
+            <h2>{t.communityPlugins}</h2>
+            <p>{t.communityPluginsBody}</p>
+            <p class="community-policy">{t.communityReviewNotice}</p>
+          </div>
+          <a class="text-link" href={`/${locale}/plugins/?provenance=community-reviewed`}>
+            {t.viewAll}
+            <Icon name="arrow" size={16} />
+          </a>
+        </div>
+        <div class="bundle-list">
+          {communityEntries.map((entry) => (
+            <PluginRow entry={entry} locale={locale} compact />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
   <section class="home-section capability-section">
     <div class="page-shell">
       <div class="section-heading">
         <div>
-          <span class="eyebrow">02 / CAPABILITY MAP</span>
+          <span class="eyebrow">03 / CAPABILITY MAP</span>
           <h2>{t.exploreCapabilities}</h2>
           <p>{t.exploreCapabilitiesBody}</p>
         </div>
@@ -139,7 +169,7 @@ const clientCount =
   <section class="home-section page-shell">
     <div class="section-heading">
       <div>
-        <span class="eyebrow">03 / BUILT-IN ROSTER</span>
+        <span class="eyebrow">04 / BUILT-IN ROSTER</span>
         <h2>{t.builtIn}</h2>
         <p>{t.builtInBody}</p>
       </div>
@@ -295,8 +325,7 @@ const clientCount =
     gap: 0.42rem;
   }
 
-  .hero-proof i,
-  .live-dot {
+  .hero-proof i {
     background: var(--color-blue-300);
     display: inline-block;
     height: 5px;
@@ -312,7 +341,7 @@ const clientCount =
   .stats-inner {
     align-items: stretch;
     display: grid;
-    grid-template-columns: repeat(4, minmax(110px, 1fr)) minmax(220px, 1.5fr);
+    grid-template-columns: repeat(5, minmax(100px, 1fr));
     min-height: 92px;
   }
 
@@ -341,20 +370,6 @@ const clientCount =
     text-transform: uppercase;
   }
 
-  .stats-inner p {
-    align-items: center;
-    color: var(--color-text-muted);
-    display: flex;
-    font-size: 0.75rem;
-    gap: 0.5rem;
-    justify-content: center;
-    margin: 0;
-  }
-
-  .stats-inner code {
-    color: var(--color-text);
-  }
-
   .home-section {
     padding-bottom: 4.8rem;
     padding-top: 4.8rem;
@@ -362,6 +377,13 @@ const clientCount =
 
   .home-section + .home-section {
     padding-top: 1rem;
+  }
+
+  .community-policy {
+    color: var(--color-text-faint);
+    font-size: 0.76rem;
+    margin: 0.8rem 0 0;
+    max-width: 46rem;
   }
 
   .capability-section {
@@ -445,13 +467,12 @@ const clientCount =
 
   @media (max-width: 900px) {
     .stats-inner {
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
     }
 
-    .stats-inner p {
+    .stats-inner > div:nth-child(4),
+    .stats-inner > div:nth-child(5) {
       border-top: 1px solid var(--color-rule);
-      grid-column: 1 / -1;
-      min-height: 52px;
     }
 
     .category-grid {
@@ -480,12 +501,14 @@ const clientCount =
       grid-template-columns: repeat(2, 1fr);
     }
 
-    .stats-inner > div:nth-child(2) {
+    .stats-inner > div:nth-child(2),
+    .stats-inner > div:nth-child(4) {
       border-right: 0;
     }
 
     .stats-inner > div:nth-child(3),
-    .stats-inner > div:nth-child(4) {
+    .stats-inner > div:nth-child(4),
+    .stats-inner > div:nth-child(5) {
       border-top: 1px solid var(--color-rule);
     }
 

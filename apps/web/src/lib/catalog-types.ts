@@ -7,6 +7,15 @@ export interface LocalizedText {
   zh: string;
 }
 
+export type CatalogProvenance =
+  | { status: 'built-in' }
+  | {
+      status: 'community-reviewed';
+      discoveredVia: 'github-topic:dsh-plugin';
+      reviewedAt: string;
+      statement: LocalizedText;
+    };
+
 export interface CatalogEntry {
   id: string;
   slug: string;
@@ -16,6 +25,7 @@ export interface CatalogEntry {
   type: CatalogType;
   category: string;
   builtIn: boolean;
+  provenance?: CatalogProvenance;
   description: LocalizedText;
   docs?: {
     readme?: Partial<LocalizedText>;
@@ -30,7 +40,7 @@ export interface CatalogEntry {
   runtime: {
     hostLoadable: boolean;
     configurable: boolean;
-    client?: boolean | { platform?: string; injects?: string[] };
+    client?: boolean | { platform?: string; inject?: string[]; injects?: string[] };
     hostInjects?: string[];
   };
   capabilities: {
@@ -77,11 +87,34 @@ export function localized(text: Partial<LocalizedText> | undefined, locale: Loca
 
 export function sourceUrl(entry: CatalogEntry): string {
   const repository = entry.source.repository.replace(/\.git$/, '');
-  return `${repository}/tree/${entry.source.commit}/${entry.source.directory}`;
+  const path = entry.source.directory ? `/${entry.source.directory}` : '';
+  return `${repository}/tree/${entry.source.commit}${path}`;
+}
+
+export function sourceCoordinate(entry: CatalogEntry): string {
+  return new URL(entry.source.repository).pathname.replace(/^\/|\/$/g, '').replace(/\.git$/, '');
+}
+
+export function provenanceStatus(entry: CatalogEntry): CatalogProvenance['status'] {
+  return entry.provenance?.status ?? (entry.builtIn ? 'built-in' : 'community-reviewed');
+}
+
+export function installCommand(entry: CatalogEntry): string | undefined {
+  if (!entry.distribution.installable) return undefined;
+  const path = entry.source.directory ? ` --path ${entry.source.directory}` : '';
+  return `npx dshpub add ${sourceCoordinate(entry)} --ref ${entry.source.commit}${path}`;
 }
 
 export function displayName(entry: CatalogEntry): string {
   return entry.name.replace('@deepseek-ai/dsh-', 'dsh-');
+}
+
+export function seoDescription(entry: CatalogEntry, locale: Locale): string {
+  const name = displayName(entry);
+  if (locale === 'zh') {
+    return `查看 ${name} 的 ${entry.category} 能力、运行时、工具、UI 贡献、源码与 Profile 状态。`;
+  }
+  return `Explore ${name}, a DeepSeek Harness ${entry.category} ${entry.type}. Review its runtime, tools, UI contributions, source, and profile availability.`;
 }
 
 const metricSlugPart = (value: string) =>

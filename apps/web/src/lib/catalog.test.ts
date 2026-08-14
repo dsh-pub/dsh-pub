@@ -4,10 +4,17 @@ import {
   builtInEntries,
   bundleEntries,
   catalog,
+  communityEntries,
   featuredEntries,
   installableEntries,
 } from './catalog.js';
-import { installMetricSlug, localized, sourceUrl } from './catalog-types.js';
+import {
+  installCommand,
+  installMetricSlug,
+  localized,
+  provenanceStatus,
+  sourceUrl,
+} from './catalog-types.js';
 
 describe('web catalog projection', () => {
   it('keeps source-backed totals and install boundaries visible', () => {
@@ -18,11 +25,36 @@ describe('web catalog projection', () => {
       libraries: 34,
       bundles: 3,
     });
-    expect(installableEntries).toHaveLength(0);
+    expect(installableEntries).toHaveLength(5);
     expect(bundleEntries).toHaveLength(3);
     expect(builtInEntries.length).toBe(170);
     expect(bundleEntries.every((entry) => entry.distribution.activation === 'profile-layer')).toBe(
       true,
+    );
+  });
+
+  it('merges reviewed community entries without changing official totals', () => {
+    expect(communityEntries).toHaveLength(5);
+    expect(
+      communityEntries.every((entry) => provenanceStatus(entry) === 'community-reviewed'),
+    ).toBe(true);
+    expect(communityEntries.every((entry) => entry.distribution.installable)).toBe(true);
+    expect(new Set([...builtInEntries, ...communityEntries].map((entry) => entry.slug)).size).toBe(
+      builtInEntries.length + communityEntries.length,
+    );
+  });
+
+  it('builds pinned root-repository install commands without an empty path flag', () => {
+    const genui = communityEntries.find((entry) => entry.slug === 'dsh-genui');
+    expect(genui).toBeDefined();
+    if (!genui) return;
+    const command = installCommand(genui);
+    expect(command).toBe(
+      'npx dshpub add omdsh-dev/dsh-genui --ref 57b4338222632f8ea81c2665d44e5f9e80b52686',
+    );
+    expect(command).not.toContain('--path');
+    expect(sourceUrl(genui)).toBe(
+      'https://github.com/omdsh-dev/dsh-genui/tree/57b4338222632f8ea81c2665d44e5f9e80b52686',
     );
   });
 

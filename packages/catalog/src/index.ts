@@ -1,6 +1,16 @@
 import catalogJson from './catalog.generated.json' with { type: 'json' };
+import communityCatalogJson from './community.generated.json' with { type: 'json' };
 
 export type CatalogEntryType = 'plugin' | 'bundle' | 'seam' | 'library';
+
+export type CatalogProvenance =
+  | { status: 'built-in' }
+  | {
+      status: 'community-reviewed';
+      discoveredVia: 'github-topic:dsh-plugin';
+      reviewedAt: string;
+      statement: { en: string; zh: string };
+    };
 
 export interface CatalogEntry {
   id: string;
@@ -11,19 +21,32 @@ export interface CatalogEntry {
   type: CatalogEntryType;
   category: string;
   builtIn: boolean;
+  provenance?: CatalogProvenance;
   description: { en: string; zh: string };
   source: { repository: string; directory: string; commit: string };
   runtime: {
     hostLoadable: boolean;
     configurable: boolean;
-    client: false | { platform: string; inject: string[]; immediately?: boolean };
+    client:
+      | false
+      | {
+          platform: string;
+          inject?: string[];
+          injects?: string[];
+          immediately?: boolean;
+        };
   };
   capabilities: {
-    tools: string[];
-    uiContributions: string[];
-    uiSlotsDeclared: string[];
+    tools: Array<string | { name: string; description?: string; writes?: string[] }>;
+    uiContributions: Array<string | { slot: string; id?: string; component?: string }>;
+    uiSlotsDeclared: Array<string | { slot: string; kind?: string; scope?: string }>;
   };
-  availability: { profiles: string[]; defaultWeb: boolean };
+  availability: {
+    profiles: string[];
+    defaultWeb: boolean | 'enabled' | 'disabled' | 'conditional' | 'absent';
+    bundles?: string[];
+    presets?: string[];
+  };
   distribution:
     | {
         installable: false;
@@ -31,7 +54,13 @@ export interface CatalogEntry {
         activation: 'profile-layer';
         note: { en: string; zh: string };
       }
-    | { installable: false; mode: 'built-in' };
+    | { installable: false; mode: 'built-in' }
+    | {
+        installable: true;
+        mode: 'git-bundle';
+        activation: 'profile-layer';
+        note: { en: string; zh: string };
+      };
   docs: {
     readmePath: string;
     readmeZhPath: string;
@@ -55,10 +84,22 @@ export interface Catalog {
   entries: CatalogEntry[];
 }
 
+export interface CommunityCatalog {
+  source: {
+    repository: 'https://github.com/topics/dsh-plugin';
+    generatedAt: string;
+    policy: 'curated-pinned-source-contracts';
+  };
+  totals: { reviewed: number; installable: number };
+  entries: CatalogEntry[];
+}
+
 export const catalog = catalogJson as Catalog;
+export const communityCatalog = communityCatalogJson as CommunityCatalog;
+export const allCatalogEntries = [...catalog.entries, ...communityCatalog.entries];
 
 export function getCatalogEntry(slug: string): CatalogEntry | undefined {
-  return catalog.entries.find((entry) => entry.slug === slug);
+  return allCatalogEntries.find((entry) => entry.slug === slug);
 }
 
 export default catalog;

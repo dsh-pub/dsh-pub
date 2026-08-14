@@ -12,6 +12,7 @@ import {
   runAddCommand,
   type AddCommandDependencies,
   type AddCommandOptions,
+  usage,
 } from './index.js';
 
 const temporaryDirectories: string[] = [];
@@ -33,6 +34,11 @@ afterEach(async () => {
 });
 
 describe('GitHub repository input', () => {
+  it('documents the canonical npm command', () => {
+    expect(usage).toContain('npx dshpub add owner/repo');
+    expect(usage).not.toContain('https://dsh.pub/cli/');
+  });
+
   it.each([
     ['owner/repo', 'owner/repo'],
     ['https://github.com/owner/repo', 'owner/repo'],
@@ -96,11 +102,15 @@ describe('GitHub repository input', () => {
 });
 
 describe('installable target validation', () => {
-  it('requires package.json to declare dsh.bundle.patch', async () => {
+  it('requires package.json to declare a patch file inside the install target', async () => {
     const directory = await createTemporaryDirectory();
     await writeFile(
       join(directory, 'package.json'),
       JSON.stringify({ dsh: { bundle: { patch: './dsh.patch.json' } } }),
+    );
+    await writeFile(
+      join(directory, 'dsh.patch.json'),
+      '- id: test-bundle\n  config: !!js |\n    ({ enabled: true })\n',
     );
 
     await expect(assertInstallableTarget(directory)).resolves.toBeUndefined();
@@ -113,6 +123,73 @@ describe('installable target validation', () => {
       JSON.stringify({ dsh: { bundle: { patch: null } } }),
     );
     await expect(assertInstallableTarget(directory)).rejects.toThrow('dsh.bundle.patch');
+  });
+
+  it('rejects a missing, absolute, or escaping bundle patch', async () => {
+    const directory = await createTemporaryDirectory();
+    const manifest = (patch: string) =>
+      writeFile(join(directory, 'package.json'), JSON.stringify({ dsh: { bundle: { patch } } }));
+
+    await manifest('./missing.patch.yml');
+    await expect(assertInstallableTarget(directory)).rejects.toThrow('must exist');
+
+    await manifest('/tmp/outside.patch.yml');
+    await expect(assertInstallableTarget(directory)).rejects.toThrow('relative path');
+
+    await manifest('../outside.patch.yml');
+    await expect(assertInstallableTarget(directory)).rejects.toThrow('inside the install target');
+  });
+
+  it('rejects a bundle patch symlink that escapes the install target', async () => {
+    const directory = await createTemporaryDirectory();
+    const outside = await createTemporaryDirectory();
+    await writeFile(join(outside, 'outside.patch.yml'), '{}');
+    await writeFile(
+      join(directory, 'package.json'),
+      JSON.stringify({ dsh: { bundle: { patch: './cordis.patch.yml' } } }),
+    );
+    await symlink(join(outside, 'outside.patch.yml'), join(directory, 'cordis.patch.yml'));
+
+    await expect(assertInstallableTarget(directory)).rejects.toThrow('inside the install target');
+  });
+
+  it('rejects a bundle patch path that resolves to a directory', async () => {
+    const directory = await createTemporaryDirectory();
+    await mkdir(join(directory, 'cordis.patch.yml'));
+    await writeFile(
+      join(directory, 'package.json'),
+      JSON.stringify({ dsh: { bundle: { patch: './cordis.patch.yml' } } }),
+    );
+
+    await expect(assertInstallableTarget(directory)).rejects.toThrow('regular file');
+  });
+
+  it.each([
+    ['malformed YAML', '[', 'valid DSH YAML'],
+    ['an unknown scalar tag', '- id: test\n  config: !js expression\n', 'valid DSH YAML'],
+    ['a non-scalar !!js tag', '- id: test\n  config: !!js [1, 2]\n', 'valid DSH YAML'],
+    ['an object root', 'id: not-a-list\n', 'array'],
+    ['a scalar list entry', '- invalid\n', 'array'],
+  ])('rejects %s before installation', async (_label, patch, expected) => {
+    const directory = await createTemporaryDirectory();
+    await writeFile(
+      join(directory, 'package.json'),
+      JSON.stringify({ dsh: { bundle: { patch: './cordis.patch.yml' } } }),
+    );
+    await writeFile(join(directory, 'cordis.patch.yml'), patch);
+
+    await expect(assertInstallableTarget(directory)).rejects.toThrow(expected);
+  });
+
+  it('accepts an empty DSH patch list', async () => {
+    const directory = await createTemporaryDirectory();
+    await writeFile(
+      join(directory, 'package.json'),
+      JSON.stringify({ dsh: { bundle: { patch: './cordis.patch.yml' } } }),
+    );
+    await writeFile(join(directory, 'cordis.patch.yml'), '[]\n');
+
+    await expect(assertInstallableTarget(directory)).resolves.toBeUndefined();
   });
 });
 
@@ -154,6 +231,7 @@ const setupWorkflow = async (dshExitCode = 0) => {
         join(target, 'package.json'),
         JSON.stringify({ dsh: { bundle: { patch: './dsh.patch.json' } } }),
       );
+      await writeFile(join(target, 'dsh.patch.json'), '- id: test-bundle\n  config: {}\n');
     }
     return { exitCode: command === 'dsh' ? dshExitCode : 0 };
   });

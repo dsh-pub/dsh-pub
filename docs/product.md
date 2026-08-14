@@ -33,7 +33,7 @@ flowchart LR
     B --> C{Distribution mode}
     C -->|Built in| D[Open source and profile membership]
     C -->|Built-in profile layer| H[Inspect composition and source]
-    C -->|External bundle repo| E[Copy dsh-pub add command]
+    C -->|External bundle repo| E[Copy npx dshpub add command]
     E --> F[CLI validates and installs bundle]
     F --> G[CLI reports completed install]
 ```
@@ -95,5 +95,3 @@ tested; they are not hand-authored marketing claims.
 
 - Public submission and trust/moderation model for third-party bundle repositories.
 - Whether a later score combines docs quality, validation, maintenance, and compatibility.
-- When to publish the already-reserved `dsh-pub` npm alias; the first release uses a versioned,
-  site-hosted package artifact so every visible command works without waiting for npm login.

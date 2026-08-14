@@ -8,6 +8,7 @@ interface Props {
   locale: Locale;
   title?: string;
   description?: string;
+  structuredData?: Record<string, unknown> | Array<Record<string, unknown>>;
   showHeaderSearch?: boolean;
   noIndex?: boolean;
 }
@@ -16,12 +17,31 @@ const {
   locale,
   title,
   description = copy[locale].siteDescription,
+  structuredData = [],
   showHeaderSearch = true,
   noIndex = false,
 } = Astro.props;
-const pageTitle = title ? `${title} · dsh.pub` : 'dsh.pub — DeepSeek Harness plugin registry';
+const pageTitle = title
+  ? `${title} · dsh.pub`
+  : locale === 'zh'
+    ? 'dsh.pub — DeepSeek Harness 插件目录'
+    : 'dsh.pub — DeepSeek Harness plugin registry';
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const alternatePath = Astro.url.pathname.replace(`/${locale}`, `/${otherLocale(locale)}`);
+const alternateLocale = otherLocale(locale);
+const localeCodes = { en: 'en', zh: 'zh-CN' } as const;
+const openGraphLocales = { en: 'en_US', zh: 'zh_CN' } as const;
+const socialImage = new URL('/og/dsh-pub.png', Astro.site);
+const socialImageAlt =
+  locale === 'zh'
+    ? 'dsh.pub：DeepSeek Harness 插件目录与系统地图'
+    : 'dsh.pub: the DeepSeek Harness plugin directory and system map';
+const structuredDataItems = Array.isArray(structuredData) ? structuredData : [structuredData];
+const gaMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID?.trim();
+const analyticsEnabled = Boolean(gaMeasurementId && /^G-[A-Z0-9]+$/.test(gaMeasurementId));
+const analyticsConfig = analyticsEnabled
+  ? `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config',${JSON.stringify(gaMeasurementId)});`
+  : '';
 ---
 
 <!doctype html>
@@ -32,11 +52,12 @@ const alternatePath = Astro.url.pathname.replace(`/${locale}`, `/${otherLocale(l
     <meta name="description" content={description} />
     <meta name="theme-color" content="#14243a" />
     {noIndex && <meta name="robots" content="noindex" />}
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/brand/dshbot-favicon.png" type="image/png" />
     <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang={localeCodes[locale]} href={canonical} />
     <link
       rel="alternate"
-      hreflang={otherLocale(locale)}
+      hreflang={localeCodes[alternateLocale]}
       href={new URL(alternatePath, Astro.site)}
     />
     <link
@@ -48,7 +69,40 @@ const alternatePath = Astro.url.pathname.replace(`/${locale}`, `/${otherLocale(l
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content="dsh.pub" />
+    <meta property="og:locale" content={openGraphLocales[locale]} />
+    <meta property="og:locale:alternate" content={openGraphLocales[alternateLocale]} />
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={socialImageAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
+    <meta name="twitter:image:alt" content={socialImageAlt} />
     <title>{pageTitle}</title>
+    {
+      structuredDataItems.map((item) => (
+        <script
+          is:inline
+          type="application/ld+json"
+          set:html={JSON.stringify(item).replaceAll('<', '\\u003c')}
+        />
+      ))
+    }
+    {
+      analyticsEnabled && (
+        <>
+          <script
+            is:inline
+            async
+            src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}
+          />
+          <script is:inline set:html={analyticsConfig} />
+        </>
+      )
+    }
     <script is:inline>
       (() => {
         const value = localStorage.getItem('dsh-theme');

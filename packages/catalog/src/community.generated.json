@@ -1,0 +1,423 @@
+{
+  "source": {
+    "repository": "https://github.com/topics/dsh-plugin",
+    "generatedAt": "2026-08-13T17:28:12.000Z",
+    "policy": "curated-pinned-source-contracts"
+  },
+  "totals": {
+    "reviewed": 5,
+    "installable": 5
+  },
+  "entries": [
+    {
+      "id": "github:omdsh-dev/dsh-open-in-vscode",
+      "slug": "dsh-open-in-vscode",
+      "name": "dsh-open-in-vscode",
+      "version": "0.1.5",
+      "license": "MIT",
+      "type": "bundle",
+      "category": "client-ui",
+      "builtIn": false,
+      "provenance": {
+        "status": "community-reviewed",
+        "discoveredVia": "github-topic:dsh-plugin",
+        "reviewedAt": "2026-08-14",
+        "statement": {
+          "en": "Pinned source contract reviewed. This is not a security audit or official endorsement.",
+          "zh": "已核对固定版本的源码契约；这不等于安全审计或官方背书。"
+        }
+      },
+      "description": {
+        "en": "Adds an Open in VS Code action to each workspace row in the DSH web sidebar.",
+        "zh": "在 DSH Web 侧栏的每个工作区菜单中加入“在 VS Code 中打开”操作。"
+      },
+      "source": {
+        "repository": "https://github.com/omdsh-dev/dsh-open-in-vscode",
+        "directory": "",
+        "commit": "149f21aed3d05d2b392206394c4a023e35d694c7"
+      },
+      "runtime": {
+        "hostLoadable": true,
+        "configurable": true,
+        "client": {
+          "platform": "web",
+          "injects": [
+            "@deepseek-ai/dsh-client-runtime",
+            "@deepseek-ai/dsh-client-ui-slots",
+            "@deepseek-ai/dsh-client-locale",
+            "@deepseek-ai/dsh-client-ui-primitives"
+          ]
+        }
+      },
+      "capabilities": {
+        "tools": [],
+        "uiContributions": [
+          {
+            "slot": "sidebar.workspaces.row-menu",
+            "id": "open-in-vscode",
+            "component": "OpenInVscodeRow"
+          }
+        ],
+        "uiSlotsDeclared": []
+      },
+      "availability": {
+        "profiles": ["web"],
+        "defaultWeb": "conditional",
+        "bundles": ["dsh-open-in-vscode"]
+      },
+      "distribution": {
+        "installable": true,
+        "mode": "git-bundle",
+        "activation": "profile-layer",
+        "note": {
+          "en": "The pinned root package declares dsh.bundle.patch and committed runtime output. Review does not imply a security audit.",
+          "zh": "固定版本的仓库根包声明了 dsh.bundle.patch，且提交了运行产物；收录不等于安全审计。"
+        }
+      },
+      "docs": {
+        "readmePath": "README.md",
+        "readmeZhPath": "README.zh.md",
+        "readme": {
+          "en": "## What it adds\n\nA workspace row-menu contribution calls a host Remote that launches the configured editor for the selected directory. It does not expose model tools or read and write workspace files itself.",
+          "zh": "## 它增加了什么\n\n工作区行菜单通过 Host Remote 启动配置好的编辑器并打开所选目录。插件不暴露模型工具，也不自行读写工作区文件。"
+        },
+        "modelExperience": {
+          "en": "No model-facing surface.",
+          "zh": "不增加模型侧能力。"
+        },
+        "limitations": {
+          "en": "Requires an editor CLI such as `code` on the host PATH, or an explicit command configuration.",
+          "zh": "宿主机 PATH 中需要 `code` 等编辑器 CLI，或显式配置启动命令。"
+        }
+      }
+    },
+    {
+      "id": "github:omdsh-dev/dsh-at-file",
+      "slug": "dsh-at-file",
+      "name": "dsh-at-file",
+      "version": "0.1.0",
+      "license": "MIT",
+      "type": "bundle",
+      "category": "interaction",
+      "builtIn": false,
+      "provenance": {
+        "status": "community-reviewed",
+        "discoveredVia": "github-topic:dsh-plugin",
+        "reviewedAt": "2026-08-14",
+        "statement": {
+          "en": "Pinned source contract reviewed. This is not a security audit or official endorsement.",
+          "zh": "已核对固定版本的源码契约；这不等于安全审计或官方背书。"
+        }
+      },
+      "description": {
+        "en": "Adds Codex-style @file mentions to the web composer and expands selected workspace files into the model request.",
+        "zh": "为 Web 输入框加入 Codex 风格的 @file 提及，并在发送时把所选工作区文件展开到模型请求。"
+      },
+      "source": {
+        "repository": "https://github.com/omdsh-dev/dsh-at-file",
+        "directory": "",
+        "commit": "3c8408e8df06ebbd7126d1d7ebcf897ec92a3b86"
+      },
+      "runtime": {
+        "hostLoadable": true,
+        "configurable": true,
+        "client": {
+          "platform": "web",
+          "injects": [
+            "@deepseek-ai/dsh-client-runtime",
+            "@deepseek-ai/dsh-client-ui-input-trigger",
+            "@deepseek-ai/dsh-client-ui-slots",
+            "@deepseek-ai/dsh-client-locale"
+          ]
+        }
+      },
+      "capabilities": {
+        "tools": [],
+        "uiContributions": [
+          {
+            "slot": "conversation.input.dock",
+            "id": "at-file",
+            "component": "FilesDock"
+          },
+          {
+            "slot": "settings.section",
+            "id": "at-file",
+            "component": "AtFileSection"
+          }
+        ],
+        "uiSlotsDeclared": []
+      },
+      "availability": {
+        "profiles": ["web"],
+        "defaultWeb": "conditional",
+        "bundles": ["dsh-at-file"]
+      },
+      "distribution": {
+        "installable": true,
+        "mode": "git-bundle",
+        "activation": "profile-layer",
+        "note": {
+          "en": "The pinned root package declares dsh.bundle.patch and committed runtime output. Review does not imply a security audit.",
+          "zh": "固定版本的仓库根包声明了 dsh.bundle.patch，且提交了运行产物；收录不等于安全审计。"
+        }
+      },
+      "docs": {
+        "readmePath": "README.md",
+        "readmeZhPath": "README.zh.md",
+        "readme": {
+          "en": "## What it adds\n\nTyping `@` opens a workspace file picker. Attached files remain readable tokens in the draft and are expanded by the host at the agent pre-step boundary.",
+          "zh": "## 它增加了什么\n\n输入 `@` 会打开工作区文件选择器。附件在草稿中仍是可读的路径 token，并由 Host 在 agent pre-step 边界展开。"
+        },
+        "modelExperience": {
+          "en": "Selected file contents enter the request as user-role file blocks; no model tool call is required.",
+          "zh": "所选文件内容会作为用户角色文件块进入请求，不需要模型调用工具。"
+        },
+        "limitations": {
+          "en": "Binary, oversized, or workspace-escaping paths are skipped; mention tokens cannot contain whitespace.",
+          "zh": "二进制、超限或逃逸工作区的路径会被跳过；提及 token 不能包含空格。"
+        }
+      }
+    },
+    {
+      "id": "github:omdsh-dev/dsh-notification",
+      "slug": "dsh-notification",
+      "name": "dsh-notification",
+      "version": "0.1.1",
+      "license": "MIT",
+      "type": "bundle",
+      "category": "client-ui",
+      "builtIn": false,
+      "provenance": {
+        "status": "community-reviewed",
+        "discoveredVia": "github-topic:dsh-plugin",
+        "reviewedAt": "2026-08-14",
+        "statement": {
+          "en": "Pinned source contract reviewed. This is not a security audit or official endorsement.",
+          "zh": "已核对固定版本的源码契约；这不等于安全审计或官方背书。"
+        }
+      },
+      "description": {
+        "en": "Shows configurable browser desktop notifications when a DSH session finishes a turn.",
+        "zh": "当 DSH 会话完成一轮时显示可配置的浏览器桌面通知。"
+      },
+      "source": {
+        "repository": "https://github.com/omdsh-dev/dsh-notification",
+        "directory": "",
+        "commit": "3e33100f51f25f24cece20bfd3d50cfbde0cbca5"
+      },
+      "runtime": {
+        "hostLoadable": true,
+        "configurable": true,
+        "client": {
+          "platform": "web",
+          "injects": [
+            "@deepseek-ai/dsh-client-runtime",
+            "@deepseek-ai/dsh-client-ui-slots",
+            "@deepseek-ai/dsh-client-ui-settings",
+            "@deepseek-ai/dsh-client-locale"
+          ]
+        }
+      },
+      "capabilities": {
+        "tools": [],
+        "uiContributions": [
+          {
+            "slot": "settings.section",
+            "id": "notification",
+            "component": "NotificationSettingsSection"
+          }
+        ],
+        "uiSlotsDeclared": []
+      },
+      "availability": {
+        "profiles": ["web"],
+        "defaultWeb": "conditional",
+        "bundles": ["dsh-notification"]
+      },
+      "distribution": {
+        "installable": true,
+        "mode": "git-bundle",
+        "activation": "profile-layer",
+        "note": {
+          "en": "The pinned root package declares dsh.bundle.patch and committed runtime output. Review does not imply a security audit.",
+          "zh": "固定版本的仓库根包声明了 dsh.bundle.patch，且提交了运行产物；收录不等于安全审计。"
+        }
+      },
+      "docs": {
+        "readmePath": "README.md",
+        "readmeZhPath": "README.zh.md",
+        "readme": {
+          "en": "## What it adds\n\nA bounded host projection describes the last completed turn. The browser applies local include and exclude rules and uses the Notification API after permission is granted.",
+          "zh": "## 它增加了什么\n\nHost 提供上一轮完成状态的有界投影；浏览器在获得通知权限后，本地应用包含与排除规则并调用 Notification API。"
+        },
+        "modelExperience": {
+          "en": "UI-only. It adds no tools, prompt text, or session events.",
+          "zh": "仅影响 UI，不增加工具、提示词或会话事件。"
+        },
+        "limitations": {
+          "en": "The page must remain open and browser notification permission must be granted.",
+          "zh": "页面需要保持打开，并且必须授予浏览器通知权限。"
+        }
+      }
+    },
+    {
+      "id": "github:omdsh-dev/dsh-genui",
+      "slug": "dsh-genui",
+      "name": "@omdsh-dev/dsh-genui",
+      "version": "0.8.0",
+      "license": "MIT",
+      "type": "bundle",
+      "category": "client-ui",
+      "builtIn": false,
+      "provenance": {
+        "status": "community-reviewed",
+        "discoveredVia": "github-topic:dsh-plugin",
+        "reviewedAt": "2026-08-14",
+        "statement": {
+          "en": "Pinned source contract reviewed. This is not a security audit or official endorsement.",
+          "zh": "已核对固定版本的源码契约；这不等于安全审计或官方背书。"
+        }
+      },
+      "description": {
+        "en": "Renders interactive components, charts, forms, and panels from model-produced dsh-ui fences inside assistant replies.",
+        "zh": "把模型输出的 dsh-ui fence 渲染为助手回复中的交互组件、图表、表单和面板。"
+      },
+      "source": {
+        "repository": "https://github.com/omdsh-dev/dsh-genui",
+        "directory": "",
+        "commit": "57b4338222632f8ea81c2665d44e5f9e80b52686"
+      },
+      "runtime": {
+        "hostLoadable": true,
+        "configurable": false,
+        "client": {
+          "platform": "web",
+          "injects": []
+        }
+      },
+      "capabilities": {
+        "tools": [
+          {
+            "name": "render_ui",
+            "description": "Render a guarded dsh-ui specification in the tool row."
+          },
+          {
+            "name": "validate_dsh_ui",
+            "description": "Validate a dsh-ui specification before rendering it."
+          }
+        ],
+        "uiContributions": [
+          {
+            "slot": "tool.call.toolview",
+            "id": "render_ui",
+            "component": "GenuiToolView"
+          },
+          {
+            "slot": "conversation.input.dock",
+            "id": "genui-panel",
+            "component": "GenuiPanel"
+          }
+        ],
+        "uiSlotsDeclared": []
+      },
+      "availability": {
+        "profiles": ["web"],
+        "defaultWeb": "conditional",
+        "bundles": ["@omdsh-dev/dsh-genui"]
+      },
+      "distribution": {
+        "installable": true,
+        "mode": "git-bundle",
+        "activation": "profile-layer",
+        "note": {
+          "en": "The pinned root package declares dsh.bundle.patch and committed runtime output. Review does not imply a security audit.",
+          "zh": "固定版本的仓库根包声明了 dsh.bundle.patch，且提交了运行产物；收录不等于安全审计。"
+        }
+      },
+      "docs": {
+        "readmePath": "README.md",
+        "readmeZhPath": "README.zh-CN.md",
+        "readme": {
+          "en": "## What it adds\n\nThe model can describe a whitelisted UI tree in a `dsh-ui` fence. The browser renders it inline, while guarded actions can return interaction data to the model.",
+          "zh": "## 它增加了什么\n\n模型可以在 `dsh-ui` fence 中描述白名单 UI 树，浏览器将其内联渲染，并通过受约束的 action 把交互数据返回给模型。"
+        },
+        "modelExperience": {
+          "en": "Adds fence-format instructions plus render_ui and validate_dsh_ui tools; rich output can increase response tokens.",
+          "zh": "会增加 fence 格式说明以及 render_ui、validate_dsh_ui 工具；富 UI 输出可能提高回复 token 消耗。"
+        },
+        "limitations": {
+          "en": "Requires compatible web composition and on-demand assets; interactive actions depend on the page and model loop remaining available.",
+          "zh": "需要兼容的 Web 组合与按需资源；交互 action 依赖页面和模型循环保持可用。"
+        }
+      }
+    },
+    {
+      "id": "github:ccch1mneyyy/dsh-cc-tui",
+      "slug": "dsh-cc-tui",
+      "name": "dsh-cc-tui",
+      "version": "0.1.6",
+      "license": "BSD-3-Clause",
+      "type": "bundle",
+      "category": "interaction",
+      "builtIn": false,
+      "provenance": {
+        "status": "community-reviewed",
+        "discoveredVia": "github-topic:dsh-plugin",
+        "reviewedAt": "2026-08-14",
+        "statement": {
+          "en": "Pinned source contract reviewed. This is not a security audit or official endorsement.",
+          "zh": "已核对固定版本的源码契约；这不等于安全审计或官方背书。"
+        }
+      },
+      "description": {
+        "en": "A full-screen Claude Code-style terminal front door for DSH agents, mounted as a Cordis bundle.",
+        "zh": "以 Cordis 组合包挂载的 Claude Code 风格全屏终端入口，用于操作 DSH Agent。"
+      },
+      "source": {
+        "repository": "https://github.com/ccch1mneyyy/dsh-cc-tui",
+        "directory": "",
+        "commit": "8516ffb3aac3ada74760eff9b8c14c65d344b67d"
+      },
+      "runtime": {
+        "hostLoadable": true,
+        "configurable": true,
+        "client": false
+      },
+      "capabilities": {
+        "tools": [],
+        "uiContributions": [],
+        "uiSlotsDeclared": []
+      },
+      "availability": {
+        "profiles": ["cc-tui"],
+        "defaultWeb": false,
+        "bundles": ["dsh-cc-tui"]
+      },
+      "distribution": {
+        "installable": true,
+        "mode": "git-bundle",
+        "activation": "profile-layer",
+        "note": {
+          "en": "The pinned root package declares dsh.bundle.patch and committed runtime output. Review does not imply a security audit.",
+          "zh": "固定版本的仓库根包声明了 dsh.bundle.patch，且提交了运行产物；收录不等于安全审计。"
+        }
+      },
+      "docs": {
+        "readmePath": "README.md",
+        "readmeZhPath": "README.md",
+        "readme": {
+          "en": "## What it adds\n\nA terminal-native conversation surface with streaming reasoning, tool cards, session resume and rewind, command and file completion, context meters, and keyboard navigation.",
+          "zh": "## 它增加了什么\n\n提供终端原生会话界面，包括流式思考、工具卡片、会话恢复与回溯、命令和文件补全、上下文仪表与键盘导航。"
+        },
+        "modelExperience": {
+          "en": "Uses the normal DSH agent, session, tool, and persistence services through a terminal-specific profile layer.",
+          "zh": "通过终端专用 Profile 层复用 DSH 的 Agent、会话、工具和持久化服务。"
+        },
+        "limitations": {
+          "en": "The profile intentionally does not consume the DSH approval UI flow, and several Claude Code-named commands are explicit compatibility placeholders.",
+          "zh": "该 Profile 暂不消费 DSH 审批 UI 流，部分 Claude Code 同名命令是明确标注的兼容占位。"
+        }
+      }
+    }
+  ]
+}

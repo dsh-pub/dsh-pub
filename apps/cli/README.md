@@ -1,15 +1,14 @@
-# dsh-pub CLI
+# dshpub CLI
 
 Install an independently distributed, manifest-declared DeepSeek Harness bundle from GitHub.
 
 ```bash
-npx --yes https://dsh.pub/cli/dsh-pub-0.1.1.tgz add owner/repository \
+npx dshpub add owner/repository \
   --path packages/my-bundle \
   --profile web
 ```
 
-The versioned package is served directly by dsh.pub for the first release. The shorter
-`npx dsh-pub` alias will become available after the package is published to npm.
+`dshpub` is published on npm and runs as `npx dshpub`.
 
 The CLI resolves the requested ref to an exact commit in a temporary checkout and verifies that the
 selected package declares `dsh.bundle.patch`. It then removes the checkout and runs

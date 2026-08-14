@@ -1,7 +1,7 @@
 ---
 import Icon from '../../../components/Icon.astro';
 import PluginRow from '../../../components/PluginRow.astro';
-import { categoryCounts, marketplaceEntries } from '../../../lib/catalog.js';
+import { categoryCounts, communityEntries, marketplaceEntries } from '../../../lib/catalog.js';
 import { categoryLabel, typeLabel } from '../../../lib/categories.js';
 import { copy, isLocale, locales } from '../../../lib/i18n.js';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
@@ -14,9 +14,23 @@ const locale = Astro.params.lang;
 if (!isLocale(locale)) throw new Error(`Unsupported locale: ${locale}`);
 const t = copy[locale];
 const categories = categoryCounts(marketplaceEntries);
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: locale === 'zh' ? 'DeepSeek Harness 插件目录' : 'DeepSeek Harness plugin directory',
+  url: `https://dsh.pub/${locale}/plugins/`,
+  description: t.siteDescription,
+  inLanguage: locale === 'zh' ? 'zh-CN' : 'en',
+  isPartOf: { '@type': 'WebSite', name: 'dsh.pub', url: `https://dsh.pub/${locale}/` },
+};
 ---
 
-<BaseLayout locale={locale} title={t.plugins} showHeaderSearch={false}>
+<BaseLayout
+  locale={locale}
+  title={t.plugins}
+  showHeaderSearch={false}
+  structuredData={structuredData}
+>
   <section class="catalog-search-band">
     <div class="page-shell">
       <p class="eyebrow">DSH / REGISTRY / {t.plugins.toLocaleUpperCase()}</p>
@@ -52,6 +66,20 @@ const categories = categoryCounts(marketplaceEntries);
             </label>
           ))
         }
+      </fieldset>
+
+      <fieldset>
+        <legend>{t.sourceScope}</legend>
+        <label>
+          <input type="checkbox" name="provenance" value="built-in" />
+          <span>{t.builtInSource}</span>
+          <small>{marketplaceEntries.length - communityEntries.length}</small>
+        </label>
+        <label>
+          <input type="checkbox" name="provenance" value="community-reviewed" />
+          <span>{t.communityReviewed}</span>
+          <small>{communityEntries.length}</small>
+        </label>
       </fieldset>
 
       <fieldset>
@@ -107,6 +135,10 @@ const categories = categoryCounts(marketplaceEntries);
         </label>
       </div>
 
+      <p class="community-policy">
+        <strong>{t.communityReviewed}</strong> — {t.communityReviewNotice}
+      </p>
+
       <div class="active-filters" data-active-filters aria-live="polite"></div>
       <div class="plugin-results" data-results>
         {marketplaceEntries.map((entry) => <PluginRow entry={entry} locale={locale} />)}
@@ -142,7 +174,7 @@ const categories = categoryCounts(marketplaceEntries);
   function setFromUrl() {
     const params = new URLSearchParams(location.search);
     if (searchInput) searchInput.value = params.get('q') ?? '';
-    for (const name of ['type', 'category', 'availability']) {
+    for (const name of ['type', 'category', 'availability', 'provenance']) {
       const values = params
         .getAll(name)
         .flatMap((value) => value.split(','))
@@ -158,6 +190,7 @@ const categories = categoryCounts(marketplaceEntries);
     const types = selected('type');
     const categories = selected('category');
     const availability = selected('availability');
+    const provenance = selected('provenance');
     let visible = 0;
 
     for (const row of rows) {
@@ -165,7 +198,8 @@ const categories = categoryCounts(marketplaceEntries);
         (!query || row.dataset.search?.includes(query)) &&
         (!types.length || types.includes(row.dataset.type ?? '')) &&
         (!categories.length || categories.includes(row.dataset.category ?? '')) &&
-        (!availability.length || availability.includes(row.dataset.availability ?? ''));
+        (!availability.length || availability.includes(row.dataset.availability ?? '')) &&
+        (!provenance.length || provenance.includes(row.dataset.provenance ?? ''));
       row.hidden = !match;
       if (match) visible += 1;
     }
@@ -188,6 +222,7 @@ const categories = categoryCounts(marketplaceEntries);
       ['type', types],
       ['category', categories],
       ['availability', availability],
+      ['provenance', provenance],
     ] as const) {
       if (values.length) params.set(name, values.join(','));
     }
@@ -196,7 +231,9 @@ const categories = categoryCounts(marketplaceEntries);
 
     if (active) {
       active.replaceChildren();
-      const values = [query, ...types, ...categories, ...availability].filter(Boolean);
+      const values = [query, ...types, ...categories, ...availability, ...provenance].filter(
+        Boolean,
+      );
       for (const value of values) {
         const chip = document.createElement('span');
         chip.textContent = value;
@@ -407,6 +444,20 @@ const categories = categoryCounts(marketplaceEntries);
     font-size: 0.72rem;
     outline: 0;
     text-transform: uppercase;
+  }
+
+  .community-policy {
+    background: var(--color-surface-subtle);
+    border-bottom: 1px solid var(--color-rule);
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    line-height: 1.55;
+    margin: 0;
+    padding: 0.8rem 0.9rem;
+  }
+
+  .community-policy strong {
+    color: var(--color-text);
   }
 
   .active-filters {

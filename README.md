@@ -2,7 +2,7 @@
 
 [dsh.pub](https://dsh.pub) is the bilingual, source-backed registry for the DeepSeek Harness plugin
 ecosystem. It catalogs the current built-in modules, explains runtime and UI capabilities, and
-separates atomic modules, built-in profile layers, and future independently installable bundles.
+separates atomic modules, built-in profile layers, and reviewed community bundles.
 
 ```text
 DeepSeek Harness source
@@ -12,8 +12,8 @@ DeepSeek Harness source
         │
         └── 3 manifest-declared bundles ──► built-in profile activation layers
 
-Future external Git bundle ──► dsh-pub CLI ──► native dsh plugin add
-                                            └─► D1 completed-install count
+Reviewed community Git bundle ──► dshpub CLI ──► native dsh plugin add
+                                                      └─► D1 completed-install count
 ```
 
 ## Workspace
@@ -22,7 +22,7 @@ Future external Git bundle ──► dsh-pub CLI ──► native dsh plugin add
 apps/
 ├── web/       Astro static registry
 ├── server/    Cloudflare Worker install API and locale routing
-└── cli/       GitHub bundle installer (`dsh-pub`)
+└── cli/       GitHub bundle installer (`dshpub`)
 packages/
 └── catalog/   generated Harness snapshot and typed access
 migrations/    D1 event and aggregate schema
@@ -32,9 +32,20 @@ migrations/    D1 event and aggregate schema
 
 ```bash
 npm install
+npm run build:og
 npm run build
 npm run dev --workspace @dsh-pub/web
 ```
+
+To enable Google Analytics in a production build, provide the public GA4 Measurement ID:
+
+```bash
+PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX npm run build
+```
+
+The build emits a bilingual sitemap index at `/sitemap-index.xml`, crawler policy at
+`/robots.txt`, and canonical, hreflang, Open Graph, Twitter Card, and JSON-LD metadata on every
+indexable page.
 
 The Web app runs at `http://127.0.0.1:4321`. To run the complete Worker boundary locally:
 
@@ -61,7 +72,7 @@ node scripts/sync-harness-catalog.mjs --source /path/to/deepseek-harness
 ## CLI
 
 ```bash
-npx --yes https://dsh.pub/cli/dsh-pub-0.1.1.tgz add owner/repo \
+npx dshpub add owner/repo \
   --path packages/my-bundle \
   --profile web
 ```
@@ -75,20 +86,28 @@ The current three Harness bundles are built-in monorepo profile layers, not stan
 packages: their `workspace:` dependencies require the Harness workspace. The catalog therefore
 shows them as **built-in profile layers** without an install command or install count.
 
+Community repositories are a separate, pinned collection discovered through GitHub's
+`dsh-plugin` topic. Topic membership alone never causes inclusion: every listed source coordinate
+has a reviewed manifest, patch path, committed runtime entry, README, and license. This is a static
+source-contract review, not a security audit, runtime smoke test, or official endorsement.
+
 The public metric means **CLI-reported completed installs**. It is not unique users, GitHub clone
 traffic, active usage, or installs performed directly through Git or the native DSH command.
 
-The MVP serves the versioned npm tarball from dsh.pub. The `dsh-pub` npm package name is available,
-but publishing the shorter `npx dsh-pub` alias requires an authenticated npm session.
+The public installer is the `dshpub` package on npm. Run it with `npx dshpub`.
 
 ## Quality gates
 
 ```bash
 npm run lint
 npm run test
+npx playwright install chromium
 npm run e2e
 npm run build
 ```
+
+The one-time Playwright install makes the catalog filter E2E independent of a machine's system
+browser. CI installs the same Chromium revision with its required OS dependencies.
 
 `npm run eval` remains separate because it may call real models and consume credentials.
 

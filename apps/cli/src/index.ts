@@ -1,12 +1,19 @@
 import { randomUUID } from 'node:crypto';
-import { mkdtemp, readFile, realpath, rm } from 'node:fs/promises';
+import { mkdtemp, readFile, realpath, rm, stat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { isAbsolute, join, relative, resolve } from 'node:path';
 import { spawn } from 'node:child_process';
 
+import { parseDocument, type ScalarTag } from 'yaml';
+
 const DEFAULT_PROFILE = 'web';
 const DEFAULT_REGISTRY = 'https://dsh.pub';
 const TELEMETRY_TIMEOUT_MS = 2_000;
+
+const dshJsExpressionTag: ScalarTag = {
+  tag: 'tag:yaml.org,2002:js',
+  resolve: (value) => value,
+};
 
 export interface GitHubRepository {
   cloneUrl: string;
@@ -36,7 +43,7 @@ export interface AddCommandDependencies {
 }
 
 const usage = `Usage:
-  dsh-pub add owner/repo [--ref tag] [--path subdir] [--profile web] [--registry URL] [--dry-run]`;
+  npx dshpub add owner/repo [--ref tag] [--path subdir] [--profile web] [--registry URL] [--dry-run]`;
 
 const optionNames = new Set(['--ref', '--path', '--profile', '--registry']);
 
@@ -191,6 +198,49 @@ export const assertInstallableTarget = async (target: string) => {
     manifest.dsh.bundle.patch.trim() === ''
   ) {
     throw new Error('Install target package.json must declare dsh.bundle.patch');
+  }
+
+  const patch = manifest.dsh.bundle.patch.trim();
+  if (isAbsolute(patch)) {
+    throw new Error('dsh.bundle.patch must be a relative path inside the install target');
+  }
+
+  const targetRealPath = await realpath(target);
+  const declaredPatch = resolve(targetRealPath, patch);
+  const declaredRelativePath = relative(targetRealPath, declaredPatch);
+  if (declaredRelativePath.startsWith('..') || isAbsolute(declaredRelativePath)) {
+    throw new Error('dsh.bundle.patch must stay inside the install target');
+  }
+
+  let patchRealPath: string;
+  try {
+    patchRealPath = await realpath(declaredPatch);
+  } catch {
+    throw new Error('The file declared by dsh.bundle.patch must exist');
+  }
+  const patchRelativePath = relative(targetRealPath, patchRealPath);
+  if (patchRelativePath.startsWith('..') || isAbsolute(patchRelativePath)) {
+    throw new Error('dsh.bundle.patch must stay inside the install target');
+  }
+  if (!(await stat(patchRealPath)).isFile()) {
+    throw new Error('dsh.bundle.patch must point to a regular file');
+  }
+
+  const patchDocument = parseDocument(await readFile(patchRealPath, 'utf8'), {
+    customTags: [dshJsExpressionTag],
+  });
+  const yamlIssue = patchDocument.errors[0] ?? patchDocument.warnings[0];
+  if (yamlIssue) {
+    throw new Error(`dsh.bundle.patch must contain valid DSH YAML: ${yamlIssue}`);
+  }
+  const patchEntries = patchDocument.toJS() as unknown;
+  if (
+    !Array.isArray(patchEntries) ||
+    patchEntries.some(
+      (entry) => typeof entry !== 'object' || entry === null || Array.isArray(entry),
+    )
+  ) {
+    throw new Error('dsh.bundle.patch must contain an array of patch entries');
   }
 };
 

@@ -3,6 +3,7 @@ import {
   displayName,
   installMetricSlug,
   localized,
+  provenanceStatus,
   type CatalogEntry,
 } from '../lib/catalog-types.js';
 import { categoryLabel, typeLabel } from '../lib/categories.js';
@@ -25,21 +26,32 @@ const modeLabel = entry.distribution.installable
   : entry.type === 'bundle'
     ? t.profileLayer
     : t.included;
+const provenance = provenanceStatus(entry);
+const provenanceLabel = provenance === 'community-reviewed' ? t.communityReviewed : t.builtInSource;
+const provenanceStatement =
+  entry.provenance?.status === 'community-reviewed'
+    ? localized(entry.provenance.statement, locale)
+    : t.builtInSourceHelp;
 ---
 
 <article
   class:list={['plugin-row', { compact }]}
   data-plugin-row
-  data-search={`${entry.name} ${entry.slug} ${localized(entry.description, locale)} ${entry.category}`.toLocaleLowerCase()}
+  data-search={`${entry.name} ${entry.slug} ${localized(entry.description, locale)} ${entry.category} ${entry.source.repository} ${provenance}`.toLocaleLowerCase()}
   data-type={entry.type}
   data-category={entry.category}
   data-availability={entry.distribution.installable ? 'installable' : 'included'}
+  data-provenance={provenance}
   data-name={displayName(entry).toLocaleLowerCase()}
 >
   <div class="plugin-main">
     <div class="plugin-title-line">
       <h3><a href={`/${locale}/plugins/${entry.slug}/`}>{displayName(entry)}</a></h3>
       <span class:list={['tag', entry.distribution.installable && 'primary']}>{modeLabel}</span>
+      <span
+        class:list={['tag', provenance === 'community-reviewed' && 'reviewed']}
+        title={provenanceStatement}>{provenanceLabel}</span
+      >
     </div>
     <p>{localized(entry.description, locale)}</p>
     <div class="tag-row">
@@ -89,6 +101,10 @@ const modeLabel = entry.distribution.installable
     padding: 1.55rem 0 1.7rem;
   }
 
+  .plugin-row[hidden] {
+    display: none;
+  }
+
   .plugin-row:last-child {
     border-bottom: 1px solid var(--color-rule);
   }
@@ -98,6 +114,11 @@ const modeLabel = entry.distribution.installable
     display: flex;
     flex-wrap: wrap;
     gap: 0.7rem;
+  }
+
+  .plugin-title-line :global(.tag.reviewed) {
+    border-color: #5e8c76;
+    color: #35654e;
   }
 
   h3 {

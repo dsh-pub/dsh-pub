@@ -7,11 +7,15 @@ const { compact = false } = Astro.props;
 ---
 
 <span class="brand" aria-label="dsh.pub">
-  <svg class="brand-mark" viewBox="0 0 44 44" aria-hidden="true">
-    <path d="M8 7h17l11 11v19H19L8 26V7Z" fill="currentColor" opacity=".2"></path>
-    <path d="M8 7h17v11H8V7Zm0 19h11v11L8 26Zm17-8h11v19H25V18Z" fill="currentColor"></path>
-    <path d="m19 18 6 6-6 6-6-6 6-6Z" class="brand-mark-seam"></path>
-  </svg>
+  <img
+    class="brand-mark"
+    src="/brand/dshbot.png"
+    width="256"
+    height="256"
+    alt=""
+    aria-hidden="true"
+    decoding="async"
+  />
   {
     !compact && (
       <span class="brand-word">
@@ -31,12 +35,10 @@ const { compact = false } = Astro.props;
   }
 
   .brand-mark {
-    height: 34px;
-    width: 34px;
-  }
-
-  .brand-mark-seam {
-    fill: var(--color-accent-bright);
+    display: block;
+    height: 40px;
+    object-fit: contain;
+    width: 40px;
   }
 
   .brand-word {

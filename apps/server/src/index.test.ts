@@ -100,7 +100,7 @@ class FakeD1 implements D1DatabaseLike {
 }
 
 const eventId = 'bc7b48d3-1513-49ab-aa71-a0debe74d92b';
-const slug = 'deepseek-ai--dsh-builtin-input--default';
+const slug = 'omdsh-dev--dsh-genui';
 
 const createEnv = () => {
   const db = new FakeD1();
@@ -175,13 +175,13 @@ describe('install telemetry worker', () => {
       env,
     );
     const localhost = await handleRequest(
-      new Request('https://dsh.pub/api/plugins/deepseek-ai--bundle/stats', {
+      new Request(`https://dsh.pub/api/plugins/${slug}/stats`, {
         headers: { Origin: 'http://localhost:4321' },
       }),
       env,
     );
     const rejected = await handleRequest(
-      new Request('https://dsh.pub/api/plugins/deepseek-ai--bundle/stats', {
+      new Request(`https://dsh.pub/api/plugins/${slug}/stats`, {
         headers: { Origin: 'https://example.com' },
       }),
       env,
@@ -217,5 +217,26 @@ describe('install telemetry worker', () => {
     expect(redirect.status).toBe(302);
     expect(redirect.headers.get('Location')).toBe('https://dsh.pub/zh/');
     expect(englishRedirect.headers.get('Location')).toBe('https://dsh.pub/en/');
+  });
+
+  it('rejects well-formed slugs that are not in the curated registry', async () => {
+    const { env } = createEnv();
+    const intent = await handleRequest(
+      post('/api/install-intents', {
+        eventId,
+        slug: 'unknown-owner--unknown-plugin',
+        version: 'main',
+      }),
+      env,
+    );
+    const stats = await handleRequest(
+      new Request('https://dsh.pub/api/plugins/unknown-owner--unknown-plugin/stats'),
+      env,
+    );
+
+    expect(intent.status).toBe(404);
+    await expect(intent.json()).resolves.toMatchObject({ error: 'plugin_not_found' });
+    expect(stats.status).toBe(404);
+    await expect(stats.json()).resolves.toMatchObject({ error: 'plugin_not_found' });
   });
 });

@@ -1,4 +1,19 @@
-import catalog, { getCatalogEntry } from './index.js';
+import communitySources from './community.sources.json';
+import catalog, { communityCatalog, getCatalogEntry } from './index.js';
+import installableRegistry from '../../../apps/server/src/installable-slugs.generated.json';
+
+const slugPart = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+
+const installMetricSlug = (repository: string, directory: string) => {
+  const url = new URL(repository);
+  const repositorySlug = url.pathname.replace(/^\//, '').split('/').map(slugPart).join('--');
+  const directorySlug = directory.split('/').map(slugPart).filter(Boolean).join('--');
+  return directorySlug ? `${repositorySlug}--${directorySlug}` : repositorySlug;
+};
 
 describe('Harness catalog snapshot', () => {
   it('keeps Loader classification totals and bundle overlays distinct', () => {
@@ -70,5 +85,56 @@ describe('Harness catalog snapshot', () => {
     }
     expect(getCatalogEntry('base')?.availability.profiles).toEqual(['base', 'headless', 'web']);
     expect(getCatalogEntry('missing-plugin')).toBeUndefined();
+  });
+
+  it('keeps the community collection separate, pinned, and source-contract reviewed', () => {
+    expect(communityCatalog.totals).toEqual({ reviewed: 5, installable: 5 });
+    expect(communityCatalog.entries).toHaveLength(communitySources.entries.length);
+
+    const officialSlugs = new Set(catalog.entries.map((entry) => entry.slug));
+    const communitySlugs = new Set<string>();
+
+    for (const entry of communityCatalog.entries) {
+      const source = communitySources.entries.find(
+        (candidate) => candidate.repository === entry.source.repository,
+      );
+      expect(source).toBeDefined();
+      expect(entry.source.commit).toMatch(/^[a-f0-9]{40}$/);
+      expect(entry.source.commit).toBe(source?.commit);
+      expect(entry.source.directory).toBe(source?.directory);
+      expect(entry.name).toBe(source?.packageName);
+      expect(entry.provenance?.status).toBe('community-reviewed');
+      expect(entry.provenance?.statement.en).toContain('not a security audit');
+      expect(entry.provenance?.statement.zh).toContain('不等于安全审计');
+      expect(entry.distribution).toMatchObject({
+        installable: true,
+        mode: 'git-bundle',
+        activation: 'profile-layer',
+      });
+      expect(officialSlugs.has(entry.slug)).toBe(false);
+      expect(communitySlugs.has(entry.slug)).toBe(false);
+      communitySlugs.add(entry.slug);
+    }
+
+    expect(getCatalogEntry('dsh-genui')?.source.repository).toBe(
+      'https://github.com/omdsh-dev/dsh-genui',
+    );
+    expect(getCatalogEntry('dsh-at-file')?.capabilities.uiContributions).toEqual([
+      { slot: 'conversation.input.dock', id: 'at-file', component: 'FilesDock' },
+      { slot: 'settings.section', id: 'at-file', component: 'AtFileSection' },
+    ]);
+    expect(getCatalogEntry('dsh-genui')?.capabilities).toMatchObject({
+      tools: [{ name: 'render_ui' }, { name: 'validate_dsh_ui' }],
+      uiContributions: [
+        { slot: 'tool.call.toolview', id: 'render_ui', component: 'GenuiToolView' },
+        { slot: 'conversation.input.dock', id: 'genui-panel', component: 'GenuiPanel' },
+      ],
+    });
+    expect(getCatalogEntry('dsh-cc-tui')?.capabilities.uiContributions).toEqual([]);
+    expect(
+      communityCatalog.entries
+        .map((entry) => installMetricSlug(entry.source.repository, entry.source.directory))
+        .sort(),
+    ).toEqual([...installableRegistry.slugs].sort());
   });
 });

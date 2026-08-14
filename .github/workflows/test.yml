@@ -28,6 +28,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Install browser for E2E
+        run: npx playwright install --with-deps chromium
+
       - name: Run static checks
         run: npm run lint
 

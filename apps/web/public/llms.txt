@@ -1,0 +1,20 @@
+# dsh.pub
+
+> Source-backed directory and development guide for the DeepSeek Harness plugin ecosystem.
+
+## Agent guide
+
+- [Develop a DeepSeek Harness plugin](https://dsh.pub/develop-plugin.md): Agent-first contract for
+  building Host plugins, Web UI clients, independently installable bundle layers, verification, and
+  dsh.pub catalog admission. Read the target repository's own Agent instructions first.
+
+## Catalog
+
+- [English plugin catalog](https://dsh.pub/en/plugins/): Built-in and source-reviewed community
+  capabilities.
+- [中文插件目录](https://dsh.pub/zh/plugins/): 内置插件与经过源码契约核对的社区插件。
+
+## Provenance
+
+- [DeepSeek Harness source](https://github.com/deepseek-ai/deepseek-harness)
+- [dsh.pub source](https://github.com/OneeMe/dsh-pub)
