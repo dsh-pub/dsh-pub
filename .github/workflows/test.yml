@@ -26,7 +26,7 @@ jobs:
         uses: ./.github/actions/setup-env
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Install browser for E2E
         run: npx playwright install --with-deps chromium
