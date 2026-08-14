@@ -78,6 +78,29 @@ const fetchGitHub: typeof fetch = async (input) => {
   return githubResponse({ message: 'Not Found' }, 404);
 };
 
+const submissionUpdateInput = (fetcher: typeof fetch) => ({
+  communityCatalog: {
+    entries: [],
+    source: {
+      generatedAt: '2026-08-14T00:00:00.000Z',
+      policy: 'pinned-source-contracts',
+      repository: 'https://github.com/dsh-pub/dsh-pub',
+    },
+    totals: { installable: 0, reviewed: 0, submitted: 0 },
+  },
+  communitySources: {
+    entries: [],
+    policy: {},
+    reviewedAt: '2026-08-14',
+    schemaVersion: 2,
+    topic: 'dsh-plugin',
+  },
+  fetch: fetcher,
+  request,
+  registry: { generatedFrom: 'packages/catalog/src/community.generated.json', slugs: [] },
+  token: 'test-token',
+});
+
 describe('GitHub pull request plugin integration', () => {
   it('parses the single-file submission contract', () => {
     const submission = parseSubmissionFile(submissionContent);
@@ -167,6 +190,59 @@ describe('GitHub pull request plugin integration', () => {
       commit: 'a'.repeat(40),
       runtimeEntryPath: 'lib/index.js',
     });
+  });
+
+  it('accepts the official object-form client contract and inspects its exported bundle', async () => {
+    const objectClientManifest = JSON.stringify({
+      ...JSON.parse(manifest),
+      dsh: {
+        bundle: { patch: 'cordis.patch.yml' },
+        client: { immediately: true, inject: [], platform: 'web' },
+      },
+      exports: { '.': './lib/index.js', './client': './lib/client.js' },
+    });
+    let clientReads = 0;
+    const objectClientFetch: typeof fetch = async (input, init) => {
+      const url = new URL(String(input));
+      if (url.pathname.endsWith('/contents/package.json')) {
+        return fileResponse(objectClientManifest);
+      }
+      if (url.pathname.endsWith('/contents/lib/client.js')) clientReads += 1;
+      return fetchGitHub(input, init);
+    };
+
+    const update = await createSubmissionUpdate(submissionUpdateInput(objectClientFetch));
+
+    expect(clientReads).toBe(1);
+    expect(update.entry.category).toBe('ui');
+  });
+
+  it.each([
+    ['a missing ./client export', { '.': './lib/index.js' }],
+    [
+      'an import-only ./client export',
+      { '.': './lib/index.js', './client': { import: './lib/client.js' } },
+    ],
+  ])('rejects object-form client metadata with %s', async (_label, exportsField) => {
+    const invalidClientManifest = JSON.stringify({
+      ...JSON.parse(manifest),
+      dsh: {
+        bundle: { patch: 'cordis.patch.yml' },
+        client: { platform: 'web' },
+      },
+      exports: exportsField,
+    });
+    const invalidClientFetch: typeof fetch = async (input, init) => {
+      const url = new URL(String(input));
+      if (url.pathname.endsWith('/contents/package.json')) {
+        return fileResponse(invalidClientManifest);
+      }
+      return fetchGitHub(input, init);
+    };
+
+    await expect(
+      createSubmissionUpdate(submissionUpdateInput(invalidClientFetch)),
+    ).rejects.toMatchObject({ code: 'invalid_client' });
   });
 
   it('rejects a submission path that does not match the normalized repository', async () => {
