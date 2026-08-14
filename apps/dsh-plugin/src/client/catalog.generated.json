@@ -7,9 +7,9 @@
       "generatedAt": "2026-08-13T19:38:46+08:00"
     },
     "community": {
-      "repository": "https://github.com/topics/dsh-plugin",
-      "generatedAt": "2026-08-14T11:20:07.667Z",
-      "policy": "automated-pinned-source-contracts"
+      "repository": "https://github.com/dsh-pub/dsh-pub",
+      "generatedAt": "2026-08-14T21:08:32.000Z",
+      "policy": "pinned-source-contracts"
     }
   },
   "topics": [
@@ -15108,6 +15108,26 @@
       "repository": "https://github.com/zp-home/dsh-recommend",
       "directory": "",
       "commit": "c7be795dc06fc7c1bdc67d78506bd3da12024f20"
+    },
+    {
+      "slug": "dsh-meow-cat",
+      "name": "dsh-meow-cat",
+      "description": {
+        "en": "A cat runs across the bottom of the DeepSeek Harness web UI with a synthesized meow every time a conversation turn ends.",
+        "zh": "A cat runs across the bottom of the DeepSeek Harness web UI with a synthesized meow every time a conversation turn ends."
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/dsh-pub/dsh-meow-cat",
+      "directory": "",
+      "commit": "c9b9c6807b5edebaef2112f52317d55da75e98cd"
     }
   ]
 }

@@ -7068,6 +7068,27 @@
       "readmePath": "README.md",
       "licensePath": "LICENSE",
       "automation": { "analyzedAt": "2026-08-14", "method": "automated-static-contract" }
+    },
+    {
+      "repository": "https://github.com/dsh-pub/dsh-meow-cat",
+      "commit": "c9b9c6807b5edebaef2112f52317d55da75e98cd",
+      "directory": "",
+      "packageName": "dsh-meow-cat",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/dsh-pub--dsh-meow-cat.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/6",
+        "submittedAt": "2026-08-14",
+        "category": "client-ui",
+        "description": {
+          "en": "A cat runs across the bottom of the DeepSeek Harness web UI with a synthesized meow every time a conversation turn ends.",
+          "zh": ""
+        }
+      }
     }
   ]
 }
