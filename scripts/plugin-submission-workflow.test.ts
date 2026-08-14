@@ -51,10 +51,26 @@ describe('plugin submission workflow contract', () => {
     const validateCheckout = workflow.jobs.validate.steps.find(
       (step: { name?: string }) => step.name === 'Checkout trusted registry source',
     );
+    const process = workflow.jobs.validate.steps.find(
+      (step: { name?: string }) => step.name === 'Inspect the fixed public source',
+    );
+    const snapshot = workflow.jobs.validate.steps.find(
+      (step: { name?: string }) => step.name === 'Generate directory snapshot',
+    );
+    const staticChecks = workflow.jobs.validate.steps.find(
+      (step: { name?: string }) => step.name === 'Run static checks',
+    );
     expect(validateCheckout.with).toMatchObject({
       'persist-credentials': false,
       ref: '${{ github.event.pull_request.base.sha }}',
     });
+    expect(snapshot.run).toBe('npm run catalog:generate --workspace apps/dsh-plugin');
+    expect(workflow.jobs.validate.steps.indexOf(process)).toBeLessThan(
+      workflow.jobs.validate.steps.indexOf(snapshot),
+    );
+    expect(workflow.jobs.validate.steps.indexOf(snapshot)).toBeLessThan(
+      workflow.jobs.validate.steps.indexOf(staticChecks),
+    );
     expect(source).not.toContain('ref: ${{ github.event.pull_request.head.sha }}');
     expect(workflow.jobs.validate.outputs.base_sha).toBe('${{ steps.process.outputs.base_sha }}');
     expect(workflow.jobs.validate.outputs.head_sha).toBe('${{ steps.process.outputs.head_sha }}');
