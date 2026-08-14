@@ -12,39 +12,32 @@ if (!isLocale(locale)) throw new Error(`Unsupported locale: ${locale}`);
 const pageCopy = {
   en: {
     eyebrow: 'DSH / COMMUNITY / SUBMIT',
-    title: 'Submit a plugin to dsh.pub',
+    title: 'Submit a DSH plugin',
     intro:
-      'Open one GitHub Issue. dsh.pub pins the public source, checks the bundle contract without running third-party code, and lists valid submissions automatically.',
-    zeroReview: 'No review queue',
-    zeroAccount: 'GitHub Issue only',
-    sourceOnly: 'Public source checks',
-    formTitle: 'Plugin coordinates',
-    formBody: 'Tell the registry where the installable bundle lives.',
-    repository: 'GitHub repository',
-    repositoryHint: 'Public owner/repository URL',
-    path: 'Package path',
-    pathHint: 'Optional — leave empty for the repository root',
-    summaryEn: 'English summary',
-    summaryEnHint: 'One or two sentences about what people can do with it',
-    summaryZh: 'Chinese summary',
-    summaryZhHint: 'Optional — English is used as the fallback',
-    category: 'Category',
-    agreement:
-      'I understand that listing checks the public bundle contract, not its security or quality.',
-    openIssue: 'Open submission Issue',
-    directForm: 'Or use the GitHub Issue Form directly',
-    processTitle: 'What happens next',
-    processBody: 'The Issue is the public audit trail and the automation queue.',
+      'Paste one public GitHub repository. dsh.pub reads its root package metadata, validates the bundle contract, and lists valid plugins automatically.',
+    proof: ['One repository URL', 'No registry account', 'No manual review queue'],
+    analyzer: 'Repository submission',
+    formTitle: 'GitHub repository URL',
+    repositoryHint: 'The installable DSH bundle must live at the repository root.',
+    submit: 'Submit repository',
+    handoff:
+      'You will finish by publishing a pre-filled GitHub Issue. The Issue is the public automation queue.',
+    ready: 'Repository ready',
+    invalidRepository: 'Enter a public GitHub repository such as owner/repository.',
+    processTitle: 'Everything else is automatic',
+    processBody: 'The repository remains the source of truth. dsh.pub never runs submitted code.',
     steps: [
-      ['01', 'Pin source', 'Resolve the public repository to an exact commit.'],
-      ['02', 'Check contract', 'Read manifest, patch, runtime entry, README, and license.'],
-      ['03', 'Integrate', 'Run dsh.pub quality gates, then fast-forward main.'],
-      ['04', 'Publish', 'Cloudflare Workers deploys the new main automatically.'],
+      ['01', 'Pin the source', 'Resolve the default branch to an exact public commit.'],
+      [
+        '02',
+        'Validate the bundle',
+        'Check package metadata, patch, runtime entry, README, and license.',
+      ],
+      ['03', 'List and deploy', 'Run registry quality gates and publish the new catalog entry.'],
     ],
-    badgeTitle: 'Your README badge',
+    badgeTitle: 'README badge, ready now',
     badgeBody:
-      'Copy it now. It truthfully shows “not listed” until the catalog commit reaches production, then changes to “listed”.',
-    badgeWaiting: 'Enter a valid repository to generate the live badge.',
+      'It shows “not listed” before integration and changes to “listed” after the catalog reaches production.',
     markdown: 'Markdown',
     html: 'HTML',
     copy: 'Copy',
@@ -52,55 +45,29 @@ const pageCopy = {
     copyHtml: 'Copy HTML badge',
     copied: 'Copied',
     badgeAlt: 'dsh.pub registry status: listed or not listed',
-    ready: 'Ready to open GitHub',
-    invalidRepository: 'Enter a public GitHub owner/repository URL.',
-    invalidPath: 'Use a safe relative path such as packages/dsh-clock.',
-    invalidSummary: 'Write an English summary of at least 12 characters.',
-    invalidAgreement: 'Accept the submission contract before continuing.',
-    categories: {
-      ui: 'UI & client',
-      tool: 'Model tools',
-      model: 'Models',
-      storage: 'Storage',
-      workflow: 'Workflow',
-      session: 'Sessions',
-      runtime: 'Runtime',
-      other: 'Other',
-    },
   },
   zh: {
     eyebrow: 'DSH / COMMUNITY / SUBMIT',
-    title: '向 dsh.pub 提交插件',
+    title: '提交一个 DSH 插件',
     intro:
-      '只需提交一个 GitHub Issue。dsh.pub 会固定公开源码，在不执行第三方代码的前提下检查组合包契约，并自动收录正确的提交。',
-    zeroReview: '无需排队审核',
-    zeroAccount: '只用 GitHub Issue',
-    sourceOnly: '公开源码检查',
-    formTitle: '插件坐标',
-    formBody: '告诉目录，这个可安装组合包位于哪里。',
-    repository: 'GitHub 仓库',
-    repositoryHint: '公开的 owner/repository URL',
-    path: '包路径',
-    pathHint: '可选；仓库根目录安装时留空',
-    summaryEn: '英文简介',
-    summaryEnHint: '用一两句话说明用户能用它做什么',
-    summaryZh: '中文简介',
-    summaryZhHint: '可选；未填写时中文页使用英文',
-    category: '分类',
-    agreement: '我理解：收录只检查公开组合包契约，不代表其安全性或质量。',
-    openIssue: '打开提交 Issue',
-    directForm: '也可以直接使用 GitHub Issue Form',
-    processTitle: '接下来会发生什么',
-    processBody: 'Issue 同时是公开记录和自动化队列。',
+      '粘贴一个公开的 GitHub 仓库。dsh.pub 会读取仓库根目录的包元数据、校验组合包契约，并自动收录有效插件。',
+    proof: ['只填一个仓库地址', '无需注册目录账号', '无需人工审核排队'],
+    analyzer: '提交仓库',
+    formTitle: 'GitHub 仓库地址',
+    repositoryHint: '可安装的 DSH 组合包需要位于仓库根目录。',
+    submit: '提交仓库',
+    handoff: '下一步只需发布一个已预填的 GitHub Issue；这个 Issue 就是公开的自动化队列。',
+    ready: '仓库地址已就绪',
+    invalidRepository: '请输入公开的 GitHub 仓库，例如 owner/repository。',
+    processTitle: '其他事情都由系统完成',
+    processBody: '仓库始终是唯一事实来源；dsh.pub 不会执行提交的代码。',
     steps: [
-      ['01', '固定源码', '把公开仓库解析为精确 commit。'],
-      ['02', '检查契约', '读取 manifest、patch、运行入口、README 与许可证。'],
-      ['03', '自动集成', '通过 dsh.pub 质量门禁后，快进写入 main。'],
-      ['04', '自动发布', 'Cloudflare Workers 自动部署新的 main。'],
+      ['01', '固定源码', '把默认分支解析为一个精确的公开 commit。'],
+      ['02', '校验组合包', '检查包元数据、patch、运行入口、README 与许可证。'],
+      ['03', '收录并发布', '运行目录质量门禁，并发布新的插件条目。'],
     ],
-    badgeTitle: '你的 README Badge',
-    badgeBody: '现在就能复制。目录提交上线前，它会如实显示“not listed”；上线后自动变成“listed”。',
-    badgeWaiting: '输入有效仓库后，这里会生成实时 Badge。',
+    badgeTitle: 'README Badge 已经准备好',
+    badgeBody: '集成前显示“not listed”，目录上线后会自动变成“listed”。',
     markdown: 'Markdown',
     html: 'HTML',
     copy: '复制',
@@ -108,21 +75,6 @@ const pageCopy = {
     copyHtml: '复制 HTML Badge',
     copied: '已复制',
     badgeAlt: 'dsh.pub 目录状态：listed 或 not listed',
-    ready: '可以打开 GitHub 了',
-    invalidRepository: '请输入公开的 GitHub owner/repository URL。',
-    invalidPath: '请使用 packages/dsh-clock 这样的安全相对路径。',
-    invalidSummary: '请填写至少 12 个字符的英文简介。',
-    invalidAgreement: '继续前请确认提交契约。',
-    categories: {
-      ui: 'UI 与客户端',
-      tool: '模型工具',
-      model: '模型接入',
-      storage: '存储',
-      workflow: '工作流',
-      session: '会话',
-      runtime: '运行时',
-      other: '其他',
-    },
   },
 } as const;
 const t = pageCopy[locale];
@@ -137,11 +89,7 @@ const structuredData = {
 };
 const clientCopy = {
   invalidRepository: t.invalidRepository,
-  invalidPath: t.invalidPath,
-  invalidSummary: t.invalidSummary,
-  invalidAgreement: t.invalidAgreement,
   ready: t.ready,
-  copy: t.copy,
   badgeAlt: t.badgeAlt,
   copied: t.copied,
 };
@@ -154,91 +102,55 @@ const clientCopy = {
   showHeaderSearch={false}
   structuredData={structuredData}
 >
-  <section class="submit-masthead">
-    <div class="page-shell submit-masthead-inner">
-      <p class="eyebrow">{t.eyebrow}</p>
-      <h1>{t.title}</h1>
-      <p>{t.intro}</p>
-      <div class="submission-proof" aria-label={locale === 'zh' ? '提交方式' : 'Submission model'}>
-        <span><i></i>{t.zeroReview}</span>
-        <span><i></i>{t.zeroAccount}</span>
-        <span><i></i>{t.sourceOnly}</span>
+  <section class="submit-hero">
+    <div
+      class="page-shell submit-hero-grid"
+      data-submission
+      data-client-copy={JSON.stringify(clientCopy)}
+    >
+      <div class="submit-message">
+        <p class="eyebrow">{t.eyebrow}</p>
+        <h1>{t.title}</h1>
+        <p class="submit-intro">{t.intro}</p>
+        <ul
+          class="submission-proof"
+          aria-label={locale === 'zh' ? '提交特点' : 'Submission benefits'}
+        >
+          {
+            t.proof.map((item) => (
+              <li>
+                <span aria-hidden="true">✓</span>
+                {item}
+              </li>
+            ))
+          }
+        </ul>
       </div>
-    </div>
-  </section>
 
-  <div
-    class="submission-layout page-shell"
-    data-submission
-    data-client-copy={JSON.stringify(clientCopy)}
-  >
-    <section class="submission-form-panel" aria-labelledby="submission-form-title">
-      <div class="section-intro">
-        <span class="coordinate">01 / SUBMISSION</span>
-        <h2 id="submission-form-title">{t.formTitle}</h2>
-        <p>{t.formBody}</p>
-      </div>
-
-      <form data-submission-form novalidate>
-        <label class="field" data-field="repository">
-          <span><strong>{t.repository}</strong><small>{t.repositoryHint}</small></span>
-          <input
-            type="url"
-            name="repository"
-            autocomplete="url"
-            aria-describedby="repository-error"
-            placeholder="https://github.com/owner/repository"
-            required
-          />
-          <em id="repository-error" data-error></em>
-        </label>
-
-        <label class="field" data-field="path">
-          <span><strong>{t.path}</strong><small>{t.pathHint}</small></span>
-          <input
-            type="text"
-            name="path"
-            aria-describedby="path-error"
-            placeholder="packages/dsh-plugin"
-            spellcheck="false"
-          />
-          <em id="path-error" data-error></em>
-        </label>
-
-        <label class="field" data-field="summary-en">
-          <span><strong>{t.summaryEn}</strong><small>{t.summaryEnHint}</small></span>
-          <textarea
-            name="summary-en"
-            rows="3"
-            maxlength="500"
-            aria-describedby="summary-en-error"
-            required></textarea>
-          <em id="summary-en-error" data-error></em>
-        </label>
-
-        <label class="field" data-field="summary-zh">
-          <span><strong>{t.summaryZh}</strong><small>{t.summaryZhHint}</small></span>
-          <textarea name="summary-zh" rows="3" maxlength="500"></textarea>
-        </label>
-
-        <label class="field" data-field="category">
-          <span><strong>{t.category}</strong></span>
-          <select name="category">
-            {
-              Object.entries(t.categories).map(([value, label]) => (
-                <option value={value}>{label}</option>
-              ))
-            }
-          </select>
-        </label>
-
-        <label class="submission-contract" data-field="agreement">
-          <input type="checkbox" name="agreement" aria-describedby="agreement-error" />
-          <span>{t.agreement}</span>
-        </label>
-        <p id="agreement-error" class="agreement-error" data-agreement-error></p>
-
-        <div class="submission-action">
+      <section class="repository-card" aria-labelledby="repository-card-title">
+        <div class="repository-card-heading">
+          <span class="coordinate">01 / {t.analyzer}</span>
+          <span class="card-status" aria-hidden="true"><i></i><i></i><i></i></span>
+        </div>
+        <h2 id="repository-card-title">{t.formTitle}</h2>
+        <p>{t.repositoryHint}</p>
+        <form data-submission-form novalidate>
+          <label class="repository-field" data-field="repository">
+            <span class="sr-only">{t.formTitle}</span>
+            <span class="repository-input">
+              <Icon name="github" size={22} />
+              <input
+                type="url"
+                name="repository"
+                autocomplete="url"
+                aria-describedby="repository-error"
+                placeholder="https://github.com/owner/repository"
+                spellcheck="false"
+                required
+              />
+            </span>
+            <em id="repository-error" data-error></em>
+          </label>
           <a
             class="submit-button"
             aria-disabled="true"
@@ -246,214 +158,139 @@ const clientCopy = {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <Icon name="github" size={18} />
-            <span>{t.openIssue}</span>
+            <span>{t.submit}</span>
             <Icon name="arrow" size={16} />
           </a>
-          <span data-ready-status aria-live="polite"></span>
-        </div>
-        <a
-          class="direct-form-link"
-          href="https://github.com/dsh-pub/dsh-pub/issues/new?template=plugin-submission.yml"
-          target="_blank"
-          rel="noopener noreferrer">{t.directForm} <Icon name="external" size={13} /></a
-        >
-      </form>
-    </section>
-
-    <aside class="submission-side">
-      <section class="process-panel" aria-labelledby="process-title">
-        <span class="coordinate">02 / PIPELINE</span>
-        <h2 id="process-title">{t.processTitle}</h2>
-        <p>{t.processBody}</p>
-        <ol>
-          {
-            t.steps.map(([number, title, body]) => (
-              <li>
-                <span>{number}</span>
-                <div>
-                  <>
-                    <strong>{title}</strong>
-                    <p>{body}</p>
-                  </>
-                </div>
-              </li>
-            ))
-          }
-        </ol>
+          <span class="ready-status" data-ready-status aria-live="polite"></span>
+        </form>
+        <p class="handoff-note">{t.handoff}</p>
       </section>
+    </div>
+  </section>
 
-      <section class="badge-panel" aria-labelledby="badge-title">
+  <section class="submission-details page-shell">
+    <div class="process-panel" aria-labelledby="process-title">
+      <span class="coordinate">02 / AUTOMATION</span>
+      <h2 id="process-title">{t.processTitle}</h2>
+      <p>{t.processBody}</p>
+      <ol>
+        {
+          t.steps.map(([number, title, body]) => (
+            <li>
+              <span>{number}</span>
+              <div>
+                <>
+                  <strong>{title}</strong>
+                  <p>{body}</p>
+                </>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+
+    <section class="badge-panel" aria-labelledby="badge-title" data-badge-panel hidden>
+      <div class="badge-copy">
         <span class="coordinate">03 / README BADGE</span>
         <h2 id="badge-title">{t.badgeTitle}</h2>
         <p>{t.badgeBody}</p>
-        <div class="badge-preview" data-badge-preview>
-          <span data-badge-waiting>{t.badgeWaiting}</span>
-          <img alt={t.badgeAlt} hidden data-badge-image />
-        </div>
+        <img alt={t.badgeAlt} data-badge-image />
+      </div>
+      <div class="badge-snippets">
         <div class="snippet" data-snippet="markdown">
           <span>{t.markdown}</span>
           <div>
-            <code data-snippet-value></code><button
-              type="button"
-              aria-label={t.copyMarkdown}
-              disabled>{t.copy}</button
+            <code data-snippet-value></code><button type="button" aria-label={t.copyMarkdown}
+              >{t.copy}</button
             >
           </div>
         </div>
         <div class="snippet" data-snippet="html">
           <span>{t.html}</span>
           <div>
-            <code data-snippet-value></code><button type="button" aria-label={t.copyHtml} disabled
+            <code data-snippet-value></code><button type="button" aria-label={t.copyHtml}
               >{t.copy}</button
             >
           </div>
         </div>
         <p class="copy-status" data-copy-status aria-live="polite"></p>
-      </section>
-    </aside>
-  </div>
+      </div>
+    </section>
+  </section>
 </BaseLayout>
 
 <script>
-  import {
-    buildSubmissionArtifacts,
-    normalizeGitHubRepository,
-    normalizePackagePath,
-  } from '../../lib/submission.js';
+  import { buildSubmissionArtifacts } from '../../lib/submission.js';
 
   const root = document.querySelector<HTMLElement>('[data-submission]');
   const form = root?.querySelector<HTMLFormElement>('[data-submission-form]');
   const clientCopy = JSON.parse(root?.dataset.clientCopy ?? '{}') as Record<string, string>;
+  const repository = form?.elements.namedItem('repository') as HTMLInputElement | null;
   const submitLink = root?.querySelector<HTMLAnchorElement>('[data-submit-link]');
   const readyStatus = root?.querySelector<HTMLElement>('[data-ready-status]');
-  const badgeImage = root?.querySelector<HTMLImageElement>('[data-badge-image]');
-  const badgeWaiting = root?.querySelector<HTMLElement>('[data-badge-waiting]');
-  const copyStatus = root?.querySelector<HTMLElement>('[data-copy-status]');
-  const touched = new Set<string>();
-
-  const input = (name: string) => form?.elements.namedItem(name) as HTMLInputElement | null;
-  const textarea = (name: string) => form?.elements.namedItem(name) as HTMLTextAreaElement | null;
-
-  function error(name: string, message = '') {
-    const field = root?.querySelector<HTMLElement>(`[data-field="${name}"]`);
-    const control = field?.querySelector<HTMLInputElement | HTMLTextAreaElement>('input, textarea');
-    const target = field?.querySelector<HTMLElement>('[data-error]');
-    if (target) target.textContent = touched.has(name) ? message : '';
-    control?.setAttribute('aria-invalid', touched.has(name) && message ? 'true' : 'false');
-  }
+  const badgePanel = document.querySelector<HTMLElement>('[data-badge-panel]');
+  const badgeImage = badgePanel?.querySelector<HTMLImageElement>('[data-badge-image]');
+  const copyStatus = badgePanel?.querySelector<HTMLElement>('[data-copy-status]');
+  let touched = false;
 
   function render() {
-    if (!root || !form || !submitLink) return;
-    const repositoryValue = input('repository')?.value ?? '';
-    const pathValue = input('path')?.value ?? '';
-    const descriptionEn = textarea('summary-en')?.value.trim() ?? '';
-    const descriptionZh = textarea('summary-zh')?.value.trim() ?? '';
-    const category = (form.elements.namedItem('category') as HTMLSelectElement | null)?.value ?? '';
-    const agreement = input('agreement')?.checked ?? false;
-    let repositoryValid = false;
-    let pathValid = false;
+    if (!repository || !submitLink) return;
+    let artifacts;
     try {
-      normalizeGitHubRepository(repositoryValue);
-      repositoryValid = true;
-      error('repository');
+      artifacts = buildSubmissionArtifacts({ repository: repository.value });
+      repository.setAttribute('aria-invalid', 'false');
     } catch {
-      error('repository', clientCopy.invalidRepository);
+      repository.setAttribute('aria-invalid', touched ? 'true' : 'false');
     }
-    try {
-      normalizePackagePath(pathValue);
-      pathValid = true;
-      error('path');
-    } catch {
-      error('path', clientCopy.invalidPath);
-    }
-    const summaryValid = descriptionEn.length >= 12;
-    error('summary-en', summaryValid ? '' : clientCopy.invalidSummary);
-    const agreementError = root.querySelector<HTMLElement>('[data-agreement-error]');
-    if (agreementError) {
-      agreementError.textContent =
-        touched.has('agreement') && !agreement ? clientCopy.invalidAgreement : '';
-    }
-    input('agreement')?.setAttribute(
-      'aria-invalid',
-      touched.has('agreement') && !agreement ? 'true' : 'false',
-    );
 
-    const badgeReady = repositoryValid && pathValid;
-    const artifacts = badgeReady
-      ? buildSubmissionArtifacts({
-          category,
-          descriptionEn,
-          descriptionZh,
-          packagePath: pathValue,
-          repository: repositoryValue,
-        })
-      : undefined;
+    const error = root?.querySelector<HTMLElement>('[data-error]');
+    if (error) error.textContent = touched && !artifacts ? clientCopy.invalidRepository : '';
     if (!artifacts) {
-      if (badgeImage) badgeImage.hidden = true;
-      if (badgeWaiting) badgeWaiting.hidden = false;
-      for (const snippet of root.querySelectorAll<HTMLElement>('[data-snippet]')) {
-        const value = snippet.querySelector<HTMLElement>('[data-snippet-value]');
-        const button = snippet.querySelector<HTMLButtonElement>('button');
-        if (value) value.textContent = '';
-        if (button) button.disabled = true;
-      }
-    } else {
-      if (badgeImage) {
-        badgeImage.src = artifacts.badgeUrl;
-        badgeImage.alt = clientCopy.badgeAlt;
-        badgeImage.hidden = false;
-      }
-      if (badgeWaiting) badgeWaiting.hidden = true;
-      for (const snippet of root.querySelectorAll<HTMLElement>('[data-snippet]')) {
-        const kind = snippet.dataset.snippet;
-        const value = snippet.querySelector<HTMLElement>('[data-snippet-value]');
-        const button = snippet.querySelector<HTMLButtonElement>('button');
-        if (value) value.textContent = kind === 'markdown' ? artifacts.markdown : artifacts.html;
-        if (button) button.disabled = false;
-      }
-    }
-
-    if (artifacts && summaryValid && agreement) {
-      submitLink.href = artifacts.issueUrl;
-      submitLink.setAttribute('aria-disabled', 'false');
-      if (readyStatus) readyStatus.textContent = clientCopy.ready;
-    } else {
       submitLink.removeAttribute('href');
       submitLink.setAttribute('aria-disabled', 'true');
       if (readyStatus) readyStatus.textContent = '';
+      if (badgePanel) badgePanel.hidden = true;
+      return;
+    }
+
+    submitLink.href = artifacts.issueUrl;
+    submitLink.setAttribute('aria-disabled', 'false');
+    if (readyStatus) readyStatus.textContent = clientCopy.ready;
+    if (badgePanel) badgePanel.hidden = false;
+    if (badgeImage) {
+      badgeImage.src = artifacts.badgeUrl;
+      badgeImage.alt = clientCopy.badgeAlt;
+    }
+    for (const snippet of badgePanel?.querySelectorAll<HTMLElement>('[data-snippet]') ?? []) {
+      const kind = snippet.dataset.snippet;
+      const value = snippet.querySelector<HTMLElement>('[data-snippet-value]');
+      if (value) value.textContent = kind === 'markdown' ? artifacts.markdown : artifacts.html;
     }
   }
 
-  form?.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter' && event.target instanceof HTMLInputElement) {
-      event.preventDefault();
-      form.requestSubmit();
-    }
-  });
   form?.addEventListener('submit', (event) => {
     event.preventDefault();
-    touched.add('repository');
-    touched.add('path');
-    touched.add('summary-en');
-    touched.add('agreement');
+    touched = true;
     render();
     if (submitLink?.href && submitLink.getAttribute('aria-disabled') === 'false') {
       submitLink.click();
       return;
     }
-    root?.querySelector<HTMLInputElement | HTMLTextAreaElement>('[aria-invalid="true"]')?.focus();
+    repository?.focus();
   });
-  form?.addEventListener('focusout', (event) => {
-    const target = event.target;
-    if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) {
-      touched.add(target.name === 'summary-en' ? 'summary-en' : target.name);
-      render();
+  repository?.addEventListener('blur', () => {
+    touched = true;
+    render();
+  });
+  repository?.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      form?.requestSubmit();
     }
   });
-  form?.addEventListener('input', render);
-  form?.addEventListener('change', render);
-  for (const snippet of root?.querySelectorAll<HTMLElement>('[data-snippet]') ?? []) {
+  repository?.addEventListener('input', render);
+  for (const snippet of badgePanel?.querySelectorAll<HTMLElement>('[data-snippet]') ?? []) {
     snippet.querySelector('button')?.addEventListener('click', async () => {
       const value = snippet.querySelector('[data-snippet-value]')?.textContent ?? '';
       if (!value) return;
@@ -469,207 +306,188 @@ const clientCopy = {
 </script>
 
 <style>
-  .submit-masthead {
+  .submit-hero {
     background: var(--color-navy-900);
     color: var(--color-text-on-dark);
     overflow: hidden;
     position: relative;
   }
 
-  .submit-masthead::after {
+  .submit-hero::before {
     background-image:
-      linear-gradient(rgb(104 184 255 / 12%) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(104 184 255 / 12%) 1px, transparent 1px);
-    background-size: 54px 54px;
+      linear-gradient(rgb(104 184 255 / 10%) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(104 184 255 / 10%) 1px, transparent 1px);
+    background-size: 52px 52px;
     content: '';
-    inset: 0 0 0 52%;
-    mask-image: linear-gradient(90deg, transparent, black);
+    inset: 0;
+    mask-image: linear-gradient(90deg, black, rgb(0 0 0 / 12%));
+    pointer-events: none;
     position: absolute;
   }
 
-  .submit-masthead-inner {
-    padding-bottom: 4.5rem;
-    padding-top: 4.3rem;
+  .submit-hero-grid {
+    align-items: center;
+    display: grid;
+    gap: clamp(3rem, 7vw, 7rem);
+    grid-template-columns: minmax(0, 1fr) minmax(410px, 0.82fr);
+    min-height: 650px;
+    padding-bottom: 5rem;
+    padding-top: 5rem;
     position: relative;
-    z-index: 1;
   }
 
-  .submit-masthead h1 {
-    font-size: clamp(2.45rem, 5vw, 4.55rem);
-    letter-spacing: -0.055em;
-    line-height: 0.98;
-    margin: 1rem 0 1.2rem;
-    max-width: 790px;
+  .submit-message h1 {
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    letter-spacing: -0.065em;
+    line-height: 0.94;
+    margin: 1.1rem 0 1.5rem;
+    max-width: 690px;
   }
 
-  .submit-masthead-inner > p:not(.eyebrow) {
-    color: #c5d2e0;
-    font-size: 1.08rem;
-    line-height: 1.65;
+  .submit-intro {
+    color: #c4d1df;
+    font-size: clamp(1rem, 1.7vw, 1.16rem);
+    line-height: 1.7;
     margin: 0;
-    max-width: 730px;
+    max-width: 690px;
   }
 
   .submission-proof {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.35rem;
-    margin-top: 2rem;
+    display: grid;
+    gap: 0.8rem;
+    list-style: none;
+    margin: 2rem 0 0;
+    padding: 0;
   }
 
-  .submission-proof span {
+  .submission-proof li {
     align-items: center;
-    color: #dce7f2;
+    color: #e3edf7;
+    display: flex;
+    font-size: 0.9rem;
+    gap: 0.7rem;
+  }
+
+  .submission-proof li span {
+    align-items: center;
+    border: 1px solid var(--color-blue-300);
+    border-radius: 50%;
+    color: var(--color-blue-300);
     display: inline-flex;
     font-family: var(--font-mono);
-    font-size: 0.75rem;
-    gap: 0.5rem;
-    text-transform: uppercase;
+    height: 20px;
+    justify-content: center;
+    width: 20px;
   }
 
-  .submission-proof i {
-    background: var(--color-blue-300);
-    border-radius: 50%;
-    height: 6px;
-    width: 6px;
+  .repository-card {
+    background: var(--color-surface);
+    border: 1px solid #5d7189;
+    border-radius: 12px;
+    box-shadow: 16px 16px 0 #07101b;
+    color: var(--color-text);
+    padding: clamp(1.5rem, 3vw, 2.3rem);
   }
 
-  .submission-layout {
-    display: grid;
-    gap: 4.4rem;
-    grid-template-columns: minmax(0, 1.45fr) minmax(330px, 0.8fr);
-    padding-top: 4.5rem;
-  }
-
-  .section-intro,
-  .process-panel,
-  .badge-panel {
-    border-top: 3px solid var(--color-text);
-    padding-top: 1rem;
+  .repository-card-heading {
+    align-items: center;
+    border-bottom: 1px solid var(--color-rule);
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 1rem;
   }
 
   .coordinate {
     color: var(--color-accent);
     font-family: var(--font-mono);
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 
-  h2 {
-    font-size: 1.65rem;
+  .card-status {
+    display: flex;
+    gap: 5px;
+  }
+
+  .card-status i {
+    background: var(--color-rule-strong);
+    border-radius: 50%;
+    height: 6px;
+    width: 6px;
+  }
+
+  .repository-card h2,
+  .process-panel h2,
+  .badge-panel h2 {
+    font-size: 1.6rem;
     letter-spacing: -0.035em;
-    margin: 0.7rem 0 0.45rem;
+    margin: 1.55rem 0 0.5rem;
   }
 
-  .section-intro > p,
+  .repository-card > p,
   .process-panel > p,
-  .badge-panel > p {
+  .badge-copy > p {
     color: var(--color-text-muted);
     line-height: 1.6;
     margin: 0;
   }
 
   form {
-    border-bottom: 1px solid var(--color-rule);
-    margin-top: 2.2rem;
+    margin-top: 1.7rem;
   }
 
-  .field {
-    border-top: 1px solid var(--color-rule);
-    display: grid;
-    gap: 1.1rem;
-    grid-template-columns: 190px minmax(0, 1fr);
-    padding: 1.15rem 0;
-  }
-
-  .field > span {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-
-  .field strong {
-    font-size: 0.93rem;
-  }
-
-  .field small {
-    color: var(--color-text-faint);
-    font-size: 0.75rem;
-    line-height: 1.4;
-  }
-
-  .field input,
-  .field textarea,
-  .field select {
-    background: var(--color-surface);
+  .repository-input {
+    align-items: center;
+    background: white;
     border: 1px solid var(--color-rule-strong);
     border-radius: var(--radius-small);
-    color: var(--color-text);
-    min-height: 48px;
-    min-width: 0;
-    padding: 0.72rem 0.8rem;
-    resize: vertical;
-    width: 100%;
+    display: flex;
+    gap: 0.75rem;
+    min-height: 58px;
+    padding: 0 1rem;
   }
 
-  .field input:focus,
-  .field textarea:focus,
-  .field select:focus {
+  .repository-input:focus-within {
     border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgb(0 123 214 / 13%);
   }
 
-  .field [aria-invalid='true'] {
+  .repository-input:has(input[aria-invalid='true']) {
     border-color: #b42318;
   }
 
-  .field em {
+  .repository-input input {
+    background: transparent;
+    border: 0;
+    color: var(--color-text);
+    flex: 1;
+    font-family: var(--font-mono);
+    font-size: 0.84rem;
+    min-width: 0;
+    outline: 0;
+  }
+
+  .repository-field em {
     color: #b42318;
+    display: block;
     font-size: 0.75rem;
     font-style: normal;
-    grid-column: 2;
-    margin-top: -0.75rem;
-  }
-
-  .submission-contract {
-    align-items: flex-start;
-    border-top: 1px solid var(--color-rule);
-    cursor: pointer;
-    display: flex;
-    gap: 0.8rem;
-    line-height: 1.5;
-    padding: 1.2rem 0 0;
-  }
-
-  .submission-contract input {
-    height: 18px;
-    margin: 0.15rem 0 0;
-    width: 18px;
-  }
-
-  .agreement-error,
-  .copy-status {
-    color: #b42318;
-    font-size: 0.75rem;
     min-height: 1.1rem;
-  }
-
-  .submission-action {
-    align-items: center;
-    display: flex;
-    gap: 1rem;
-    margin-top: 1.2rem;
+    padding-top: 0.4rem;
   }
 
   .submit-button {
     align-items: center;
     background: var(--color-blue-600);
     color: white;
-    display: inline-flex;
-    font-weight: 600;
+    display: flex;
+    font-weight: 650;
     gap: 0.7rem;
     justify-content: center;
-    min-height: 50px;
-    padding: 0 1.15rem;
+    min-height: 54px;
+    padding: 0 1.2rem;
+    width: 100%;
   }
 
   .submit-button:hover {
@@ -684,91 +502,98 @@ const clientCopy = {
     pointer-events: none;
   }
 
-  [data-ready-status] {
+  .ready-status {
     color: #25804f;
-    font-size: 0.8rem;
+    display: block;
+    font-size: 0.76rem;
+    min-height: 1.1rem;
+    padding-top: 0.45rem;
+    text-align: center;
   }
 
-  .direct-form-link {
-    align-items: center;
-    display: inline-flex;
-    font-size: 0.82rem;
-    gap: 0.35rem;
-    margin: 1rem 0 1.5rem;
+  .repository-card .handoff-note {
+    border-top: 1px solid var(--color-rule);
+    color: var(--color-text-faint);
+    font-size: 0.76rem;
+    margin-top: 0.65rem;
+    padding-top: 1rem;
+    text-align: center;
   }
 
-  .submission-side {
-    display: flex;
-    flex-direction: column;
-    gap: 3.2rem;
+  .submission-details {
+    padding-bottom: 5rem;
+    padding-top: 4.5rem;
+  }
+
+  .process-panel {
+    border-top: 3px solid var(--color-text);
+    padding-top: 1rem;
   }
 
   .process-panel ol {
+    display: grid;
+    gap: 0;
+    grid-template-columns: repeat(3, 1fr);
     list-style: none;
-    margin: 1.6rem 0 0;
+    margin: 2rem 0 0;
     padding: 0;
   }
 
   .process-panel li {
-    border-top: 1px solid var(--color-rule);
+    border-left: 1px solid var(--color-rule);
     display: grid;
     gap: 1rem;
-    grid-template-columns: 34px 1fr;
-    padding: 1rem 0;
+    grid-template-columns: 32px 1fr;
+    min-height: 130px;
+    padding: 0.2rem 1.5rem;
+  }
+
+  .process-panel li:first-child {
+    border-left: 0;
+    padding-left: 0;
   }
 
   .process-panel li > span {
     color: var(--color-accent);
     font-family: var(--font-mono);
     font-size: 0.7rem;
-    padding-top: 0.15rem;
   }
 
   .process-panel li strong {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
   }
 
   .process-panel li p {
     color: var(--color-text-muted);
     font-size: 0.82rem;
-    line-height: 1.5;
-    margin: 0.25rem 0 0;
+    line-height: 1.55;
+    margin: 0.4rem 0 0;
   }
 
   .badge-panel {
     background: var(--color-navy-900);
-    border-top-color: var(--color-blue-300);
     color: var(--color-text-on-dark);
-    margin-left: -1.2rem;
-    margin-right: -1.2rem;
-    padding: 1rem 1.2rem 1.3rem;
+    display: grid;
+    gap: 3rem;
+    grid-template-columns: minmax(260px, 0.7fr) minmax(0, 1.3fr);
+    margin-top: 4rem;
+    padding: clamp(1.5rem, 4vw, 2.5rem);
   }
 
-  .badge-panel > p {
+  .badge-panel[hidden] {
+    display: none;
+  }
+
+  .badge-copy > p {
     color: #aebed0;
   }
 
-  .badge-preview {
-    align-items: center;
-    background: #0d1928;
-    border: 1px solid #2c435e;
-    display: flex;
-    min-height: 72px;
-    margin: 1.3rem 0;
-    padding: 1rem;
-  }
-
-  .badge-preview span {
-    color: #8497ac;
-    font-size: 0.78rem;
-    line-height: 1.45;
-  }
-
-  .badge-preview img {
+  .badge-copy img {
     height: 20px;
+    margin-top: 1.5rem;
   }
 
-  .snippet {
+  .snippet + .snippet {
     margin-top: 1rem;
   }
 
@@ -781,12 +606,11 @@ const clientCopy = {
   }
 
   .snippet > div {
-    align-items: stretch;
     border: 1px solid #2c435e;
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     margin-top: 0.35rem;
-    min-height: 46px;
+    min-height: 48px;
   }
 
   .snippet code {
@@ -807,60 +631,64 @@ const clientCopy = {
     min-width: 66px;
   }
 
-  .snippet button:disabled {
-    color: #62758a;
-    cursor: not-allowed;
-  }
-
   .copy-status {
     color: var(--color-blue-300);
-    margin-bottom: 0;
+    font-size: 0.75rem;
+    min-height: 1.1rem;
+  }
+
+  .sr-only {
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
   }
 
   @media (max-width: 900px) {
-    .submission-layout {
-      gap: 3.5rem;
+    .submit-hero-grid {
+      grid-template-columns: 1fr;
+      min-height: auto;
+    }
+
+    .repository-card {
+      box-shadow: 10px 10px 0 #07101b;
+      max-width: 620px;
+    }
+
+    .process-panel ol,
+    .badge-panel {
       grid-template-columns: 1fr;
     }
 
-    .submission-side {
-      display: grid;
-      gap: 2rem;
-      grid-template-columns: 1fr 1fr;
+    .process-panel li {
+      border-left: 0;
+      border-top: 1px solid var(--color-rule);
+      min-height: 0;
+      padding: 1rem 0;
     }
   }
 
-  @media (max-width: 640px) {
-    .submit-masthead-inner {
-      padding-bottom: 3.4rem;
-      padding-top: 3.2rem;
+  @media (max-width: 560px) {
+    .submit-hero-grid {
+      padding-bottom: 4rem;
+      padding-top: 3.5rem;
     }
 
-    .submission-layout {
-      padding-top: 3.2rem;
+    .repository-card {
+      border-radius: 8px;
+      box-shadow: 7px 7px 0 #07101b;
     }
 
-    .field {
-      gap: 0.7rem;
-      grid-template-columns: 1fr;
+    .repository-input {
+      padding: 0 0.75rem;
     }
 
-    .field em {
-      grid-column: 1;
-      margin-top: -0.35rem;
-    }
-
-    .submission-action {
-      align-items: flex-start;
-      flex-direction: column;
-    }
-
-    .submit-button {
-      width: 100%;
-    }
-
-    .submission-side {
-      display: flex;
+    .submission-details {
+      padding-top: 3.5rem;
     }
   }
 

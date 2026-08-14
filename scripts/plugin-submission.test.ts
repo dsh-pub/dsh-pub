@@ -3,22 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { createSubmissionUpdate, parseSubmissionIssue } from './lib/plugin-submission.mjs';
 
 const issueBody = `### GitHub repository
-https://github.com/example/dsh-clock
-
-### Package path
-_root_
-
-### English summary
-Adds a clock tool to DeepSeek Harness.
-
-### Chinese summary
-为 DeepSeek Harness 增加时钟工具。
-
-### Category
-tool
-
-### Submission contract
-Accepted by submitting this Issue.`;
+https://github.com/example/dsh-clock`;
 
 const githubResponse = (value: unknown, status = 200) =>
   new Response(JSON.stringify(value), {
@@ -34,6 +19,7 @@ const fileResponse = (content = '') =>
   });
 
 const manifest = JSON.stringify({
+  description: 'Adds a clock tool to DeepSeek Harness.',
   dsh: { bundle: { patch: 'cordis.patch.yml' }, client: 'lib/client.js' },
   license: 'MIT',
   main: 'lib/index.js',
@@ -76,11 +62,8 @@ const fetchGitHub: typeof fetch = async (input) => {
 };
 
 describe('GitHub Issue plugin integration', () => {
-  it('parses the deterministic Issue Form contract', () => {
+  it('parses the single-field Issue Form contract', () => {
     expect(parseSubmissionIssue(issueBody)).toEqual({
-      category: 'tool',
-      descriptionEn: 'Adds a clock tool to DeepSeek Harness.',
-      descriptionZh: '为 DeepSeek Harness 增加时钟工具。',
       directory: '',
       owner: 'example',
       repo: 'dsh-clock',
@@ -88,18 +71,12 @@ describe('GitHub Issue plugin integration', () => {
     });
   });
 
-  it('accepts GitHub Issue Form empty-value markers', () => {
-    const formBody = issueBody
-      .replace('### Package path\n_root_', '### Package path\n_No response_')
-      .replace(
-        '### Chinese summary\n为 DeepSeek Harness 增加时钟工具。',
-        '### Chinese summary\n_No response_',
-      );
-
-    expect(parseSubmissionIssue(formBody)).toMatchObject({
-      descriptionZh: '',
-      directory: '',
-    });
+  it('rejects extra repository path segments', () => {
+    expect(() =>
+      parseSubmissionIssue(
+        issueBody.replace('example/dsh-clock', 'example/dsh-clock/tree/main/packages/plugin'),
+      ),
+    ).toThrow('owner/repository');
   });
 
   it('pins and machine-validates the bundle without executing repository code', async () => {
@@ -134,6 +111,11 @@ describe('GitHub Issue plugin integration', () => {
 
     expect(update.changed).toBe(true);
     expect(update.entry).toMatchObject({
+      category: 'ui',
+      description: {
+        en: 'Adds a clock tool to DeepSeek Harness.',
+        zh: 'Adds a clock tool to DeepSeek Harness.',
+      },
       name: '@example/dsh-clock',
       provenance: {
         issue: 'https://github.com/dsh-pub/dsh-pub/issues/42',
@@ -160,12 +142,10 @@ describe('GitHub Issue plugin integration', () => {
     });
   });
 
-  it('rejects unchecked contracts before any repository inspection', async () => {
-    const invalid = issueBody.replace(
-      'Accepted by submitting this Issue.',
-      'I do not accept the submission boundary.',
-    );
-    expect(() => parseSubmissionIssue(invalid)).toThrow('Submission contract');
+  it('ignores Issue prose outside the repository field', () => {
+    expect(
+      parseSubmissionIssue(`The submitter does not control registry metadata.\n\n${issueBody}`),
+    ).toMatchObject({ repository: 'https://github.com/example/dsh-clock' });
   });
 
   it('rejects symlinked contract files from the fixed Git tree', async () => {
@@ -252,10 +232,7 @@ describe('GitHub Issue plugin integration', () => {
         throw new Error('existing coordinates must not fetch');
       },
       issue: {
-        body: issueBody.replace(
-          'Adds a clock tool to DeepSeek Harness.',
-          'A different submitter tries to replace this summary.',
-        ),
+        body: issueBody,
         createdAt: '2026-08-14T07:00:00Z',
         number: 43,
         updatedAt: '2026-08-14T07:05:00Z',

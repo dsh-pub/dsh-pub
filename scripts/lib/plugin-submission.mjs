@@ -2,16 +2,6 @@ import { Buffer } from 'node:buffer';
 
 import { parseDocument } from 'yaml';
 
-const CATEGORY_VALUES = new Set([
-  'ui',
-  'tool',
-  'model',
-  'storage',
-  'workflow',
-  'session',
-  'runtime',
-  'other',
-]);
 const OWNER_PATTERN = /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$/;
 const REPOSITORY_PATTERN = /^[A-Za-z0-9._-]{1,100}$/;
 const SHA_PATTERN = /^[a-f0-9]{40}$/;
@@ -148,34 +138,8 @@ export function parseSubmissionIssue(body) {
     return value;
   };
   const repository = normalizeRepository(required('GitHub repository'));
-  const pathValue = required('Package path');
-  const directory =
-    pathValue === '_root_' || pathValue === '_No response_' ? '' : normalizePath(pathValue);
-  const descriptionEn = required('English summary');
-  const descriptionZhValue = required('Chinese summary');
-  const descriptionZh =
-    descriptionZhValue === '_Not provided_' || descriptionZhValue === '_No response_'
-      ? ''
-      : descriptionZhValue;
-  if (descriptionEn.length < 12 || descriptionEn.length > MAX_DESCRIPTION_LENGTH) {
-    submissionError('invalid_description', 'English summary must contain 12–500 characters.');
-  }
-  if (descriptionZh.length > MAX_DESCRIPTION_LENGTH) {
-    submissionError('invalid_description', 'Chinese summary must contain at most 500 characters.');
-  }
-  const category = required('Category');
-  if (!CATEGORY_VALUES.has(category)) {
-    submissionError('invalid_category', 'Category is not supported.');
-  }
-  const contract = required('Submission contract');
-  if (contract !== 'Accepted by submitting this Issue.') {
-    submissionError('contract_not_accepted', 'Submission contract must be accepted.');
-  }
   return {
-    category,
-    descriptionEn,
-    descriptionZh,
-    directory,
+    directory: '',
     ...repository,
   };
 }
@@ -304,6 +268,16 @@ const manifestMetadata = (manifest) => {
   return { license, name, version };
 };
 
+const sourceDescription = (...values) => {
+  const description = values.find(
+    (value) =>
+      typeof value === 'string' &&
+      value.trim().length >= 12 &&
+      value.trim().length <= MAX_DESCRIPTION_LENGTH,
+  );
+  return description?.trim();
+};
+
 const inspectSubmission = async (submission, options) => {
   const apiBase = `https://api.github.com/repos/${submission.owner}/${submission.repo}`;
   const repository = await githubRequest(apiBase, options);
@@ -394,12 +368,18 @@ const inspectSubmission = async (submission, options) => {
     'LICENSE',
     'LICENSE.md',
   ]);
+  const descriptionEn =
+    sourceDescription(manifest.description, repository.description) ??
+    `${metadata.name} is a community-submitted DeepSeek Harness plugin bundle.`;
 
   return {
     ...submission,
     bundlePatchPath,
     clientEntryPath,
     commit,
+    category: manifest.dsh?.client === undefined ? 'other' : 'ui',
+    descriptionEn,
+    descriptionZh: '',
     license: metadata.license,
     licensePath: license.path,
     manifestPath,
@@ -476,8 +456,8 @@ const submittedEntry = (submission, issue, slug) => {
       readmePath: submission.readmePath,
       readmeZhPath: submission.readmeZhPath,
       readme: {
-        en: `## Submitter-provided summary\n\n${submission.descriptionEn}`,
-        zh: `## 提名者提供的简介\n\n${descriptionZh}`,
+        en: `## Source-derived summary\n\n${submission.descriptionEn}`,
+        zh: `## 源码元数据简介\n\n${descriptionZh}`,
       },
       modelExperience: {
         en: 'Not inspected by the automated submission check; inspect the pinned source for model-facing behavior.',
