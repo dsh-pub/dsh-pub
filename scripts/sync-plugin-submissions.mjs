@@ -1,9 +1,10 @@
 import { execFile } from 'node:child_process';
-import { appendFile, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
+import { appendFile, readFile, readdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { promisify } from 'node:util';
 import { fileURLToPath } from 'node:url';
 
+import { writeFormattedJson } from './lib/json-file.mjs';
 import { createSubmissionUpdate } from './lib/plugin-submission.mjs';
 import { loadMergedSubmissionRequest } from './lib/plugin-submission-sync.mjs';
 
@@ -17,10 +18,6 @@ const paths = {
 };
 
 const readJson = async (path) => JSON.parse(await readFile(path, 'utf8'));
-const writeJson = async (path, value) => {
-  await mkdir(dirname(path), { recursive: true });
-  await writeFile(path, `${JSON.stringify(value, null, 2)}\n`);
-};
 const writeOutput = async (values) => {
   if (!process.env.GITHUB_OUTPUT) return;
   await appendFile(
@@ -76,9 +73,9 @@ for (const name of names) {
 }
 
 if (changed) {
-  await writeJson(paths.catalog, communityCatalog);
-  await writeJson(paths.sources, communitySources);
-  await writeJson(paths.registry, registry);
+  await writeFormattedJson(paths.catalog, communityCatalog);
+  await writeFormattedJson(paths.sources, communitySources);
+  await writeFormattedJson(paths.registry, registry);
   await execFileAsync(
     process.execPath,
     ['--experimental-strip-types', join(root, 'apps/dsh-plugin/scripts/generate-catalog.ts')],

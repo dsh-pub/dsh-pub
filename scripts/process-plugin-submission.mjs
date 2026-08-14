@@ -1,7 +1,8 @@
-import { appendFile, mkdir, readFile, writeFile } from 'node:fs/promises';
+import { appendFile, readFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { writeFormattedJson } from './lib/json-file.mjs';
 import { createSubmissionUpdate, SubmissionError } from './lib/plugin-submission.mjs';
 import { loadPullRequestSubmission } from './lib/plugin-submission-pr.mjs';
 
@@ -15,10 +16,6 @@ const cacheRoot = join(root, '.cache/plugin-submission');
 const resultPath = join(cacheRoot, 'result.json');
 
 const readJson = async (path) => JSON.parse(await readFile(path, 'utf8'));
-const writeJson = async (path, value) => {
-  await mkdir(dirname(path), { recursive: true });
-  await writeFile(path, `${JSON.stringify(value, null, 2)}\n`);
-};
 
 const workflowUrl = () => {
   const server = process.env.GITHUB_SERVER_URL;
@@ -37,10 +34,7 @@ const writeOutput = async (values) => {
   await appendFile(process.env.GITHUB_OUTPUT, lines);
 };
 
-const writeResult = async (result) => {
-  await mkdir(cacheRoot, { recursive: true });
-  await writeJson(resultPath, result);
-};
+const writeResult = (result) => writeFormattedJson(resultPath, result);
 
 const eventPath = process.env.GITHUB_EVENT_PATH ?? process.argv[2];
 if (!eventPath) throw new Error('GITHUB_EVENT_PATH is required.');
@@ -84,9 +78,9 @@ try {
     ...(run ? { run } : {}),
   };
 
-  await writeJson(paths.catalog, update.communityCatalog);
-  await writeJson(paths.sources, update.communitySources);
-  await writeJson(paths.registry, update.registry);
+  await writeFormattedJson(paths.catalog, update.communityCatalog);
+  await writeFormattedJson(paths.sources, update.communitySources);
+  await writeFormattedJson(paths.registry, update.registry);
 
   await writeResult(result);
   await writeOutput({
