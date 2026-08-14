@@ -6,7 +6,12 @@
 flowchart LR
     H[DeepSeek Harness GitHub source] -->|pinned checkout| S[Catalog sync]
     S --> J[Generated catalog JSON]
+    T[GitHub dsh-plugin Topic] -->|daily cutoff snapshot| CSync[Community catalog sync]
+    CSync --> J
+    CSync --> TA[Topic analysis ledger]
+    T[Public DSH.Tools index] -->|discovery-only sync| E[Ecosystem JSON]
     J --> A[Astro static build]
+    E --> A
     A --> W[Cloudflare Workers Static Assets]
     U[Developer] --> C[dshpub CLI]
     C -->|resolve exact commit + validate bundle| G[Public plugin Git repository]
@@ -18,6 +23,8 @@ flowchart LR
 ```
 
 - GitHub owns plugin source, README content, and catalog provenance.
+- DSH.Tools supplies a checked-in discovery snapshot; every ecosystem record points back to its
+  canonical GitHub repository and carries no compatibility, installability, review, or safety claim.
 - The generated JSON is a build artifact checked into this repository for deterministic static
   builds.
 - Astro owns SEO-friendly English and Chinese pages; catalog filtering uses small client scripts.
@@ -33,7 +40,7 @@ apps/
 ├── server/    Cloudflare Worker API and static-asset routing
 └── cli/       Git bundle installer and best-effort telemetry
 packages/
-└── catalog/   generated catalog, schema, and sync tests
+└── catalog/   generated Registry and ecosystem snapshots, schema, and sync tests
 migrations/    D1 schema
 ```
 

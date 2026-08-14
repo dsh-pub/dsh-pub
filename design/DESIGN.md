@@ -13,18 +13,20 @@
 
 ## Reference translation
 
-Browser inspection of pub.dev establishes three structural anchors:
+Browser inspection of DSH.Tools on 2026-08-14 establishes three structural anchors:
 
-1. A branded, search-first landing surface followed by curated discovery sections.
-2. A catalog with a persistent filter rail, dense result rows, visible facts, and ranking controls.
-3. A detail page with package identity and tabs above a README column, plus a stable metrics and
-   metadata rail.
+1. A two-column, search-first landing surface: task copy on the left, a catalog/trust snapshot on
+   the right, followed by use-case and activity-led discovery sections.
+2. A catalog with one bordered control deck, explicit scope tabs, quick use-case filters, sortable
+   cards, and enough repository signals to decide what to inspect next.
+3. A detail page with a calm package masthead, content cards in the main column, and stable health
+   and provenance cards in the side rail.
 
-DSH Pub reuses those information patterns, not pub.dev's Dart identity or exact artwork. From an AI
-plugin-market pattern it adds capability categories, visible “what this contributes” tags, and an
-install action close to each independently installable result. SkillsMP contributed its breadcrumb,
-metric-band, curated-list, and repository-source cues; the resulting page keeps DSH-specific
-capability anatomy and does not reproduce SkillsMP branding.
+DSH Pub adopts those task and information patterns, not DSH.Tools' green palette, Inter typography,
+rounded consumer-market tone, or visual assets. The implementation keeps the navy/blue blueprint
+identity, IBM Plex typography, precise source coordinates, and the DSH-specific capability bus. Its
+signature difference is an evidence split: 504 public ecosystem candidates remain visibly separate
+from 177 structured Registry records and never inherit installability or review claims.
 
 ## Two-pass plan
 
@@ -41,11 +43,13 @@ capability anatomy and does not reproduce SkillsMP branding.
 
 ### Pass 2 — composition and signature
 
-- Landing: compact utility header, circuit/seam field, centered registry mark, large search input,
-  and curated rows below it.
-- Catalog: filter rail on desktop, collapsible filters on mobile, and border-separated rows rather
-  than a generic card grid.
-- Detail: package masthead, tab strip, main documentation column, and right metadata rail.
+- Landing: compact utility header, circuit/seam field, left-aligned registry thesis and search, plus
+  a right-side trust snapshot; use cases, popular signals, recent activity, and reviewed records sit
+  below it.
+- Catalog: one control deck with Registry/Ecosystem/All scopes, use-case chips, type/source filters,
+  sorting, and a responsive technical card grid.
+- Detail: light package masthead, source action and capability bus, tab strip, card-based
+  documentation column, and right metadata rail.
 - Signature element: a **capability bus** that renders Host, Client/UI, Tool, Storage, and Workflow as
   addressable cells connected by a thin rule. It expresses the Harness “everything is a plugin”
   model and is reused in rows and detail pages.
@@ -62,7 +66,8 @@ Exact production values live in the Web stylesheet.
 - **Graphite:** page surfaces, code blocks, and dividers.
 - **Signal amber:** limitations and conditional availability only.
 
-No gradients, decorative glass, soft floating cards, or multiple competing accent colors.
+No gradients, decorative glass, or multiple competing accent colors. Cards use restrained borders
+and one small lift interaction; the trust hierarchy must come from labels and evidence, not depth.
 
 ## Layout sketches
 
@@ -71,12 +76,12 @@ LANDING
 ┌─────────────────────────────────────────────────────────────┐
 │ dsh.pub         Plugins   Docs        中文 / theme / GitHub │
 ├──────────────── search / circuit field ─────────────────────┤
-│                 [ Search 170 plugins... ]                   │
-│              Source-backed · bilingual · inspectable        │
+│ Registry thesis + search      │ Registry trust snapshot     │
+│ Source-backed · bilingual     │ records / source / install  │
 ├─────────────────────────────────────────────────────────────┤
-│ Official bundles         three built-in profile-layer rows  │
-│ Explore capabilities     UI / Tools / Models / Storage ...  │
-│ Built into DSH           dense plugin rows                  │
+│ Browse by use case       eight public ecosystem categories  │
+│ Popular / recently active     ecosystem discovery cards     │
+│ Source reviewed          installable Registry cards         │
 └─────────────────────────────────────────────────────────────┘
 
 DETAIL
@@ -92,9 +97,10 @@ DETAIL
 
 ## Generic-pattern critique
 
-- Do not turn 170 modules into a wall of rounded cards. Registry comparison requires aligned rows
-  and stable metadata positions.
-- Do not use a giant slogan hero that pushes search below the fold. Search is the landing task.
+- Do not make Registry records and ecosystem candidates visually indistinguishable. Cards may share
+  geometry, but their evidence label, action, and available facts must remain different.
+- Do not use a giant slogan hero that pushes search below the fold. The two-column masthead must keep
+  search and the trust snapshot visible together on a normal desktop viewport.
 - Do not show invented ratings, likes, quality scores, publisher verification, or download history.
 - Do not put an install button on built-in atomic modules. Use “Included in DSH” and source/profile
   actions instead.

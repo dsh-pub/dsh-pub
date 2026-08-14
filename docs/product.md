@@ -40,22 +40,25 @@ flowchart LR
 
 ## Product objects
 
-| Object          | User-facing meaning                            | Owned data or behavior                         |
-| --------------- | ---------------------------------------------- | ---------------------------------------------- |
-| Catalog entry   | A searchable Harness capability                | Generated metadata plus GitHub source revision |
-| Built-in plugin | A Cordis-loadable module shipped in Harness    | Profile membership, config, tools, UI slots    |
-| Profile bundle  | A patch layer that activates a profile         | Bundle patch and built-in profile membership   |
-| External bundle | An independently installable profile layer     | Git repository and CLI install command         |
-| Install event   | One CLI-reported completed bundle installation | D1 event id, slug, version/ref, status         |
-| Locale page     | English or Chinese view of the same entry      | URL locale and localized source docs           |
+| Object          | User-facing meaning                              | Owned data or behavior                                    |
+| --------------- | ------------------------------------------------ | --------------------------------------------------------- |
+| Catalog entry   | A searchable Harness capability                  | Generated metadata plus GitHub source revision            |
+| Ecosystem entry | A public project discovered outside the Registry | DSH.Tools index metadata plus canonical GitHub repository |
+| Built-in plugin | A Cordis-loadable module shipped in Harness      | Profile membership, config, tools, UI slots               |
+| Profile bundle  | A patch layer that activates a profile           | Bundle patch and built-in profile membership              |
+| External bundle | An independently installable profile layer       | Git repository and CLI install command                    |
+| Install event   | One CLI-reported completed bundle installation   | D1 event id, slug, version/ref, status                    |
+| Locale page     | English or Chinese view of the same entry        | URL locale and localized source docs                      |
 
 ## Catalog layers
 
 ```text
 Marketplace
-├── Built-in profile bundles            activation role, no install claim
-├── External bundle repositories        command + CLI install count (future)
-├── Built-in plugins                    included/profile status + capabilities
+├── Registry records
+│   ├── Built-in profile bundles        activation role, no install claim
+│   ├── External bundle repositories    command + CLI install count
+│   └── Built-in plugins                included/profile status + capabilities
+├── Ecosystem index                     public discovery signals, no verification claim
 └── SDK & internals                     seams/libraries, hidden by default
 ```
 
@@ -66,6 +69,9 @@ tested; they are not hand-authored marketing claims.
 ## MVP scope
 
 - Static English and Chinese landing, catalog, and detail pages.
+- A checked-in snapshot of the public DSH.Tools ecosystem index, with canonical GitHub links and an
+  explicit discovery-only status that is never treated as compatibility, installability, review, or
+  safety evidence.
 - Search, category/type filters, and source links for the Harness snapshot.
 - Clear badges for Web UI, configurable, built-in, default profile, and profile-layer status.
 - A copyable CLI command only when a bundle is independently installable; the current Harness
@@ -87,6 +93,8 @@ tested; they are not hand-authored marketing claims.
 - Claiming unique users, repository downloads, active use, or installs made outside the CLI.
 - Treating every source package as independently installable.
 - Human review, security certification, or editorial ranking of every third-party submission.
+- Mirroring third-party plugin code or treating an ecosystem-index description as authoritative
+  package documentation.
 
 ## Success signals
 

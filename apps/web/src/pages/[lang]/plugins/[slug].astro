@@ -147,6 +147,9 @@ const structuredData = [
   <section class="package-masthead">
     <div class="page-shell masthead-inner">
       <div class="package-identity">
+        <a class="back-link" href={`/${locale}/plugins/`}>
+          <Icon name="arrow" size={15} />{locale === 'zh' ? '全部插件' : 'All plugins'}
+        </a>
         <p class="package-coordinate">
           DSH / {entry.type.toUpperCase()} / {entry.category.toUpperCase()}
         </p>
@@ -188,9 +191,14 @@ const structuredData = [
           {entry.runtime.client && <span class="tag">{t.webUi}</span>}
         </div>
       </div>
-      <div class="masthead-bus">
-        <span>{t.runtime}</span>
-        <CapabilityBus entry={entry} />
+      <div class="masthead-aside">
+        <a class="masthead-source" href={source} rel={sourceRel}>
+          <Icon name="github" size={17} />{t.openGitHub}<Icon name="external" size={14} />
+        </a>
+        <div class="masthead-bus">
+          <span>{t.runtime}</span>
+          <CapabilityBus entry={entry} />
+        </div>
       </div>
     </div>
   </section>
@@ -514,24 +522,37 @@ const structuredData = [
 
 <style>
   .package-masthead {
-    background: var(--color-navy-950);
-    color: var(--color-text-on-dark);
-    padding: 3.2rem 0 2.5rem;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-rule);
+    color: var(--color-text);
+    padding: 2.8rem 0 3.2rem;
   }
 
   .masthead-inner {
-    align-items: end;
+    align-items: center;
     display: grid;
     gap: 3rem;
     grid-template-columns: minmax(0, 1fr) minmax(330px, 470px);
   }
 
   .package-coordinate {
-    color: var(--color-blue-300);
+    color: var(--color-accent);
     font-family: var(--font-mono);
     font-size: 0.68rem;
     letter-spacing: 0.08em;
-    margin: 0 0 0.85rem;
+    margin: 1.25rem 0 0.85rem;
+  }
+
+  .back-link {
+    align-items: center;
+    color: var(--color-text-faint);
+    display: inline-flex;
+    font-size: 0.8rem;
+    gap: 0.45rem;
+  }
+
+  .back-link :global(.icon) {
+    transform: rotate(180deg);
   }
 
   .package-title {
@@ -541,9 +562,8 @@ const structuredData = [
   }
 
   .package-title h1 {
-    font-family: var(--font-mono);
     font-size: clamp(1.85rem, 4vw, 3.1rem);
-    font-weight: 400;
+    font-weight: 560;
     letter-spacing: -0.045em;
     line-height: 1.06;
     margin: 0;
@@ -553,14 +573,14 @@ const structuredData = [
   .copy-package {
     background: transparent;
     border: 0;
-    color: #91a3b8;
+    color: var(--color-text-faint);
     cursor: pointer;
     padding: 0.55rem;
   }
 
   .package-meta {
     align-items: center;
-    color: #a6b5c5;
+    color: var(--color-text-faint);
     display: flex;
     flex-wrap: wrap;
     font-size: 0.82rem;
@@ -569,21 +589,42 @@ const structuredData = [
   }
 
   .package-meta a {
-    color: var(--color-blue-300);
+    color: var(--color-accent);
   }
 
-  .masthead-tags :global(.tag) {
-    background: rgb(255 255 255 / 7%);
-    border-color: rgb(255 255 255 / 16%);
-    color: #c6d3e1;
+  .masthead-aside {
+    display: grid;
+    gap: 1rem;
   }
 
-  .masthead-tags :global(.tag.primary) {
-    color: var(--color-blue-300);
+  .masthead-source {
+    align-items: center;
+    background: var(--color-navy-950);
+    border: 1px solid var(--color-navy-950);
+    border-radius: 7px;
+    color: white;
+    display: inline-flex;
+    font-size: 0.8rem;
+    gap: 0.5rem;
+    justify-self: end;
+    min-height: 42px;
+    padding: 0 0.9rem;
+  }
+
+  .masthead-source:hover {
+    background: var(--color-navy-800);
+    text-decoration: none;
+  }
+
+  .masthead-bus {
+    background: var(--color-surface-subtle);
+    border: 1px solid var(--color-rule);
+    border-radius: 10px;
+    padding: 1rem;
   }
 
   .masthead-bus > span {
-    color: #8fa1b5;
+    color: var(--color-text-faint);
     display: block;
     font-family: var(--font-mono);
     font-size: 0.65rem;
@@ -592,17 +633,12 @@ const structuredData = [
     text-transform: uppercase;
   }
 
-  .masthead-bus :global(.bus-cell i) {
-    background: var(--color-navy-950);
-  }
-
-  .masthead-bus :global(.bus-cell.active i) {
-    background: var(--color-blue-300);
-  }
-
   .package-tabs {
-    background: var(--color-surface-subtle);
-    border-bottom: 1px solid var(--color-rule-strong);
+    background: color-mix(in srgb, var(--color-surface) 94%, transparent);
+    border-bottom: 1px solid var(--color-rule);
+    position: sticky;
+    top: 0;
+    z-index: 8;
   }
 
   .tabs-inner {
@@ -632,8 +668,8 @@ const structuredData = [
   .package-layout {
     align-items: start;
     display: grid;
-    gap: 3.5rem;
-    grid-template-columns: minmax(0, 1fr) 290px;
+    gap: 1.5rem;
+    grid-template-columns: minmax(0, 1fr) 310px;
     padding-top: 2.7rem;
   }
 
@@ -642,6 +678,7 @@ const structuredData = [
     background: #edf5f0;
     border: 1px solid #bad0c2;
     color: #315c49;
+    border-radius: 8px;
     display: flex;
     gap: 0.65rem;
     margin-top: 1.35rem;
@@ -654,13 +691,16 @@ const structuredData = [
   }
 
   .content-section {
-    border-bottom: 1px solid var(--color-rule);
-    padding: 0.5rem 0 3rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-rule);
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    padding: 1.6rem 1.7rem 1.8rem;
     scroll-margin-top: 1rem;
   }
 
   .content-section + .content-section {
-    padding-top: 3rem;
+    padding-top: 1.6rem;
   }
 
   .content-section h2 {
@@ -773,6 +813,7 @@ const structuredData = [
   .install-callout {
     background: var(--color-surface-subtle);
     border-left: 3px solid var(--color-accent);
+    border-radius: 8px;
     display: grid;
     gap: 1.2rem;
     padding: 1.35rem 1.45rem 1.5rem;
@@ -791,6 +832,7 @@ const structuredData = [
   .included-callout {
     background: var(--color-accent-soft);
     border-left: 3px solid var(--color-accent);
+    border-radius: 8px;
     padding: 1rem 1.2rem;
   }
 
@@ -826,10 +868,12 @@ const structuredData = [
   }
 
   .capability-table {
+    border-radius: 8px;
     border-left: 1px solid var(--color-rule);
     border-top: 1px solid var(--color-rule);
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+    overflow: hidden;
   }
 
   .capability-table > div {
@@ -959,19 +1003,20 @@ const structuredData = [
   }
 
   .package-sidebar {
-    border-left: 1px solid var(--color-rule);
-    padding-left: 1.6rem;
     position: sticky;
-    top: 1rem;
+    top: 4.7rem;
   }
 
   .package-sidebar > section {
-    border-bottom: 1px solid var(--color-rule);
-    padding: 0.3rem 0 1.4rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-rule);
+    border-radius: 10px;
+    padding: 1.1rem;
   }
 
   .package-sidebar > section + section {
-    padding-top: 1.4rem;
+    margin-top: 0.8rem;
+    padding-top: 1.1rem;
   }
 
   .package-sidebar h2 {
@@ -1070,7 +1115,9 @@ const structuredData = [
   .source-button {
     align-items: center;
     border: 1px solid var(--color-rule-strong);
-    color: var(--color-text);
+    background: var(--color-navy-950);
+    border-radius: 6px;
+    color: white;
     display: flex;
     font-size: 0.77rem;
     gap: 0.5rem;
@@ -1081,8 +1128,9 @@ const structuredData = [
   }
 
   .source-button:hover {
-    border-color: var(--color-accent);
-    color: var(--color-accent);
+    background: var(--color-navy-800);
+    border-color: var(--color-navy-800);
+    color: white;
     text-decoration: none;
   }
 
@@ -1115,11 +1163,9 @@ const structuredData = [
     }
 
     .package-sidebar {
-      border-left: 0;
       display: grid;
       gap: 0 2rem;
       grid-template-columns: repeat(2, 1fr);
-      padding-left: 0;
       position: static;
     }
   }

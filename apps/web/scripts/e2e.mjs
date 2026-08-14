@@ -327,9 +327,7 @@ try {
       const rows = [...globalThis.document.querySelectorAll('[data-plugin-row]')];
       const visibleRows = rows.filter((row) => !row.hasAttribute('hidden'));
       return {
-        checked: globalThis.document.querySelector(
-          'input[name="provenance"][value="community-reviewed"]',
-        )?.checked,
+        provenance: globalThis.document.querySelector('[data-provenance-filter]')?.value,
         count: globalThis.document.querySelector('[data-result-count]')?.textContent?.trim(),
         visible: visibleRows.length,
         visibleAreCommunity: visibleRows.every(
@@ -341,7 +339,7 @@ try {
       };
     });
     if (
-      browserState.checked !== true ||
+      browserState.provenance !== 'community-reviewed' ||
       browserState.count !== String(reviewedCommunityCount) ||
       browserState.visible !== reviewedCommunityCount ||
       !browserState.visibleAreCommunity ||

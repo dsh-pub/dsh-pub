@@ -33,7 +33,7 @@ export const copy = {
     search: 'Search plugins, tools, UI, storage…',
     searchShort: 'Search packages',
     eyebrow: 'The plugin registry for DeepSeek Harness',
-    heroTitle: 'DeepSeek Harness plugin registry.\nSee the whole system.',
+    heroTitle: 'DeepSeek Harness\nplugin registry.\nSee the whole system.',
     heroBody:
       'Explore the modules already inside DSH, understand what they contribute, and see how built-in profile layers compose the experience.',
     sourceBacked: 'Source-backed',
@@ -153,7 +153,7 @@ export const copy = {
     search: '搜索插件、工具、UI、存储…',
     searchShort: '搜索插件',
     eyebrow: 'DeepSeek Harness 插件目录',
-    heroTitle: 'DeepSeek Harness 插件目录。\n看清整个系统。',
+    heroTitle: 'DeepSeek Harness\n插件目录。\n看清整个系统。',
     heroBody: '探索 DSH 已内置的模块，理解它们贡献的能力，以及内置 Profile 层如何组合出完整体验。',
     sourceBacked: '源码可追溯',
     bilingual: '中文 + English',

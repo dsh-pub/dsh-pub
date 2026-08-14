@@ -1,0 +1,252 @@
+---
+import type { EcosystemEntry } from '../lib/ecosystem.js';
+import { ecosystemSearchText } from '../lib/ecosystem.js';
+import type { Locale } from '../lib/i18n.js';
+import Icon from './Icon.astro';
+
+interface Props {
+  entry: EcosystemEntry;
+  locale: Locale;
+  featured?: boolean;
+}
+
+const { entry, locale, featured = false } = Astro.props;
+const active = entry.activity === 'Active' || entry.activity === 'Recent';
+const labels =
+  locale === 'zh'
+    ? {
+        stars: 'Stars',
+        forks: 'Forks',
+        updated: '更新',
+        source: '查看源仓库',
+        sourceIndex: 'DSH.Tools 索引记录',
+      }
+    : {
+        stars: 'Stars',
+        forks: 'Forks',
+        updated: 'Updated',
+        source: 'View source',
+        sourceIndex: 'DSH.Tools index record',
+      };
+---
+
+<article
+  class:list={['ecosystem-card', { featured }]}
+  data-ecosystem-card
+  data-catalog-item
+  data-origin="ecosystem"
+  data-provenance="ecosystem-indexed"
+  data-availability="indexed"
+  data-search={ecosystemSearchText(entry)}
+  data-category={entry.category}
+  data-type={entry.resourceType}
+  data-activity={entry.activity}
+  data-name={entry.name.toLocaleLowerCase()}
+  data-stars={entry.stars}
+  data-updated={entry.updatedLabel}
+>
+  <div class="ecosystem-card-head">
+    <img src={entry.avatarUrl} alt="" width="42" height="42" loading="lazy" />
+    <div>
+      <h3><a href={entry.sourceRepository} rel="ugc nofollow noopener">{entry.name}</a></h3>
+      <p>{entry.owner}</p>
+    </div>
+    <a
+      class="source-icon"
+      href={entry.sourceRepository}
+      rel="ugc nofollow noopener"
+      aria-label={`${labels.source}: ${entry.name}`}
+    >
+      <Icon name="external" size={16} />
+    </a>
+  </div>
+
+  <p class="ecosystem-description">{entry.description}</p>
+
+  <div class="tag-row ecosystem-tags">
+    <span class="tag primary">{entry.resourceType}</span>
+    <span class="tag">{entry.category}</span>
+    <span class:list={['tag', active ? 'signal' : 'warning']}>{entry.activity}</span>
+  </div>
+
+  <dl class="ecosystem-signals">
+    <div><dt>{labels.stars}</dt><dd>{entry.stars.toLocaleString()}</dd></div>
+    <div><dt>{labels.forks}</dt><dd>{entry.forks.toLocaleString()}</dd></div>
+    <div><dt>{labels.updated}</dt><dd>{entry.updatedLabel}</dd></div>
+  </dl>
+
+  <div class="ecosystem-card-foot">
+    <a href={entry.sourceRepository} rel="ugc nofollow noopener">
+      {labels.source}<Icon name="arrow" size={15} />
+    </a>
+  </div>
+</article>
+
+<style>
+  .ecosystem-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-rule);
+    border-radius: 12px;
+    contain-intrinsic-size: auto 330px;
+    content-visibility: auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 330px;
+    min-width: 0;
+    padding: 1.25rem;
+    transition:
+      border-color var(--transition-fast),
+      box-shadow var(--transition-fast),
+      transform var(--transition-fast);
+  }
+
+  .ecosystem-card:hover {
+    border-color: var(--color-rule-strong);
+    box-shadow: 0 12px 30px rgb(15 35 58 / 7%);
+    transform: translateY(-2px);
+  }
+
+  .ecosystem-card[hidden] {
+    display: none;
+  }
+
+  .ecosystem-card-head {
+    align-items: center;
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: 42px minmax(0, 1fr) auto;
+  }
+
+  .ecosystem-card-head img {
+    background: var(--color-surface-subtle);
+    border: 1px solid var(--color-rule);
+    border-radius: 9px;
+    height: 42px;
+    object-fit: cover;
+    width: 42px;
+  }
+
+  h3 {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 620;
+    letter-spacing: -0.025em;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  h3 a {
+    color: var(--color-text);
+  }
+
+  .ecosystem-card-head p {
+    color: var(--color-text-faint);
+    font-size: 0.76rem;
+    margin: 0.12rem 0 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .source-icon {
+    align-items: center;
+    color: var(--color-text-faint);
+    display: inline-flex;
+    justify-content: center;
+    min-height: 40px;
+    min-width: 40px;
+  }
+
+  .ecosystem-description {
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    color: var(--color-text-muted);
+    display: -webkit-box;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 1rem 0;
+    min-height: 4.05rem;
+    overflow: hidden;
+  }
+
+  .ecosystem-tags {
+    margin-bottom: 1rem;
+  }
+
+  .ecosystem-tags :global(.tag) {
+    text-transform: none;
+  }
+
+  .ecosystem-tags :global(.tag.signal) {
+    background: color-mix(in srgb, var(--color-accent) 8%, var(--color-surface));
+    border-color: color-mix(in srgb, var(--color-accent) 25%, var(--color-rule));
+    color: var(--color-accent);
+  }
+
+  .ecosystem-signals {
+    background: var(--color-surface-subtle);
+    border: 1px solid color-mix(in srgb, var(--color-rule) 68%, transparent);
+    border-radius: 8px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: auto 0 0;
+    padding: 0.8rem;
+  }
+
+  .ecosystem-signals > div + div {
+    border-left: 1px solid var(--color-rule);
+    padding-left: 0.75rem;
+  }
+
+  .ecosystem-signals dt {
+    color: var(--color-text-faint);
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .ecosystem-signals dd {
+    color: var(--color-text);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    margin: 0.25rem 0 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ecosystem-card-foot {
+    align-items: center;
+    border-top: 1px solid var(--color-rule);
+    display: flex;
+    font-size: 0.72rem;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 1rem;
+    padding-top: 0.9rem;
+  }
+
+  .ecosystem-card-foot a {
+    align-items: center;
+    color: var(--color-text-faint);
+    display: inline-flex;
+    gap: 0.38rem;
+  }
+
+  .ecosystem-card-foot a:last-child {
+    color: var(--color-text);
+    font-weight: 560;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ecosystem-card {
+      transition: none;
+    }
+
+    .ecosystem-card:hover {
+      transform: none;
+    }
+  }
+</style>

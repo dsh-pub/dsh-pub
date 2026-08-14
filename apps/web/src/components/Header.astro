@@ -18,7 +18,17 @@ const submitActive = path.startsWith(`/${locale}/submit`);
 
 <header class="site-header">
   <div class="header-inner">
-    <a class="logo-link" href={`/${locale}/`}><Logo /></a>
+    <div class="brand-actions">
+      <a class="logo-link" href={`/${locale}/`}><Logo /></a>
+      <a
+        class="github-star"
+        href="https://github.com/dsh-pub/dsh-pub"
+        aria-label="Star dsh.pub on GitHub"
+      >
+        <Icon name="github" size={15} />
+        <span>Star on GitHub</span>
+      </a>
+    </div>
     {
       showSearch && (
         <form class="header-search" role="search" action={`/${locale}/plugins/`}>

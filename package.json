@@ -22,6 +22,7 @@
     "e2e:template": "node e2e/template/run.mjs",
     "eval": "vitest run --config vitest.eval.config.ts",
     "clean": "node scripts/clean.mjs",
+    "sync:ecosystem": "node scripts/sync-dsh-tools-index.mjs",
     "format:check": "prettier --check .",
     "lint:eslint": "eslint .",
     "test:watch": "vitest",

@@ -4,8 +4,10 @@ import {
   installMetricSlug,
   localized,
   provenanceStatus,
+  sourceCoordinate,
   type CatalogEntry,
 } from '../lib/catalog-types.js';
+import { entrySearchText } from '../lib/catalog.js';
 import { categoryLabel, typeLabel } from '../lib/categories.js';
 import { copy, type Locale } from '../lib/i18n.js';
 import CapabilityBus from './CapabilityBus.astro';
@@ -47,17 +49,26 @@ const provenanceStatement =
 <article
   class:list={['plugin-row', { compact }]}
   data-plugin-row
-  data-search={`${entry.name} ${entry.slug} ${localized(entry.description, locale)} ${entry.category} ${entry.source.repository} ${provenance}`.toLocaleLowerCase()}
+  data-catalog-item
+  data-origin="registry"
+  data-search={entrySearchText(entry)}
   data-type={entry.type}
   data-category={entry.category}
   data-availability={entry.distribution.installable ? 'installable' : 'included'}
   data-provenance={provenance}
   data-name={displayName(entry).toLocaleLowerCase()}
+  data-stars="0"
+  data-updated="registry"
 >
   <div class="plugin-main">
-    <div class="plugin-title-line">
-      <h3><a href={`/${locale}/plugins/${entry.slug}/`}>{displayName(entry)}</a></h3>
+    <div class="plugin-card-head">
+      <div class="plugin-identity">
+        <h3><a href={`/${locale}/plugins/${entry.slug}/`}>{displayName(entry)}</a></h3>
+        <small>{sourceCoordinate(entry)}</small>
+      </div>
       <span class:list={['tag', entry.distribution.installable && 'primary']}>{modeLabel}</span>
+    </div>
+    <div class="plugin-state-line">
       <span
         class:list={['tag', provenance !== 'built-in' && 'reviewed']}
         title={provenanceStatement}>{provenanceLabel}</span
@@ -114,46 +125,92 @@ const provenanceStatement =
 
 <style>
   .plugin-row {
-    border-top: 1px solid var(--color-rule);
+    background: var(--color-surface);
+    border: 1px solid var(--color-rule);
+    border-radius: 12px;
+    contain-intrinsic-size: auto 330px;
+    content-visibility: auto;
     display: grid;
-    gap: 2.4rem;
-    grid-template-columns: minmax(0, 1fr) 300px;
-    padding: 1.55rem 0 1.7rem;
+    gap: 1.2rem;
+    grid-template-rows: minmax(0, 1fr) auto;
+    min-height: 330px;
+    min-width: 0;
+    padding: 1.25rem;
+    transition:
+      border-color var(--transition-fast),
+      box-shadow var(--transition-fast),
+      transform var(--transition-fast);
   }
 
   .plugin-row[hidden] {
     display: none;
   }
 
-  .plugin-row:last-child {
-    border-bottom: 1px solid var(--color-rule);
+  .plugin-row:hover {
+    border-color: var(--color-rule-strong);
+    box-shadow: 0 12px 30px rgb(15 35 58 / 7%);
+    transform: translateY(-2px);
   }
 
-  .plugin-title-line {
+  .plugin-card-head {
     align-items: center;
     display: flex;
-    flex-wrap: wrap;
     gap: 0.7rem;
+    justify-content: space-between;
   }
 
-  .plugin-title-line :global(.tag.reviewed) {
+  .plugin-main {
+    min-width: 0;
+  }
+
+  .plugin-identity {
+    min-width: 0;
+  }
+
+  .plugin-identity small {
+    color: var(--color-text-faint);
+    display: block;
+    font-size: 0.72rem;
+    margin-top: 0.18rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .plugin-state-line {
+    margin-top: 0.8rem;
+  }
+
+  .plugin-state-line :global(.tag.reviewed) {
     border-color: #5e8c76;
     color: #35654e;
   }
 
   h3 {
-    font-family: var(--font-mono);
-    font-size: 1.08rem;
-    font-weight: 500;
+    font-size: 1rem;
+    font-weight: 620;
     letter-spacing: -0.025em;
     margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  h3 a {
+    color: var(--color-text);
   }
 
   .plugin-main > p {
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
     color: var(--color-text-muted);
+    display: -webkit-box;
+    font-size: 0.9rem;
     line-height: 1.58;
-    margin: 0.62rem 0 0.85rem;
+    margin: 0.9rem 0 0.85rem;
     max-width: 47rem;
+    min-height: 4.25rem;
+    overflow: hidden;
   }
 
   .plugin-main :global(.capability-bus) {
@@ -162,9 +219,13 @@ const provenanceStatement =
 
   .plugin-facts {
     align-items: center;
+    background: var(--color-surface-subtle);
+    border: 1px solid color-mix(in srgb, var(--color-rule) 68%, transparent);
+    border-radius: 8px;
     display: grid;
     grid-template-columns: 1.05fr 0.8fr 1.15fr;
     margin: 0;
+    padding: 0.7rem 0;
   }
 
   .plugin-facts > div {
@@ -192,9 +253,9 @@ const provenanceStatement =
   }
 
   .plugin-row.compact {
-    gap: 1.5rem;
-    grid-template-columns: minmax(0, 1fr) 260px;
-    padding: 1.25rem 0;
+    gap: 1rem;
+    min-height: 300px;
+    padding: 1.2rem;
   }
 
   .plugin-row.compact .plugin-main > p {
@@ -205,18 +266,6 @@ const provenanceStatement =
     overflow: hidden;
   }
 
-  @media (max-width: 880px) {
-    .plugin-row,
-    .plugin-row.compact {
-      gap: 1.25rem;
-      grid-template-columns: 1fr;
-    }
-
-    .plugin-facts {
-      max-width: 390px;
-    }
-  }
-
   @media (max-width: 520px) {
     .plugin-facts {
       grid-template-columns: repeat(3, 1fr);
@@ -224,6 +273,16 @@ const provenanceStatement =
 
     .plugin-facts > div {
       padding: 0 0.45rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .plugin-row {
+      transition: none;
+    }
+
+    .plugin-row:hover {
+      transform: none;
     }
   }
 </style>

@@ -4,6 +4,27 @@
 
 ## Interface references
 
+### DSH.Tools
+
+Browser inspection on 2026-08-14 covered the landing page, the 504-record plugin listing, one plugin
+detail page, and the About page.
+
+- Landing uses a two-column hero with search and a catalog/trust snapshot, followed by use-case,
+  trending, recent, tool, guide, and FAQ sections.
+- Listing places search, scope, type, use-case, repository activity, and provenance cues in one
+  compact decision surface; cards show name, owner, short description, resource type, category,
+  activity, Stars, Forks, freshness, source, and index provenance.
+- Detail pages separate purpose, installation instructions, compatibility evidence, repository
+  health, and index provenance. The site explicitly says indexed does not mean compatible or safe.
+- Its About page says discovery primarily comes from the public GitHub `dsh-plugin` topic, while
+  source repositories remain canonical.
+
+DSH Pub reuses this information architecture while keeping its own brand and deeper Registry model.
+The public index is imported as a discovery-only snapshot; its records cannot produce a dshpub
+install command until they independently pass the Registry source contract.
+
+Source: <https://dsh.tools/>, <https://dsh.tools/plugins>, and <https://dsh.tools/about>.
+
 ### pub.dev
 
 Browser inspection covered the landing page, a populated search result, and the

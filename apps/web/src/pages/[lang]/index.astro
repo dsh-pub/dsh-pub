@@ -1,17 +1,16 @@
 ---
+import EcosystemCard from '../../components/EcosystemCard.astro';
 import Icon from '../../components/Icon.astro';
-import Logo from '../../components/Logo.astro';
 import PluginRow from '../../components/PluginRow.astro';
+import UseCaseIcon from '../../components/UseCaseIcon.astro';
+import { communityEntries, marketplaceEntries } from '../../lib/catalog.js';
 import {
-  builtInEntries,
-  bundleEntries,
-  catalog,
-  communityEntries,
-  featuredEntries,
-  marketplaceEntries,
-} from '../../lib/catalog.js';
+  ecosystemCandidates,
+  ecosystemCategories,
+  recentlyActiveEcosystemEntries,
+  trendingEcosystemEntries,
+} from '../../lib/ecosystem.js';
 import { copy, isLocale, locales } from '../../lib/i18n.js';
-import { entriesForTopic, localizedTopic, registryTopics } from '../../lib/topics.js';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 export function getStaticPaths() {
@@ -21,14 +20,81 @@ export function getStaticPaths() {
 const locale = Astro.params.lang;
 if (!isLocale(locale)) throw new Error(`Unsupported locale: ${locale}`);
 const t = copy[locale];
-const bundles = bundleEntries.slice(0, 3);
-const featured = featuredEntries.length >= 6 ? featuredEntries : builtInEntries.slice(0, 8);
-const topics = registryTopics.map((topic) => ({
-  topic,
-  count: entriesForTopic(marketplaceEntries, topic).length,
-}));
-const clientCount =
-  catalog.totals.client ?? catalog.entries.filter((entry) => entry.runtime.client).length;
+const popular = trendingEcosystemEntries.slice(0, 3);
+const popularIds = new Set(popular.map((entry) => entry.id));
+const recentlyActive = recentlyActiveEcosystemEntries
+  .filter((entry) => !popularIds.has(entry.id))
+  .slice(0, 3);
+const registryHighlights = communityEntries.slice(0, 3);
+const useCases = ecosystemCategories.slice(0, 8);
+const ui =
+  locale === 'zh'
+    ? {
+        snapshot: 'Registry 目录统计',
+        live: '实时目录',
+        records: 'Registry 总数',
+        agentLabel: 'AGENT / PLUGIN SEARCH',
+        agentTitle: '给 Agent 的检索指令',
+        copyGuide: '复制指令',
+        copiedGuide: '已复制',
+        agentPrompt:
+          '在 dsh.pub 检索符合用户需求的 DeepSeek Harness 插件：优先搜索 /zh/plugins/?q=<关键词>&scope=registry 并核对来源、commit 与安装方式，必要时用 scope=ecosystem 扩大候选，并明确“收录不等于兼容、安全或可安装”。',
+        browseCases: '按使用场景探索',
+        browseCasesBody: '从用户任务出发浏览公开 DSH 生态，再回到 Registry 核对来源与运行时事实。',
+        candidates: '个公开候选',
+        popular: '生态热门项目',
+        popularBody: '按 GitHub Star 数量排序的公开生态项目。',
+        active: '最近活跃',
+        activeBody: '近期有公开更新信号的生态项目。安装前仍需检查 Manifest、Profile 和权限。',
+        reviewedTitle: '已核对的社区插件',
+        reviewedBody: '固定到公开 commit、具备可追溯 Bundle 契约的可安装记录。',
+        viewRegistry: '查看可信 Registry',
+        viewIndex: '查看完整生态索引',
+        evidenceTitle: '同一个目录，两条证据路径',
+        evidenceBody:
+          '生态索引负责扩大视野；Registry 记录负责回答来源、版本、运行时和真实安装方式。两者永远不会共用一个模糊的 Verified 标签。',
+        indexed: '生态候选',
+        indexedBody: `${ecosystemCandidates.length} 条尚未进入 Registry 的公开项目，只提供发现信号。`,
+        registry: 'Registry 记录',
+        registryBody: `${marketplaceEntries.length} 条结构化记录，包含 DSH 内置模块和社区 Bundle。`,
+        installable: '可安装记录',
+        installableBody: `${communityEntries.length} 条社区 Bundle 提供固定 commit 的安装命令。`,
+      }
+    : {
+        snapshot: 'Registry catalog totals',
+        live: 'Live catalog',
+        records: 'Registry total',
+        agentLabel: 'AGENT / PLUGIN SEARCH',
+        agentTitle: 'Plugin search instructions',
+        copyGuide: 'Copy instructions',
+        copiedGuide: 'Copied',
+        agentPrompt:
+          'Find DeepSeek Harness plugins on dsh.pub: search /en/plugins/?q=<keywords>&scope=registry first and verify source, commit, and installation; use scope=ecosystem only to widen candidates, and state that indexing does not imply compatibility, safety, or installability.',
+        browseCases: 'Browse by use case',
+        browseCasesBody:
+          'Start from the job you need done, then return to Registry evidence before installing.',
+        candidates: 'public candidates',
+        popular: 'Popular across the ecosystem',
+        popularBody: 'Public ecosystem projects ranked by GitHub stars.',
+        active: 'Recently active',
+        activeBody:
+          'Projects with recent public updates. Check manifests, profiles, and authority before installation.',
+        reviewedTitle: 'Source-reviewed community plugins',
+        reviewedBody:
+          'Installable records pinned to public commits with a traceable bundle contract.',
+        viewRegistry: 'Open trusted Registry',
+        viewIndex: 'Browse the ecosystem index',
+        evidenceTitle: 'One directory, two evidence paths',
+        evidenceBody:
+          'The ecosystem index expands discovery. Registry records explain source, version, runtime, and truthful installation. They never collapse into one vague Verified badge.',
+        indexed: 'Ecosystem candidates',
+        indexedBody: `${ecosystemCandidates.length} public projects not yet in the Registry, shown for discovery only.`,
+        registry: 'Registry records',
+        registryBody: `${marketplaceEntries.length} structured records covering built-in DSH modules and community bundles.`,
+        installable: 'Installable records',
+        installableBody: `${communityEntries.length} community bundles expose commit-pinned install commands.`,
+      };
+
 const structuredData = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
@@ -49,148 +115,172 @@ const structuredData = {
   <section class="registry-hero">
     <svg
       class="circuit-field"
-      viewBox="0 0 1440 520"
+      viewBox="0 0 1440 640"
       preserveAspectRatio="xMidYMid slice"
       aria-hidden="true"
     >
       <g fill="none" stroke="currentColor" stroke-width="1">
         <path d="M-40 130h250l55 55h210l70-70h230l80 80h250l55-55h330"></path>
-        <path d="M-10 350h180l85-85h155l100 100h275l65-65h190l115 115h320"></path>
-        <path d="M320-20v120l60 60v205l-80 80v110M1050-20v155l-75 75v195l90 90v60"></path>
-        <rect x="155" y="105" width="76" height="52"></rect>
-        <rect x="600" y="82" width="94" height="64"></rect>
-        <rect x="1170" y="112" width="88" height="58"></rect>
-        <rect x="80" y="330" width="72" height="56"></rect>
-        <rect x="690" y="333" width="92" height="62"></rect>
-        <rect x="1265" y="382" width="82" height="54"></rect>
+        <path d="M-10 470h180l85-85h155l100 100h275l65-65h190l115 115h320"></path>
+        <path d="M320-20v120l60 60v205l-80 80v210M1050-20v155l-75 75v195l90 90v160"></path>
         <circle cx="265" cy="185" r="7"></circle><circle cx="545" cy="115" r="7"></circle>
-        <circle cx="850" cy="300" r="7"></circle><circle cx="1155" cy="415" r="7"></circle>
+        <circle cx="850" cy="420" r="7"></circle><circle cx="1155" cy="535" r="7"></circle>
       </g>
     </svg>
-    <div class="hero-inner page-shell">
-      <div class="hero-brand"><Logo /></div>
-      <p class="eyebrow">{t.eyebrow}</p>
-      <h1>{t.heroTitle.split('\n').map((line) => <span>{line}</span>)}</h1>
-      <p class="hero-copy">{t.heroBody}</p>
-      <form class="hero-search" role="search" action={`/${locale}/plugins/`}>
-        <Icon name="search" size={23} />
-        <input type="search" name="q" aria-label={t.search} placeholder={t.search} autofocus />
-        <button type="submit"><span>{t.browse}</span><Icon name="arrow" /></button>
-      </form>
-      <div class="hero-proof" aria-label="Registry attributes">
-        <span><i></i>{t.sourceBacked}</span>
-        <span><i></i>{t.bilingual}</span>
-        <span><i></i>{t.noAccount}</span>
+
+    <div class="hero-grid page-shell">
+      <div class="hero-primary">
+        <p class="eyebrow">{t.eyebrow}</p>
+        <h1>
+          <span>{t.registryHeading}</span>
+          {' '}
+          <span>{t.heroTitle.split('\n').at(-1)}</span>
+        </h1>
+        <p class="hero-copy">{t.heroBody}</p>
+        <form class="hero-search" role="search" action={`/${locale}/plugins/`}>
+          <Icon name="search" size={22} />
+          <input type="search" name="q" aria-label={t.search} placeholder={t.search} autofocus />
+          <button type="submit" aria-label={t.browse}><Icon name="arrow" size={19} /></button>
+        </form>
       </div>
-    </div>
-  </section>
 
-  <section class="registry-stats" aria-label="Catalog snapshot">
-    <div class="page-shell stats-inner">
-      <div><strong>{catalog.totals.packages}</strong><span>{t.countPackages}</span></div>
-      <div><strong>{catalog.totals.plugins}</strong><span>{t.countPlugins}</span></div>
-      <div><strong>{clientCount}</strong><span>{t.countClient}</span></div>
-      <div><strong>{catalog.totals.bundles}</strong><span>{t.countBundles}</span></div>
-      <div><strong>{communityEntries.length}</strong><span>{t.countCommunity}</span></div>
-    </div>
-  </section>
-
-  {
-    bundles.length > 0 && (
-      <section class="home-section page-shell">
-        <div class="section-heading">
-          <div>
-            <span class="eyebrow">01 / MARKETPLACE</span>
-            <h2>{t.officialBundles}</h2>
-            <p>{t.officialBundlesBody}</p>
+      <aside class="trust-snapshot" aria-label={ui.snapshot}>
+        <div class="snapshot-heading">
+          <strong>{ui.snapshot}</strong>
+          <span>{ui.live}</span>
+        </div>
+        <div class="snapshot-body">
+          <div class="snapshot-counts">
+            <span>{ui.records}</span>
+            <strong>{marketplaceEntries.length}</strong>
           </div>
-          <a class="text-link" href={`/${locale}/plugins/?type=bundle`}>
-            {t.viewAll}
-            <Icon name="arrow" size={16} />
-          </a>
-        </div>
-        <div class="bundle-list">
-          {bundles.map((entry) => (
-            <PluginRow entry={entry} locale={locale} compact />
-          ))}
-        </div>
-      </section>
-    )
-  }
-
-  {
-    communityEntries.length > 0 && (
-      <section class="home-section page-shell">
-        <div class="section-heading">
-          <div>
-            <span class="eyebrow">02 / COMMUNITY</span>
-            <h2>{t.communityPlugins}</h2>
-            <p>{t.communityPluginsBody}</p>
-            <p class="community-policy">{t.communityReviewNotice}</p>
+          <div class="agent-guide" data-agent-guide>
+            <div class="agent-guide-heading">
+              <div>
+                <span>{ui.agentLabel}</span>
+                <strong>{ui.agentTitle}</strong>
+              </div>
+              <button
+                type="button"
+                data-copy-agent-guide
+                data-copy-label={ui.copyGuide}
+                data-copied-label={ui.copiedGuide}
+              >
+                <Icon name="copy" size={15} />
+                <span>{ui.copyGuide}</span>
+              </button>
+            </div>
+            <pre><code data-agent-guide-content>{ui.agentPrompt}</code></pre>
           </div>
-          <a
-            class="text-link"
-            href={`/${locale}/plugins/?provenance=community-reviewed,community-submitted`}
-          >
-            {t.viewAll}
-            <Icon name="arrow" size={16} />
-          </a>
         </div>
-        <div class="bundle-list">
-          {communityEntries.map((entry) => (
-            <PluginRow entry={entry} locale={locale} compact />
-          ))}
-        </div>
-      </section>
-    )
-  }
-
-  <section class="home-section capability-section">
-    <div class="page-shell">
-      <div class="section-heading">
-        <div>
-          <span class="eyebrow">03 / CAPABILITY MAP</span>
-          <h2>{t.exploreCapabilities}</h2>
-          <p>{t.exploreCapabilitiesBody}</p>
-        </div>
-      </div>
-      <div class="category-grid">
-        {
-          topics.map(({ topic, count }, index) => (
-            <a href={`/${locale}/categories/${topic.id}/`}>
-              <span class="category-coordinate">0{index + 1}</span>
-              <span class="category-glyph" aria-hidden="true">
-                <>
-                  <i />
-                  <i />
-                  <i />
-                </>
-              </span>
-              <strong>{localizedTopic(topic.label, locale)}</strong>
-              <small>
-                {count} {t.plugins.toLocaleLowerCase()}
-              </small>
-              <Icon name="arrow" size={16} />
-            </a>
-          ))
-        }
-      </div>
+      </aside>
     </div>
   </section>
 
   <section class="home-section page-shell">
     <div class="section-heading">
       <div>
-        <span class="eyebrow">04 / BUILT-IN ROSTER</span>
-        <h2>{t.builtIn}</h2>
-        <p>{t.builtInBody}</p>
+        <span class="eyebrow">ECOSYSTEM / USE CASES</span>
+        <h2>{ui.browseCases}</h2>
+        <p>{ui.browseCasesBody}</p>
       </div>
-      <a class="text-link" href={`/${locale}/plugins/`}>
-        {t.viewAll}<Icon name="arrow" size={16} />
+      <a class="text-link" href={`/${locale}/plugins/?scope=ecosystem`}>
+        {ui.viewIndex}<Icon name="arrow" size={16} />
       </a>
     </div>
-    <div>
-      {featured.map((entry) => <PluginRow entry={entry} locale={locale} compact />)}
+    <div class="use-case-grid">
+      {
+        useCases.map(({ category, count }) => (
+          <a href={`/${locale}/plugins/?scope=ecosystem&category=${encodeURIComponent(category)}`}>
+            <span class="use-case-visual">
+              <UseCaseIcon category={category} />
+            </span>
+            <strong>{category}</strong>
+            <small>
+              {count} {ui.candidates}
+            </small>
+            <Icon name="arrow" size={16} />
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="home-section signal-section">
+    <div class="page-shell">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">PUBLIC SIGNALS / POPULARITY</span>
+          <h2>{ui.popular}</h2>
+          <p>{ui.popularBody}</p>
+        </div>
+        <a class="text-link" href={`/${locale}/plugins/?scope=ecosystem&sort=stars`}>
+          {ui.viewIndex}<Icon name="arrow" size={16} />
+        </a>
+      </div>
+      <div class="card-grid">
+        {popular.map((entry) => <EcosystemCard entry={entry} locale={locale} featured />)}
+      </div>
+    </div>
+  </section>
+
+  {
+    recentlyActive.length > 0 && (
+      <section class="home-section page-shell">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">PUBLIC SIGNALS / FRESHNESS</span>
+            <h2>{ui.active}</h2>
+            <p>{ui.activeBody}</p>
+          </div>
+        </div>
+        <div class="card-grid">
+          {recentlyActive.map((entry) => (
+            <EcosystemCard entry={entry} locale={locale} />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  {
+    registryHighlights.length > 0 && (
+      <section class="home-section registry-section">
+        <div class="page-shell">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">REGISTRY / SOURCE REVIEWED</span>
+              <h2>{ui.reviewedTitle}</h2>
+              <p>{ui.reviewedBody}</p>
+            </div>
+            <a
+              class="text-link"
+              href={`/${locale}/plugins/?scope=registry&provenance=community-reviewed`}
+            >
+              {ui.viewRegistry}
+              <Icon name="arrow" size={16} />
+            </a>
+          </div>
+          <div class="card-grid registry-card-grid">
+            {registryHighlights.map((entry) => (
+              <PluginRow entry={entry} locale={locale} compact />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="evidence-section page-shell" aria-labelledby="evidence-title">
+    <div class="evidence-heading">
+      <span class="eyebrow">DISCOVERY ≠ VERIFICATION</span>
+      <h2 id="evidence-title">{ui.evidenceTitle}</h2>
+      <p>{ui.evidenceBody}</p>
+    </div>
+    <div class="evidence-grid">
+      <article><span>01</span><h3>{ui.indexed}</h3><p>{ui.indexedBody}</p></article>
+      <article><span>02</span><h3>{ui.registry}</h3><p>{ui.registryBody}</p></article>
+      <article><span>03</span><h3>{ui.installable}</h3><p>{ui.installableBody}</p></article>
     </div>
   </section>
 </BaseLayout>
@@ -208,13 +298,32 @@ const structuredData = {
       })
       .catch(() => undefined);
   }
+
+  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-copy-agent-guide]')) {
+    if (button.dataset.bound === 'true') continue;
+    button.dataset.bound = 'true';
+    button.addEventListener('click', async () => {
+      const guide = button
+        .closest<HTMLElement>('[data-agent-guide]')
+        ?.querySelector<HTMLElement>('[data-agent-guide-content]')?.textContent;
+      if (!guide) return;
+      await navigator.clipboard.writeText(guide);
+      const label = button.querySelector('span');
+      if (label) label.textContent = button.dataset.copiedLabel ?? 'Copied';
+      button.classList.add('copied');
+      window.setTimeout(() => {
+        if (label) label.textContent = button.dataset.copyLabel ?? 'Copy';
+        button.classList.remove('copied');
+      }, 1600);
+    });
+  }
 </script>
 
 <style>
   .registry-hero {
     background: var(--color-navy-900);
     color: var(--color-text-on-dark);
-    min-height: 500px;
+    min-height: 590px;
     overflow: hidden;
     position: relative;
   }
@@ -223,68 +332,66 @@ const structuredData = {
     color: #4a6b8d;
     height: 100%;
     inset: 0;
-    opacity: 0.32;
+    opacity: 0.24;
     position: absolute;
     width: 100%;
   }
 
-  .hero-inner {
+  .hero-grid {
     align-items: center;
-    display: flex;
-    flex-direction: column;
-    padding-bottom: 4.2rem;
-    padding-top: 3.3rem;
+    display: grid;
+    gap: clamp(3rem, 7vw, 6.5rem);
+    grid-template-columns: minmax(0, 0.92fr) minmax(480px, 1.08fr);
+    min-height: 590px;
+    padding-bottom: 3.7rem;
+    padding-top: 3.7rem;
     position: relative;
-    text-align: center;
   }
 
-  .hero-brand {
-    display: none;
-  }
-
-  .hero-inner :global(.eyebrow) {
+  .hero-primary :global(.eyebrow) {
     color: var(--color-blue-300);
-    margin: 0;
   }
 
   h1 {
-    font-size: clamp(2.35rem, 5vw, 4.2rem);
-    font-weight: 430;
-    letter-spacing: -0.055em;
-    line-height: 1.02;
-    margin: 1.1rem 0 0;
-    max-width: 850px;
+    font-size: clamp(2.9rem, 4.25vw, 4.2rem);
+    font-weight: 500;
+    letter-spacing: -0.06em;
+    line-height: 0.98;
+    margin: 0.75rem 0 0;
   }
 
   h1 span {
     display: block;
   }
 
+  h1 span:last-child {
+    color: var(--color-blue-300);
+  }
+
   .hero-copy {
     color: #c4d0de;
-    font-size: clamp(1rem, 1.6vw, 1.18rem);
-    line-height: 1.55;
-    margin: 1.2rem auto 2rem;
-    max-width: 660px;
+    font-size: 1.03rem;
+    line-height: 1.58;
+    margin: 1.2rem 0 1.5rem;
+    max-width: 34rem;
   }
 
   .hero-search {
     align-items: center;
-    background: #fff;
-    border: 4px solid rgb(255 255 255 / 14%);
+    background: white;
+    border: 2px solid #728399;
     border-radius: 9px;
-    box-shadow: 0 18px 55px rgb(3 12 23 / 35%);
+    box-shadow: 0 18px 55px rgb(3 12 23 / 28%);
     color: #597087;
     display: flex;
-    height: 68px;
-    max-width: 850px;
-    outline: 1px solid #50657c;
-    padding: 0 0.45rem 0 1.15rem;
-    width: 100%;
+    height: 62px;
+    max-width: 580px;
+    padding: 0 0.4rem 0 1rem;
   }
 
   .hero-search:focus-within {
-    outline: 2px solid var(--color-blue-300);
+    border-color: var(--color-blue-300);
+    outline: 2px solid rgb(104 184 255 / 30%);
     outline-offset: 3px;
   }
 
@@ -293,14 +400,10 @@ const structuredData = {
     border: 0;
     color: #172335;
     flex: 1;
-    font-size: 1.15rem;
-    min-width: 5rem;
+    font-size: 1rem;
+    min-width: 4rem;
     outline: 0;
-    padding: 0 0.9rem;
-  }
-
-  .hero-search input::placeholder {
-    color: #718195;
+    padding: 0 0.8rem;
   }
 
   .hero-search button {
@@ -308,229 +411,387 @@ const structuredData = {
     align-self: stretch;
     background: var(--color-blue-600);
     border: 0;
-    border-radius: 5px;
+    border-radius: 6px;
     color: white;
     cursor: pointer;
     display: flex;
-    gap: 0.55rem;
+    justify-content: center;
     margin: 0;
-    padding: 0 1.2rem;
+    min-width: 54px;
   }
 
-  .hero-search button:hover {
-    background: #086ab7;
+  .trust-snapshot {
+    background: var(--color-navy-800);
+    border: 1px solid #3b526d;
+    border-radius: 14px;
+    box-shadow: 0 26px 70px rgb(4 12 23 / 28%);
+    overflow: hidden;
   }
 
-  .hero-proof {
-    color: #aabacd;
-    display: flex;
-    flex-wrap: wrap;
-    font-size: 0.78rem;
-    gap: 1.35rem;
-    justify-content: center;
-    margin-top: 1.35rem;
-  }
-
-  .hero-proof span {
+  .snapshot-heading {
     align-items: center;
+    border-bottom: 1px solid #3b526d;
     display: flex;
-    gap: 0.42rem;
+    justify-content: space-between;
+    min-height: 58px;
+    padding: 0 1.35rem;
   }
 
-  .hero-proof i {
-    background: var(--color-blue-300);
-    display: inline-block;
-    height: 5px;
-    transform: rotate(45deg);
-    width: 5px;
+  .snapshot-heading strong {
+    font-size: 0.9rem;
+    font-weight: 570;
   }
 
-  .registry-stats {
-    background: var(--color-surface);
-    border-bottom: 1px solid var(--color-rule);
+  .snapshot-heading span {
+    background: #193b58;
+    border: 1px solid #35607f;
+    border-radius: 999px;
+    color: #a9d4ff;
+    font-size: 0.7rem;
+    padding: 0.28rem 0.65rem;
   }
 
-  .stats-inner {
-    align-items: stretch;
+  .snapshot-counts {
+    border-right: 1px solid #3b526d;
+    padding: 1.5rem;
+  }
+
+  .snapshot-body {
     display: grid;
-    grid-template-columns: repeat(5, minmax(100px, 1fr));
-    min-height: 92px;
+    grid-template-columns: minmax(190px, 0.78fr) minmax(0, 1.42fr);
   }
 
-  .stats-inner > div {
-    align-items: baseline;
-    border-right: 1px solid var(--color-rule);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 0 1.25rem;
-  }
-
-  .stats-inner > div:first-child {
-    border-left: 1px solid var(--color-rule);
-  }
-
-  .stats-inner strong {
+  .snapshot-counts > span {
+    color: #91a4b9;
     font-family: var(--font-mono);
-    font-size: 1.35rem;
-    font-weight: 500;
-  }
-
-  .stats-inner span {
-    color: var(--color-text-muted);
-    font-size: 0.72rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.09em;
     text-transform: uppercase;
   }
 
-  .home-section {
-    padding-bottom: 4.8rem;
-    padding-top: 4.8rem;
+  .snapshot-counts > strong {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 2.8rem;
+    font-weight: 500;
+    margin: 0.45rem 0 0;
   }
 
-  .home-section + .home-section {
-    padding-top: 1rem;
+  .agent-guide {
+    min-width: 0;
+    padding: 1.5rem;
   }
 
-  .community-policy {
-    color: var(--color-text-faint);
-    font-size: 0.76rem;
-    margin: 0.8rem 0 0;
-    max-width: 46rem;
+  .agent-guide-heading {
+    align-items: flex-start;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    margin-bottom: 1rem;
   }
 
-  .capability-section {
-    background: var(--color-surface);
-    border-bottom: 1px solid var(--color-rule);
-    border-top: 1px solid var(--color-rule);
-    padding-top: 4.5rem !important;
-  }
-
-  .category-grid {
-    border-left: 1px solid var(--color-rule);
-    border-top: 1px solid var(--color-rule);
+  .agent-guide-heading > div {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    gap: 0.28rem;
   }
 
-  .category-grid > a {
+  .agent-guide-heading > div > span {
+    color: var(--color-blue-300);
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.09em;
+  }
+
+  .agent-guide-heading strong {
+    font-size: 0.9rem;
+    font-weight: 570;
+  }
+
+  .agent-guide-heading button {
+    align-items: center;
+    background: transparent;
+    border: 1px solid #45627f;
+    border-radius: 6px;
+    color: #b9d8f6;
+    cursor: pointer;
+    display: inline-flex;
+    flex: none;
+    font-size: 0.67rem;
+    gap: 0.35rem;
+    min-height: 30px;
+    padding: 0.35rem 0.55rem;
+  }
+
+  .agent-guide-heading button:hover,
+  .agent-guide-heading button:focus-visible,
+  .agent-guide-heading button.copied {
+    background: #193b58;
+    border-color: #68b8ff;
+    color: white;
+  }
+
+  .agent-guide pre {
+    background: #0e253b;
+    border-left: 2px solid var(--color-blue-300);
+    color: #c4d2e0;
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    line-height: 1.58;
+    margin: 0;
+    overflow-x: auto;
+    padding: 0.85rem 0.9rem;
+    scrollbar-color: #45627f transparent;
+    white-space: nowrap;
+  }
+
+  .agent-guide code {
+    font: inherit;
+  }
+
+  .home-section {
+    padding-bottom: 5.2rem;
+    padding-top: 5.2rem;
+  }
+
+  .signal-section,
+  .registry-section {
+    background: color-mix(in srgb, var(--color-surface-subtle) 72%, var(--color-canvas));
     border-bottom: 1px solid var(--color-rule);
-    border-right: 1px solid var(--color-rule);
+    border-top: 1px solid var(--color-rule);
+  }
+
+  .use-case-grid {
+    display: grid;
+    gap: 0.85rem;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .use-case-grid a {
+    align-items: center;
+    background: var(--color-surface);
+    border: 1px solid var(--color-rule);
+    border-radius: 10px;
     color: var(--color-text);
     display: grid;
-    grid-template-columns: 1fr auto;
-    min-height: 170px;
-    padding: 1rem 1.2rem 1.15rem;
-    position: relative;
+    gap: 0.22rem 0.8rem;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    min-height: 88px;
+    padding: 1rem;
     transition:
-      background var(--transition-fast),
-      color var(--transition-fast);
+      border-color var(--transition-fast),
+      transform var(--transition-fast);
   }
 
-  .category-grid > a:hover {
-    background: var(--color-accent-soft);
-    color: var(--color-accent);
-    text-decoration: none;
-  }
-
-  .category-coordinate {
-    color: var(--color-text-faint);
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-  }
-
-  .category-glyph {
-    display: flex;
-    gap: 3px;
-    justify-self: end;
-  }
-
-  .category-glyph i {
-    border: 1px solid var(--color-rule-strong);
-    height: 11px;
-    transform: rotate(45deg);
-    width: 11px;
-  }
-
-  .category-glyph i:nth-child(2) {
-    background: var(--color-accent);
+  .use-case-grid a:hover {
     border-color: var(--color-accent);
+    text-decoration: none;
+    transform: translateY(-2px);
   }
 
-  .category-grid strong {
-    align-self: end;
-    font-size: 1.03rem;
-    font-weight: 520;
+  .use-case-visual {
+    align-items: center;
+    background: var(--color-accent-soft);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 24%, var(--color-rule));
+    border-radius: 7px;
+    color: var(--color-accent);
+    display: inline-flex;
+    grid-row: 1 / 3;
+    height: 38px;
+    justify-content: center;
+    width: 38px;
   }
 
-  .category-grid small {
-    align-self: end;
+  .use-case-visual :global(.use-case-symbol) {
+    height: 22px;
+    width: 22px;
+  }
+
+  .use-case-grid strong {
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .use-case-grid small {
+    color: var(--color-text-faint);
+    font-size: 0.72rem;
+  }
+
+  .use-case-grid :global(.icon) {
+    color: var(--color-text-faint);
+    grid-row: 1 / 3;
+  }
+
+  .card-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .evidence-section {
+    display: grid;
+    gap: 3.5rem;
+    grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+    padding-bottom: 1rem;
+    padding-top: 5.5rem;
+  }
+
+  .evidence-heading h2 {
+    font-size: clamp(2rem, 3.8vw, 3.25rem);
+    font-weight: 500;
+    letter-spacing: -0.05em;
+    line-height: 1;
+    margin: 0.9rem 0 1.2rem;
+  }
+
+  .evidence-heading p,
+  .evidence-grid p {
     color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  .evidence-grid {
+    border-top: 1px solid var(--color-rule-strong);
+  }
+
+  .evidence-grid article {
+    border-bottom: 1px solid var(--color-rule);
+    display: grid;
+    gap: 0.9rem;
+    grid-template-columns: 2.5rem minmax(130px, 0.65fr) minmax(0, 1fr);
+    padding: 1.35rem 0;
+  }
+
+  .evidence-grid article > span {
+    color: var(--color-accent);
     font-family: var(--font-mono);
-    font-size: 0.68rem;
-    grid-column: 1;
-    margin-top: 0.25rem;
+    font-size: 0.75rem;
   }
 
-  .category-grid :global(.icon) {
-    align-self: end;
-    grid-column: 2;
-    grid-row: 2 / 4;
+  .evidence-grid h3,
+  .evidence-grid p {
+    font-size: 0.9rem;
+    margin: 0;
   }
 
-  @media (max-width: 900px) {
-    .stats-inner {
-      grid-template-columns: repeat(3, 1fr);
+  .evidence-grid h3 {
+    font-weight: 600;
+  }
+
+  @media (max-width: 1040px) {
+    .hero-grid {
+      gap: 3rem;
+      grid-template-columns: 1fr;
+      padding-bottom: 4rem;
+      padding-top: 4rem;
     }
 
-    .stats-inner > div:nth-child(4),
-    .stats-inner > div:nth-child(5) {
-      border-top: 1px solid var(--color-rule);
+    .hero-copy {
+      max-width: 42rem;
     }
 
-    .category-grid {
-      grid-template-columns: repeat(2, 1fr);
+    .trust-snapshot {
+      max-width: 760px;
+    }
+
+    .use-case-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card-grid > :last-child:nth-child(odd) {
+      grid-column: 1 / -1;
     }
   }
 
-  @media (max-width: 620px) {
-    .registry-hero {
-      min-height: 470px;
+  @media (max-width: 720px) {
+    .registry-hero,
+    .hero-grid {
+      min-height: 0;
     }
 
-    .hero-inner {
-      padding-top: 2.6rem;
+    .hero-grid {
+      padding-bottom: 3rem;
+      padding-top: 3rem;
+    }
+
+    .evidence-section {
+      grid-template-columns: 1fr;
+    }
+
+    .card-grid,
+    .use-case-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .card-grid > :last-child:nth-child(odd) {
+      grid-column: auto;
+    }
+
+    .home-section {
+      padding-bottom: 3.8rem;
+      padding-top: 3.8rem;
+    }
+
+    .evidence-section {
+      gap: 2rem;
+      padding-top: 4rem;
+    }
+
+    .section-heading {
+      align-items: start;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .snapshot-body {
+      grid-template-columns: 1fr;
+    }
+
+    .snapshot-counts {
+      border-bottom: 1px solid #3b526d;
+      border-right: 0;
+    }
+
+    .agent-guide pre {
+      max-height: none;
+    }
+  }
+
+  @media (max-width: 520px) {
+    h1 {
+      font-size: clamp(2.55rem, 13vw, 3.35rem);
     }
 
     .hero-search {
       height: 58px;
     }
 
-    .hero-search button span {
-      display: none;
+    .snapshot-heading,
+    .snapshot-counts,
+    .agent-guide {
+      padding-left: 1rem;
+      padding-right: 1rem;
     }
 
-    .stats-inner {
-      grid-template-columns: repeat(2, 1fr);
+    .evidence-grid article {
+      grid-template-columns: 2rem 1fr;
     }
 
-    .stats-inner > div:nth-child(2),
-    .stats-inner > div:nth-child(4) {
-      border-right: 0;
+    .evidence-grid article p {
+      grid-column: 2;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .use-case-grid a {
+      transition: none;
     }
 
-    .stats-inner > div:nth-child(3),
-    .stats-inner > div:nth-child(4),
-    .stats-inner > div:nth-child(5) {
-      border-top: 1px solid var(--color-rule);
-    }
-
-    .category-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .home-section {
-      padding-bottom: 3.3rem;
-      padding-top: 3.3rem;
+    .use-case-grid a:hover {
+      transform: none;
     }
   }
 </style>
