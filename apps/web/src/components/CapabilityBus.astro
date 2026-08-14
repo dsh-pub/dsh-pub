@@ -7,16 +7,24 @@ interface Props {
 }
 
 const { entry, compact = false } = Astro.props;
-const hasClient = Boolean(entry.runtime.client);
-const hasUi =
-  hasClient ||
-  entry.capabilities.uiContributions.length > 0 ||
-  ['ui', 'client-ui'].includes(entry.category);
-const hasTool = entry.capabilities.tools.length > 0 || ['tool', 'tools'].includes(entry.category);
-const hasData = ['storage', 'session', 'sessions'].includes(entry.category);
-const hasFlow =
-  ['workflow', 'orchestration', 'session', 'sessions'].includes(entry.category) ||
-  entry.type === 'bundle';
+const factsUnknown =
+  entry.runtime.hostLoadable === null ||
+  entry.capabilities.tools === null ||
+  entry.capabilities.uiContributions === null;
+const hasClient = factsUnknown ? null : Boolean(entry.runtime.client);
+const hasUi = factsUnknown
+  ? null
+  : hasClient ||
+    (entry.capabilities.uiContributions?.length ?? 0) > 0 ||
+    ['ui', 'client-ui'].includes(entry.category);
+const hasTool = factsUnknown
+  ? null
+  : (entry.capabilities.tools?.length ?? 0) > 0 || ['tool', 'tools'].includes(entry.category);
+const hasData = factsUnknown ? null : ['storage', 'session', 'sessions'].includes(entry.category);
+const hasFlow = factsUnknown
+  ? null
+  : ['workflow', 'orchestration', 'session', 'sessions'].includes(entry.category) ||
+    entry.type === 'bundle';
 const cells = [
   ['HOST', entry.runtime.hostLoadable],
   ['CLIENT', hasClient],
@@ -31,10 +39,20 @@ const cells = [
   <span class="bus-line" aria-hidden="true"></span>
   {
     cells.map(([label, active]) => (
-      <span class:list={['bus-cell', { active }]} title={`${label}: ${active ? 'yes' : 'no'}`}>
+      <span
+        class:list={['bus-cell', { active: active === true, unknown: active === null }]}
+        title={`${label}: ${active === null ? 'not inspected' : active ? 'yes' : 'no'}`}
+      >
         <i aria-hidden="true" />
         {label}
       </span>
     ))
   }
 </div>
+
+<style>
+  .bus-cell.unknown i {
+    border-style: dashed;
+    opacity: 0.72;
+  }
+</style>

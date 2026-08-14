@@ -88,22 +88,33 @@ describe('Harness catalog snapshot', () => {
   });
 
   it('keeps the community collection separate, pinned, and source-contract reviewed', () => {
-    expect(communityCatalog.totals).toEqual({ reviewed: 6, installable: 6 });
     expect(communityCatalog.entries).toHaveLength(communitySources.entries.length);
+    expect(communityCatalog.totals).toEqual({
+      reviewed: communityCatalog.entries.filter(
+        (entry) => entry.provenance?.status === 'community-reviewed',
+      ).length,
+      submitted: communityCatalog.entries.filter(
+        (entry) => entry.provenance?.status === 'community-submitted',
+      ).length,
+      installable: communityCatalog.entries.filter((entry) => entry.distribution.installable)
+        .length,
+    });
 
     const officialSlugs = new Set(catalog.entries.map((entry) => entry.slug));
     const communitySlugs = new Set<string>();
 
     for (const entry of communityCatalog.entries) {
       const source = communitySources.entries.find(
-        (candidate) => candidate.repository === entry.source.repository,
+        (candidate) =>
+          candidate.repository === entry.source.repository &&
+          candidate.directory === entry.source.directory,
       );
       expect(source).toBeDefined();
       expect(entry.source.commit).toMatch(/^[a-f0-9]{40}$/);
       expect(entry.source.commit).toBe(source?.commit);
       expect(entry.source.directory).toBe(source?.directory);
       expect(entry.name).toBe(source?.packageName);
-      expect(entry.provenance?.status).toBe('community-reviewed');
+      expect(['community-reviewed', 'community-submitted']).toContain(entry.provenance?.status);
       expect(entry.provenance?.statement.en).toContain('not a security audit');
       expect(entry.provenance?.statement.zh).toContain('不等于安全审计');
       expect(entry.distribution).toMatchObject({

@@ -111,7 +111,7 @@ const analyticsConfig = analyticsEnabled
     </script>
   </head>
   <body>
-    <a class="skip-link" href="#main-content">Skip to content</a>
+    <a class="skip-link" href="#main-content">{copy[locale].skipToContent}</a>
     <Header locale={locale} path={Astro.url.pathname} showSearch={showHeaderSearch} />
     <main id="main-content"><slot /></main>
     <Footer locale={locale} />

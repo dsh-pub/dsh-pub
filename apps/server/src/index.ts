@@ -6,6 +6,9 @@ const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3
 const REGISTRY_SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*(?:--[a-z0-9]+(?:-[a-z0-9]+)*)+$/;
 const VERSION_PATTERN = /^[\x21-\x7e]{1,128}$/;
 const INSTALLABLE_SLUGS = new Set<string>(installableRegistry.slugs);
+const BADGE_ROUTE_PATTERN =
+  /^\/api\/badges\/([A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?)\/([A-Za-z0-9._-]{1,100})\.svg$/;
+const BADGE_PATH_SEGMENT_PATTERN = /^[A-Za-z0-9._@-]+$/;
 
 export interface D1ResultLike<Row = Record<string, unknown>> {
   meta: { changes: number };
@@ -96,6 +99,49 @@ const json = (body: unknown, status = 200, origin: string | null = null) => {
   headers.set('Content-Type', 'application/json; charset=utf-8');
   headers.set('Cache-Control', 'no-store');
   return Response.json(body, { headers, status });
+};
+
+const metricSlugPart = (value: string) =>
+  value
+    .toLocaleLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+
+const badgeMetricSlug = (owner: string, repository: string, path: string | null) => {
+  const segments = path ? path.split('/') : [];
+  if (
+    segments.some(
+      (segment) =>
+        !segment ||
+        segment === '.' ||
+        segment === '..' ||
+        !BADGE_PATH_SEGMENT_PATTERN.test(segment),
+    )
+  ) {
+    throw new ApiError(400, 'invalid_badge_path', 'Badge path must be repository-relative.');
+  }
+  return [owner, repository, ...segments].map(metricSlugPart).filter(Boolean).join('--');
+};
+
+const registryBadge = (
+  request: Request,
+  owner: string,
+  repository: string,
+  path: string | null,
+) => {
+  const listed = INSTALLABLE_SLUGS.has(badgeMetricSlug(owner, repository, path));
+  const status = listed ? 'listed' : 'not listed';
+  const statusWidth = listed ? 46 : 68;
+  const totalWidth = 55 + statusWidth;
+  const statusColor = listed ? '#25804f' : '#687386';
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${totalWidth}" height="20" role="img" aria-label="dsh.pub registry status: ${status}"><title>dsh.pub registry status: ${status}</title><linearGradient id="s" x2="0" y2="100%"><stop offset="0" stop-color="#fff" stop-opacity=".18"/><stop offset="1" stop-opacity=".08"/></linearGradient><clipPath id="r"><rect width="${totalWidth}" height="20" rx="3" fill="#fff"/></clipPath><g clip-path="url(#r)"><rect width="55" height="20" fill="#14243a"/><rect x="55" width="${statusWidth}" height="20" fill="${statusColor}"/><rect width="${totalWidth}" height="20" fill="url(#s)"/></g><g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" font-size="11"><text x="27.5" y="15" fill="#010101" fill-opacity=".3">dsh.pub</text><text x="27.5" y="14">dsh.pub</text><text x="${55 + statusWidth / 2}" y="15" fill="#010101" fill-opacity=".3">${status}</text><text x="${55 + statusWidth / 2}" y="14">${status}</text></g></svg>`;
+  return new Response(request.method === 'HEAD' ? null : svg, {
+    headers: {
+      'Cache-Control': 'public, max-age=300',
+      'Content-Type': 'image/svg+xml; charset=utf-8',
+      'X-Content-Type-Options': 'nosniff',
+    },
+  });
 };
 
 const readJson = async (request: Request): Promise<unknown> => {
@@ -276,6 +322,18 @@ export const handleRequest = async (request: Request, env: WorkerBindings): Prom
   }
 
   if (!url.pathname.startsWith('/api/')) return env.ASSETS.fetch(request);
+
+  const badgeMatch = BADGE_ROUTE_PATTERN.exec(url.pathname);
+  if ((request.method === 'GET' || request.method === 'HEAD') && badgeMatch?.[1] && badgeMatch[2]) {
+    try {
+      return registryBadge(request, badgeMatch[1], badgeMatch[2], url.searchParams.get('path'));
+    } catch (error) {
+      if (error instanceof ApiError) {
+        return json({ error: error.code, message: error.message }, error.status);
+      }
+      throw error;
+    }
+  }
 
   const origin = request.headers.get('Origin');
   if (origin && !isAllowedOrigin(origin)) {

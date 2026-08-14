@@ -14,6 +14,12 @@ const locale = Astro.params.lang;
 if (!isLocale(locale)) throw new Error(`Unsupported locale: ${locale}`);
 const t = copy[locale];
 const categories = categoryCounts(marketplaceEntries);
+const reviewedCount = communityEntries.filter(
+  (entry) => entry.provenance?.status === 'community-reviewed',
+).length;
+const submittedCount = communityEntries.filter(
+  (entry) => entry.provenance?.status === 'community-submitted',
+).length;
 const structuredData = {
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
@@ -78,8 +84,17 @@ const structuredData = {
         <label>
           <input type="checkbox" name="provenance" value="community-reviewed" />
           <span>{t.communityReviewed}</span>
-          <small>{communityEntries.length}</small>
+          <small>{reviewedCount}</small>
         </label>
+        {
+          submittedCount > 0 && (
+            <label>
+              <input type="checkbox" name="provenance" value="community-submitted" />
+              <span>{t.communitySubmitted}</span>
+              <small>{submittedCount}</small>
+            </label>
+          )
+        }
       </fieldset>
 
       <fieldset>
@@ -136,7 +151,7 @@ const structuredData = {
       </div>
 
       <p class="community-policy">
-        <strong>{t.communityReviewed}</strong> — {t.communityReviewNotice}
+        <strong>{t.communityPlugins}</strong> — {t.communityReviewNotice}
       </p>
 
       <div class="active-filters" data-active-filters aria-live="polite"></div>

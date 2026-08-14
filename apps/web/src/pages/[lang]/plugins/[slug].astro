@@ -52,10 +52,17 @@ const metaDescription = seoDescription(entry, locale);
 const source = sourceUrl(entry);
 const sourceName = sourceCoordinate(entry);
 const provenance = provenanceStatus(entry);
+const provenanceLabel =
+  provenance === 'community-reviewed'
+    ? t.communityReviewed
+    : provenance === 'community-submitted'
+      ? t.communitySubmitted
+      : t.builtInSource;
 const command = installCommand(entry);
 const distributionNote = localized(entry.distribution.note, locale);
 const provenanceStatement =
-  entry.provenance?.status === 'community-reviewed'
+  entry.provenance?.status === 'community-reviewed' ||
+  entry.provenance?.status === 'community-submitted'
     ? localized(entry.provenance.statement, locale)
     : t.builtInSourceHelp;
 const readmeSource = localized(entry.docs?.readme, locale);
@@ -73,10 +80,13 @@ const readme = sanitizeHtml(rawReadme, {
   },
 });
 const limitation = localized(entry.docs?.limitations, locale);
-const contributionCount =
-  entry.capabilities.tools.length +
-  entry.capabilities.uiContributions.length +
-  entry.capabilities.uiSlotsDeclared.length;
+const tools = entry.capabilities.tools;
+const uiContributions = entry.capabilities.uiContributions;
+const uiSlotsDeclared = entry.capabilities.uiSlotsDeclared;
+const factsInspected = tools !== null && uiContributions !== null && uiSlotsDeclared !== null;
+const contributionCount = factsInspected
+  ? tools.length + uiContributions.length + uiSlotsDeclared.length
+  : null;
 const metricSlug = entry.distribution.installable ? installMetricSlug(entry) : undefined;
 const canonical = `https://dsh.pub/${locale}/plugins/${entry.slug}/`;
 const inLanguage = locale === 'zh' ? 'zh-CN' : 'en';
@@ -158,7 +168,7 @@ const structuredData = [
           <span class="tag">{typeLabel(entry.type, locale)}</span>
           <span class="tag">{categoryLabel(entry.category, locale)}</span>
           <span class="tag" title={provenanceStatement}>
-            {provenance === 'community-reviewed' ? t.communityReviewed : t.builtInSource}
+            {provenanceLabel}
           </span>
           {entry.runtime.configurable && <span class="tag">{t.configurable}</span>}
           {entry.runtime.client && <span class="tag">{t.webUi}</span>}
@@ -203,11 +213,11 @@ const structuredData = [
           )
         }
         {
-          provenance === 'community-reviewed' && (
+          provenance !== 'built-in' && (
             <div class="review-notice">
               <Icon name="check" size={18} />
               <p>
-                <strong>{t.communityReviewed}</strong> — {provenanceStatement}
+                <strong>{provenanceLabel}</strong> — {provenanceStatement}
               </p>
             </div>
           )
@@ -249,23 +259,55 @@ const structuredData = [
         <div class="capability-table">
           <div>
             <span>Host</span>
-            <strong>{entry.runtime.hostLoadable ? 'Cordis loadable' : 'No host entry'}</strong>
-            <small>{entry.runtime.configurable ? t.configurable : 'Zero-config'}</small>
+            <strong>
+              {
+                entry.runtime.hostLoadable === null
+                  ? t.notInspected
+                  : entry.runtime.hostLoadable
+                    ? 'Cordis loadable'
+                    : 'No host entry'
+              }
+            </strong>
+            <small>
+              {
+                entry.runtime.configurable === null
+                  ? t.notInspected
+                  : entry.runtime.configurable
+                    ? t.configurable
+                    : 'Zero-config'
+              }
+            </small>
           </div>
           <div>
             <span>Client / UI</span>
-            <strong>{entry.runtime.client ? t.webUi : 'Host only'}</strong>
-            <small>{entry.capabilities.uiContributions.length} contributions</small>
+            <strong>
+              {
+                entry.runtime.client === null
+                  ? t.notInspected
+                  : entry.runtime.client
+                    ? t.webUi
+                    : 'Host only'
+              }
+            </strong>
+            <small
+              >{
+                uiContributions === null
+                  ? t.notInspected
+                  : `${uiContributions.length} contributions`
+              }</small
+            >
           </div>
           <div>
             <span>Model tools</span>
-            <strong>{entry.capabilities.tools.length}</strong>
+            <strong>{tools === null ? t.notInspected : tools.length}</strong>
             <small
               >{
-                entry.capabilities.tools
-                  .slice(0, 2)
-                  .map((tool) => tool.name)
-                  .join(', ') || 'None declared'
+                tools === null
+                  ? t.notInspected
+                  : tools
+                      .slice(0, 2)
+                      .map((tool) => tool.name)
+                      .join(', ') || 'None declared'
               }</small
             >
           </div>
@@ -273,22 +315,30 @@ const structuredData = [
             <span>Profile state</span>
             <strong
               >{
-                entry.availability.defaultWeb === true
-                  ? 'enabled'
-                  : entry.availability.defaultWeb === false
-                    ? 'absent'
-                    : entry.availability.defaultWeb
+                entry.availability.defaultWeb === null
+                  ? t.notInspected
+                  : entry.availability.defaultWeb === true
+                    ? 'enabled'
+                    : entry.availability.defaultWeb === false
+                      ? 'absent'
+                      : entry.availability.defaultWeb
               }</strong
             >
-            <small>{entry.availability.profiles.join(', ') || t.included}</small>
+            <small>
+              {
+                entry.availability.profiles === null
+                  ? t.notInspected
+                  : entry.availability.profiles.join(', ') || t.included
+              }
+            </small>
           </div>
         </div>
 
         {
-          entry.capabilities.uiContributions.length > 0 && (
+          uiContributions !== null && uiContributions.length > 0 && (
             <div class="contribution-list">
               <h3>UI contributions</h3>
-              {entry.capabilities.uiContributions.map((item) => (
+              {uiContributions.map((item) => (
                 <div>
                   <code>{item.slot}</code>
                   <span>{item.component || item.id || 'component'}</span>
@@ -298,10 +348,10 @@ const structuredData = [
           )
         }
         {
-          entry.capabilities.tools.length > 0 && (
+          tools !== null && tools.length > 0 && (
             <div class="contribution-list">
               <h3>Model tools</h3>
-              {entry.capabilities.tools.map((tool) => (
+              {tools.map((tool) => (
                 <div>
                   <code>{tool.name}</code>
                   <span>{tool.description || 'Harness model tool'}</span>
@@ -384,7 +434,7 @@ const structuredData = [
           <div><dt>{t.capability}</dt><dd>{categoryLabel(entry.category, locale)}</dd></div>
           <div>
             <dt>{t.sourceScope}</dt>
-            <dd>{provenance === 'community-reviewed' ? t.communityReviewed : t.builtInSource}</dd>
+            <dd>{provenanceLabel}</dd>
           </div>
           <div><dt>Commit</dt><dd><code>{entry.source.commit.slice(0, 10)}</code></dd></div>
           <div><dt>Path</dt><dd><code>{entry.source.directory || '.'}</code></dd></div>
@@ -398,7 +448,9 @@ const structuredData = [
         <h2>{t.profiles}</h2>
         <div class="tag-row">
           {
-            entry.availability.profiles.length > 0 ? (
+            entry.availability.profiles === null ? (
+              <span class="tag">{t.notInspected}</span>
+            ) : entry.availability.profiles.length > 0 ? (
               entry.availability.profiles.map((profile) => (
                 <span class="tag primary">{profile}</span>
               ))
@@ -411,7 +463,11 @@ const structuredData = [
 
       <section class="sidebar-coordinate">
         <span>REGISTRY RECORD</span>
-        <strong>{String(contributionCount).padStart(2, '0')} / {entry.slug.slice(0, 16)}</strong>
+        <strong
+          >{contributionCount === null ? '--' : String(contributionCount).padStart(2, '0')} / {
+            entry.slug.slice(0, 16)
+          }</strong
+        >
       </section>
     </aside>
   </div>

@@ -88,7 +88,8 @@ body {
 
 button,
 input,
-select {
+select,
+textarea {
   font: inherit;
 }
 
@@ -105,7 +106,8 @@ a:hover {
 button,
 a,
 input,
-select {
+select,
+textarea {
   outline-offset: 3px;
 }
 
@@ -474,7 +476,7 @@ kbd,
     gap: 0.9rem;
   }
 
-  .header-nav > a:not(.language-link, .icon-link),
+  .header-nav > a:not(.language-link, .icon-link, .nav-submit),
   .header-search kbd {
     display: none;
   }

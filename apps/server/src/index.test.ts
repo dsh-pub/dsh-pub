@@ -125,6 +125,39 @@ const sendIntent = (env: WorkerBindings, id = eventId) =>
   handleRequest(post('/api/install-intents', { eventId: id, slug, version: 'main' }), env);
 
 describe('install telemetry worker', () => {
+  it('serves an embeddable registry badge with a truthful listing state', async () => {
+    const { env } = createEnv();
+    const listed = await handleRequest(
+      new Request('https://dsh.pub/api/badges/omdsh-dev/dsh-genui.svg'),
+      env,
+    );
+    const missing = await handleRequest(
+      new Request('https://dsh.pub/api/badges/example/not-yet-listed.svg'),
+      env,
+    );
+    const head = await handleRequest(
+      new Request('https://dsh.pub/api/badges/omdsh-dev/dsh-genui.svg', {
+        headers: { Origin: 'https://github.com' },
+        method: 'HEAD',
+      }),
+      env,
+    );
+    const invalidPath = await handleRequest(
+      new Request('https://dsh.pub/api/badges/example/plugin.svg?path=../escape'),
+      env,
+    );
+
+    expect(listed.status).toBe(200);
+    expect(listed.headers.get('Content-Type')).toBe('image/svg+xml; charset=utf-8');
+    expect(listed.headers.get('Cache-Control')).toBe('public, max-age=300');
+    expect(await listed.text()).toContain('listed');
+    expect(await missing.text()).toContain('not listed');
+    expect(head.status).toBe(200);
+    expect(await head.text()).toBe('');
+    expect(invalidPath.status).toBe(400);
+    await expect(invalidPath.json()).resolves.toMatchObject({ error: 'invalid_badge_path' });
+  });
+
   it('creates an install intent idempotently', async () => {
     const { db, env } = createEnv();
 

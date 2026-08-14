@@ -345,23 +345,36 @@ Do not claim runtime, UI, install, or compatibility checks that were not execute
 - Include an explicit open-source license. A package manifest's `license` field does not replace the
   repository license file for dsh.pub admission.
 
-## Make the repository discoverable
+## Submit the plugin to dsh.pub
 
 For dsh.pub's first-version community catalog:
 
 1. Make the repository public.
-2. Add the GitHub topic
-   [`dsh-plugin`](https://github.com/topics/dsh-plugin).
-3. Keep the independently installable package at the repository root, or document an exact package
+2. Keep the independently installable package at the repository root, or document an exact package
    subdirectory.
-4. Publish a commit containing `package.json`, the declared patch, all referenced runtime artifacts,
+3. Publish a commit containing `package.json`, the declared patch, all referenced runtime artifacts,
    README, and license.
-5. Use repository and package names you control; do not imply official DeepSeek ownership.
+4. Use repository and package names you control; do not imply official DeepSeek ownership.
+5. Open [the bilingual submission page](https://dsh.pub/en/submit/) or the
+   [GitHub Issue Form](https://github.com/dsh-pub/dsh-pub/issues/new?template=plugin-submission.yml).
 
-The GitHub topic is discovery only. dsh.pub manually checks a pinned public commit, bundle manifest,
-safe patch path, committed runtime output, source documentation, and license before marking an entry
-`community-reviewed`. That label is not a security audit, compatibility certification, or official
-DeepSeek endorsement.
+Both submission surfaces create the same public GitHub Issue queue. The workflow pins the current
+public default-branch commit, checks the bundle manifest, safe patch path, committed runtime output,
+README, and license without executing repository code, and integrates the entry automatically when
+the complete dsh.pub quality gates pass. Cloudflare Workers then deploys the new `main` through the
+repository's Git integration.
+
+Anyone may nominate a public repository. dsh.pub does not treat the Issue author as a verified
+publisher, and this first-version flow cannot overwrite an existing repository/package-path
+coordinate.
+
+The submission page immediately gives the submitter Markdown and HTML snippets for a live registry
+badge. It reports `not listed` until the catalog commit reaches production, then changes to `listed`.
+The successful Issue comment returns the snippets as well. Listing is not a human review, security
+audit, compatibility certification, quality score, or official DeepSeek endorsement.
+
+The optional [`dsh-plugin`](https://github.com/topics/dsh-plugin) topic helps people discover the
+broader ecosystem, but topic membership alone does not submit or list a plugin.
 
 ## Definition of done
 
@@ -378,7 +391,7 @@ DeepSeek endorsement.
 - [ ] `dsh --profile <name> --dump-config` shows the bundle and intended rows.
 - [ ] The exact public commit installs and boots in the intended profile.
 - [ ] README, license, compatibility, configuration, disable, and uninstall instructions exist.
-- [ ] GitHub topic and dsh.pub review state are described truthfully.
+- [ ] The dsh.pub automated listing state is described truthfully; no security or quality review is claimed.
 
 ## Source anchors
 

@@ -14,6 +14,13 @@ export type CatalogProvenance =
       discoveredVia: 'github-topic:dsh-plugin';
       reviewedAt: string;
       statement: LocalizedText;
+    }
+  | {
+      status: 'community-submitted';
+      submittedVia: 'github-issue';
+      submittedAt: string;
+      issue: string;
+      statement: LocalizedText;
     };
 
 export interface CatalogEntry {
@@ -38,19 +45,19 @@ export interface CatalogEntry {
     commit: string;
   };
   runtime: {
-    hostLoadable: boolean;
-    configurable: boolean;
-    client?: boolean | { platform?: string; inject?: string[]; injects?: string[] };
+    hostLoadable: boolean | null;
+    configurable: boolean | null;
+    client?: null | boolean | { platform?: string; inject?: string[]; injects?: string[] };
     hostInjects?: string[];
   };
   capabilities: {
-    tools: Array<{ name: string; description?: string; writes?: string[] }>;
-    uiContributions: Array<{ slot: string; id?: string; component?: string }>;
-    uiSlotsDeclared: Array<{ slot: string; kind?: string; scope?: string }>;
+    tools: Array<{ name: string; description?: string; writes?: string[] }> | null;
+    uiContributions: Array<{ slot: string; id?: string; component?: string }> | null;
+    uiSlotsDeclared: Array<{ slot: string; kind?: string; scope?: string }> | null;
   };
   availability: {
-    profiles: string[];
-    defaultWeb: boolean | 'enabled' | 'disabled' | 'conditional' | 'absent';
+    profiles: string[] | null;
+    defaultWeb: boolean | 'enabled' | 'disabled' | 'conditional' | 'absent' | null;
     bundles?: string[];
     presets?: string[];
   };

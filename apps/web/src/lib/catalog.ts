@@ -8,9 +8,9 @@ export const communityCatalog = rawCommunityCatalog as {
   source: {
     repository: string;
     generatedAt: string;
-    policy: 'curated-pinned-source-contracts';
+    policy: 'curated-pinned-source-contracts' | 'pinned-source-contracts';
   };
-  totals: { reviewed: number; installable: number };
+  totals: { reviewed: number; submitted?: number; installable: number };
   entries: CatalogEntry[];
 };
 
@@ -97,8 +97,8 @@ export function entrySearchText(entry: CatalogEntry): string {
     provenanceStatus(entry),
     entry.source.repository,
     ...(entry.runtime.hostInjects ?? []),
-    ...entry.capabilities.tools.map((tool) => tool.name),
-    ...entry.capabilities.uiContributions.map((item) => item.slot),
+    ...(entry.capabilities.tools ?? []).map((tool) => tool.name),
+    ...(entry.capabilities.uiContributions ?? []).map((item) => item.slot),
   ]
     .join(' ')
     .toLocaleLowerCase();

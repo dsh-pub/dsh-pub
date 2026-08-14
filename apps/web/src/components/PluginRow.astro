@@ -19,17 +19,24 @@ interface Props {
 const { entry, locale, compact = false } = Astro.props;
 const t = copy[locale];
 const client = Boolean(entry.runtime.client);
-const uiCount = entry.capabilities.uiContributions.length;
-const toolCount = entry.capabilities.tools.length;
+const uiCount = entry.capabilities.uiContributions?.length;
+const toolCount = entry.capabilities.tools?.length;
+const factsInspected = uiCount !== undefined && toolCount !== undefined;
 const modeLabel = entry.distribution.installable
   ? t.installable
   : entry.type === 'bundle'
     ? t.profileLayer
     : t.included;
 const provenance = provenanceStatus(entry);
-const provenanceLabel = provenance === 'community-reviewed' ? t.communityReviewed : t.builtInSource;
+const provenanceLabel =
+  provenance === 'community-reviewed'
+    ? t.communityReviewed
+    : provenance === 'community-submitted'
+      ? t.communitySubmitted
+      : t.builtInSource;
 const provenanceStatement =
-  entry.provenance?.status === 'community-reviewed'
+  entry.provenance?.status === 'community-reviewed' ||
+  entry.provenance?.status === 'community-submitted'
     ? localized(entry.provenance.statement, locale)
     : t.builtInSourceHelp;
 ---
@@ -49,7 +56,7 @@ const provenanceStatement =
       <h3><a href={`/${locale}/plugins/${entry.slug}/`}>{displayName(entry)}</a></h3>
       <span class:list={['tag', entry.distribution.installable && 'primary']}>{modeLabel}</span>
       <span
-        class:list={['tag', provenance === 'community-reviewed' && 'reviewed']}
+        class:list={['tag', provenance !== 'built-in' && 'reviewed']}
         title={provenanceStatement}>{provenanceLabel}</span
       >
     </div>
@@ -59,7 +66,11 @@ const provenanceStatement =
       <span class="tag">{typeLabel(entry.type, locale)}</span>
       {entry.runtime.configurable && <span class="tag">{t.configurable}</span>}
       {client && <span class="tag">{t.webUi}</span>}
-      {entry.availability.profiles.slice(0, 2).map((profile) => <span class="tag">{profile}</span>)}
+      {
+        (entry.availability.profiles ?? [])
+          .slice(0, 2)
+          .map((profile) => <span class="tag">{profile}</span>)
+      }
     </div>
     {!compact && <CapabilityBus entry={entry} compact />}
   </div>
@@ -69,9 +80,15 @@ const provenanceStatement =
       <dd>{entry.version}</dd>
     </div>
     <div>
-      <dt>{client ? 'UI' : toolCount > 0 ? 'Tools' : t.type}</dt>
+      <dt>{client ? 'UI' : factsInspected && toolCount > 0 ? 'Tools' : t.type}</dt>
       <dd>
-        {client ? Math.max(uiCount, 1) : toolCount > 0 ? toolCount : typeLabel(entry.type, locale)}
+        {
+          client
+            ? Math.max(uiCount ?? 0, 1)
+            : factsInspected && toolCount > 0
+              ? toolCount
+              : typeLabel(entry.type, locale)
+        }
       </dd>
     </div>
     <div>

@@ -2,7 +2,7 @@
 
 [dsh.pub](https://dsh.pub) is the bilingual, source-backed registry for the DeepSeek Harness plugin
 ecosystem. It catalogs the current built-in modules, explains runtime and UI capabilities, and
-separates atomic modules, built-in profile layers, and reviewed community bundles.
+separates atomic modules, built-in profile layers, and community bundles pinned to public source.
 
 ```text
 DeepSeek Harness source
@@ -12,8 +12,10 @@ DeepSeek Harness source
         │
         └── 3 manifest-declared bundles ──► built-in profile activation layers
 
-Reviewed community Git bundle ──► dshpub CLI ──► native dsh plugin add
-                                                      └─► D1 completed-install count
+Public plugin Issue ──► static contract checks ──► main ──► Cloudflare Workers
+        │
+        └── community Git bundle ──► dshpub CLI ──► native dsh plugin add
+                                                                └─► D1 completed-install count
 ```
 
 ## Workspace
@@ -86,10 +88,26 @@ The current three Harness bundles are built-in monorepo profile layers, not stan
 packages: their `workspace:` dependencies require the Harness workspace. The catalog therefore
 shows them as **built-in profile layers** without an install command or install count.
 
-Community repositories are a separate, pinned collection discovered through GitHub's
-`dsh-plugin` topic. Topic membership alone never causes inclusion: every listed source coordinate
-has a reviewed manifest, patch path, committed runtime entry, README, and license. This is a static
-source-contract review, not a security audit, runtime smoke test, or official endorsement.
+## Submit a plugin
+
+Use the bilingual submission page at [dsh.pub/submit](https://dsh.pub/en/submit/) or open the
+[GitHub Issue Form](https://github.com/dsh-pub/dsh-pub/issues/new?template=plugin-submission.yml)
+directly. Both create the same public queue. The submission workflow resolves the current public
+default-branch commit, reads the manifest-declared bundle contract and committed files without
+executing third-party code, runs the complete dsh.pub quality gates, and fast-forwards `main` only
+when all checks pass. The existing Cloudflare Workers Git integration deploys `main` automatically.
+Anyone may nominate a public repository; the Issue author is not treated as a verified publisher,
+and an existing repository/package-path coordinate cannot be overwritten through this flow.
+
+The web submission page also generates Markdown and HTML badge snippets. The live badge reports
+`not listed` until the registry commit is deployed, then changes to `listed` (with a short cache).
+The successful Issue comment returns the same snippets for authors who submit directly on GitHub.
+
+The `dsh-plugin` GitHub topic remains useful for ecosystem discovery, but it is not an automatic
+submission queue. Listing proves only that a pinned public bundle contract and required committed
+files passed automated checks; it is not a human review, security audit, runtime smoke test, quality
+score, or official endorsement. Older records labeled `community-reviewed` retain their historical
+provenance.
 
 The public metric means **CLI-reported completed installs**. It is not unique users, GitHub clone
 traffic, active usage, or installs performed directly through Git or the native DSH command.

@@ -4,6 +4,7 @@ import {
   builtInEntries,
   bundleEntries,
   catalog,
+  communityCatalog,
   communityEntries,
   featuredEntries,
   installableEntries,
@@ -25,7 +26,7 @@ describe('web catalog projection', () => {
       libraries: 34,
       bundles: 3,
     });
-    expect(installableEntries).toHaveLength(6);
+    expect(installableEntries).toHaveLength(communityEntries.length);
     expect(bundleEntries).toHaveLength(3);
     expect(builtInEntries.length).toBe(170);
     expect(bundleEntries.every((entry) => entry.distribution.activation === 'profile-layer')).toBe(
@@ -33,10 +34,10 @@ describe('web catalog projection', () => {
     );
   });
 
-  it('merges reviewed community entries without changing official totals', () => {
-    expect(communityEntries).toHaveLength(6);
+  it('merges pinned community entries without changing official totals', () => {
+    expect(communityEntries).toHaveLength(communityCatalog.totals.installable);
     expect(
-      communityEntries.every((entry) => provenanceStatus(entry) === 'community-reviewed'),
+      communityEntries.every((entry) => provenanceStatus(entry).startsWith('community-')),
     ).toBe(true);
     expect(communityEntries.every((entry) => entry.distribution.installable)).toBe(true);
     expect(new Set([...builtInEntries, ...communityEntries].map((entry) => entry.slug)).size).toBe(
@@ -76,8 +77,8 @@ describe('web catalog projection', () => {
   it('adds known high-value capability coordinates without changing source truth', () => {
     const trajectory = builtInEntries.find((entry) => entry.slug === 'client-ui-trajectory');
     const bash = builtInEntries.find((entry) => entry.slug === 'tool-bash');
-    expect(trajectory?.capabilities.uiContributions[0]?.slot).toBe('conversation.view');
-    expect(bash?.capabilities.tools[0]?.name).toBe('bash');
+    expect(trajectory?.capabilities.uiContributions?.[0]?.slot).toBe('conversation.view');
+    expect(bash?.capabilities.tools?.[0]?.name).toBe('bash');
   });
 
   it('keeps bundle metric slugs deterministic without claiming the built-ins are installable', () => {

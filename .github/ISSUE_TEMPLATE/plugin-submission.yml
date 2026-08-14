@@ -1,0 +1,60 @@
+name: Submit a plugin
+description: List a public DeepSeek Harness bundle on dsh.pub
+title: '[Plugin submission] '
+labels:
+  - plugin-submission
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Anyone may nominate a public plugin repository. dsh.pub checks public source files and lists a valid bundle without executing third-party code. The submitter is not verified as the publisher, existing coordinates cannot be overwritten, and listing is not a human review, security audit, or official endorsement.
+
+  - type: input
+    id: repository
+    attributes:
+      label: GitHub repository
+      description: A public repository URL in https://github.com/owner/repository form.
+      placeholder: https://github.com/owner/repository
+    validations:
+      required: true
+
+  - type: input
+    id: path
+    attributes:
+      label: Package path
+      description: Leave empty for the repository root, or enter a relative path such as packages/dsh-plugin.
+      placeholder: packages/dsh-plugin
+
+  - type: textarea
+    id: summary-en
+    attributes:
+      label: English summary
+      description: In one or two sentences, say what the plugin lets people do.
+      placeholder: Adds ... to DeepSeek Harness.
+    validations:
+      required: true
+
+  - type: textarea
+    id: summary-zh
+    attributes:
+      label: Chinese summary
+      description: Optional. If omitted, dsh.pub displays the English summary on the Chinese page.
+      placeholder: 为 DeepSeek Harness 增加……
+
+  - type: input
+    id: category
+    attributes:
+      label: Category
+      description: One of ui, tool, model, storage, workflow, session, runtime, or other.
+      placeholder: tool
+    validations:
+      required: true
+
+  - type: input
+    id: contract
+    attributes:
+      label: Submission contract
+      description: Submitting confirms that you understand the automated listing boundary above.
+      value: Accepted by submitting this Issue.
+    validations:
+      required: true

@@ -119,7 +119,10 @@ const structuredData = {
             <p>{t.communityPluginsBody}</p>
             <p class="community-policy">{t.communityReviewNotice}</p>
           </div>
-          <a class="text-link" href={`/${locale}/plugins/?provenance=community-reviewed`}>
+          <a
+            class="text-link"
+            href={`/${locale}/plugins/?provenance=community-reviewed,community-submitted`}
+          >
             {t.viewAll}
             <Icon name="arrow" size={16} />
           </a>

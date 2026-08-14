@@ -73,13 +73,17 @@ tested; they are not hand-authored marketing claims.
 - D1-backed totals labeled **CLI-reported completed installs**.
 - A zero-account CLI that accepts a public GitHub repository, validates `dsh.bundle.patch`, invokes
   the native DSH installer, and reports completion without blocking success when telemetry fails.
+- A zero-account community submission flow: a bilingual page opens a structured GitHub Issue, machine-valid
+  public bundles are integrated into `main`, and Cloudflare deploys them through the existing Git
+  integration.
+- Markdown and HTML registry badges whose live state is either `not listed` or `listed`.
 
 ## Non-goals
 
 - User accounts, publisher dashboards, reviews, likes, payments, or hosted plugin artifacts.
 - Claiming unique users, repository downloads, active use, or installs made outside the CLI.
 - Treating every source package as independently installable.
-- Automatic submission/moderation for third-party plugins in the first release.
+- Human review, security certification, or editorial ranking of every third-party submission.
 
 ## Success signals
 
@@ -93,5 +97,4 @@ tested; they are not hand-authored marketing claims.
 
 ## Open decisions
 
-- Public submission and trust/moderation model for third-party bundle repositories.
 - Whether a later score combines docs quality, validation, maintenance, and compatibility.

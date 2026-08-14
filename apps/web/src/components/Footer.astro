@@ -16,8 +16,9 @@ const t = copy[locale];
       <Logo />
       <p>{t.footerLine}</p>
     </div>
-    <nav aria-label="Footer">
+    <nav aria-label={t.footerNavigation}>
       <a href={`/${locale}/plugins/`}>{t.plugins}</a>
+      <a href={`/${locale}/submit/`}>{t.submit}</a>
       <a href="/develop-plugin.md">{t.documentation}</a>
       <a href="https://github.com/deepseek-ai/deepseek-harness">{t.source}</a>
     </nav>

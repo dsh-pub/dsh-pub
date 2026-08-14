@@ -10,6 +10,13 @@ export type CatalogProvenance =
       discoveredVia: 'github-topic:dsh-plugin';
       reviewedAt: string;
       statement: { en: string; zh: string };
+    }
+  | {
+      status: 'community-submitted';
+      submittedVia: 'github-issue';
+      submittedAt: string;
+      issue: string;
+      statement: { en: string; zh: string };
     };
 
 export interface CatalogEntry {
@@ -25,9 +32,10 @@ export interface CatalogEntry {
   description: { en: string; zh: string };
   source: { repository: string; directory: string; commit: string };
   runtime: {
-    hostLoadable: boolean;
-    configurable: boolean;
+    hostLoadable: boolean | null;
+    configurable: boolean | null;
     client:
+      | null
       | false
       | {
           platform: string;
@@ -37,13 +45,13 @@ export interface CatalogEntry {
         };
   };
   capabilities: {
-    tools: Array<string | { name: string; description?: string; writes?: string[] }>;
-    uiContributions: Array<string | { slot: string; id?: string; component?: string }>;
-    uiSlotsDeclared: Array<string | { slot: string; kind?: string; scope?: string }>;
+    tools: Array<string | { name: string; description?: string; writes?: string[] }> | null;
+    uiContributions: Array<string | { slot: string; id?: string; component?: string }> | null;
+    uiSlotsDeclared: Array<string | { slot: string; kind?: string; scope?: string }> | null;
   };
   availability: {
-    profiles: string[];
-    defaultWeb: boolean | 'enabled' | 'disabled' | 'conditional' | 'absent';
+    profiles: string[] | null;
+    defaultWeb: boolean | 'enabled' | 'disabled' | 'conditional' | 'absent' | null;
     bundles?: string[];
     presets?: string[];
   };
@@ -86,11 +94,11 @@ export interface Catalog {
 
 export interface CommunityCatalog {
   source: {
-    repository: 'https://github.com/topics/dsh-plugin';
+    repository: string;
     generatedAt: string;
-    policy: 'curated-pinned-source-contracts';
+    policy: 'curated-pinned-source-contracts' | 'pinned-source-contracts';
   };
-  totals: { reviewed: number; installable: number };
+  totals: { reviewed: number; submitted?: number; installable: number };
   entries: CatalogEntry[];
 }
 

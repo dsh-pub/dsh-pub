@@ -12,6 +12,8 @@ interface Props {
 const { locale, path, showSearch = true } = Astro.props;
 const t = copy[locale];
 const alternate = path.replace(`/${locale}`, `/${otherLocale(locale)}`);
+const pluginsActive = path.startsWith(`/${locale}/plugins`);
+const submitActive = path.startsWith(`/${locale}/submit`);
 ---
 
 <header class="site-header">
@@ -26,8 +28,17 @@ const alternate = path.replace(`/${locale}`, `/${otherLocale(locale)}`);
         </form>
       )
     }
-    <nav class="header-nav" aria-label="Primary">
-      <a class="nav-primary" href={`/${locale}/plugins/`}>{t.plugins}</a>
+    <nav class="header-nav" aria-label={t.primaryNavigation}>
+      <a
+        class:list={{ 'nav-primary': pluginsActive }}
+        href={`/${locale}/plugins/`}
+        aria-current={pluginsActive ? 'page' : undefined}>{t.plugins}</a
+      >
+      <a
+        class:list={['nav-submit', { 'nav-primary': submitActive }]}
+        href={`/${locale}/submit/`}
+        aria-current={submitActive ? 'page' : undefined}>{t.submit}</a
+      >
       <a href="/develop-plugin.md">{t.documentation}</a>
       <a class="language-link" href={alternate} hreflang={otherLocale(locale)}>{t.language}</a>
       <a
@@ -37,7 +48,7 @@ const alternate = path.replace(`/${locale}`, `/${otherLocale(locale)}`);
       >
         <Icon name="github" />
       </a>
-      <button class="theme-toggle" type="button" aria-label="Toggle color theme" data-theme-toggle>
+      <button class="theme-toggle" type="button" aria-label={t.toggleTheme} data-theme-toggle>
         <Icon name="sun" />
       </button>
     </nav>
