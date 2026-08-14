@@ -2,6 +2,7 @@
   "name": "dsh-pub",
   "version": "0.1.0",
   "description": "DSH Pub workspace.",
+  "license": "MIT",
   "private": true,
   "type": "module",
   "workspaces": [

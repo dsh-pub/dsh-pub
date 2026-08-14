@@ -17,4 +17,4 @@
 ## Provenance
 
 - [DeepSeek Harness source](https://github.com/deepseek-ai/deepseek-harness)
-- [dsh.pub source](https://github.com/OneeMe/dsh-pub)
+- [dsh.pub source](https://github.com/dsh-pub/dsh-pub)
