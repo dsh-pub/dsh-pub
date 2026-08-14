@@ -6,10 +6,12 @@ import { promisify } from 'node:util';
 
 const run = promisify(execFile);
 const root = new URL('..', import.meta.url);
-const artifactPaths = [
-  new URL('../apps/dsh-plugin/lib/', import.meta.url),
+const artifactFiles = [
+  new URL('../apps/dsh-plugin/lib/index.js', import.meta.url),
+  new URL('../apps/dsh-plugin/lib/client.js', import.meta.url),
   new URL('../apps/dsh-plugin/src/client/catalog.generated.json', import.meta.url),
 ];
+const declarationRoot = new URL('../apps/dsh-plugin/lib/types/', import.meta.url);
 
 async function filesUnder(path) {
   const statEntries = await readdir(path, { withFileTypes: true });
@@ -24,12 +26,12 @@ async function filesUnder(path) {
 
 async function digestArtifacts() {
   const hash = createHash('sha256');
-  for (const path of artifactPaths) {
-    const files = path.pathname.endsWith('/') ? await filesUnder(path) : [path];
-    for (const file of files) {
-      hash.update(relative(new URL('.', root).pathname, file.pathname));
-      hash.update(await readFile(file));
-    }
+  const declarations = (await filesUnder(declarationRoot)).filter((file) =>
+    file.pathname.endsWith('.d.ts'),
+  );
+  for (const file of [...artifactFiles, ...declarations]) {
+    hash.update(relative(new URL('.', root).pathname, file.pathname));
+    hash.update(await readFile(file));
   }
   return hash.digest('hex');
 }
