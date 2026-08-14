@@ -12,14 +12,14 @@ Every repository was inspected read-only at a fixed 40-character default-branch
 commit. Third-party installers, builds, runtime entries, and tests were not
 executed.
 
-| Best-match ranks | GitHub total observed | Verified | Needs review | Ecosystem | Reject |
-| ---------------: | --------------------: | -------: | -----------: | --------: | -----: |
-|             1–50 |                   452 |       13 |           10 |        22 |      5 |
-|           51–100 |                     — |       29 |           10 |        10 |      1 |
-|          101–220 |                   467 |       50 |           48 |        21 |      1 |
-|          221–340 |                   473 |       46 |           58 |        15 |      1 |
-|          341–491 |                   491 |       55 |           69 |        20 |      7 |
-|        **Total** |                     — |  **193** |      **195** |    **88** | **15** |
+| Best-match ranks | GitHub total observed | Verified | Needs review | Ecosystem | Out of scope |
+| ---------------: | --------------------: | -------: | -----------: | --------: | -----------: |
+|             1–50 |                   452 |       13 |           10 |        22 |            5 |
+|           51–100 |                     — |       29 |           10 |        10 |            1 |
+|          101–220 |                   467 |       50 |           48 |        21 |            1 |
+|          221–340 |                   473 |       46 |           58 |        15 |            1 |
+|          341–491 |                   491 |       55 |           69 |        20 |            7 |
+|        **Total** |                     — |  **193** |      **195** |    **88** |       **15** |
 
 The last fragment was frozen at 2026-08-14 01:37:53–01:37:56 and has a
 [complete per-repository ledger](./dsh-plugin-topic-audit-341-491.md). Earlier
@@ -36,7 +36,7 @@ flowchart LR
   contract -->|"manifest + safe patch + committed runtime + docs + license"| verified["verified-plugin candidate"]
   contract -->|"real plugin, contract incomplete or inconsistent"| review["needs-review"]
   contract -->|"app, skill, handbook, awesome list, or companion"| ecosystem["broader ecosystem"]
-  contract -->|"template, duplicate, or unrelated"| reject["reject"]
+  contract -->|"template, duplicate, or unrelated"| outOfScope["out-of-scope"]
   verified --> runtime["Runtime/security verification still required"]
 ```
 

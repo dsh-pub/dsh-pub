@@ -24,12 +24,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/OneeMe/dsh-pub.git",
+    "url": "git+https://github.com/dsh-pub/dsh-pub.git",
     "directory": "apps/cli"
   },
   "homepage": "https://dsh.pub",
   "bugs": {
-    "url": "https://github.com/OneeMe/dsh-pub/issues"
+    "url": "https://github.com/dsh-pub/dsh-pub/issues"
   },
   "dependencies": {
     "yaml": "^2.9.0"

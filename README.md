@@ -126,3 +126,8 @@ npx wrangler deploy
 
 See [product decisions](docs/product.md), [architecture](docs/architecture.md), and
 [research evidence](docs/research.md).
+
+## License
+
+DSH Pub is available under the [MIT License](LICENSE). Generated catalog documentation derived from
+DeepSeek Harness retains its upstream notice in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
