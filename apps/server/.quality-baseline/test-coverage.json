@@ -11,14 +11,14 @@
       "total": 239
     },
     "branches": {
-      "covered": 60,
-      "pct": 74.07,
-      "total": 81
+      "covered": 61,
+      "pct": 74.39,
+      "total": 82
     },
     "functions": {
-      "covered": 16,
-      "pct": 94.12,
-      "total": 17
+      "covered": 17,
+      "pct": 94.44,
+      "total": 18
     },
     "lines": {
       "covered": 203,
