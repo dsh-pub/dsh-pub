@@ -232,6 +232,48 @@ const runtimeEntry = (manifest) => {
   return normalizePath(candidate.replace(/^\.\//, ''), { allowEmpty: false });
 };
 
+const clientEntry = (manifest) => {
+  const client = manifest.dsh?.client;
+  if (client === undefined) return undefined;
+  if (typeof client === 'string') {
+    if (!client.trim()) {
+      submissionError('invalid_client', 'dsh.client must point to a committed client entry file.');
+    }
+    return normalizePath(client.replace(/^\.\//, ''), { allowEmpty: false });
+  }
+  if (typeof client !== 'object' || client === null || Array.isArray(client)) {
+    submissionError('invalid_client', 'dsh.client must be a client metadata object.');
+  }
+  if (typeof client.platform !== 'string') {
+    submissionError('invalid_client', 'dsh.client.platform must be a string.');
+  }
+  if (
+    client.inject !== undefined &&
+    (!Array.isArray(client.inject) || client.inject.some((value) => typeof value !== 'string'))
+  ) {
+    submissionError('invalid_client', 'dsh.client.inject must be a string array.');
+  }
+  if (client.immediately !== undefined && typeof client.immediately !== 'boolean') {
+    submissionError('invalid_client', 'dsh.client.immediately must be a boolean.');
+  }
+  if (client.platform !== 'web') return undefined;
+
+  const clientExport = manifest.exports?.['./client'];
+  const candidate =
+    typeof clientExport === 'string'
+      ? clientExport
+      : typeof clientExport === 'object' &&
+          clientExport !== null &&
+          !Array.isArray(clientExport) &&
+          typeof clientExport.default === 'string'
+        ? clientExport.default
+        : undefined;
+  if (!candidate) {
+    submissionError('invalid_client', 'Object-form dsh.client requires a ./client export.');
+  }
+  return normalizePath(candidate.replace(/^\.\//, ''), { allowEmpty: false });
+};
+
 const assertPatch = (content) => {
   const document = parseDocument(content, { customTags: [DSH_JS_EXPRESSION_TAG] });
   const issue = document.errors[0] ?? document.warnings[0];
@@ -334,14 +376,9 @@ const inspectSubmission = async (submission, options) => {
   const runtimeEntryPath = repositoryPath(submission.directory, runtimeRelativePath);
   await getFile(inspection, runtimeEntryPath);
 
+  const clientRelativePath = clientEntry(manifest);
   let clientEntryPath;
-  if (manifest.dsh?.client !== undefined) {
-    if (typeof manifest.dsh.client !== 'string' || !manifest.dsh.client.trim()) {
-      submissionError('invalid_client', 'dsh.client must point to a committed client entry file.');
-    }
-    const clientRelativePath = normalizePath(manifest.dsh.client.replace(/^\.\//, ''), {
-      allowEmpty: false,
-    });
+  if (clientRelativePath) {
     clientEntryPath = repositoryPath(submission.directory, clientRelativePath);
     await getFile(inspection, clientEntryPath);
   }
@@ -372,7 +409,7 @@ const inspectSubmission = async (submission, options) => {
     bundlePatchPath,
     clientEntryPath,
     commit,
-    category: manifest.dsh?.client === undefined ? 'other' : 'ui',
+    category: clientEntryPath ? 'ui' : 'other',
     descriptionEn,
     descriptionZh: '',
     license: metadata.license,
