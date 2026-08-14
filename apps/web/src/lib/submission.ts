@@ -13,8 +13,24 @@ export interface SubmissionArtifacts {
   badgeUrl: string;
   catalogUrl: string;
   html: string;
-  issueUrl: string;
   markdown: string;
+}
+
+export type PluginSubmissionStatus =
+  'queued' | 'creating_pr' | 'pr_created' | 'already_submitted' | 'failed';
+
+export type PublicSubmissionErrorCode = 'submission_automation_failed' | 'submission_start_failed';
+
+export interface PluginSubmissionState {
+  errorCode?: PublicSubmissionErrorCode;
+  id: string;
+  prUrl?: string;
+  status: PluginSubmissionStatus;
+  statusUrl: string;
+}
+
+export interface PluginSubmissionConfig {
+  turnstileSiteKey: string;
 }
 
 const OWNER_PATTERN = /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$/;
@@ -73,11 +89,6 @@ const escapeAttribute = (value: string) =>
 
 export function buildSubmissionArtifacts(input: SubmissionInput): SubmissionArtifacts {
   const repository = normalizeGitHubRepository(input.repository);
-  const issueUrl = new URL('https://github.com/dsh-pub/dsh-pub/issues/new');
-  issueUrl.searchParams.set('template', 'plugin-submission.yml');
-  issueUrl.searchParams.set('title', `[Plugin submission] ${repository.coordinate}`);
-  issueUrl.searchParams.set('repository', repository.repository);
-
   const badgeUrl = new URL(`https://dsh.pub/api/badges/${repository.owner}/${repository.repo}.svg`);
   const catalogUrl = new URL('https://dsh.pub/en/plugins/');
   catalogUrl.searchParams.set('q', repository.coordinate);
@@ -88,7 +99,115 @@ export function buildSubmissionArtifacts(input: SubmissionInput): SubmissionArti
     badgeUrl: String(badgeUrl),
     catalogUrl: String(catalogUrl),
     html,
-    issueUrl: String(issueUrl),
     markdown,
   };
+}
+
+const submissionStatuses = new Set<PluginSubmissionStatus>([
+  'queued',
+  'creating_pr',
+  'pr_created',
+  'already_submitted',
+  'failed',
+]);
+const publicSubmissionErrorCodes = new Set<PublicSubmissionErrorCode>([
+  'submission_automation_failed',
+  'submission_start_failed',
+]);
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value);
+
+const responseError = async (response: Response) => {
+  let detail: unknown;
+  try {
+    detail = await response.json();
+  } catch {
+    // The public API may fail before it can produce a JSON body.
+  }
+  if (isRecord(detail)) {
+    const message =
+      (typeof detail.message === 'string' && detail.message) ||
+      (typeof detail.error === 'string' && detail.error);
+    if (message) return new Error(message);
+  }
+  return new Error(`Submission request failed with status ${response.status}.`);
+};
+
+const parseSubmissionState = async (response: Response): Promise<PluginSubmissionState> => {
+  if (!response.ok) throw await responseError(response);
+  const value: unknown = await response.json();
+  if (
+    !isRecord(value) ||
+    typeof value.id !== 'string' ||
+    !value.id ||
+    typeof value.status !== 'string' ||
+    !submissionStatuses.has(value.status as PluginSubmissionStatus) ||
+    typeof value.statusUrl !== 'string' ||
+    !/^\/api\/submissions\/[^/?#]+$/.test(value.statusUrl) ||
+    (value.prUrl !== undefined &&
+      (typeof value.prUrl !== 'string' ||
+        !/^https:\/\/github\.com\/dsh-pub\/dsh-pub\/pull\/[1-9][0-9]*$/.test(value.prUrl))) ||
+    (value.errorCode !== undefined && typeof value.errorCode !== 'string')
+  ) {
+    throw new Error('Submission API returned an invalid response.');
+  }
+  if (value.status === 'pr_created' && value.prUrl === undefined) {
+    throw new Error('Submission API returned an invalid response.');
+  }
+  return {
+    ...(typeof value.errorCode === 'string' &&
+    publicSubmissionErrorCodes.has(value.errorCode as PublicSubmissionErrorCode)
+      ? { errorCode: value.errorCode as PublicSubmissionErrorCode }
+      : {}),
+    id: value.id,
+    ...(typeof value.prUrl === 'string' ? { prUrl: value.prUrl } : {}),
+    status: value.status as PluginSubmissionStatus,
+    statusUrl: value.statusUrl,
+  };
+};
+
+export async function createPluginSubmission(
+  repositoryValue: string,
+  turnstileToken: string,
+  fetcher: typeof fetch = fetch,
+  idempotencyKey: string = crypto.randomUUID(),
+): Promise<PluginSubmissionState> {
+  const repository = normalizeGitHubRepository(repositoryValue);
+  if (!turnstileToken) throw new Error('Complete the security check before submitting.');
+  const response = await fetcher('/api/submissions', {
+    body: JSON.stringify({ repository: repository.repository, turnstileToken }),
+    headers: {
+      'Content-Type': 'application/json',
+      'Idempotency-Key': idempotencyKey,
+    },
+    method: 'POST',
+  });
+  return parseSubmissionState(response);
+}
+
+export async function getPluginSubmissionConfig(
+  fetcher: typeof fetch = fetch,
+): Promise<PluginSubmissionConfig> {
+  const response = await fetcher('/api/submission-config', { method: 'GET' });
+  if (!response.ok) throw await responseError(response);
+  const value: unknown = await response.json();
+  if (
+    !isRecord(value) ||
+    typeof value.turnstileSiteKey !== 'string' ||
+    !/^[A-Za-z0-9_-]{1,200}$/.test(value.turnstileSiteKey)
+  ) {
+    throw new Error('Submission API returned an invalid response.');
+  }
+  return { turnstileSiteKey: value.turnstileSiteKey };
+}
+
+export async function getPluginSubmission(
+  statusUrl: string,
+  fetcher: typeof fetch = fetch,
+): Promise<PluginSubmissionState> {
+  if (!/^\/api\/submissions\/[^/?#]+$/.test(statusUrl)) {
+    throw new Error('Submission status URL is invalid.');
+  }
+  return parseSubmissionState(await fetcher(statusUrl, { method: 'GET' }));
 }

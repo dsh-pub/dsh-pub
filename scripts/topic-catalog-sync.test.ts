@@ -141,7 +141,7 @@ describe('GitHub Topic catalog sync', () => {
       registry: { generatedFrom: 'packages/catalog/src/community.generated.json', slugs: [] },
       sources: {
         entries: [sourceRecord],
-        intake: 'https://github.com/dsh-pub/dsh-pub/issues/new?template=plugin-submission.yml',
+        intake: 'https://dsh.pub/en/submit/',
         policy: {},
         reviewedAt: '2026-08-14',
         schemaVersion: 2,

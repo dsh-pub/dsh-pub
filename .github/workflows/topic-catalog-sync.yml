@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 120
     permissions:
-      contents: write
+      contents: read
 
     steps:
       - name: Checkout main
@@ -56,9 +56,17 @@ jobs:
       - name: Build deployable workspace
         run: npm run build
 
+      - name: Create catalog push token
+        id: catalog-app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
+        with:
+          client-id: ${{ vars.DSH_PUB_APP_CLIENT_ID }}
+          permission-contents: write
+          private-key: ${{ secrets.DSH_PUB_APP_PRIVATE_KEY_PKCS8 }}
+
       - name: Commit generated catalog data
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ steps.catalog-app-token.outputs.token }}
         shell: bash
         run: |
           mapfile -t changed < <(git diff --name-only)

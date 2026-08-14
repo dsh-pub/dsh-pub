@@ -1,5 +1,8 @@
 blank_issues_enabled: true
 contact_links:
+  - name: Submit a DSH plugin
+    url: https://dsh.pub/en/submit/
+    about: Create the one-file pull request that starts automated validation.
   - name: Develop a DSH plugin
     url: https://dsh.pub/develop-plugin.md
     about: Read the source-backed plugin development contract before submitting.

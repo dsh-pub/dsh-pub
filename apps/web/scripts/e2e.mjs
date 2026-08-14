@@ -17,6 +17,9 @@ const sourceCatalog = JSON.parse(
 const communityCatalog = JSON.parse(
   await readFile(join(registryRoot, 'packages/catalog/src/community.generated.json'), 'utf8'),
 );
+const ecosystemCatalog = JSON.parse(
+  await readFile(join(registryRoot, 'packages/catalog/src/ecosystem.generated.json'), 'utf8'),
+);
 const marketplaceCount =
   sourceCatalog.entries.filter((entry) => entry.type === 'plugin' || entry.type === 'bundle')
     .length + communityCatalog.entries.length;
@@ -38,6 +41,7 @@ const contentTypes = {
   '.css': 'text/css; charset=utf-8',
   '.html': 'text/html; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
+  '.json': 'application/json; charset=utf-8',
   '.md': 'text/markdown; charset=utf-8',
   '.png': 'image/png',
   '.svg': 'image/svg+xml',
@@ -280,11 +284,38 @@ async function assertAgentGuide() {
     ) {
       throw new Error(`${path} does not render the animated Harness backdrop.`);
     }
+    if (!page.includes('https://dsh.pub/plugins.json')) {
+      throw new Error(`${path} does not direct agents to the static plugin index.`);
+    }
   }
 
   const llms = await responseBody('/llms.txt');
-  if (!llms.includes('https://dsh.pub/develop-plugin.md')) {
-    throw new Error('llms.txt does not advertise the Agent plugin-development guide.');
+  if (
+    !llms.includes('https://dsh.pub/develop-plugin.md') ||
+    !llms.includes('https://dsh.pub/plugins.json')
+  ) {
+    throw new Error('llms.txt does not advertise the Agent guides and static plugin index.');
+  }
+
+  const indexResponse = await fetch(`${origin}/plugins.json`);
+  const index = await indexResponse.json();
+  if (
+    !indexResponse.ok ||
+    indexResponse.headers.get('content-type') !== 'application/json; charset=utf-8' ||
+    index.schemaVersion !== 1 ||
+    index.totals?.registry !== marketplaceCount ||
+    index.totals?.ecosystem !== ecosystemCatalog.entries.length ||
+    !index.registry?.some(
+      (entry) =>
+        entry.slug === 'dsh-automation' &&
+        entry.source?.commit === '3c0188d7d94ed5b1e8caffeb73d7ac7ab34aabb3' &&
+        entry.install?.installable === true,
+    ) ||
+    !index.ecosystem?.some(
+      (entry) => entry.name === 'deepseek-harness' && entry.discoveryOnly === true,
+    )
+  ) {
+    throw new Error('The static plugin index is incomplete or inconsistent with catalog sources.');
   }
 }
 
@@ -332,6 +363,8 @@ try {
   await assertPage('/zh/plugins/dsh-automation/', 'rel="ugc"');
   await assertPage('/en/submit/', 'Submit a DSH plugin');
   await assertPage('/zh/submit/', '提交一个 DSH 插件');
+  await assertPage('/en/submit/', 'This is taking longer than expected. Please try again.');
+  await assertPage('/zh/submit/', '处理时间超出预期，请重试。');
   await assertPage('/en/', 'href="/en/submit/"');
   await assertPage('/zh/', 'href="/zh/submit/"');
 
@@ -449,6 +482,89 @@ try {
         status: 200,
       });
     });
+    await page.route('**/api/submission-config', async (route) => {
+      await route.fulfill({
+        body: JSON.stringify({ turnstileSiteKey: '1x00000000000000000000AA' }),
+        contentType: 'application/json',
+        status: 200,
+      });
+    });
+    await page.route(
+      'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit',
+      async (route) => {
+        await route.fulfill({
+          body: `globalThis.turnstile = {
+          render(_container, options) {
+            globalThis.__dshTurnstileOptions = options;
+            setTimeout(() => options.callback('turnstile-e2e-token'), 0);
+            return 'turnstile-widget-1';
+          },
+          reset() {
+            setTimeout(() => globalThis.__dshTurnstileOptions.callback('turnstile-retry-token'), 0);
+          }
+        };`,
+          contentType: 'application/javascript',
+          status: 200,
+        });
+      },
+    );
+    let submissionPosts = 0;
+    const submissionIdempotencyKeys = [];
+    await page.route('**/api/submissions**', async (route) => {
+      const request = route.request();
+      const url = new URL(request.url());
+      if (request.method() === 'POST' && url.pathname === '/api/submissions') {
+        const body = request.postDataJSON();
+        const idempotencyKey = request.headers()['idempotency-key'];
+        if (
+          body.repository !== 'https://github.com/example/dsh-clock' ||
+          body.turnstileToken !==
+            (submissionPosts === 0 ? 'turnstile-e2e-token' : 'turnstile-retry-token') ||
+          !/^[0-9a-f-]{36}$/.test(idempotencyKey ?? '')
+        ) {
+          throw new Error(
+            `Unexpected submission request: ${JSON.stringify({ body, idempotencyKey })}`,
+          );
+        }
+        submissionPosts += 1;
+        submissionIdempotencyKeys.push(idempotencyKey);
+        if (submissionPosts === 1) {
+          await route.fulfill({
+            body: JSON.stringify({
+              error: 'submission_start_failed',
+              message: 'The submission could not be started.',
+            }),
+            contentType: 'application/json',
+            status: 503,
+          });
+          return;
+        }
+        await route.fulfill({
+          body: JSON.stringify({
+            id: 'submission-123',
+            status: 'queued',
+            statusUrl: '/api/submissions/submission-123',
+          }),
+          contentType: 'application/json',
+          status: 202,
+        });
+        return;
+      }
+      if (request.method() === 'GET' && url.pathname === '/api/submissions/submission-123') {
+        await route.fulfill({
+          body: JSON.stringify({
+            id: 'submission-123',
+            prUrl: 'https://github.com/dsh-pub/dsh-pub/pull/42',
+            status: 'pr_created',
+            statusUrl: '/api/submissions/submission-123',
+          }),
+          contentType: 'application/json',
+          status: 200,
+        });
+        return;
+      }
+      await route.abort();
+    });
     await page.goto(`${origin}/en/submit/`);
     const repository = page.locator('input[name="repository"]');
     if ((await page.locator('[data-submission-form] input, textarea, select').count()) !== 1) {
@@ -489,8 +605,12 @@ try {
         badge.naturalWidth > 0
       );
     });
+    await page.waitForFunction(() => {
+      const button = globalThis.document.querySelector('[data-submit-button]');
+      return button instanceof globalThis.HTMLButtonElement && !button.disabled;
+    });
     const badgeReadyState = await page.evaluate(() => {
-      const issueLink = globalThis.document.querySelector('[data-submit-link]');
+      const submitButton = globalThis.document.querySelector('[data-submit-button]');
       const badge = globalThis.document.querySelector('[data-badge-image]');
       const markdown = globalThis.document.querySelector(
         '[data-snippet="markdown"] [data-snippet-value]',
@@ -499,17 +619,14 @@ try {
       const htmlCopy = globalThis.document.querySelector('[data-snippet="html"] button');
       return {
         alt: badge?.getAttribute('alt'),
-        href: issueLink?.getAttribute('href'),
+        disabled: submitButton?.hasAttribute('disabled'),
         htmlCopyName: htmlCopy?.getAttribute('aria-label'),
         markdown: markdown?.textContent,
         markdownCopyName: markdownCopy?.getAttribute('aria-label'),
       };
     });
     if (
-      badgeReadyState.href === null ||
-      !badgeReadyState.href?.includes(
-        'repository=https%3A%2F%2Fgithub.com%2Fexample%2Fdsh-clock',
-      ) ||
+      badgeReadyState.disabled ||
       !badgeReadyState.markdown?.includes('/api/badges/example/dsh-clock.svg') ||
       !badgeReadyState.alt?.includes('listed or not listed') ||
       !badgeReadyState.markdownCopyName?.includes('Markdown') ||
@@ -519,26 +636,169 @@ try {
       throw new Error(`Submission badge preview failed: ${JSON.stringify(badgeReadyState)}`);
     }
 
-    await page.locator('[data-submit-link]').evaluate((link) => {
-      link.addEventListener('click', (event) => {
-        event.preventDefault();
-        link.setAttribute('data-enter-href', link.getAttribute('href') ?? '');
-      });
+    const turnstileAction = await page.evaluate(() => globalThis.__dshTurnstileOptions?.action);
+    if (turnstileAction !== 'plugin-submission') {
+      throw new Error(`Turnstile action mismatch: ${String(turnstileAction)}`);
+    }
+    await repository.press('Enter');
+    await page.waitForFunction(() => {
+      const button = globalThis.document.querySelector('[data-submit-button]');
+      const status = globalThis.document.querySelector('[data-ready-status]');
+      return (
+        button instanceof globalThis.HTMLButtonElement &&
+        !button.disabled &&
+        status?.textContent?.includes('could not be created')
+      );
     });
     await repository.press('Enter');
-    const enteredHref = await page.locator('[data-submit-link]').getAttribute('data-enter-href');
-    const submissionUrl = new URL(enteredHref ?? 'https://example.invalid');
+    const pullRequestLink = page.locator('[data-pull-request-link]');
+    await pullRequestLink.waitFor({ state: 'visible' });
+    const submissionState = {
+      href: await pullRequestLink.getAttribute('href'),
+      idempotencyKeys: submissionIdempotencyKeys,
+      message: await page.locator('[data-ready-status]').textContent(),
+      posts: submissionPosts,
+      url: page.url(),
+    };
     if (
-      submissionUrl.origin !== 'https://github.com' ||
-      submissionUrl.pathname !== '/dsh-pub/dsh-pub/issues/new' ||
-      submissionUrl.searchParams.get('template') !== 'plugin-submission.yml' ||
-      submissionUrl.searchParams.get('repository') !== 'https://github.com/example/dsh-clock' ||
-      [...submissionUrl.searchParams.keys()].join(',') !== 'template,title,repository' ||
-      submissionUrl.searchParams.has('labels') ||
-      submissionUrl.searchParams.has('body')
+      submissionState.href !== 'https://github.com/dsh-pub/dsh-pub/pull/42' ||
+      !submissionState.message?.includes('Pull request created') ||
+      submissionState.posts !== 2 ||
+      submissionState.idempotencyKeys[0] === submissionState.idempotencyKeys[1] ||
+      submissionState.url !== `${origin}/en/submit/`
     ) {
-      throw new Error(`Submission Enter handoff failed: ${JSON.stringify({ enteredHref })}`);
+      throw new Error(`Asynchronous submission failed: ${JSON.stringify(submissionState)}`);
     }
+
+    const timeoutPage = await browser.newPage();
+    await timeoutPage.addInitScript(() => {
+      const nativeSetTimeout = globalThis.setTimeout.bind(globalThis);
+      globalThis.setTimeout = (handler, timeout = 0, ...arguments_) =>
+        nativeSetTimeout(handler, timeout === 1_000 ? 0 : timeout, ...arguments_);
+    });
+    await timeoutPage.route('https://dsh.pub/api/badges/**', async (route) => {
+      await route.fulfill({
+        body: '<svg xmlns="http://www.w3.org/2000/svg" width="123" height="20"></svg>',
+        contentType: 'image/svg+xml',
+        status: 200,
+      });
+    });
+    await timeoutPage.route('**/api/submission-config', async (route) => {
+      await route.fulfill({
+        body: JSON.stringify({ turnstileSiteKey: '1x00000000000000000000AA' }),
+        contentType: 'application/json',
+        status: 200,
+      });
+    });
+    await timeoutPage.route(
+      'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit',
+      async (route) => {
+        await route.fulfill({
+          body: `globalThis.turnstile = {
+          render(_container, options) {
+            globalThis.__dshTurnstileOptions = options;
+            setTimeout(() => options.callback('turnstile-timeout-token'), 0);
+            return 'turnstile-timeout-widget';
+          },
+          reset() {
+            setTimeout(() => globalThis.__dshTurnstileOptions.callback('turnstile-retry-token'), 0);
+          }
+        };`,
+          contentType: 'application/javascript',
+          status: 200,
+        });
+      },
+    );
+    let timeoutStatusGets = 0;
+    const timeoutIdempotencyKeys = [];
+    await timeoutPage.route('**/api/submissions**', async (route) => {
+      const request = route.request();
+      const url = new URL(request.url());
+      if (request.method() === 'POST' && url.pathname === '/api/submissions') {
+        timeoutIdempotencyKeys.push(request.headers()['idempotency-key']);
+        await route.fulfill({
+          body: JSON.stringify(
+            timeoutIdempotencyKeys.length === 1
+              ? {
+                  id: 'submission-timeout',
+                  status: 'queued',
+                  statusUrl: '/api/submissions/submission-timeout',
+                }
+              : {
+                  id: 'submission-retry',
+                  prUrl: 'https://github.com/dsh-pub/dsh-pub/pull/43',
+                  status: 'pr_created',
+                  statusUrl: '/api/submissions/submission-retry',
+                },
+          ),
+          contentType: 'application/json',
+          status: timeoutIdempotencyKeys.length === 1 ? 202 : 200,
+        });
+        return;
+      }
+      if (request.method() === 'GET' && url.pathname === '/api/submissions/submission-timeout') {
+        timeoutStatusGets += 1;
+        await route.fulfill({
+          body: JSON.stringify(
+            timeoutStatusGets > 65
+              ? {
+                  id: 'submission-timeout',
+                  prUrl: 'https://github.com/dsh-pub/dsh-pub/pull/99',
+                  status: 'pr_created',
+                  statusUrl: '/api/submissions/submission-timeout',
+                }
+              : {
+                  id: 'submission-timeout',
+                  status: 'queued',
+                  statusUrl: '/api/submissions/submission-timeout',
+                },
+          ),
+          contentType: 'application/json',
+          status: 200,
+        });
+        return;
+      }
+      await route.abort();
+    });
+    await timeoutPage.goto(`${origin}/en/submit/`);
+    const timeoutRepository = timeoutPage.locator('input[name="repository"]');
+    await timeoutRepository.fill('https://github.com/example/dsh-timeout');
+    await timeoutPage.waitForFunction(() => {
+      const button = globalThis.document.querySelector('[data-submit-button]');
+      return button instanceof globalThis.HTMLButtonElement && !button.disabled;
+    });
+    await timeoutRepository.press('Enter');
+    await timeoutPage.waitForFunction(
+      () => {
+        const button = globalThis.document.querySelector('[data-submit-button]');
+        const status = globalThis.document.querySelector('[data-ready-status]');
+        return (
+          button instanceof globalThis.HTMLButtonElement &&
+          !button.disabled &&
+          status?.textContent?.includes('taking longer than expected')
+        );
+      },
+      undefined,
+      { timeout: 2_000 },
+    );
+    const requestsAtTimeout = timeoutStatusGets;
+    await timeoutPage.waitForTimeout(50);
+    if (timeoutStatusGets !== requestsAtTimeout) {
+      throw new Error('Submission polling continued after the timeout state.');
+    }
+    await timeoutRepository.press('Enter');
+    await timeoutPage.locator('[data-pull-request-link]').waitFor({ state: 'visible' });
+    if (
+      timeoutIdempotencyKeys.length !== 2 ||
+      timeoutIdempotencyKeys[0] === timeoutIdempotencyKeys[1] ||
+      (await timeoutPage.locator('[data-pull-request-link]').getAttribute('href')) !==
+        'https://github.com/dsh-pub/dsh-pub/pull/43'
+    ) {
+      throw new Error(
+        `Submission timeout retry failed: ${JSON.stringify({ timeoutIdempotencyKeys, timeoutStatusGets })}`,
+      );
+    }
+    await timeoutPage.close();
   } finally {
     await browser.close();
   }

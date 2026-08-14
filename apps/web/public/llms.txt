@@ -10,6 +10,8 @@
 
 ## Catalog
 
+- [Machine-readable plugin index](https://dsh.pub/plugins.json): Static JSON for Agent-side search
+  across Registry records and discovery-only ecosystem candidates.
 - [English plugin catalog](https://dsh.pub/en/plugins/): Built-in and source-reviewed community
   capabilities.
 - [中文插件目录](https://dsh.pub/zh/plugins/): 内置插件与经过源码契约核对的社区插件。

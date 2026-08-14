@@ -23,7 +23,7 @@ describe('Topic catalog sync workflow contract', () => {
       .map((step: { uses?: string }) => step.uses)
       .filter((value: unknown): value is string => typeof value === 'string');
 
-    expect(job.permissions).toEqual({ contents: 'write' });
+    expect(job.permissions).toEqual({ contents: 'read' });
     expect(actionReferences.length).toBeGreaterThan(0);
     for (const reference of actionReferences) {
       expect(reference).toMatch(/^actions\/[a-z-]+@[a-f0-9]{40}$/);
@@ -43,6 +43,23 @@ describe('Topic catalog sync workflow contract', () => {
     const commit = job.steps.find(
       (step: { name?: string }) => step.name === 'Commit generated catalog data',
     );
+    const build = job.steps.find(
+      (step: { name?: string }) => step.name === 'Build deployable workspace',
+    );
+    const token = job.steps.find(
+      (step: { name?: string }) => step.name === 'Create catalog push token',
+    );
+    expect(token.uses).toBe(
+      'actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1',
+    );
+    expect(token.with).toEqual({
+      'client-id': '${{ vars.DSH_PUB_APP_CLIENT_ID }}',
+      'permission-contents': 'write',
+      'private-key': '${{ secrets.DSH_PUB_APP_PRIVATE_KEY_PKCS8 }}',
+    });
+    expect(job.steps.indexOf(token)).toBeGreaterThan(job.steps.indexOf(build));
+    expect(job.steps.indexOf(token)).toBeLessThan(job.steps.indexOf(commit));
+    expect(commit.env.GH_TOKEN).toBe('${{ steps.catalog-app-token.outputs.token }}');
     for (const path of [
       'apps/dsh-plugin/src/client/catalog.generated.json',
       'apps/server/src/installable-slugs.generated.json',
