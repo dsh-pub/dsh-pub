@@ -13,9 +13,9 @@ export type CatalogProvenance =
     }
   | {
       status: 'community-submitted';
-      submittedVia: 'github-issue';
+      submittedVia: 'github-pull-request';
       submittedAt: string;
-      issue: string;
+      pullRequest: string;
       statement: { en: string; zh: string };
     }
   | {

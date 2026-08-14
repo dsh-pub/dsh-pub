@@ -12,7 +12,9 @@ DeepSeek Harness source
         │
         └── 3 manifest-declared bundles ──► built-in profile activation layers
 
-Public plugin Issue ──► static contract checks ──► main ──► Cloudflare Workers
+Plugin submission PR ──► static contract checks ──► automatic merge ──► trusted catalog sync
+                                                                            │
+                                                                            └─► Cloudflare Workers
         │
         └── community Git bundle ──► dshpub CLI ──► native dsh plugin add
                                                                 └─► D1 completed-install count
@@ -104,18 +106,19 @@ See [`apps/dsh-plugin/README.md`](apps/dsh-plugin/README.md) for its update and 
 
 ## Submit a plugin
 
-Use the bilingual submission page at [dsh.pub/submit](https://dsh.pub/en/submit/) or open the
-[GitHub Issue Form](https://github.com/dsh-pub/dsh-pub/issues/new?template=plugin-submission.yml)
-directly. Both create the same public queue. The submission workflow resolves the current public
-default-branch commit, reads the manifest-declared bundle contract and committed files without
-executing third-party code, runs the complete dsh.pub quality gates, and fast-forwards `main` only
-when all checks pass. The existing Cloudflare Workers Git integration deploys `main` automatically.
-Anyone may nominate a public repository; the Issue author is not treated as a verified publisher,
-and an existing repository/package-path coordinate cannot be overwritten through this flow.
+Use the bilingual submission page at [dsh.pub/submit](https://dsh.pub/en/submit/). It prepares one
+small `submissions/*.json` file in GitHub; proposing that file opens a Pull Request. The trusted
+submission workflow reads the file from the exact fork commit without checking out or executing fork
+code, resolves the plugin repository's current public default-branch commit, validates its committed
+bundle contract, and runs the complete dsh.pub quality gates. A passing Pull Request is merged with a
+merge commit, then a trusted `main` workflow regenerates and commits the catalog. The existing
+Cloudflare Workers Git integration deploys `main` automatically. Anyone may nominate a public
+repository; the Pull Request author is not treated as a verified publisher, and an existing
+repository/package-path coordinate cannot be overwritten through this flow.
 
 The web submission page also generates Markdown and HTML badge snippets. The live badge reports
 `not listed` until the registry commit is deployed, then changes to `listed` (with a short cache).
-The successful Issue comment returns the same snippets for authors who submit directly on GitHub.
+The Pull Request and the checked-in submission file provide the public audit trail.
 
 The `dsh-plugin` GitHub topic is synchronized every day at 01:00 Asia/Shanghai. The workflow takes a
 cutoff snapshot, pins each public default-branch commit, validates root bundle contracts without

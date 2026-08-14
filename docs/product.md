@@ -81,9 +81,9 @@ tested; they are not hand-authored marketing claims.
 - D1-backed totals labeled **CLI-reported completed installs**.
 - A zero-account CLI that accepts a public GitHub repository, validates `dsh.bundle.patch`, invokes
   the native DSH installer, and reports completion without blocking success when telemetry fails.
-- A zero-account community submission flow: a bilingual page opens a structured GitHub Issue, machine-valid
-  public bundles are integrated into `main`, and Cloudflare deploys them through the existing Git
-  integration.
+- A zero-account community submission flow: a bilingual page prepares one small GitHub Pull Request,
+  machine-valid public bundles are merged automatically, and a trusted `main` workflow regenerates
+  the catalog before Cloudflare deploys it through the existing Git integration.
 - A daily `dsh-plugin` Topic intake: a cutoff snapshot statically validates root bundle contracts,
   lists passing repositories, and keeps machine-readable rejection reasons without executing
   third-party code.

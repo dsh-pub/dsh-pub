@@ -30,7 +30,7 @@ export const copy = {
       'Compare the source commit, license, runtime contributions, tools, UI slots, distribution mode, and review status. A catalog listing supports discovery; it is not a security audit, so inspect the repository and requested authority before running it.',
     registryGuidePublishTitle: 'How do I add a plugin?',
     registryGuidePublishBody:
-      'Submit a public Git repository through the GitHub Issue queue. Automated checks validate the bundle contract before the registry adds the record and generates a project badge.',
+      'Submit a public Git repository through a small GitHub pull request. Automated checks validate the bundle contract and merge passing submissions before the registry adds the record.',
     registryGuideSubmitLink: 'Submit a DSH plugin',
     registryGuideDevelopLink: 'Read the plugin development contract',
     plugins: 'Plugins',
@@ -80,12 +80,12 @@ export const copy = {
     communitySubmitted: 'Community · automated checks',
     communityAutomated: 'Community · Topic auto-analysis',
     communityReviewNotice:
-      'Community records pin public source. Topic discoveries and Issue submissions pass automated bundle checks; selected older records were source reviewed. None is a security audit or official endorsement.',
+      'Community records pin public source. Topic discoveries and pull request submissions pass automated bundle checks; selected older records were source reviewed. None is a security audit or official endorsement.',
     communitySubmissionNotice:
-      'This record came through the public Issue queue. Automated checks verified the public bundle contract and committed files, but did not verify publisher identity or runtime capabilities.',
+      'This record came through a public pull request. Automated checks verified the public bundle contract and committed files, but did not verify publisher identity or runtime capabilities.',
     communityPlugins: 'Community additions',
     communityPluginsBody:
-      'Installable Git bundles from daily GitHub Topic analysis, public Issue submissions, and pinned community source records.',
+      'Installable Git bundles from daily GitHub Topic analysis, public pull request submissions, and pinned community source records.',
     notInspected: 'Not inspected',
     version: 'Version',
     license: 'License',
@@ -156,7 +156,7 @@ export const copy = {
       '比较源码 commit、许可证、运行时贡献、模型工具、UI 插槽、分发方式和审核状态。目录收录只用于辅助发现，并不等于安全审计；运行前仍需检查仓库和它请求的权限。',
     registryGuidePublishTitle: '如何添加插件？',
     registryGuidePublishBody:
-      '通过 GitHub Issue 队列提交公开仓库。自动检查会验证组合包契约，然后目录生成插件条目和项目 Badge。',
+      '通过一份简短的 GitHub Pull Request 提交公开仓库。自动检查会验证组合包契约，通过后自动合入并生成目录条目。',
     registryGuideSubmitLink: '提交 DSH 插件',
     registryGuideDevelopLink: '阅读插件开发契约',
     plugins: '插件',
@@ -204,12 +204,12 @@ export const copy = {
     communitySubmitted: '社区 · 已通过自动检查',
     communityAutomated: '社区 · Topic 自动分析',
     communityReviewNotice:
-      '社区条目均固定到公开源码；Topic 自动发现与 Issue 提交会通过自动组合包检查，部分早期条目经过源码核对。以上都不等于安全审计或官方背书。',
+      '社区条目均固定到公开源码；Topic 自动发现与 Pull Request 提交会通过自动组合包检查，部分早期条目经过源码核对。以上都不等于安全审计或官方背书。',
     communitySubmissionNotice:
-      '此条目来自公开 Issue 队列。自动检查验证公开组合包契约与已提交文件，但不验证发布者身份或运行时能力。',
+      '此条目来自公开 Pull Request。自动检查验证公开组合包契约与已提交文件，但不验证发布者身份或运行时能力。',
     communityPlugins: '社区新增插件',
     communityPluginsBody:
-      '通过每日 GitHub Topic 分析、公开 Issue 提名或社区源码记录收录的可安装 Git 组合包。',
+      '通过每日 GitHub Topic 分析、公开 Pull Request 提交或社区源码记录收录的可安装 Git 组合包。',
     notInspected: '未核对',
     version: '版本',
     license: '许可证',

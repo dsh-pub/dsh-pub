@@ -20,21 +20,23 @@ describe('plugin submission artifacts', () => {
     );
   });
 
-  it('builds a single-field Issue handoff and live badge snippets', () => {
+  it('builds a single-file pull request handoff and live badge snippets', () => {
     const artifacts = buildSubmissionArtifacts({
       repository: 'https://github.com/Example/dsh-clock',
     });
 
-    const issue = new URL(artifacts.issueUrl);
-    expect(`${issue.origin}${issue.pathname}`).toBe(
-      'https://github.com/dsh-pub/dsh-pub/issues/new',
+    const submission = new URL(artifacts.submissionUrl);
+    expect(`${submission.origin}${submission.pathname}`).toBe(
+      'https://github.com/dsh-pub/dsh-pub/new/main',
     );
-    expect(issue.searchParams.get('template')).toBe('plugin-submission.yml');
-    expect(issue.searchParams.get('title')).toBe('[Plugin submission] Example/dsh-clock');
-    expect(issue.searchParams.get('repository')).toBe('https://github.com/Example/dsh-clock');
-    expect([...issue.searchParams.keys()]).toEqual(['template', 'title', 'repository']);
-    expect(issue.searchParams.has('labels')).toBe(false);
-    expect(issue.searchParams.has('body')).toBe(false);
+    expect(submission.searchParams.get('filename')).toBe('submissions/example--dsh-clock.json');
+    expect(JSON.parse(submission.searchParams.get('value') ?? '')).toEqual({
+      repository: 'https://github.com/Example/dsh-clock',
+      schemaVersion: 1,
+    });
+    expect(submission.searchParams.get('message')).toBe('submit: Example/dsh-clock');
+    expect([...submission.searchParams.keys()]).toEqual(['filename', 'value', 'message']);
+    expect(artifacts.submissionPath).toBe('submissions/example--dsh-clock.json');
     expect(artifacts.badgeUrl).toBe('https://dsh.pub/api/badges/Example/dsh-clock.svg');
     expect(artifacts.markdown).toContain('[![dsh.pub registry status](');
     expect(artifacts.markdown).toContain('https://dsh.pub/en/plugins/?q=Example%2Fdsh-clock');

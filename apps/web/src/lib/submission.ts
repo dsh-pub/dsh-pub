@@ -13,8 +13,9 @@ export interface SubmissionArtifacts {
   badgeUrl: string;
   catalogUrl: string;
   html: string;
-  issueUrl: string;
   markdown: string;
+  submissionPath: string;
+  submissionUrl: string;
 }
 
 const OWNER_PATTERN = /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$/;
@@ -73,10 +74,14 @@ const escapeAttribute = (value: string) =>
 
 export function buildSubmissionArtifacts(input: SubmissionInput): SubmissionArtifacts {
   const repository = normalizeGitHubRepository(input.repository);
-  const issueUrl = new URL('https://github.com/dsh-pub/dsh-pub/issues/new');
-  issueUrl.searchParams.set('template', 'plugin-submission.yml');
-  issueUrl.searchParams.set('title', `[Plugin submission] ${repository.coordinate}`);
-  issueUrl.searchParams.set('repository', repository.repository);
+  const submissionPath = `submissions/${repository.owner.toLocaleLowerCase()}--${repository.repo.toLocaleLowerCase()}.json`;
+  const submissionUrl = new URL('https://github.com/dsh-pub/dsh-pub/new/main');
+  submissionUrl.searchParams.set('filename', submissionPath);
+  submissionUrl.searchParams.set(
+    'value',
+    `${JSON.stringify({ schemaVersion: 1, repository: repository.repository }, null, 2)}\n`,
+  );
+  submissionUrl.searchParams.set('message', `submit: ${repository.coordinate}`);
 
   const badgeUrl = new URL(`https://dsh.pub/api/badges/${repository.owner}/${repository.repo}.svg`);
   const catalogUrl = new URL('https://dsh.pub/en/plugins/');
@@ -88,7 +93,8 @@ export function buildSubmissionArtifacts(input: SubmissionInput): SubmissionArti
     badgeUrl: String(badgeUrl),
     catalogUrl: String(catalogUrl),
     html,
-    issueUrl: String(issueUrl),
     markdown,
+    submissionPath,
+    submissionUrl: String(submissionUrl),
   };
 }

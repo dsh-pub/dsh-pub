@@ -1,36 +1,47 @@
 name: Plugin submission
 
 on:
-  issues:
+  pull_request_target:
     types:
       - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+    paths:
+      - submissions/**
+  push:
+    branches:
+      - main
+    paths:
+      - submissions/**
 
 permissions: {}
 
 concurrency:
-  group: plugin-submission
-  cancel-in-progress: false
+  group: plugin-submission-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request_target' }}
 
 jobs:
   validate:
-    name: Validate public bundle
-    if: contains(github.event.issue.labels.*.name, 'plugin-submission')
+    name: Validate plugin submission
+    if: github.event_name == 'pull_request_target' && github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
       contents: read
+      pull-requests: read
     outputs:
-      base_sha: ${{ steps.base.outputs.base_sha }}
+      base_sha: ${{ steps.process.outputs.base_sha }}
       changed: ${{ steps.process.outputs.changed }}
-      page_slug: ${{ steps.process.outputs.page_slug }}
+      head_sha: ${{ steps.process.outputs.head_sha }}
       valid: ${{ steps.process.outputs.valid }}
 
     steps:
-      - name: Checkout registry source
+      - name: Checkout trusted registry source
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
-          ref: main
+          ref: ${{ github.event.pull_request.base.sha }}
 
       - name: Setup environment
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
@@ -38,103 +49,121 @@ jobs:
           cache: npm
           node-version: '22'
 
-      - name: Record validated base
-        id: base
-        run: echo "base_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-
-      - name: Install registry dependencies
+      - name: Install trusted registry dependencies
         run: npm ci
 
-      - name: Inspect fixed public source
+      - name: Inspect the fixed public source
         id: process
-        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: node scripts/process-plugin-submission.mjs
 
-      - name: Upload submission result
-        if: ${{ always() }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: plugin-submission-result
-          path: .cache/plugin-submission/result.json
-          if-no-files-found: error
-          retention-days: 14
-
       - name: Run static checks
-        if: ${{ steps.process.outputs.valid == 'true' && steps.process.outputs.changed == 'true' }}
         run: npm run lint
 
       - name: Run unit tests
-        if: ${{ steps.process.outputs.valid == 'true' && steps.process.outputs.changed == 'true' }}
         run: npm run test
 
       - name: Install browser for E2E
-        if: ${{ steps.process.outputs.valid == 'true' && steps.process.outputs.changed == 'true' }}
         run: npx playwright install --with-deps chromium
 
       - name: Run integration tests
-        if: ${{ steps.process.outputs.valid == 'true' && steps.process.outputs.changed == 'true' }}
         run: npm run e2e
 
       - name: Build deployable workspace
-        if: ${{ steps.process.outputs.valid == 'true' && steps.process.outputs.changed == 'true' }}
         run: npm run build
 
-      - name: Upload validated catalog files
-        if: ${{ steps.process.outputs.valid == 'true' && steps.process.outputs.changed == 'true' }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: validated-plugin-catalog
-          path: .cache/plugin-submission/artifact/
-          if-no-files-found: error
-          retention-days: 1
-
-  integrate:
-    name: Integrate validated catalog
+  merge:
+    name: Merge validated submission
     needs: validate
-    if: ${{ needs.validate.outputs.valid == 'true' && needs.validate.outputs.changed == 'true' }}
+    if: needs.validate.outputs.valid == 'true' && needs.validate.outputs.changed == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
       contents: write
-    outputs:
-      commit_sha: ${{ steps.push.outputs.commit_sha }}
+      pull-requests: write
 
     steps:
-      - name: Checkout validated base
+      - name: Merge the validated pull request
+        env:
+          EXPECTED_BASE_SHA: ${{ needs.validate.outputs.base_sha }}
+          EXPECTED_HEAD_SHA: ${{ needs.validate.outputs.head_sha }}
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPOSITORY: ${{ github.repository }}
+        shell: bash
+        run: |
+          [[ "$EXPECTED_BASE_SHA" =~ ^[a-f0-9]{40}$ ]]
+          [[ "$EXPECTED_HEAD_SHA" =~ ^[a-f0-9]{40}$ ]]
+          [[ "$PR_NUMBER" =~ ^[1-9][0-9]*$ ]]
+          test "$(gh api "repos/$REPOSITORY/pulls/$PR_NUMBER" --jq .head.sha)" = "$EXPECTED_HEAD_SHA"
+          test "$(gh api "repos/$REPOSITORY/pulls/$PR_NUMBER" --jq .base.ref)" = main
+          test "$(gh api "repos/$REPOSITORY/pulls/$PR_NUMBER" --jq .draft)" = false
+          test "$(gh api "repos/$REPOSITORY/pulls/$PR_NUMBER" --jq .state)" = open
+          test "$(gh api "repos/$REPOSITORY/git/ref/heads/main" --jq .object.sha)" = "$EXPECTED_BASE_SHA"
+          test "$(gh api --method PUT "repos/$REPOSITORY/pulls/$PR_NUMBER/merge" \
+            -f sha="$EXPECTED_HEAD_SHA" \
+            -f merge_method=merge \
+            --jq .merged)" = true
+
+  integrate:
+    name: Integrate merged submission
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      pull-requests: read
+
+    steps:
+      - name: Checkout merged submission
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
+          fetch-depth: 0
           persist-credentials: false
-          ref: ${{ needs.validate.outputs.base_sha }}
+          ref: ${{ github.sha }}
 
-      - name: Download validated catalog files
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+      - name: Setup environment
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
-          name: validated-plugin-catalog
-          path: .
+          cache: npm
+          node-version: '22'
 
-      - name: Verify artifact file boundary
-        shell: bash
-        run: |
-          mapfile -t changed < <(git diff --name-only)
-          test "${#changed[@]}" -eq 4
-          for path in "${changed[@]}"; do
-            case "$path" in
-              apps/dsh-plugin/src/client/catalog.generated.json) ;;
-              apps/server/src/installable-slugs.generated.json) ;;
-              packages/catalog/src/community.generated.json) ;;
-              packages/catalog/src/community.sources.json) ;;
-              *) exit 1 ;;
-            esac
-          done
+      - name: Install trusted registry dependencies
+        run: npm ci
 
-      - name: Commit validated catalog
+      - name: Generate catalog from merged submissions
+        id: sync
         env:
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/sync-plugin-submissions.mjs
+
+      - name: Run static checks
+        if: steps.sync.outputs.changed == 'true'
+        run: npm run lint
+
+      - name: Run unit tests
+        if: steps.sync.outputs.changed == 'true'
+        run: npm run test
+
+      - name: Install browser for E2E
+        if: steps.sync.outputs.changed == 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Run integration tests
+        if: steps.sync.outputs.changed == 'true'
+        run: npm run e2e
+
+      - name: Build deployable workspace
+        if: steps.sync.outputs.changed == 'true'
+        run: npm run build
+
+      - name: Commit generated catalog
+        if: steps.sync.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
-          [[ "$ISSUE_NUMBER" =~ ^[0-9]+$ ]]
           git config user.name "dsh.pub catalog bot"
           git config user.email "catalog-bot@dsh.pub"
           git add \
@@ -142,95 +171,6 @@ jobs:
             apps/server/src/installable-slugs.generated.json \
             packages/catalog/src/community.generated.json \
             packages/catalog/src/community.sources.json
-          git commit -m "feat(catalog): list plugin from issue #$ISSUE_NUMBER"
-
-      - name: Fast-forward main
-        id: push
-        env:
-          GH_TOKEN: ${{ github.token }}
-        shell: bash
-        run: |
+          git commit -m "feat(catalog): integrate merged plugin submission"
           gh auth setup-git
           git push origin HEAD:main
-          echo "commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-
-  verify_deployment:
-    name: Verify Cloudflare deployment
-    needs:
-      - validate
-      - integrate
-    if: >-
-      always() &&
-      needs.validate.result == 'success' &&
-      needs.validate.outputs.valid == 'true' &&
-      (needs.validate.outputs.changed == 'false' || needs.integrate.result == 'success')
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    permissions:
-      checks: read
-      contents: read
-    outputs:
-      deployment_error_code: ${{ steps.verify.outputs.deployment_error_code }}
-      deployment_verified: ${{ steps.verify.outputs.deployment_verified }}
-
-    steps:
-      - name: Checkout deployment verifier
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-        with:
-          persist-credentials: false
-          ref: ${{ needs.validate.outputs.base_sha }}
-
-      - name: Download submission result
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
-        with:
-          name: plugin-submission-result
-          path: .cache/plugin-submission
-
-      - name: Wait for Cloudflare and verify the live catalog
-        id: verify
-        env:
-          DEPLOYMENT_TIMEOUT_MS: '720000'
-          GITHUB_TOKEN: ${{ github.token }}
-          INTEGRATED_COMMIT_SHA: ${{ needs.integrate.outputs.commit_sha }}
-          SUBMISSION_CHANGED: ${{ needs.validate.outputs.changed }}
-          SUBMISSION_RESULT_PATH: .cache/plugin-submission/result.json
-        run: node scripts/verify-plugin-deployment.mjs
-
-  report:
-    name: Report submission status
-    needs:
-      - validate
-      - integrate
-      - verify_deployment
-    if: ${{ always() && needs.validate.result != 'skipped' }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    permissions:
-      contents: read
-      issues: write
-
-    steps:
-      - name: Checkout reporting script
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-        with:
-          persist-credentials: false
-          ref: ${{ needs.validate.outputs.base_sha || github.sha }}
-
-      - name: Download submission result
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
-        with:
-          name: plugin-submission-result
-          path: .cache/plugin-submission
-
-      - name: Comment, label, and close successful submissions
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          DEPLOYMENT_ERROR_CODE: ${{ needs.verify_deployment.outputs.deployment_error_code }}
-          DEPLOYMENT_RESULT: ${{ needs.verify_deployment.result }}
-          DEPLOYMENT_VERIFIED: ${{ needs.verify_deployment.outputs.deployment_verified }}
-          INTEGRATED_COMMIT_SHA: ${{ needs.integrate.outputs.commit_sha }}
-          INTEGRATE_RESULT: ${{ needs.integrate.result }}
-          SUBMISSION_ISSUE_NUMBER: ${{ github.event.issue.number }}
-          SUBMISSION_RESULT_PATH: .cache/plugin-submission/result.json
-          VALIDATE_RESULT: ${{ needs.validate.result }}
-        run: node scripts/report-plugin-submission.mjs

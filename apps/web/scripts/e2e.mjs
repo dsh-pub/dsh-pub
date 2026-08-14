@@ -538,9 +538,7 @@ try {
     });
     if (
       badgeReadyState.href === null ||
-      !badgeReadyState.href?.includes(
-        'repository=https%3A%2F%2Fgithub.com%2Fexample%2Fdsh-clock',
-      ) ||
+      !badgeReadyState.href?.includes('filename=submissions%2Fexample--dsh-clock.json') ||
       !badgeReadyState.markdown?.includes('/api/badges/example/dsh-clock.svg') ||
       !badgeReadyState.alt?.includes('listed or not listed') ||
       !badgeReadyState.markdownCopyName?.includes('Markdown') ||
@@ -561,12 +559,11 @@ try {
     const submissionUrl = new URL(enteredHref ?? 'https://example.invalid');
     if (
       submissionUrl.origin !== 'https://github.com' ||
-      submissionUrl.pathname !== '/dsh-pub/dsh-pub/issues/new' ||
-      submissionUrl.searchParams.get('template') !== 'plugin-submission.yml' ||
-      submissionUrl.searchParams.get('repository') !== 'https://github.com/example/dsh-clock' ||
-      [...submissionUrl.searchParams.keys()].join(',') !== 'template,title,repository' ||
-      submissionUrl.searchParams.has('labels') ||
-      submissionUrl.searchParams.has('body')
+      submissionUrl.pathname !== '/dsh-pub/dsh-pub/new/main' ||
+      submissionUrl.searchParams.get('filename') !== 'submissions/example--dsh-clock.json' ||
+      JSON.parse(submissionUrl.searchParams.get('value') ?? '{}').repository !==
+        'https://github.com/example/dsh-clock' ||
+      [...submissionUrl.searchParams.keys()].join(',') !== 'filename,value,message'
     ) {
       throw new Error(`Submission Enter handoff failed: ${JSON.stringify({ enteredHref })}`);
     }

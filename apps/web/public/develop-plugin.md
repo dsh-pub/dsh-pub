@@ -355,23 +355,25 @@ For dsh.pub's first-version community catalog:
 3. Publish a commit containing `package.json`, the declared patch, all referenced runtime artifacts,
    README, and license.
 4. Use repository and package names you control; do not imply official DeepSeek ownership.
-5. Open [the bilingual submission page](https://dsh.pub/en/submit/) or the
-   [GitHub Issue Form](https://github.com/dsh-pub/dsh-pub/issues/new?template=plugin-submission.yml).
+5. Open [the bilingual submission page](https://dsh.pub/en/submit/) and propose its pre-filled
+   `submissions/*.json` file as a GitHub Pull Request.
 
-Both submission surfaces create the same public GitHub Issue queue. The workflow pins the current
-public default-branch commit, checks the bundle manifest, safe patch path, committed runtime output,
-README, and license without executing repository code, and integrates the entry automatically when
-the complete dsh.pub quality gates pass. Cloudflare Workers then deploys the new `main` through the
+The Pull Request workflow reads the one submission file from the exact fork commit without checking
+out or executing fork code. It pins the plugin repository's current public default-branch commit,
+checks the bundle manifest, safe patch path, committed runtime output, README, and license, and runs
+the complete dsh.pub quality gates. A passing Pull Request is merged automatically; a trusted `main`
+workflow then regenerates the catalog. Cloudflare Workers deploys the resulting `main` through the
 repository's Git integration.
 
-Anyone may nominate a public repository. dsh.pub does not treat the Issue author as a verified
+Anyone may nominate a public repository. dsh.pub does not treat the Pull Request author as a verified
 publisher, and this first-version flow cannot overwrite an existing repository/package-path
 coordinate.
 
 The submission page immediately gives the submitter Markdown and HTML snippets for a live registry
 badge. It reports `not listed` until the catalog commit reaches production, then changes to `listed`.
-The successful Issue comment returns the snippets as well. Listing is not a human review, security
-audit, compatibility certification, quality score, or official DeepSeek endorsement.
+The Pull Request and checked-in submission file form the public audit trail. Listing is not a human
+review, security audit, compatibility certification, quality score, or official DeepSeek
+endorsement.
 
 The optional [`dsh-plugin`](https://github.com/topics/dsh-plugin) topic helps people discover the
 broader ecosystem, but topic membership alone does not submit or list a plugin.
