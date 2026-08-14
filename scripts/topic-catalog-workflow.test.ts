@@ -46,6 +46,7 @@ describe('Topic catalog sync workflow contract', () => {
     const build = job.steps.find(
       (step: { name?: string }) => step.name === 'Build deployable workspace',
     );
+    const e2e = job.steps.find((step: { name?: string }) => step.name === 'Run integration tests');
     const token = job.steps.find(
       (step: { name?: string }) => step.name === 'Create catalog push token',
     );
@@ -57,10 +58,12 @@ describe('Topic catalog sync workflow contract', () => {
       'permission-contents': 'write',
       'private-key': '${{ secrets.DSH_PUB_APP_PRIVATE_KEY_PKCS8 }}',
     });
+    expect(job.steps.indexOf(build)).toBeLessThan(job.steps.indexOf(e2e));
     expect(job.steps.indexOf(token)).toBeGreaterThan(job.steps.indexOf(build));
     expect(job.steps.indexOf(token)).toBeLessThan(job.steps.indexOf(commit));
     expect(commit.env.GH_TOKEN).toBe('${{ steps.catalog-app-token.outputs.token }}');
     for (const path of [
+      'apps/dsh-plugin/lib/client.js',
       'apps/dsh-plugin/src/client/catalog.generated.json',
       'apps/server/src/installable-slugs.generated.json',
       'packages/catalog/src/community.generated.json',
