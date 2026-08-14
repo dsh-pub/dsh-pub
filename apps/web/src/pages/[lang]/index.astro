@@ -6,12 +6,12 @@ import {
   builtInEntries,
   bundleEntries,
   catalog,
-  categoryCounts,
   communityEntries,
   featuredEntries,
+  marketplaceEntries,
 } from '../../lib/catalog.js';
-import { categoryLabel } from '../../lib/categories.js';
 import { copy, isLocale, locales } from '../../lib/i18n.js';
+import { entriesForTopic, localizedTopic, registryTopics } from '../../lib/topics.js';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 export function getStaticPaths() {
@@ -23,16 +23,25 @@ if (!isLocale(locale)) throw new Error(`Unsupported locale: ${locale}`);
 const t = copy[locale];
 const bundles = bundleEntries.slice(0, 3);
 const featured = featuredEntries.length >= 6 ? featuredEntries : builtInEntries.slice(0, 8);
-const categories = categoryCounts(builtInEntries).slice(0, 8);
+const topics = registryTopics.map((topic) => ({
+  topic,
+  count: entriesForTopic(marketplaceEntries, topic).length,
+}));
 const clientCount =
   catalog.totals.client ?? catalog.entries.filter((entry) => entry.runtime.client).length;
 const structuredData = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: 'dsh.pub',
+  alternateName: ['DeepSeek Harness Plugin Registry', 'DSH Plugin Registry'],
   url: `https://dsh.pub/${locale}/`,
   description: t.siteDescription,
   inLanguage: locale === 'zh' ? 'zh-CN' : 'en',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: `https://dsh.pub/${locale}/plugins/?q={search_term_string}`,
+    'query-input': 'required name=search_term_string',
+  },
 };
 ---
 
@@ -147,8 +156,8 @@ const structuredData = {
       </div>
       <div class="category-grid">
         {
-          categories.map(([category, count], index) => (
-            <a href={`/${locale}/plugins/?category=${category}`}>
+          topics.map(({ topic, count }, index) => (
+            <a href={`/${locale}/categories/${topic.id}/`}>
               <span class="category-coordinate">0{index + 1}</span>
               <span class="category-glyph" aria-hidden="true">
                 <>
@@ -157,7 +166,7 @@ const structuredData = {
                   <i />
                 </>
               </span>
-              <strong>{categoryLabel(category, locale)}</strong>
+              <strong>{localizedTopic(topic.label, locale)}</strong>
               <small>
                 {count} {t.plugins.toLocaleLowerCase()}
               </small>

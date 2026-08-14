@@ -19,6 +19,7 @@ import {
 import { marketplaceEntries } from '../../../lib/catalog.js';
 import { categoryLabel, typeLabel } from '../../../lib/categories.js';
 import { copy, locales, type Locale } from '../../../lib/i18n.js';
+import { localizedTopic, topicForEntry } from '../../../lib/topics.js';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 
 export function getStaticPaths() {
@@ -58,6 +59,8 @@ const provenanceLabel =
     : provenance === 'community-submitted'
       ? t.communitySubmitted
       : t.builtInSource;
+const sourceRel = provenance === 'built-in' ? undefined : 'ugc';
+const topic = topicForEntry(entry);
 const command = installCommand(entry);
 const distributionNote = localized(entry.distribution.note, locale);
 const provenanceStatement =
@@ -90,6 +93,10 @@ const contributionCount = factsInspected
 const metricSlug = entry.distribution.installable ? installMetricSlug(entry) : undefined;
 const canonical = `https://dsh.pub/${locale}/plugins/${entry.slug}/`;
 const inLanguage = locale === 'zh' ? 'zh-CN' : 'en';
+const pageTitle =
+  locale === 'zh'
+    ? `${displayName(entry)}：DeepSeek Harness 插件`
+    : `${displayName(entry)} — DeepSeek Harness plugin`;
 const structuredData = [
   {
     '@context': 'https://schema.org',
@@ -128,7 +135,7 @@ const structuredData = [
 
 <BaseLayout
   locale={locale}
-  title={displayName(entry)}
+  title={pageTitle}
   description={metaDescription}
   structuredData={structuredData}
 >
@@ -151,7 +158,7 @@ const structuredData = [
         <p class="package-meta">
           <span>v{entry.version}</span>
           <span aria-hidden="true">•</span>
-          <a href={source}>{sourceName.replace('/', ' / ')}</a>
+          <a href={source} rel={sourceRel}>{sourceName.replace('/', ' / ')}</a>
           <span aria-hidden="true">•</span>
           <code>{entry.source.commit.slice(0, 10)}</code>
         </p>
@@ -166,7 +173,9 @@ const structuredData = [
             }
           </span>
           <span class="tag">{typeLabel(entry.type, locale)}</span>
-          <span class="tag">{categoryLabel(entry.category, locale)}</span>
+          <a class="tag" href={`/${locale}/categories/${topic.id}/`}>
+            {localizedTopic(topic.label, locale)}
+          </a>
           <span class="tag" title={provenanceStatement}>
             {provenanceLabel}
           </span>
@@ -376,7 +385,11 @@ const structuredData = [
                   ? '完整双语 README 位于源仓库。本目录页优先展示可自动验证的运行时与分发事实。'
                   : 'The complete bilingual README lives in the source repository. This registry page prioritizes runtime and distribution facts that can be verified automatically.'}
               </p>
-              <a class="text-link" href={`${source}/README${locale === 'zh' ? '.zh' : ''}.md`}>
+              <a
+                class="text-link"
+                href={`${source}/README${locale === 'zh' ? '.zh' : ''}.md`}
+                rel={sourceRel}
+              >
                 {t.openGitHub}
                 <Icon name="external" size={15} />
               </a>
@@ -439,7 +452,7 @@ const structuredData = [
           <div><dt>Commit</dt><dd><code>{entry.source.commit.slice(0, 10)}</code></dd></div>
           <div><dt>Path</dt><dd><code>{entry.source.directory || '.'}</code></dd></div>
         </dl>
-        <a class="source-button" href={source} id="source">
+        <a class="source-button" href={source} id="source" rel={sourceRel}>
           <Icon name="github" size={17} />{t.openGitHub}<Icon name="external" size={14} />
         </a>
       </section>

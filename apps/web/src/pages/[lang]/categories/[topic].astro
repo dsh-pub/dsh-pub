@@ -1,0 +1,299 @@
+---
+import Icon from '../../../components/Icon.astro';
+import PluginRow from '../../../components/PluginRow.astro';
+import { marketplaceEntries } from '../../../lib/catalog.js';
+import { displayName } from '../../../lib/catalog-types.js';
+import { copy, locales, type Locale } from '../../../lib/i18n.js';
+import {
+  entriesForTopic,
+  localizedTopic,
+  registryTopics,
+  type RegistryTopic,
+} from '../../../lib/topics.js';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+export function getStaticPaths() {
+  return locales.flatMap((locale) =>
+    registryTopics.map((topic) => ({
+      params: { lang: locale, topic: topic.id },
+      props: { locale, topic },
+    })),
+  );
+}
+
+interface Props {
+  locale: Locale;
+  topic: RegistryTopic;
+}
+
+const { locale, topic } = Astro.props;
+const t = copy[locale];
+const entries = entriesForTopic(marketplaceEntries, topic);
+const label = localizedTopic(topic.label, locale);
+const description = localizedTopic(topic.description, locale);
+const selectionAdvice = localizedTopic(topic.selectionAdvice, locale);
+const canonical = `https://dsh.pub/${locale}/categories/${topic.id}/`;
+const pageTitle =
+  locale === 'zh' ? `${label}：DeepSeek Harness 插件` : `${label} for DeepSeek Harness`;
+const metaDescription = description;
+const structuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: pageTitle,
+    url: canonical,
+    description: metaDescription,
+    inLanguage: locale === 'zh' ? 'zh-CN' : 'en',
+    isPartOf: {
+      '@type': 'WebSite',
+      name: 'dsh.pub',
+      url: `https://dsh.pub/${locale}/`,
+    },
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: entries.length,
+      itemListElement: entries.map((entry, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: displayName(entry),
+        url: `https://dsh.pub/${locale}/plugins/${entry.slug}/`,
+      })),
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: locale === 'zh' ? '首页' : 'Home',
+        item: `https://dsh.pub/${locale}/`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: t.registryHeading,
+        item: `https://dsh.pub/${locale}/plugins/`,
+      },
+      { '@type': 'ListItem', position: 3, name: label, item: canonical },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  locale={locale}
+  title={pageTitle}
+  description={metaDescription}
+  structuredData={structuredData}
+>
+  <header class="topic-hero">
+    <div class="page-shell">
+      <p class="eyebrow">DSH / REGISTRY / {topic.id.toLocaleUpperCase()}</p>
+      <h1>{label}</h1>
+      <p>{description}</p>
+      <div class="topic-actions">
+        <a href={`/${locale}/plugins/`}>{t.viewAll}<Icon name="arrow" size={15} /></a>
+        <a href={`/${locale}/submit/`}>{t.registryGuideSubmitLink}<Icon name="arrow" size={15} /></a
+        >
+      </div>
+    </div>
+  </header>
+
+  <div class="topic-layout page-shell">
+    <aside aria-label={locale === 'zh' ? '插件主题' : 'Plugin topics'}>
+      <span>{locale === 'zh' ? '浏览主题' : 'Browse topics'}</span>
+      <nav>
+        {
+          registryTopics.map((candidate) => (
+            <a
+              class:list={{ active: candidate.id === topic.id }}
+              href={`/${locale}/categories/${candidate.id}/`}
+              aria-current={candidate.id === topic.id ? 'page' : undefined}
+            >
+              {localizedTopic(candidate.label, locale)}
+              <small>{entriesForTopic(marketplaceEntries, candidate).length}</small>
+            </a>
+          ))
+        }
+      </nav>
+    </aside>
+
+    <section class="topic-results" id="topic-results">
+      <div class="topic-summary">
+        <div>
+          <span>{locale === 'zh' ? '收录条目' : 'Catalog records'}</span>
+          <strong>{entries.length}</strong>
+        </div>
+        <p>
+          <strong>{locale === 'zh' ? '选择提示：' : 'Selection note: '}</strong>{selectionAdvice}
+        </p>
+      </div>
+      <div>
+        {entries.map((entry) => <PluginRow entry={entry} locale={locale} />)}
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .topic-hero {
+    background: var(--color-navy-900);
+    color: white;
+    padding: 3.6rem 0 3.8rem;
+  }
+
+  .topic-hero :global(.eyebrow) {
+    color: var(--color-blue-300);
+    margin: 0 0 0.8rem;
+  }
+
+  .topic-hero h1 {
+    font-size: clamp(2.2rem, 4.5vw, 3.7rem);
+    font-weight: 440;
+    letter-spacing: -0.05em;
+    line-height: 1.03;
+    margin: 0;
+  }
+
+  .topic-hero p:not(.eyebrow) {
+    color: #c4d0de;
+    line-height: 1.65;
+    margin: 1rem 0 0;
+    max-width: 760px;
+  }
+
+  .topic-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    margin-top: 1.4rem;
+  }
+
+  .topic-actions a {
+    align-items: center;
+    color: var(--color-blue-300);
+    display: inline-flex;
+    font-size: 0.83rem;
+    gap: 0.4rem;
+  }
+
+  .topic-layout {
+    align-items: start;
+    display: grid;
+    gap: 3rem;
+    grid-template-columns: 220px minmax(0, 1fr);
+    padding-bottom: 5rem;
+    padding-top: 2.8rem;
+  }
+
+  .topic-layout aside {
+    position: sticky;
+    top: 1.5rem;
+  }
+
+  .topic-layout aside > span {
+    color: var(--color-text-faint);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+  }
+
+  .topic-layout nav {
+    border-top: 1px solid var(--color-rule-strong);
+    margin-top: 0.75rem;
+  }
+
+  .topic-layout nav a {
+    align-items: center;
+    border-bottom: 1px solid var(--color-rule);
+    color: var(--color-text-muted);
+    display: flex;
+    font-size: 0.82rem;
+    justify-content: space-between;
+    padding: 0.7rem 0.15rem;
+  }
+
+  .topic-layout nav a.active {
+    color: var(--color-accent);
+    font-weight: 570;
+  }
+
+  .topic-layout nav small {
+    font-family: var(--font-mono);
+  }
+
+  .topic-summary {
+    align-items: stretch;
+    background: var(--color-surface-subtle);
+    border: 1px solid var(--color-rule);
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    margin-bottom: 1rem;
+  }
+
+  .topic-summary > div {
+    border-right: 1px solid var(--color-rule);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .topic-summary span {
+    color: var(--color-text-faint);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+  }
+
+  .topic-summary strong {
+    font-family: var(--font-mono);
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+
+  .topic-summary p {
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin: 0;
+    padding: 1rem;
+  }
+
+  .topic-summary p strong {
+    color: var(--color-text);
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: 570;
+  }
+
+  @media (max-width: 760px) {
+    .topic-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .topic-layout aside {
+      position: static;
+    }
+
+    .topic-layout nav {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .topic-layout nav a:nth-child(odd) {
+      margin-right: 1rem;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .topic-summary {
+      grid-template-columns: 1fr;
+    }
+
+    .topic-summary > div {
+      border-bottom: 1px solid var(--color-rule);
+      border-right: 0;
+    }
+  }
+</style>

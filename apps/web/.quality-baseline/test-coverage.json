@@ -3,27 +3,27 @@
   "module": "apps/web",
   "command": "npm run test",
   "status": "measured",
-  "files": 6,
+  "files": 7,
   "coverage": {
     "statements": {
-      "covered": 183,
-      "pct": 39.96,
-      "total": 458
+      "covered": 557,
+      "pct": 88.84,
+      "total": 627
     },
     "branches": {
       "covered": 52,
-      "pct": 78.79,
-      "total": 66
+      "pct": 82.54,
+      "total": 63
     },
     "functions": {
-      "covered": 14,
-      "pct": 70,
-      "total": 20
+      "covered": 18,
+      "pct": 75,
+      "total": 24
     },
     "lines": {
-      "covered": 183,
-      "pct": 39.96,
-      "total": 458
+      "covered": 557,
+      "pct": 88.84,
+      "total": 627
     }
   }
 }

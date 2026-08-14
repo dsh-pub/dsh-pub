@@ -116,12 +116,23 @@ export function displayName(entry: CatalogEntry): string {
   return entry.name.replace('@deepseek-ai/dsh-', 'dsh-');
 }
 
+function fitSnippet(value: string, maxLength: number): string {
+  if (value.length <= maxLength) return value;
+  return `${value.slice(0, maxLength - 1).replace(/[，、,;:\s]+$/u, '')}…`;
+}
+
 export function seoDescription(entry: CatalogEntry, locale: Locale): string {
   const name = displayName(entry);
   if (locale === 'zh') {
-    return `查看 ${name} 的 ${entry.category} 能力、运行时、工具、UI 贡献、源码与 Profile 状态。`;
+    return fitSnippet(
+      `在 dsh.pub 查看 ${name} 这款 DeepSeek Harness 插件的 ${entry.category} 能力、运行时、工具、UI 贡献、固定源码与安装方式。`,
+      100,
+    );
   }
-  return `Explore ${name}, a DeepSeek Harness ${entry.category} ${entry.type}. Review its runtime, tools, UI contributions, source, and profile availability.`;
+  return fitSnippet(
+    `Explore ${name}, a DeepSeek Harness (DSH) ${entry.category} ${entry.type}. Review its runtime, tools, UI contributions, pinned source, and install path.`,
+    170,
+  );
 }
 
 const metricSlugPart = (value: string) =>

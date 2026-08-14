@@ -6,6 +6,26 @@ export const copy = {
   en: {
     siteDescription:
       'The source-backed registry for DeepSeek Harness plugins, bundles, tools, UI, and runtime capabilities.',
+    registryPageTitle: 'DeepSeek Harness Plugin Registry: Browse DSH Plugins',
+    registryPageDescription:
+      'Browse source-backed DeepSeek Harness (DSH) plugins by capability. Compare runtime contributions, inspect pinned source, copy install commands, and submit a plugin.',
+    registryHeading: 'DeepSeek Harness plugin registry',
+    registryLead:
+      'Discover built-in modules and installable community bundles with pinned source, runtime facts, and bilingual documentation.',
+    registryGuideTitle: 'Find, install, and publish DSH plugins',
+    registryGuideBody:
+      'dsh.pub turns the DeepSeek Harness plugin ecosystem into an inspectable directory instead of an unverified list of links.',
+    registryGuideWhatTitle: 'What is the DSH plugin registry?',
+    registryGuideWhatBody:
+      'A source-backed catalog of built-in Harness modules and public community bundles. Each record exposes its source, version, license, runtime, tools, UI contributions, and availability.',
+    registryGuideInstallTitle: 'How do I install a DSH plugin?',
+    registryGuideInstallBody:
+      'Installable community bundles include a pinned npx dshpub command. Built-in modules already ship with DeepSeek Harness and do not need a separate install.',
+    registryGuidePublishTitle: 'How do I add a plugin?',
+    registryGuidePublishBody:
+      'Submit a public Git repository through the GitHub Issue queue. Automated checks validate the bundle contract before the registry adds the record and generates a project badge.',
+    registryGuideSubmitLink: 'Submit a DSH plugin',
+    registryGuideDevelopLink: 'Read the plugin development contract',
     plugins: 'Plugins',
     documentation: 'Docs',
     submit: 'Submit',
@@ -13,7 +33,7 @@ export const copy = {
     search: 'Search plugins, tools, UI, storage…',
     searchShort: 'Search packages',
     eyebrow: 'The plugin registry for DeepSeek Harness',
-    heroTitle: 'Everything is a plugin.\nNow you can see the whole system.',
+    heroTitle: 'DeepSeek Harness plugin registry.\nSee the whole system.',
     heroBody:
       'Explore the modules already inside DSH, understand what they contribute, and see how built-in profile layers compose the experience.',
     sourceBacked: 'Source-backed',
@@ -106,6 +126,25 @@ export const copy = {
   },
   zh: {
     siteDescription: 'DeepSeek Harness 插件、组合包、工具、UI 与运行时能力的源码可信目录。',
+    registryPageTitle: 'DeepSeek Harness 插件目录：浏览与安装 DSH 插件',
+    registryPageDescription:
+      '按能力浏览源码可追溯的 DeepSeek Harness（DSH）插件，比较运行时贡献、查看固定源码、复制安装命令并提交插件。',
+    registryHeading: 'DeepSeek Harness 插件目录',
+    registryLead: '发现 DSH 内置模块和可安装的社区组合包，查看固定源码、运行时事实与双语文档。',
+    registryGuideTitle: '查找、安装和发布 DSH 插件',
+    registryGuideBody:
+      'dsh.pub 把 DeepSeek Harness 插件生态整理成可核对的目录，而不是一份未经验证的链接清单。',
+    registryGuideWhatTitle: '什么是 DSH 插件目录？',
+    registryGuideWhatBody:
+      '它收录 Harness 内置模块与公开社区组合包。每个条目都展示源码、版本、许可证、运行时、模型工具、UI 贡献和可用方式。',
+    registryGuideInstallTitle: '如何安装 DSH 插件？',
+    registryGuideInstallBody:
+      '可安装的社区组合包会提供固定版本的 npx dshpub 命令；内置模块已随 DeepSeek Harness 提供，无需单独安装。',
+    registryGuidePublishTitle: '如何添加插件？',
+    registryGuidePublishBody:
+      '通过 GitHub Issue 队列提交公开仓库。自动检查会验证组合包契约，然后目录生成插件条目和项目 Badge。',
+    registryGuideSubmitLink: '提交 DSH 插件',
+    registryGuideDevelopLink: '阅读插件开发契约',
     plugins: '插件',
     documentation: '文档',
     submit: '提交插件',
@@ -113,7 +152,7 @@ export const copy = {
     search: '搜索插件、工具、UI、存储…',
     searchShort: '搜索插件',
     eyebrow: 'DeepSeek Harness 插件目录',
-    heroTitle: '一切皆插件。\n现在，看清整个系统。',
+    heroTitle: 'DeepSeek Harness 插件目录。\n看清整个系统。',
     heroBody: '探索 DSH 已内置的模块，理解它们贡献的能力，以及内置 Profile 层如何组合出完整体验。',
     sourceBacked: '源码可追溯',
     bilingual: '中文 + English',

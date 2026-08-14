@@ -2,8 +2,10 @@
 import Icon from '../../../components/Icon.astro';
 import PluginRow from '../../../components/PluginRow.astro';
 import { categoryCounts, communityEntries, marketplaceEntries } from '../../../lib/catalog.js';
+import { displayName } from '../../../lib/catalog-types.js';
 import { categoryLabel, typeLabel } from '../../../lib/categories.js';
 import { copy, isLocale, locales } from '../../../lib/i18n.js';
+import { entriesForTopic, localizedTopic, registryTopics } from '../../../lib/topics.js';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 
 export function getStaticPaths() {
@@ -20,26 +22,55 @@ const reviewedCount = communityEntries.filter(
 const submittedCount = communityEntries.filter(
   (entry) => entry.provenance?.status === 'community-submitted',
 ).length;
-const structuredData = {
-  '@context': 'https://schema.org',
-  '@type': 'CollectionPage',
-  name: locale === 'zh' ? 'DeepSeek Harness 插件目录' : 'DeepSeek Harness plugin directory',
-  url: `https://dsh.pub/${locale}/plugins/`,
-  description: t.siteDescription,
-  inLanguage: locale === 'zh' ? 'zh-CN' : 'en',
-  isPartOf: { '@type': 'WebSite', name: 'dsh.pub', url: `https://dsh.pub/${locale}/` },
-};
+const registryUrl = `https://dsh.pub/${locale}/plugins/`;
+const structuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: t.registryHeading,
+    url: registryUrl,
+    description: t.registryPageDescription,
+    inLanguage: locale === 'zh' ? 'zh-CN' : 'en',
+    isPartOf: { '@type': 'WebSite', name: 'dsh.pub', url: `https://dsh.pub/${locale}/` },
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: marketplaceEntries.length,
+      itemListElement: marketplaceEntries.map((entry, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: displayName(entry),
+        url: `https://dsh.pub/${locale}/plugins/${entry.slug}/`,
+      })),
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: locale === 'zh' ? '首页' : 'Home',
+        item: `https://dsh.pub/${locale}/`,
+      },
+      { '@type': 'ListItem', position: 2, name: t.registryHeading, item: registryUrl },
+    ],
+  },
+];
 ---
 
 <BaseLayout
   locale={locale}
-  title={t.plugins}
+  title={t.registryPageTitle}
+  description={t.registryPageDescription}
   showHeaderSearch={false}
   structuredData={structuredData}
 >
   <section class="catalog-search-band">
     <div class="page-shell">
       <p class="eyebrow">DSH / REGISTRY / {t.plugins.toLocaleUpperCase()}</p>
+      <h1>{t.registryHeading}</h1>
+      <p class="registry-lead">{t.registryLead}</p>
       <form class="catalog-search" role="search" data-catalog-search>
         <Icon name="search" size={21} />
         <input
@@ -135,11 +166,11 @@ const structuredData = {
 
     <section class="catalog-results" aria-labelledby="results-heading">
       <div class="results-toolbar">
-        <h1 id="results-heading">
+        <h2 id="results-heading">
           <span>{t.browse}</span>
           <strong data-result-count>{marketplaceEntries.length}</strong>
           {t.results}
-        </h1>
+        </h2>
         <label>
           <span>{t.sort}</span>
           <select data-sort>
@@ -166,6 +197,46 @@ const structuredData = {
       </div>
     </section>
   </div>
+
+  <section class="registry-guide page-shell" aria-labelledby="registry-guide-title">
+    <div class="registry-guide-heading">
+      <p class="eyebrow">DSH / DISCOVER / INSTALL / PUBLISH</p>
+      <h2 id="registry-guide-title">{t.registryGuideTitle}</h2>
+      <p>{t.registryGuideBody}</p>
+    </div>
+    <nav class="registry-topic-links" aria-label={locale === 'zh' ? '插件主题' : 'Plugin topics'}>
+      {
+        registryTopics.map((topic) => (
+          <a href={`/${locale}/categories/${topic.id}/`}>
+            <span>{localizedTopic(topic.label, locale)}</span>
+            <small>{entriesForTopic(marketplaceEntries, topic).length}</small>
+          </a>
+        ))
+      }
+    </nav>
+    <div class="registry-guide-grid">
+      <article>
+        <span aria-hidden="true">01</span>
+        <h3>{t.registryGuideWhatTitle}</h3>
+        <p>{t.registryGuideWhatBody}</p>
+      </article>
+      <article>
+        <span aria-hidden="true">02</span>
+        <h3>{t.registryGuideInstallTitle}</h3>
+        <p>{t.registryGuideInstallBody}</p>
+        <code>npx dshpub add owner/repository --ref commit</code>
+      </article>
+      <article>
+        <span aria-hidden="true">03</span>
+        <h3>{t.registryGuidePublishTitle}</h3>
+        <p>{t.registryGuidePublishBody}</p>
+        <div class="registry-guide-links">
+          <a href={`/${locale}/submit/`}>{t.registryGuideSubmitLink}</a>
+          <a href="/develop-plugin.md">{t.registryGuideDevelopLink}</a>
+        </div>
+      </article>
+    </div>
+  </section>
 </BaseLayout>
 
 <script>
@@ -302,6 +373,22 @@ const structuredData = {
     margin: 0 0 0.7rem;
   }
 
+  .catalog-search-band h1 {
+    color: white;
+    font-size: clamp(2rem, 4vw, 3.45rem);
+    font-weight: 440;
+    letter-spacing: -0.045em;
+    line-height: 1.05;
+    margin: 0;
+  }
+
+  .registry-lead {
+    color: #c4d0de;
+    line-height: 1.6;
+    margin: 0.85rem 0 1.45rem;
+    max-width: 760px;
+  }
+
   .catalog-search {
     align-items: center;
     background: rgb(255 255 255 / 12%);
@@ -426,7 +513,7 @@ const structuredData = {
     min-height: 52px;
   }
 
-  .results-toolbar h1 {
+  .results-toolbar h2 {
     font-size: 0.8rem;
     font-weight: 430;
     letter-spacing: 0.035em;
@@ -434,7 +521,7 @@ const structuredData = {
     text-transform: uppercase;
   }
 
-  .results-toolbar h1 strong {
+  .results-toolbar h2 strong {
     background: var(--color-surface-subtle);
     border: 1px solid var(--color-rule);
     font-family: var(--font-mono);
@@ -524,6 +611,117 @@ const structuredData = {
     margin-top: 1rem;
   }
 
+  .registry-guide {
+    border-top: 1px solid var(--color-rule-strong);
+    margin-top: 5rem;
+    padding-bottom: 5rem;
+    padding-top: 4.5rem;
+  }
+
+  .registry-guide-heading {
+    max-width: 760px;
+  }
+
+  .registry-guide-heading :global(.eyebrow) {
+    color: var(--color-accent);
+    margin: 0 0 0.7rem;
+  }
+
+  .registry-guide-heading h2 {
+    font-size: clamp(1.8rem, 3.2vw, 2.7rem);
+    font-weight: 440;
+    letter-spacing: -0.04em;
+    margin: 0;
+  }
+
+  .registry-guide-heading > p:last-child {
+    color: var(--color-text-muted);
+    line-height: 1.65;
+    margin: 0.85rem 0 0;
+  }
+
+  .registry-guide-grid {
+    border-left: 1px solid var(--color-rule);
+    border-top: 1px solid var(--color-rule);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin-top: 2rem;
+  }
+
+  .registry-topic-links {
+    border-left: 1px solid var(--color-rule);
+    border-top: 1px solid var(--color-rule);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    margin-top: 2rem;
+  }
+
+  .registry-topic-links a {
+    align-items: center;
+    border-bottom: 1px solid var(--color-rule);
+    border-right: 1px solid var(--color-rule);
+    color: var(--color-text);
+    display: flex;
+    font-size: 0.82rem;
+    justify-content: space-between;
+    min-height: 58px;
+    padding: 0.75rem;
+  }
+
+  .registry-topic-links a:hover {
+    background: var(--color-accent-soft);
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .registry-topic-links small {
+    color: var(--color-text-faint);
+    font-family: var(--font-mono);
+  }
+
+  .registry-guide-grid article {
+    border-bottom: 1px solid var(--color-rule);
+    border-right: 1px solid var(--color-rule);
+    min-height: 270px;
+    padding: 1.25rem;
+  }
+
+  .registry-guide-grid article > span {
+    color: var(--color-text-faint);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+  }
+
+  .registry-guide-grid h3 {
+    font-size: 1.08rem;
+    margin: 2.8rem 0 0.75rem;
+  }
+
+  .registry-guide-grid p {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  .registry-guide-grid code {
+    background: var(--color-surface-subtle);
+    border: 1px solid var(--color-rule);
+    display: block;
+    font-size: 0.72rem;
+    margin-top: 1rem;
+    overflow-wrap: anywhere;
+    padding: 0.65rem;
+  }
+
+  .registry-guide-links {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.82rem;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
   @media (max-width: 820px) {
     .catalog-layout {
       gap: 1.5rem;
@@ -539,6 +737,22 @@ const structuredData = {
 
     .filter-heading {
       grid-column: 1 / -1;
+    }
+
+    .registry-guide-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .registry-topic-links {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .registry-guide-grid article {
+      min-height: auto;
+    }
+
+    .registry-guide-grid h3 {
+      margin-top: 1.5rem;
     }
   }
 

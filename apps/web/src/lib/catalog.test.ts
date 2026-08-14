@@ -8,16 +8,38 @@ import {
   communityEntries,
   featuredEntries,
   installableEntries,
+  marketplaceEntries,
 } from './catalog.js';
 import {
   installCommand,
   installMetricSlug,
   localized,
   provenanceStatus,
+  seoDescription,
   sourceUrl,
 } from './catalog-types.js';
+import { copy } from './i18n.js';
+import { entriesForTopic, registryTopics, topicForEntry } from './topics.js';
 
 describe('web catalog projection', () => {
+  it('names the registry around the primary bilingual search intent', () => {
+    expect(copy.en.registryPageTitle).toBe('DeepSeek Harness Plugin Registry: Browse DSH Plugins');
+    expect(copy.en.registryGuideTitle).toBe('Find, install, and publish DSH plugins');
+    expect(copy.zh.registryPageTitle).toContain('DeepSeek Harness 插件目录');
+    expect(copy.zh.registryGuideTitle).toBe('查找、安装和发布 DSH 插件');
+  });
+
+  it('maps every catalog record into one stable, indexable topic hub', () => {
+    const assignments = registryTopics.flatMap((topic) =>
+      entriesForTopic(marketplaceEntries, topic).map((entry) => `${entry.slug}:${topic.id}`),
+    );
+    expect(assignments).toHaveLength(marketplaceEntries.length);
+    expect(new Set(assignments.map((assignment) => assignment.split(':')[0])).size).toBe(
+      marketplaceEntries.length,
+    );
+    expect(marketplaceEntries.every((entry) => topicForEntry(entry).id.length > 0)).toBe(true);
+  });
+
   it('keeps source-backed totals and install boundaries visible', () => {
     expect(catalog.totals).toMatchObject({
       packages: 219,
@@ -79,6 +101,20 @@ describe('web catalog projection', () => {
     const bash = builtInEntries.find((entry) => entry.slug === 'tool-bash');
     expect(trajectory?.capabilities.uiContributions?.[0]?.slot).toBe('conversation.view');
     expect(bash?.capabilities.tools?.[0]?.name).toBe('bash');
+  });
+
+  it('describes detail pages as DeepSeek Harness plugins without exceeding snippet limits', () => {
+    const entry = communityEntries[0] ?? builtInEntries[0];
+    expect(entry).toBeDefined();
+    if (!entry) return;
+    const english = seoDescription(entry, 'en');
+    const chinese = seoDescription(entry, 'zh');
+    expect(english).toContain('DeepSeek Harness (DSH)');
+    expect(chinese).toContain('DeepSeek Harness 插件');
+    for (const item of marketplaceEntries) {
+      expect(seoDescription(item, 'en').length).toBeLessThanOrEqual(170);
+      expect(seoDescription(item, 'zh').length).toBeLessThanOrEqual(100);
+    }
   });
 
   it('keeps bundle metric slugs deterministic without claiming the built-ins are installable', () => {

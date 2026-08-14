@@ -11,9 +11,15 @@ const cwd = dirname(fileURLToPath(import.meta.url));
 const appRoot = join(cwd, '..');
 const distRoot = join(appRoot, 'dist');
 const registryRoot = join(appRoot, '..', '..');
+const sourceCatalog = JSON.parse(
+  await readFile(join(registryRoot, 'packages/catalog/src/catalog.generated.json'), 'utf8'),
+);
 const communityCatalog = JSON.parse(
   await readFile(join(registryRoot, 'packages/catalog/src/community.generated.json'), 'utf8'),
 );
+const marketplaceCount =
+  sourceCatalog.entries.filter((entry) => entry.type === 'plugin' || entry.type === 'bundle')
+    .length + communityCatalog.entries.length;
 const reviewedCommunityCount = communityCatalog.entries.filter(
   (entry) => entry.provenance?.status === 'community-reviewed',
 ).length;
@@ -133,6 +139,12 @@ async function assertSeoSurface() {
   if (!sitemap.includes('hreflang="en"') || !sitemap.includes('hreflang="zh-CN"')) {
     throw new Error('The sitemap does not pair English and Chinese variants.');
   }
+  if (
+    !sitemap.includes('https://dsh.pub/en/categories/ui-client/') ||
+    !sitemap.includes('https://dsh.pub/zh/categories/ui-client/')
+  ) {
+    throw new Error('The sitemap does not include bilingual registry topic hubs.');
+  }
 
   for (const url of urls) {
     const productionUrl = new URL(url);
@@ -157,16 +169,48 @@ async function assertSeoSurface() {
 
   const homepage = await responseBody('/zh/');
   if (
-    !homepage.includes('<title>dsh.pub — DeepSeek Harness 插件目录</title>') ||
+    !homepage.includes('<title>DeepSeek Harness 插件目录 · dsh.pub</title>') ||
     !homepage.includes('"@type":"WebSite"') ||
+    !homepage.includes(
+      '"alternateName":["DeepSeek Harness Plugin Registry","DSH Plugin Registry"]',
+    ) ||
+    !homepage.includes('"@type":"SearchAction"') ||
     !homepage.includes('googletagmanager.com/gtag/js?id=G-TEST123456')
   ) {
     throw new Error('The localized homepage SEO or conditional Analytics tag is incomplete.');
   }
 
+  const registry = await responseBody('/en/plugins/');
+  for (const expected of [
+    '<title>DeepSeek Harness Plugin Registry: Browse DSH Plugins · dsh.pub</title>',
+    '>DeepSeek Harness plugin registry</h1>',
+    'Find, install, and publish DSH plugins',
+    '"@type":"CollectionPage"',
+    '"@type":"ItemList"',
+    `"numberOfItems":${marketplaceCount}`,
+    '"@type":"BreadcrumbList"',
+  ]) {
+    if (!registry.includes(expected)) throw new Error(`Registry SEO is missing ${expected}.`);
+  }
+
   const detail = await responseBody('/en/plugins/dsh-genui/');
-  for (const expected of ['"@type":"SoftwareSourceCode"', '"@type":"BreadcrumbList"']) {
+  for (const expected of [
+    '<title>@omdsh-dev/dsh-genui — DeepSeek Harness plugin · dsh.pub</title>',
+    '"@type":"SoftwareSourceCode"',
+    '"@type":"BreadcrumbList"',
+  ]) {
     if (!detail.includes(expected)) throw new Error(`Plugin JSON-LD is missing ${expected}.`);
+  }
+
+  const topic = await responseBody('/en/categories/ui-client/');
+  for (const expected of [
+    '<title>UI &amp; client plugins for DeepSeek Harness · dsh.pub</title>',
+    '>UI &amp; client plugins</h1>',
+    '"@type":"CollectionPage"',
+    '"@type":"ItemList"',
+    '"@type":"BreadcrumbList"',
+  ]) {
+    if (!topic.includes(expected)) throw new Error(`Registry topic SEO is missing ${expected}.`);
   }
 
   const imageResponse = await fetch(`${origin}/og/dsh-pub.png`);
@@ -235,8 +279,8 @@ origin = `http://${host}:${address.port}`;
 try {
   await assertSeoSurface();
   await assertAgentGuide();
-  await assertPage('/en/', 'Everything is a plugin');
-  await assertPage('/zh/', '一切皆插件');
+  await assertPage('/en/', 'DeepSeek Harness plugin registry');
+  await assertPage('/zh/', 'DeepSeek Harness 插件目录');
   await assertPage('/zh/', 'src="/brand/dshbot.png"');
   await assertPageOmits('/zh/', '目录源码');
   await assertPage('/en/plugins/', 'Browse plugins');
@@ -250,6 +294,7 @@ try {
   await assertPage('/zh/plugins/web-app/', '不适用 CLI 安装量');
   await assertPageOmits('/zh/plugins/web-app/', 'npx dshpub add');
   await assertPage('/zh/plugins/dsh-genui/', 'omdsh-dev / dsh-genui');
+  await assertPage('/zh/plugins/dsh-genui/', 'href="/zh/categories/ui-client/"');
   await assertPage(
     '/zh/plugins/dsh-genui/',
     'npx dshpub add omdsh-dev/dsh-genui --ref 57b4338222632f8ea81c2665d44e5f9e80b52686',
@@ -262,8 +307,9 @@ try {
     'npx dshpub add titanwings/dsh-automation --ref 3c0188d7d94ed5b1e8caffeb73d7ac7ab34aabb3',
   );
   await assertPageOmits('/zh/plugins/dsh-automation/', '--path');
-  await assertPage('/en/submit/', 'Submit a plugin to dsh.pub');
-  await assertPage('/zh/submit/', '向 dsh.pub 提交插件');
+  await assertPage('/zh/plugins/dsh-automation/', 'rel="ugc"');
+  await assertPage('/en/submit/', 'Submit a DSH plugin');
+  await assertPage('/zh/submit/', '提交一个 DSH 插件');
   await assertPage('/en/', 'href="/en/submit/"');
   await assertPage('/zh/', 'href="/zh/submit/"');
 
@@ -340,41 +386,27 @@ try {
     });
     await page.goto(`${origin}/en/submit/`);
     const repository = page.locator('input[name="repository"]');
-    const packagePath = page.locator('input[name="path"]');
+    if ((await page.locator('[data-submission-form] input, textarea, select').count()) !== 1) {
+      throw new Error('Submission form must ask for exactly one repository field.');
+    }
     await repository.fill('https://example.com/not-github');
     await repository.blur();
-    await packagePath.fill('../unsafe');
-    await packagePath.blur();
     const invalidSubmissionState = await page.evaluate(() => {
       const control = globalThis.document.querySelector('input[name="repository"]');
       const error = globalThis.document.querySelector('#repository-error');
-      const pathControl = globalThis.document.querySelector('input[name="path"]');
-      const pathError = globalThis.document.querySelector('#path-error');
-      const summaryControl = globalThis.document.querySelector('textarea[name="summary-en"]');
-      const agreementControl = globalThis.document.querySelector('input[name="agreement"]');
-      const badge = globalThis.document.querySelector('[data-badge-image]');
+      const badgePanel = globalThis.document.querySelector('[data-badge-panel]');
       return {
-        agreementDescribedBy: agreementControl?.getAttribute('aria-describedby'),
         describedBy: control?.getAttribute('aria-describedby'),
         error: error?.textContent?.trim(),
         invalid: control?.getAttribute('aria-invalid'),
-        badgeHidden: badge?.hasAttribute('hidden'),
-        pathDescribedBy: pathControl?.getAttribute('aria-describedby'),
-        pathError: pathError?.textContent?.trim(),
-        pathInvalid: pathControl?.getAttribute('aria-invalid'),
-        summaryDescribedBy: summaryControl?.getAttribute('aria-describedby'),
+        badgeHidden: badgePanel?.hasAttribute('hidden'),
       };
     });
     if (
       invalidSubmissionState.describedBy !== 'repository-error' ||
       invalidSubmissionState.invalid !== 'true' ||
       !invalidSubmissionState.error ||
-      !invalidSubmissionState.badgeHidden ||
-      invalidSubmissionState.pathDescribedBy !== 'path-error' ||
-      invalidSubmissionState.pathInvalid !== 'true' ||
-      !invalidSubmissionState.pathError ||
-      invalidSubmissionState.summaryDescribedBy !== 'summary-en-error' ||
-      invalidSubmissionState.agreementDescribedBy !== 'agreement-error'
+      !invalidSubmissionState.badgeHidden
     ) {
       throw new Error(
         `Submission validation accessibility failed: ${JSON.stringify(invalidSubmissionState)}`,
@@ -382,12 +414,12 @@ try {
     }
 
     await repository.fill('https://github.com/example/dsh-clock');
-    await packagePath.fill('packages/dsh-clock');
     await page.waitForFunction(() => {
       const badge = globalThis.document.querySelector('[data-badge-image]');
+      const panel = globalThis.document.querySelector('[data-badge-panel]');
       return (
+        !panel?.hasAttribute('hidden') &&
         badge instanceof globalThis.HTMLImageElement &&
-        !badge.hidden &&
         badge.complete &&
         badge.naturalWidth > 0
       );
@@ -409,7 +441,10 @@ try {
       };
     });
     if (
-      badgeReadyState.href !== null ||
+      badgeReadyState.href === null ||
+      !badgeReadyState.href?.includes(
+        'repository=https%3A%2F%2Fgithub.com%2Fexample%2Fdsh-clock',
+      ) ||
       !badgeReadyState.markdown?.includes('/api/badges/example/dsh-clock.svg') ||
       !badgeReadyState.alt?.includes('listed or not listed') ||
       !badgeReadyState.markdownCopyName?.includes('Markdown') ||
@@ -419,10 +454,6 @@ try {
       throw new Error(`Submission badge preview failed: ${JSON.stringify(badgeReadyState)}`);
     }
 
-    await page
-      .locator('textarea[name="summary-en"]')
-      .fill('Adds a clock tool to DeepSeek Harness.');
-    await page.locator('input[name="agreement"]').check();
     await page.locator('[data-submit-link]').evaluate((link) => {
       link.addEventListener('click', (event) => {
         event.preventDefault();
@@ -437,8 +468,7 @@ try {
       submissionUrl.pathname !== '/dsh-pub/dsh-pub/issues/new' ||
       submissionUrl.searchParams.get('template') !== 'plugin-submission.yml' ||
       submissionUrl.searchParams.get('repository') !== 'https://github.com/example/dsh-clock' ||
-      submissionUrl.searchParams.get('path') !== 'packages/dsh-clock' ||
-      submissionUrl.searchParams.get('category') !== 'ui' ||
+      [...submissionUrl.searchParams.keys()].join(',') !== 'template,title,repository' ||
       submissionUrl.searchParams.has('labels') ||
       submissionUrl.searchParams.has('body')
     ) {

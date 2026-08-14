@@ -24,8 +24,8 @@ const {
 const pageTitle = title
   ? `${title} · dsh.pub`
   : locale === 'zh'
-    ? 'dsh.pub — DeepSeek Harness 插件目录'
-    : 'dsh.pub — DeepSeek Harness plugin registry';
+    ? 'DeepSeek Harness 插件目录 · dsh.pub'
+    : 'DeepSeek Harness Plugin Registry · dsh.pub';
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const alternatePath = Astro.url.pathname.replace(`/${locale}`, `/${otherLocale(locale)}`);
 const alternateLocale = otherLocale(locale);
