@@ -133,6 +133,8 @@ browser. CI installs the same Chromium revision with its required OS dependencie
 
 The Worker serves `apps/web/dist` as static assets and runs first only for `/` and `/api/*`. Plugin
 source and documentation stay in GitHub; D1 stores only install event state and aggregate counts.
+Production Workers Builds watches every path on `dsh-pub/dsh-pub` `main`, runs `npm run build`, and
+deploys with `npx wrangler deploy`.
 
 ```bash
 npx wrangler d1 create dsh-pub
