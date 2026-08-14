@@ -4,6 +4,7 @@ export default defineConfig({
   test: {
     coverage: {
       exclude: ['**/*.d.ts'],
+      experimentalAstAwareRemapping: true,
       include: ['apps/*/src/**/*.{ts,tsx}', 'packages/*/src/**/*.{ts,tsx}'],
       provider: 'v8',
       reporter: ['json-summary', 'lcov'],
