@@ -14,6 +14,7 @@ on:
       - main
     paths:
       - submissions/**
+  workflow_dispatch:
 
 permissions: {}
 
@@ -83,8 +84,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
-      contents: write
-      pull-requests: write
+      contents: read
+      pull-requests: read
 
     steps:
       - name: Create update-branch token
@@ -92,6 +93,7 @@ jobs:
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
         with:
           client-id: ${{ vars.DSH_PUB_APP_CLIENT_ID }}
+          permission-contents: write
           permission-pull-requests: write
           private-key: ${{ secrets.DSH_PUB_APP_PRIVATE_KEY_PKCS8 }}
 
@@ -119,14 +121,14 @@ jobs:
               -f expected_head_sha="$EXPECTED_HEAD_SHA" >/dev/null
             exit 0
           fi
-          test "$(gh api --method PUT "repos/$REPOSITORY/pulls/$PR_NUMBER/merge" \
+          test "$(GH_TOKEN="$UPDATE_BRANCH_TOKEN" gh api --method PUT "repos/$REPOSITORY/pulls/$PR_NUMBER/merge" \
             -f sha="$EXPECTED_HEAD_SHA" \
             -f merge_method=merge \
             --jq .merged)" = true
 
   integrate:
     name: Integrate merged submission
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:

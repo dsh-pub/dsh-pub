@@ -16,11 +16,14 @@ describe('plugin submission workflow contract', () => {
         types: ['opened', 'reopened', 'synchronize', 'ready_for_review'],
       },
       push: { branches: ['main'], paths: ['submissions/**'] },
+      workflow_dispatch: null,
     });
     expect(workflow.permissions).toEqual({});
     expect(workflow.jobs.validate.if).toContain("github.event_name == 'pull_request_target'");
     expect(workflow.jobs.validate.if).toContain('github.event.pull_request.draft == false');
-    expect(workflow.jobs.integrate.if).toBe("github.event_name == 'push'");
+    expect(workflow.jobs.integrate.if).toBe(
+      "github.event_name == 'push' || github.event_name == 'workflow_dispatch'",
+    );
   });
 
   it('runs pull request checks from the exact trusted base without checking out fork code', async () => {
@@ -87,12 +90,13 @@ describe('plugin submission workflow contract', () => {
     );
 
     expect(merge.needs).toBe('validate');
-    expect(merge.permissions).toEqual({ contents: 'write', 'pull-requests': 'write' });
+    expect(merge.permissions).toEqual({ contents: 'read', 'pull-requests': 'read' });
     expect(tokenStep.uses).toBe(
       'actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1',
     );
     expect(tokenStep.with).toEqual({
       'client-id': '${{ vars.DSH_PUB_APP_CLIENT_ID }}',
+      'permission-contents': 'write',
       'permission-pull-requests': 'write',
       'private-key': '${{ secrets.DSH_PUB_APP_PRIVATE_KEY_PKCS8 }}',
     });
@@ -114,7 +118,10 @@ describe('plugin submission workflow contract', () => {
     expect(mergeStep.run).toContain(
       'GH_TOKEN="$UPDATE_BRANCH_TOKEN" gh api --method PUT "repos/$REPOSITORY/pulls/$PR_NUMBER/update-branch"',
     );
-    expect(mergeStep.run.match(/GH_TOKEN="\$UPDATE_BRANCH_TOKEN"/g)).toHaveLength(1);
+    expect(mergeStep.run).toContain(
+      'GH_TOKEN="$UPDATE_BRANCH_TOKEN" gh api --method PUT "repos/$REPOSITORY/pulls/$PR_NUMBER/merge"',
+    );
+    expect(mergeStep.run.match(/GH_TOKEN="\$UPDATE_BRANCH_TOKEN"/g)).toHaveLength(2);
     expect(mergeStep.run).toContain('if [ "$CURRENT_MAIN_SHA" != "$EXPECTED_BASE_SHA" ]');
     expect(mergeStep.run.indexOf('--jq .head.sha')).toBeLessThan(
       mergeStep.run.indexOf('pulls/$PR_NUMBER/update-branch'),
