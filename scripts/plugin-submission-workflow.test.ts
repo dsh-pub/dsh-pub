@@ -145,6 +145,9 @@ describe('plugin submission workflow contract', () => {
     const build = integrate.steps.find(
       (step: { name?: string }) => step.name === 'Build deployable workspace',
     );
+    const e2e = integrate.steps.find(
+      (step: { name?: string }) => step.name === 'Run integration tests',
+    );
     const token = integrate.steps.find(
       (step: { name?: string }) => step.name === 'Create catalog push token',
     );
@@ -167,9 +170,11 @@ describe('plugin submission workflow contract', () => {
       'permission-contents': 'write',
       'private-key': '${{ secrets.DSH_PUB_APP_PRIVATE_KEY_PKCS8 }}',
     });
+    expect(integrate.steps.indexOf(build)).toBeLessThan(integrate.steps.indexOf(e2e));
     expect(integrate.steps.indexOf(token)).toBeGreaterThan(integrate.steps.indexOf(build));
     expect(integrate.steps.indexOf(token)).toBeLessThan(integrate.steps.indexOf(push));
     expect(push.env.GH_TOKEN).toBe('${{ steps.catalog-app-token.outputs.token }}');
+    expect(push.run).toContain('apps/dsh-plugin/lib/client.js');
     expect(push.run).toContain('git push origin HEAD:main');
     expect(push.run).not.toMatch(/--force(?:-with-lease)?/);
   });
