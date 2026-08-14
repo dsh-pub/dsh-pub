@@ -273,6 +273,13 @@ async function assertAgentGuide() {
     if (!page.includes('href="/develop-plugin.md"')) {
       throw new Error(`${path} does not link to the Agent plugin-development guide.`);
     }
+    if (
+      !page.includes('data-harness-backdrop') ||
+      !page.includes('data-backdrop-atmosphere') ||
+      !page.includes('data-backdrop-signals')
+    ) {
+      throw new Error(`${path} does not render the animated Harness backdrop.`);
+    }
   }
 
   const llms = await responseBody('/llms.txt');
@@ -331,6 +338,51 @@ try {
   const browser = await chromium.launch({ headless: true });
   try {
     const page = await browser.newPage();
+    await page.goto(`${origin}/zh/`);
+    const signalCanvas = page.locator('[data-backdrop-signals]');
+    await signalCanvas.waitFor();
+    const firstPointer = { x: 900, y: 350 };
+    const secondPointer = { x: 1060, y: 440 };
+    const strongCursorPixels = async (point) =>
+      signalCanvas.evaluate(
+        (canvas, { point }) => {
+          const context = /** @type {HTMLCanvasElement} */ (canvas).getContext('2d', {
+            willReadFrequently: true,
+          });
+          const bounds = canvas.getBoundingClientRect();
+          const scaleX = canvas.width / bounds.width;
+          const scaleY = canvas.height / bounds.height;
+          const patchSize = 120;
+          const data = context.getImageData(
+            Math.round((point.x - bounds.left - patchSize / 2) * scaleX),
+            Math.round((point.y - bounds.top - patchSize / 2) * scaleY),
+            Math.round(patchSize * scaleX),
+            Math.round(patchSize * scaleY),
+          );
+          let strongPixels = 0;
+          for (let offset = 3; offset < data.data.length; offset += 4) {
+            if (data.data[offset] >= 70) strongPixels += 1;
+          }
+          return strongPixels;
+        },
+        { point },
+      );
+    const baselineCursorPixels = await strongCursorPixels(secondPointer);
+    await page.mouse.move(firstPointer.x, firstPointer.y);
+    await page.waitForTimeout(650);
+    const firstCursorPixels = await strongCursorPixels(firstPointer);
+    await page.mouse.move(secondPointer.x, secondPointer.y);
+    await page.waitForTimeout(650);
+    const secondCursorPixels = await strongCursorPixels(secondPointer);
+    if (
+      firstCursorPixels < baselineCursorPixels + 60 ||
+      secondCursorPixels < baselineCursorPixels + 60
+    ) {
+      throw new Error(
+        `Hero cursor particles did not follow the pointer: ${JSON.stringify({ baselineCursorPixels, firstCursorPixels, secondCursorPixels })}`,
+      );
+    }
+
     await page.goto(`${origin}/en/plugins/?provenance=community-reviewed`);
     await page.waitForFunction(
       (expected) =>

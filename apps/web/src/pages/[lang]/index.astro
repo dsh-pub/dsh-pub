@@ -1,5 +1,6 @@
 ---
 import EcosystemCard from '../../components/EcosystemCard.astro';
+import HarnessBackdrop from '../../components/HarnessBackdrop.astro';
 import Icon from '../../components/Icon.astro';
 import PluginRow from '../../components/PluginRow.astro';
 import UseCaseIcon from '../../components/UseCaseIcon.astro';
@@ -158,20 +159,7 @@ const structuredData = [
 
 <BaseLayout locale={locale} showHeaderSearch={false} structuredData={structuredData}>
   <section class="registry-hero">
-    <svg
-      class="circuit-field"
-      viewBox="0 0 1440 640"
-      preserveAspectRatio="xMidYMid slice"
-      aria-hidden="true"
-    >
-      <g fill="none" stroke="currentColor" stroke-width="1">
-        <path d="M-40 130h250l55 55h210l70-70h230l80 80h250l55-55h330"></path>
-        <path d="M-10 470h180l85-85h155l100 100h275l65-65h190l115 115h320"></path>
-        <path d="M320-20v120l60 60v205l-80 80v210M1050-20v155l-75 75v195l90 90v160"></path>
-        <circle cx="265" cy="185" r="7"></circle><circle cx="545" cy="115" r="7"></circle>
-        <circle cx="850" cy="420" r="7"></circle><circle cx="1155" cy="535" r="7"></circle>
-      </g>
-    </svg>
+    <HarnessBackdrop />
 
     <div class="hero-grid page-shell">
       <div class="hero-primary">
@@ -406,20 +394,12 @@ const structuredData = [
 
 <style>
   .registry-hero {
-    background: var(--color-navy-900);
+    background: #0b1727;
     color: var(--color-text-on-dark);
+    isolation: isolate;
     min-height: 590px;
     overflow: hidden;
     position: relative;
-  }
-
-  .circuit-field {
-    color: #4a6b8d;
-    height: 100%;
-    inset: 0;
-    opacity: 0.24;
-    position: absolute;
-    width: 100%;
   }
 
   .hero-grid {
@@ -431,6 +411,7 @@ const structuredData = [
     padding-bottom: 3.7rem;
     padding-top: 3.7rem;
     position: relative;
+    z-index: 1;
   }
 
   .hero-primary :global(.eyebrow) {
@@ -506,7 +487,8 @@ const structuredData = [
   }
 
   .trust-snapshot {
-    background: var(--color-navy-800);
+    backdrop-filter: blur(18px);
+    background: rgb(29 48 73 / 88%);
     border: 1px solid #3b526d;
     border-radius: 14px;
     box-shadow: 0 26px 70px rgb(4 12 23 / 28%);
