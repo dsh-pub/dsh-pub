@@ -159,7 +159,7 @@ describe('GitHub pull request plugin integration', () => {
 
     expect(update.changed).toBe(true);
     expect(update.entry).toMatchObject({
-      category: 'ui',
+      category: 'client-ui',
       description: {
         en: 'Adds a clock tool to DeepSeek Harness.',
         zh: 'Adds a clock tool to DeepSeek Harness.',
@@ -214,7 +214,25 @@ describe('GitHub pull request plugin integration', () => {
     const update = await createSubmissionUpdate(submissionUpdateInput(objectClientFetch));
 
     expect(clientReads).toBe(1);
-    expect(update.entry.category).toBe('ui');
+    expect(update.entry.category).toBe('client-ui');
+  });
+
+  it('classifies submissions without a client entry as bundles', async () => {
+    const hostOnlyManifest = JSON.stringify({
+      ...JSON.parse(manifest),
+      dsh: { bundle: { patch: 'cordis.patch.yml' } },
+    });
+    const hostOnlyFetch: typeof fetch = async (input, init) => {
+      const url = new URL(String(input));
+      if (url.pathname.endsWith('/contents/package.json')) {
+        return fileResponse(hostOnlyManifest);
+      }
+      return fetchGitHub(input, init);
+    };
+
+    const update = await createSubmissionUpdate(submissionUpdateInput(hostOnlyFetch));
+
+    expect(update.entry.category).toBe('bundles');
   });
 
   it.each([

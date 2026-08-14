@@ -58,6 +58,9 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: node scripts/process-plugin-submission.mjs
 
+      - name: Generate directory snapshot
+        run: npm run catalog:generate --workspace apps/dsh-plugin
+
       - name: Run static checks
         run: npm run lint
 

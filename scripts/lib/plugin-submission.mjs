@@ -409,7 +409,7 @@ const inspectSubmission = async (submission, options) => {
     bundlePatchPath,
     clientEntryPath,
     commit,
-    category: clientEntryPath ? 'ui' : 'other',
+    category: clientEntryPath ? 'client-ui' : 'bundles',
     descriptionEn,
     descriptionZh: '',
     license: metadata.license,
