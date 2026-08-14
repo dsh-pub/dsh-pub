@@ -9,6 +9,8 @@ const INSTALLABLE_SLUGS = new Set<string>(installableRegistry.slugs);
 const BADGE_ROUTE_PATTERN =
   /^\/api\/badges\/([A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?)\/([A-Za-z0-9._-]{1,100})\.svg$/;
 const BADGE_PATH_SEGMENT_PATTERN = /^[A-Za-z0-9._@-]+$/;
+const GITHUB_OWNER_PATTERN = /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$/;
+const GITHUB_REPOSITORY_PATTERN = /^[A-Za-z0-9._-]{1,100}$/;
 
 export interface D1ResultLike<Row = Record<string, unknown>> {
   meta: { changes: number };
@@ -32,9 +34,34 @@ interface FetcherLike {
   fetch(request: Request): Promise<Response>;
 }
 
+type FetchFunction = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
+
+export interface SubmissionWorkflowParams {
+  owner: string;
+  repo: string;
+  repository: string;
+  submissionId: string;
+}
+
+interface WorkflowInstanceLike {
+  id: string;
+}
+
+interface WorkflowInstanceStatusLike extends WorkflowInstanceLike {
+  status(): Promise<{ status: string }>;
+}
+
+interface SubmissionWorkflowLike {
+  create(options: { id: string; params: SubmissionWorkflowParams }): Promise<WorkflowInstanceLike>;
+  get(id: string): Promise<WorkflowInstanceStatusLike>;
+}
+
 export interface WorkerBindings {
   ASSETS: FetcherLike;
   DB: D1DatabaseLike;
+  PLUGIN_SUBMISSION_WORKFLOW: SubmissionWorkflowLike;
+  TURNSTILE_SECRET_KEY?: string;
+  TURNSTILE_SITE_KEY?: string;
 }
 
 interface InstallEventRow {
@@ -47,6 +74,19 @@ interface InstallEventRow {
 
 interface PluginStatsRow {
   completed_total: number;
+}
+
+interface PluginSubmissionRow {
+  error_code: string | null;
+  error_message: string | null;
+  id: string;
+  owner: string;
+  pull_request_number: number | null;
+  pull_request_url: string | null;
+  repo: string;
+  repository_key: string;
+  repository: string;
+  status: string;
 }
 
 class ApiError extends Error {
@@ -89,7 +129,7 @@ const corsHeaders = (origin: string | null) => {
   if (origin && isAllowedOrigin(origin)) {
     headers.set('Access-Control-Allow-Origin', origin);
     headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    headers.set('Access-Control-Allow-Headers', 'Content-Type');
+    headers.set('Access-Control-Allow-Headers', 'Content-Type, Idempotency-Key');
   }
   return headers;
 };
@@ -191,6 +231,237 @@ const validateEventId = (value: unknown) => {
     throw new ApiError(400, 'invalid_event_id', 'eventId must be a UUID.');
   }
   return value.toLowerCase();
+};
+
+const validateIdempotencyKey = (value: string | null) => {
+  if (!value || !UUID_PATTERN.test(value)) {
+    throw new ApiError(400, 'invalid_idempotency_key', 'Idempotency-Key must be a UUID.');
+  }
+  return value.toLowerCase();
+};
+
+const normalizeGitHubRepository = (value: unknown) => {
+  if (typeof value !== 'string' || !value.trim()) {
+    throw new ApiError(400, 'invalid_repository', 'Enter a public GitHub repository.');
+  }
+  const input = value.trim();
+  let coordinate = input;
+  if (input.includes('://')) {
+    let repositoryUrl: URL;
+    try {
+      repositoryUrl = new URL(input);
+    } catch {
+      throw new ApiError(400, 'invalid_repository', 'Enter a valid GitHub repository URL.');
+    }
+    if (
+      repositoryUrl.protocol !== 'https:' ||
+      repositoryUrl.hostname.toLocaleLowerCase() !== 'github.com' ||
+      repositoryUrl.search ||
+      repositoryUrl.hash
+    ) {
+      throw new ApiError(
+        400,
+        'invalid_repository',
+        'Only public GitHub repositories are supported.',
+      );
+    }
+    coordinate = repositoryUrl.pathname.replace(/^\/+|\/+$/g, '');
+  }
+  coordinate = coordinate.replace(/\.git$/i, '');
+  const parts = coordinate.split('/');
+  const owner = parts[0] ?? '';
+  const repo = parts[1] ?? '';
+  if (
+    parts.length !== 2 ||
+    !GITHUB_OWNER_PATTERN.test(owner) ||
+    !GITHUB_REPOSITORY_PATTERN.test(repo) ||
+    repo === '.' ||
+    repo === '..'
+  ) {
+    throw new ApiError(
+      400,
+      'invalid_repository',
+      'Use a GitHub repository in owner/repository form.',
+    );
+  }
+  return { owner, repo, repository: `https://github.com/${owner}/${repo}` };
+};
+
+const verifyTurnstile = async (
+  request: Request,
+  tokenValue: unknown,
+  secret: string | undefined,
+  idempotencyKey: string,
+  fetcher: FetchFunction,
+) => {
+  if (typeof tokenValue !== 'string' || tokenValue.length < 1 || tokenValue.length > 2_048) {
+    throw new ApiError(400, 'turnstile_failed', 'Complete the verification and try again.');
+  }
+  if (!secret) {
+    throw new ApiError(
+      503,
+      'submission_unavailable',
+      'Plugin submission is temporarily unavailable.',
+    );
+  }
+  let response: Response;
+  try {
+    response = await fetcher('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      body: JSON.stringify({
+        idempotency_key: idempotencyKey,
+        ...(request.headers.get('CF-Connecting-IP')
+          ? { remoteip: request.headers.get('CF-Connecting-IP') }
+          : {}),
+        response: tokenValue,
+        secret,
+      }),
+      headers: { 'Content-Type': 'application/json' },
+      method: 'POST',
+      signal: AbortSignal.timeout(10_000),
+    });
+  } catch {
+    throw new ApiError(503, 'turnstile_unavailable', 'Verification is temporarily unavailable.');
+  }
+  if (!response.ok) {
+    throw new ApiError(503, 'turnstile_unavailable', 'Verification is temporarily unavailable.');
+  }
+  const result: unknown = await response.json().catch(() => null);
+  const expectedHostname = new URL(request.url).hostname.toLocaleLowerCase();
+  const allowedHostnames = new Set(['dsh.pub', 'localhost', '127.0.0.1']);
+  if (
+    !isRecord(result) ||
+    result.success !== true ||
+    result.action !== 'plugin-submission' ||
+    typeof result.hostname !== 'string' ||
+    !allowedHostnames.has(expectedHostname) ||
+    result.hostname.toLocaleLowerCase() !== expectedHostname
+  ) {
+    throw new ApiError(400, 'turnstile_failed', 'Complete the verification and try again.');
+  }
+};
+
+const publicSubmissionErrorCodes = new Set([
+  'submission_automation_failed',
+  'submission_start_failed',
+]);
+
+const submissionResponse = (submission: PluginSubmissionRow) => ({
+  ...(submission.status === 'failed' &&
+  submission.error_code &&
+  publicSubmissionErrorCodes.has(submission.error_code)
+    ? { errorCode: submission.error_code }
+    : {}),
+  id: submission.id,
+  ...(submission.pull_request_url ? { prUrl: submission.pull_request_url } : {}),
+  repository: submission.repository,
+  status: submission.status,
+  statusUrl: `/api/submissions/${submission.id}`,
+});
+
+const readPluginSubmission = (db: D1DatabaseLike, id: string) =>
+  db
+    .prepare(
+      `SELECT id, repository, owner, repo, status, pull_request_number,
+              pull_request_url, error_code, error_message, repository_key
+       FROM plugin_submissions WHERE id = ?1`,
+    )
+    .bind(id)
+    .first<PluginSubmissionRow>();
+
+const readActivePluginSubmission = (db: D1DatabaseLike, repositoryKey: string) =>
+  db
+    .prepare(
+      `SELECT id, repository, owner, repo, status, pull_request_number,
+              pull_request_url, error_code, error_message, repository_key
+       FROM plugin_submissions
+       WHERE repository_key = ?1
+         AND status IN ('queued', 'creating_pr')
+       LIMIT 1`,
+    )
+    .bind(repositoryKey)
+    .first<PluginSubmissionRow>();
+
+const createPluginSubmission = async (
+  request: Request,
+  env: WorkerBindings,
+  origin: string | null,
+  fetcher: FetchFunction,
+) => {
+  const body = await readJson(request);
+  if (!isRecord(body) || !hasOnlyKeys(body, ['repository', 'turnstileToken'])) {
+    throw new ApiError(400, 'invalid_body', 'Expected repository and turnstileToken.');
+  }
+  const id = validateIdempotencyKey(request.headers.get('Idempotency-Key'));
+  const repository = normalizeGitHubRepository(body.repository);
+  const repositoryKey = `${repository.owner}/${repository.repo}`.toLocaleLowerCase();
+  const existing = await readPluginSubmission(env.DB, id);
+  if (existing) {
+    if (existing.repository !== repository.repository) {
+      throw new ApiError(409, 'idempotency_conflict', 'Idempotency-Key is already in use.');
+    }
+    return json(submissionResponse(existing), 200, origin);
+  }
+  const active = await readActivePluginSubmission(env.DB, repositoryKey);
+  if (active) return json(submissionResponse(active), 200, origin);
+  await verifyTurnstile(request, body.turnstileToken, env.TURNSTILE_SECRET_KEY, id, fetcher);
+  const [insert] = await env.DB.batch([
+    env.DB.prepare(
+      `INSERT INTO plugin_submissions
+           (id, repository, owner, repo, repository_key, status)
+         VALUES (?1, ?2, ?3, ?4, ?5, 'queued')
+         ON CONFLICT DO NOTHING`,
+    ).bind(id, repository.repository, repository.owner, repository.repo, repositoryKey),
+  ]);
+  const submission =
+    (await readPluginSubmission(env.DB, id)) ??
+    (await readActivePluginSubmission(env.DB, repositoryKey));
+  if (!submission) throw new ApiError(500, 'storage_error', 'Submission was not stored.');
+  if (submission.repository !== repository.repository) {
+    throw new ApiError(409, 'idempotency_conflict', 'Idempotency-Key is already in use.');
+  }
+  const created = (insert?.meta.changes ?? 0) === 1;
+  if (created) {
+    try {
+      await env.PLUGIN_SUBMISSION_WORKFLOW.create({
+        id,
+        params: { ...repository, submissionId: id },
+      });
+    } catch {
+      let started = false;
+      try {
+        const instance = await env.PLUGIN_SUBMISSION_WORKFLOW.get(id);
+        const instanceStatus = await instance.status();
+        started = [
+          'queued',
+          'running',
+          'paused',
+          'waiting',
+          'waitingForPause',
+          'complete',
+        ].includes(instanceStatus.status);
+      } catch {
+        // The deterministic workflow instance could not be reconciled.
+      }
+      if (started) return json(submissionResponse(submission), 202, origin);
+      const message = 'The asynchronous submission workflow could not be started.';
+      await env.DB.batch([
+        env.DB.prepare(
+          `UPDATE plugin_submissions
+             SET status = 'failed', error_code = ?1, error_message = ?2, updated_at = unixepoch()
+             WHERE id = ?3 AND status = 'queued'`,
+        ).bind('submission_start_failed', message, id),
+      ]);
+      throw new ApiError(503, 'submission_start_failed', message);
+    }
+  }
+  return json(submissionResponse(submission), created ? 202 : 200, origin);
+};
+
+const getPluginSubmission = async (db: D1DatabaseLike, idValue: string, origin: string | null) => {
+  const id = validateIdempotencyKey(idValue);
+  const submission = await readPluginSubmission(db, id);
+  if (!submission) throw new ApiError(404, 'submission_not_found', 'Submission was not found.');
+  return json(submissionResponse(submission), 200, origin);
 };
 
 const validateSlug = (value: unknown) => {
@@ -314,7 +585,11 @@ const getStats = async (slugValue: string, db: D1DatabaseLike, origin: string | 
   return json({ metric: CLI_REPORTED_METRIC, slug, total: row?.completed_total ?? 0 }, 200, origin);
 };
 
-export const handleRequest = async (request: Request, env: WorkerBindings): Promise<Response> => {
+export const handleRequest = async (
+  request: Request,
+  env: WorkerBindings,
+  fetcher: FetchFunction = fetch,
+): Promise<Response> => {
   const url = new URL(request.url);
   if (url.pathname === '/' && (request.method === 'GET' || request.method === 'HEAD')) {
     const locale = preferredLocale(request.headers.get('Accept-Language'));
@@ -344,11 +619,28 @@ export const handleRequest = async (request: Request, env: WorkerBindings): Prom
   }
 
   try {
+    if (request.method === 'GET' && url.pathname === '/api/submission-config') {
+      if (!env.TURNSTILE_SITE_KEY) {
+        throw new ApiError(
+          503,
+          'submission_unavailable',
+          'Plugin submission is temporarily unavailable.',
+        );
+      }
+      return json({ turnstileSiteKey: env.TURNSTILE_SITE_KEY }, 200, origin);
+    }
     if (request.method === 'POST' && url.pathname === '/api/install-intents') {
       return await createInstallIntent(request, env.DB, origin);
     }
     if (request.method === 'POST' && url.pathname === '/api/install-completions') {
       return await completeInstall(request, env.DB, origin);
+    }
+    if (request.method === 'POST' && url.pathname === '/api/submissions') {
+      return await createPluginSubmission(request, env, origin, fetcher);
+    }
+    const submissionMatch = /^\/api\/submissions\/([0-9a-f-]+)$/.exec(url.pathname);
+    if (request.method === 'GET' && submissionMatch?.[1]) {
+      return await getPluginSubmission(env.DB, submissionMatch[1], origin);
     }
     const statsMatch = /^\/api\/plugins\/([^/]+)\/stats$/.exec(url.pathname);
     if (request.method === 'GET' && statsMatch?.[1]) {
@@ -362,7 +654,7 @@ export const handleRequest = async (request: Request, env: WorkerBindings): Prom
     console.error(
       JSON.stringify({
         error: error instanceof Error ? error.message : String(error),
-        message: 'install telemetry request failed',
+        message: 'API request failed',
         path: url.pathname,
       }),
     );

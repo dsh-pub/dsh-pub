@@ -1,0 +1,400 @@
+<div class="harness-backdrop" data-harness-backdrop aria-hidden="true">
+  <canvas class="harness-backdrop__atmosphere" data-backdrop-atmosphere></canvas>
+  <canvas class="harness-backdrop__signals" data-backdrop-signals></canvas>
+</div>
+
+<script>
+  const TAU = Math.PI * 2;
+
+  function noise(seed: number) {
+    const value = Math.sin(seed * 127.1) * 43758.5453123;
+    return value - Math.floor(value);
+  }
+
+  function startBackdrop(root: HTMLElement) {
+    const atmosphere = root.querySelector<HTMLCanvasElement>('[data-backdrop-atmosphere]');
+    const signals = root.querySelector<HTMLCanvasElement>('[data-backdrop-signals]');
+    const atmosphereContext = atmosphere?.getContext('2d');
+    const signalContext = signals?.getContext('2d');
+    if (!atmosphere || !signals || !atmosphereContext || !signalContext) return;
+
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const pointer = {
+      x: 0.64,
+      y: 0.32,
+      targetX: 0.64,
+      targetY: 0.32,
+      strength: 0,
+      targetStrength: 0,
+      velocityX: 0,
+      velocityY: 0,
+      motion: 0,
+    };
+    let width = 0;
+    let height = 0;
+    let frame = 0;
+
+    const ribbonPoint = (progress: number, time: number, offset = 0) => {
+      const phase = time * 0.00008;
+      const x = (progress * 1.36 - 0.18) * width;
+      const primary = Math.sin(progress * TAU * 1.18 + phase * 2.8);
+      const secondary = Math.sin(progress * TAU * 3.15 - phase * 1.6);
+      const pointerLift = (pointer.y - 0.32) * height * 0.12;
+      return {
+        x,
+        y:
+          height * (0.13 + primary * 0.16 + secondary * 0.034) +
+          offset +
+          pointerLift +
+          (pointer.x - 0.64) * height * 0.035,
+      };
+    };
+
+    const traceRibbon = (context: CanvasRenderingContext2D, time: number, offset = 0) => {
+      context.beginPath();
+      for (let step = 0; step <= 110; step += 1) {
+        const point = ribbonPoint(step / 110, time, offset);
+        if (step === 0) context.moveTo(point.x, point.y);
+        else context.lineTo(point.x, point.y);
+      }
+    };
+
+    const paintAtmosphere = (time: number) => {
+      atmosphereContext.clearRect(0, 0, width, height);
+
+      const sky = atmosphereContext.createLinearGradient(0, 0, 0, height);
+      sky.addColorStop(0, '#18395e');
+      sky.addColorStop(0.54, '#122a45');
+      sky.addColorStop(1, '#0b1727');
+      atmosphereContext.fillStyle = sky;
+      atmosphereContext.fillRect(0, 0, width, height);
+
+      const blueBloom = atmosphereContext.createRadialGradient(
+        width * (0.62 + (pointer.x - 0.5) * 0.04),
+        height * 0.18,
+        0,
+        width * 0.62,
+        height * 0.18,
+        width * 0.62,
+      );
+      blueBloom.addColorStop(0, 'rgb(73 133 191 / 26%)');
+      blueBloom.addColorStop(0.48, 'rgb(38 84 128 / 14%)');
+      blueBloom.addColorStop(1, 'rgb(8 19 33 / 0%)');
+      atmosphereContext.fillStyle = blueBloom;
+      atmosphereContext.fillRect(0, 0, width, height);
+
+      atmosphereContext.save();
+      atmosphereContext.strokeStyle = 'rgb(132 174 214 / 9%)';
+      atmosphereContext.lineWidth = 0.7;
+      const gridSize = width < 720 ? 52 : 68;
+      const gridShiftX = (pointer.x - 0.5) * 12;
+      const gridShiftY = (pointer.y - 0.5) * 8;
+      for (let x = -gridSize; x < width + gridSize; x += gridSize) {
+        atmosphereContext.beginPath();
+        atmosphereContext.moveTo(x + gridShiftX, 0);
+        atmosphereContext.quadraticCurveTo(
+          x + gridShiftX + (pointer.x - 0.5) * 18,
+          height * 0.52,
+          x - gridShiftX * 0.35,
+          height,
+        );
+        atmosphereContext.stroke();
+      }
+      for (let y = -gridSize; y < height + gridSize; y += gridSize) {
+        atmosphereContext.beginPath();
+        atmosphereContext.moveTo(0, y + gridShiftY);
+        atmosphereContext.quadraticCurveTo(
+          width * 0.56,
+          y + gridShiftY + (pointer.y - 0.5) * 12,
+          width,
+          y - gridShiftY * 0.25,
+        );
+        atmosphereContext.stroke();
+      }
+      atmosphereContext.restore();
+
+      atmosphereContext.save();
+      atmosphereContext.lineCap = 'round';
+      atmosphereContext.filter = 'blur(26px)';
+      traceRibbon(atmosphereContext, time);
+      const ribbonGlow = atmosphereContext.createLinearGradient(0, 0, width, 0);
+      ribbonGlow.addColorStop(0, 'rgb(209 226 218 / 0%)');
+      ribbonGlow.addColorStop(0.13, 'rgb(209 226 218 / 26%)');
+      ribbonGlow.addColorStop(0.52, 'rgb(235 240 220 / 44%)');
+      ribbonGlow.addColorStop(0.9, 'rgb(213 228 215 / 25%)');
+      ribbonGlow.addColorStop(1, 'rgb(209 226 218 / 0%)');
+      atmosphereContext.strokeStyle = ribbonGlow;
+      atmosphereContext.lineWidth = Math.max(54, height * 0.12);
+      atmosphereContext.stroke();
+      atmosphereContext.restore();
+
+      atmosphereContext.save();
+      atmosphereContext.lineCap = 'round';
+      for (let strand = 0; strand < 28; strand += 1) {
+        const lane = (noise(strand + 2.4) - 0.5) * height * 0.13;
+        traceRibbon(atmosphereContext, time + noise(strand + 12) * 1400, lane);
+        atmosphereContext.globalAlpha = 0.035 + noise(strand + 18) * 0.075;
+        atmosphereContext.strokeStyle = strand % 4 === 0 ? '#fff8dc' : '#d9e8df';
+        atmosphereContext.lineWidth = 0.45 + noise(strand + 30) * 1.35;
+        atmosphereContext.stroke();
+      }
+
+      const particleCount = Math.min(760, Math.max(360, Math.round(width * 0.58)));
+      for (let index = 0; index < particleCount; index += 1) {
+        const speed = 0.006 + noise(index + 41) * 0.007;
+        const travel = (noise(index + 9) + time * 0.001 * speed) % 1;
+        const lane = (noise(index + 73) - 0.5) * height * 0.15;
+        const point = ribbonPoint(travel, time + noise(index + 91) * 900, lane);
+        const radius = 0.35 + noise(index + 117) * 1.55;
+        const edgeFade = Math.sin(travel * Math.PI);
+        atmosphereContext.globalAlpha = edgeFade * (0.16 + noise(index + 131) * 0.52);
+        atmosphereContext.fillStyle = index % 7 === 0 ? '#fff3c9' : '#e2eee5';
+        atmosphereContext.beginPath();
+        atmosphereContext.arc(point.x, point.y, radius, 0, TAU);
+        atmosphereContext.fill();
+      }
+      atmosphereContext.restore();
+
+      const lowerFade = atmosphereContext.createLinearGradient(0, height * 0.42, 0, height);
+      lowerFade.addColorStop(0, 'rgb(7 16 29 / 0%)');
+      lowerFade.addColorStop(0.72, 'rgb(7 16 29 / 58%)');
+      lowerFade.addColorStop(1, 'rgb(7 16 29 / 92%)');
+      atmosphereContext.fillStyle = lowerFade;
+      atmosphereContext.fillRect(0, 0, width, height);
+    };
+
+    const paintSignals = (time: number) => {
+      signalContext.clearRect(0, 0, width, height);
+      const compact = width < 720;
+      const spacing = compact ? 15 : 13;
+      const left = compact ? width * 0.08 : width * 0.34;
+      const right = compact ? width * 0.96 : width * 0.97;
+      const top = height * 0.23;
+      const bottom = height * 0.84;
+      const fieldWidth = right - left;
+      const fieldHeight = bottom - top;
+      const phase = reducedMotion.matches ? 0 : time * 0.00055;
+      const pointerX = pointer.x * width;
+      const pointerY = pointer.y * height;
+      const pointerRadius = compact ? 112 : 154;
+
+      for (let y = top; y <= bottom; y += spacing) {
+        for (let x = left; x <= right; x += spacing) {
+          const nx = (x - left) / fieldWidth;
+          const ny = (y - top) / fieldHeight;
+          const edgeX = Math.sin(nx * Math.PI);
+          const edgeY = Math.sin(ny * Math.PI);
+          const envelope = Math.max(0, edgeX * edgeY);
+          const wave =
+            Math.sin(nx * 14.5 + phase * 1.7) * 0.5 +
+            Math.cos(ny * 12 - phase * 1.25) * 0.35 +
+            Math.sin((nx + ny) * 9.5 + phase) * 0.15;
+          const pointerDeltaX = x - pointerX;
+          const pointerDeltaY = y - pointerY;
+          const pointerDistance = Math.max(1, Math.hypot(pointerDeltaX, pointerDeltaY));
+          const pointerPulse = Math.max(0, 1 - pointerDistance / pointerRadius) * pointer.strength;
+          const swirl = pointerPulse * pointerPulse * (compact ? 13 : 21);
+          const repel = pointerPulse * (compact ? 5 : 9);
+          const pointerDriftX =
+            (-pointerDeltaY / pointerDistance) * swirl + (pointerDeltaX / pointerDistance) * repel;
+          const pointerDriftY =
+            (pointerDeltaX / pointerDistance) * swirl + (pointerDeltaY / pointerDistance) * repel;
+          const alpha = envelope * (0.075 + (wave + 1) * 0.07 + pointerPulse * 0.08);
+          const size = 0.8 + envelope * (wave + 1.3) * 0.7 + pointerPulse * 0.55;
+          const driftX = Math.sin(ny * 7 + phase) * 5 * envelope + pointerDriftX;
+          const driftY = Math.cos(nx * 9 - phase) * 5 * envelope + pointerDriftY;
+          signalContext.fillStyle = `rgb(164 202 235 / ${alpha})`;
+          signalContext.fillRect(x + driftX, y + driftY, size, size);
+        }
+      }
+
+      const cursorGlow = signalContext.createRadialGradient(
+        pointer.x * width,
+        pointer.y * height,
+        0,
+        pointer.x * width,
+        pointer.y * height,
+        Math.max(width, height) * 0.28,
+      );
+      cursorGlow.addColorStop(0, 'rgb(104 184 255 / 9%)');
+      cursorGlow.addColorStop(1, 'rgb(104 184 255 / 0%)');
+      signalContext.fillStyle = cursorGlow;
+      signalContext.fillRect(0, 0, width, height);
+
+      signalContext.save();
+      signalContext.globalCompositeOperation = 'lighter';
+      const cursorParticleCount = compact ? 24 : 42;
+      const cursorParticleReach = compact ? 62 : 82;
+      const pointerSpeed = Math.hypot(pointer.velocityX, pointer.velocityY);
+      const pointerDirectionX = pointerSpeed > 0.01 ? pointer.velocityX / pointerSpeed : 0;
+      const pointerDirectionY = pointerSpeed > 0.01 ? pointer.velocityY / pointerSpeed : 0;
+      for (let index = 0; index < cursorParticleCount; index += 1) {
+        const seedA = noise(index + 311);
+        const seedB = noise(index + 337);
+        const seedC = noise(index + 353);
+        const seedD = noise(index + 379);
+        const direction = seedC > 0.28 ? 1 : -1;
+        const lifeProgress = (seedD + phase * (0.035 + seedA * 0.055)) % 1;
+        const life = Math.pow(Math.sin(lifeProgress * Math.PI), 0.62);
+        const orbit =
+          seedA * TAU +
+          phase * (0.11 + seedB * 0.31) * direction +
+          Math.sin(phase * (0.58 + seedC * 1.1) + seedB * TAU) * (0.16 + seedD * 0.34);
+        const orbitRadius = 9 + Math.pow(seedB, 0.72) * cursorParticleReach;
+        const breathing =
+          0.9 +
+          Math.sin(phase * (0.72 + seedC * 0.86) + seedA * 17) * 0.15 +
+          Math.cos(phase * (1.31 + seedA * 0.44) + seedD * 11) * 0.06;
+        const eddy = Math.sin(phase * (1.18 + seedD) + index * 2.17) * (2 + seedC * 7);
+        const wanderX = Math.sin(phase * (0.83 + seedB) + seedC * TAU) * (1.5 + seedD * 5.5);
+        const wanderY = Math.cos(phase * (0.67 + seedD) + seedA * TAU) * (1.5 + seedC * 4.5);
+        const wake = pointer.motion * Math.pow(seedD, 1.6) * (compact ? 34 : 58);
+        const spread = 1 + pointer.motion * (0.08 + seedC * 0.2);
+        const x =
+          pointerX +
+          Math.cos(orbit) * (orbitRadius * breathing + eddy) * spread +
+          wanderX -
+          pointerDirectionX * wake;
+        const y =
+          pointerY +
+          Math.sin(orbit) * (orbitRadius * 0.66 * breathing + eddy * 0.45) * spread +
+          wanderY -
+          pointerDirectionY * wake;
+        const twinkle = Math.pow(
+          Math.max(0, Math.sin(phase * (1.7 + seedB * 1.8) + seedC * 19)),
+          7,
+        );
+        const radius = 0.55 + seedC * 1.35 + twinkle * 0.9 + pointer.motion * seedD * 0.25;
+        const edgeFade = 1 - orbitRadius / (cursorParticleReach + 18);
+        const alpha = pointer.strength * life * Math.max(0.16, edgeFade) * (0.42 + seedD * 0.5);
+
+        if (pointer.motion > 0.08 && seedD > 0.8) {
+          signalContext.globalAlpha = alpha * pointer.motion * 0.42;
+          signalContext.strokeStyle = '#b9dcff';
+          signalContext.lineWidth = Math.max(0.45, radius * 0.45);
+          signalContext.beginPath();
+          signalContext.moveTo(x, y);
+          signalContext.lineTo(
+            x - pointerDirectionX * (5 + seedB * 11),
+            y - pointerDirectionY * (5 + seedB * 11),
+          );
+          signalContext.stroke();
+        }
+
+        signalContext.globalAlpha = alpha * (0.88 + twinkle * 0.52);
+        signalContext.fillStyle = twinkle > 0.72 || index % 9 === 0 ? '#fff4c7' : '#c8e6ff';
+        signalContext.beginPath();
+        signalContext.arc(x, y, radius, 0, TAU);
+        signalContext.fill();
+      }
+      signalContext.restore();
+    };
+
+    const paint = (time: number) => {
+      const previousX = pointer.x;
+      const previousY = pointer.y;
+      pointer.x += (pointer.targetX - pointer.x) * 0.1;
+      pointer.y += (pointer.targetY - pointer.y) * 0.1;
+      pointer.strength += (pointer.targetStrength - pointer.strength) * 0.085;
+      const stepX = (pointer.x - previousX) * width;
+      const stepY = (pointer.y - previousY) * height;
+      pointer.velocityX += (stepX - pointer.velocityX) * 0.22;
+      pointer.velocityY += (stepY - pointer.velocityY) * 0.22;
+      const motionTarget = Math.min(1, Math.hypot(pointer.velocityX, pointer.velocityY) / 8);
+      pointer.motion +=
+        (motionTarget - pointer.motion) * (motionTarget > pointer.motion ? 0.24 : 0.1);
+      paintAtmosphere(time);
+      paintSignals(time);
+    };
+
+    const animate = (time: number) => {
+      paint(time);
+      if (!reducedMotion.matches && !document.hidden) frame = requestAnimationFrame(animate);
+    };
+
+    const resize = () => {
+      const bounds = root.getBoundingClientRect();
+      width = Math.max(1, bounds.width);
+      height = Math.max(1, bounds.height);
+      const scale = Math.min(window.devicePixelRatio || 1, 1.6);
+      for (const [canvas, context] of [
+        [atmosphere, atmosphereContext],
+        [signals, signalContext],
+      ] as const) {
+        canvas.width = Math.round(width * scale);
+        canvas.height = Math.round(height * scale);
+        context.setTransform(scale, 0, 0, scale, 0, 0);
+      }
+      cancelAnimationFrame(frame);
+      if (reducedMotion.matches) paint(0);
+      else frame = requestAnimationFrame(animate);
+    };
+
+    const updatePointer = (event: PointerEvent) => {
+      const bounds = root.getBoundingClientRect();
+      if (
+        event.clientX < bounds.left ||
+        event.clientX > bounds.right ||
+        event.clientY < bounds.top ||
+        event.clientY > bounds.bottom
+      ) {
+        pointer.targetX = 0.64;
+        pointer.targetY = 0.32;
+        pointer.targetStrength = 0;
+        return;
+      }
+      pointer.targetX = (event.clientX - bounds.left) / bounds.width;
+      pointer.targetY = (event.clientY - bounds.top) / bounds.height;
+      pointer.targetStrength = 1;
+    };
+
+    const updateMotionPreference = () => resize();
+    const updateVisibility = () => {
+      cancelAnimationFrame(frame);
+      if (!document.hidden && !reducedMotion.matches) frame = requestAnimationFrame(animate);
+    };
+
+    const observer = new ResizeObserver(resize);
+    observer.observe(root);
+    window.addEventListener('pointermove', updatePointer, { passive: true });
+    document.addEventListener('visibilitychange', updateVisibility);
+    reducedMotion.addEventListener('change', updateMotionPreference);
+    resize();
+  }
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-harness-backdrop]')) {
+    startBackdrop(root);
+  }
+</script>
+
+<style>
+  .harness-backdrop {
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    position: absolute;
+    z-index: 0;
+  }
+
+  .harness-backdrop canvas {
+    height: 100%;
+    inset: 0;
+    position: absolute;
+    width: 100%;
+  }
+
+  .harness-backdrop__atmosphere {
+    opacity: 0.98;
+  }
+
+  .harness-backdrop__signals {
+    mix-blend-mode: screen;
+    opacity: 0.9;
+  }
+
+  @media (max-width: 720px) {
+    .harness-backdrop__signals {
+      opacity: 0.56;
+    }
+  }
+</style>

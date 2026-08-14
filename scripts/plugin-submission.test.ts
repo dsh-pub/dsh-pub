@@ -1,9 +1,26 @@
 import { describe, expect, it } from 'vitest';
 
-import { createSubmissionUpdate, parseSubmissionIssue } from './lib/plugin-submission.mjs';
+import {
+  createSubmissionUpdate,
+  parseSubmissionFile,
+  submissionFilePath,
+} from './lib/plugin-submission.mjs';
 
-const issueBody = `### GitHub repository
-https://github.com/example/dsh-clock`;
+const submissionContent = `${JSON.stringify(
+  {
+    repository: 'https://github.com/example/dsh-clock',
+    schemaVersion: 1,
+  },
+  null,
+  2,
+)}\n`;
+const request = {
+  content: submissionContent,
+  createdAt: '2026-08-14T06:00:00Z',
+  path: 'submissions/example--dsh-clock.json',
+  updatedAt: '2026-08-14T06:05:00Z',
+  url: 'https://github.com/dsh-pub/dsh-pub/pull/42',
+};
 
 const githubResponse = (value: unknown, status = 200) =>
   new Response(JSON.stringify(value), {
@@ -61,22 +78,36 @@ const fetchGitHub: typeof fetch = async (input) => {
   return githubResponse({ message: 'Not Found' }, 404);
 };
 
-describe('GitHub Issue plugin integration', () => {
-  it('parses the single-field Issue Form contract', () => {
-    expect(parseSubmissionIssue(issueBody)).toEqual({
+describe('GitHub pull request plugin integration', () => {
+  it('parses the single-file submission contract', () => {
+    const submission = parseSubmissionFile(submissionContent);
+    expect(submission).toEqual({
       directory: '',
       owner: 'example',
       repo: 'dsh-clock',
       repository: 'https://github.com/example/dsh-clock',
     });
+    expect(submissionFilePath(submission)).toBe('submissions/example--dsh-clock.json');
   });
 
-  it('rejects extra repository path segments', () => {
+  it('rejects extra fields and repository path segments', () => {
     expect(() =>
-      parseSubmissionIssue(
-        issueBody.replace('example/dsh-clock', 'example/dsh-clock/tree/main/packages/plugin'),
+      parseSubmissionFile(
+        submissionContent.replace(
+          'example/dsh-clock',
+          'example/dsh-clock/tree/main/packages/plugin',
+        ),
       ),
     ).toThrow('owner/repository');
+    expect(() =>
+      parseSubmissionFile(
+        JSON.stringify({
+          repository: 'https://github.com/example/dsh-clock',
+          schemaVersion: 1,
+          title: 'submitter-controlled metadata',
+        }),
+      ),
+    ).toThrow('only schemaVersion and repository');
   });
 
   it('pins and machine-validates the bundle without executing repository code', async () => {
@@ -86,7 +117,7 @@ describe('GitHub Issue plugin integration', () => {
         source: {
           generatedAt: '2026-08-14T00:00:00.000Z',
           policy: 'pinned-source-contracts',
-          repository: 'https://github.com/dsh-pub/dsh-pub/issues',
+          repository: 'https://github.com/dsh-pub/dsh-pub',
         },
         totals: { installable: 0, reviewed: 0, submitted: 0 },
       },
@@ -98,13 +129,7 @@ describe('GitHub Issue plugin integration', () => {
         topic: 'dsh-plugin',
       },
       fetch: fetchGitHub,
-      issue: {
-        body: issueBody,
-        createdAt: '2026-08-14T06:00:00Z',
-        number: 42,
-        updatedAt: '2026-08-14T06:05:00Z',
-        url: 'https://github.com/dsh-pub/dsh-pub/issues/42',
-      },
+      request,
       registry: { generatedFrom: 'packages/catalog/src/community.generated.json', slugs: [] },
       token: 'test-token',
     });
@@ -118,8 +143,9 @@ describe('GitHub Issue plugin integration', () => {
       },
       name: '@example/dsh-clock',
       provenance: {
-        issue: 'https://github.com/dsh-pub/dsh-pub/issues/42',
+        pullRequest: 'https://github.com/dsh-pub/dsh-pub/pull/42',
         status: 'community-submitted',
+        submittedVia: 'github-pull-request',
       },
       source: { commit: 'a'.repeat(40), directory: '' },
       version: '1.2.3',
@@ -143,10 +169,31 @@ describe('GitHub Issue plugin integration', () => {
     });
   });
 
-  it('ignores Issue prose outside the repository field', () => {
-    expect(
-      parseSubmissionIssue(`The submitter does not control registry metadata.\n\n${issueBody}`),
-    ).toMatchObject({ repository: 'https://github.com/example/dsh-clock' });
+  it('rejects a submission path that does not match the normalized repository', async () => {
+    await expect(
+      createSubmissionUpdate({
+        communityCatalog: {
+          entries: [],
+          source: {
+            generatedAt: '2026-08-14T00:00:00.000Z',
+            policy: 'pinned-source-contracts',
+            repository: 'https://github.com/dsh-pub/dsh-pub',
+          },
+          totals: { installable: 0, reviewed: 0, submitted: 0 },
+        },
+        communitySources: {
+          entries: [],
+          policy: {},
+          reviewedAt: '2026-08-14',
+          schemaVersion: 2,
+          topic: 'dsh-plugin',
+        },
+        fetch: fetchGitHub,
+        request: { ...request, path: 'submissions/someone--else.json' },
+        registry: { generatedFrom: 'packages/catalog/src/community.generated.json', slugs: [] },
+        token: 'test-token',
+      }),
+    ).rejects.toThrow('Submission filename');
   });
 
   it('rejects symlinked contract files from the fixed Git tree', async () => {
@@ -170,7 +217,7 @@ describe('GitHub Issue plugin integration', () => {
           source: {
             generatedAt: '2026-08-14T00:00:00.000Z',
             policy: 'pinned-source-contracts',
-            repository: 'https://github.com/dsh-pub/dsh-pub/issues',
+            repository: 'https://github.com/dsh-pub/dsh-pub',
           },
           totals: { installable: 0, reviewed: 0, submitted: 0 },
         },
@@ -182,13 +229,7 @@ describe('GitHub Issue plugin integration', () => {
           topic: 'dsh-plugin',
         },
         fetch: symlinkFetch,
-        issue: {
-          body: issueBody,
-          createdAt: '2026-08-14T06:00:00Z',
-          number: 42,
-          updatedAt: '2026-08-14T06:05:00Z',
-          url: 'https://github.com/dsh-pub/dsh-pub/issues/42',
-        },
+        request,
         registry: { generatedFrom: 'packages/catalog/src/community.generated.json', slugs: [] },
         token: 'test-token',
       }),
@@ -202,7 +243,7 @@ describe('GitHub Issue plugin integration', () => {
         source: {
           generatedAt: '2026-08-14T00:00:00.000Z',
           policy: 'pinned-source-contracts',
-          repository: 'https://github.com/dsh-pub/dsh-pub/issues',
+          repository: 'https://github.com/dsh-pub/dsh-pub',
         },
         totals: { installable: 0, reviewed: 0, submitted: 0 },
       },
@@ -214,13 +255,7 @@ describe('GitHub Issue plugin integration', () => {
         topic: 'dsh-plugin',
       },
       fetch: fetchGitHub,
-      issue: {
-        body: issueBody,
-        createdAt: '2026-08-14T06:00:00Z',
-        number: 42,
-        updatedAt: '2026-08-14T06:05:00Z',
-        url: 'https://github.com/dsh-pub/dsh-pub/issues/42',
-      },
+      request,
       registry: { generatedFrom: 'packages/catalog/src/community.generated.json', slugs: [] },
       token: 'test-token',
     });
@@ -232,12 +267,11 @@ describe('GitHub Issue plugin integration', () => {
         fetches += 1;
         throw new Error('existing coordinates must not fetch');
       },
-      issue: {
-        body: issueBody,
+      request: {
+        ...request,
         createdAt: '2026-08-14T07:00:00Z',
-        number: 43,
         updatedAt: '2026-08-14T07:05:00Z',
-        url: 'https://github.com/dsh-pub/dsh-pub/issues/43',
+        url: 'https://github.com/dsh-pub/dsh-pub/pull/43',
       },
       registry: first.registry,
       token: 'test-token',
@@ -268,7 +302,7 @@ describe('GitHub Issue plugin integration', () => {
           source: {
             generatedAt: '2026-08-14T00:00:00.000Z',
             policy: 'pinned-source-contracts',
-            repository: 'https://github.com/dsh-pub/dsh-pub/issues',
+            repository: 'https://github.com/dsh-pub/dsh-pub',
           },
           totals: { installable: 0, reviewed: 0, submitted: 0 },
         },
@@ -280,13 +314,7 @@ describe('GitHub Issue plugin integration', () => {
           topic: 'dsh-plugin',
         },
         fetch: metadataFetch,
-        issue: {
-          body: issueBody,
-          createdAt: '2026-08-14T06:00:00Z',
-          number: 42,
-          updatedAt: '2026-08-14T06:05:00Z',
-          url: 'https://github.com/dsh-pub/dsh-pub/issues/42',
-        },
+        request,
         registry: { generatedFrom: 'packages/catalog/src/community.generated.json', slugs: [] },
         token: 'test-token',
       }),

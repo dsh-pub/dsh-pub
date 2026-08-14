@@ -11,6 +11,7 @@ const VERSION_PATTERN = /^[0-9A-Za-z][0-9A-Za-z.+_-]{0,127}$/;
 const LICENSE_PATTERN = /^[A-Za-z0-9][A-Za-z0-9 .()+-]{0,63}$/;
 const MAX_DESCRIPTION_LENGTH = 500;
 const MAX_FILE_BYTES = 1_000_000;
+const MAX_SUBMISSION_BYTES = 2_048;
 const MAX_PATH_LENGTH = 512;
 const MAX_PATH_SEGMENT_LENGTH = 100;
 const DSH_JS_EXPRESSION_TAG = {
@@ -105,44 +106,38 @@ const normalizePath = (value, { allowEmpty = true } = {}) => {
 
 const repositoryPath = (...values) => values.filter(Boolean).join('/');
 
-const issueSections = (body) => {
-  if (typeof body !== 'string' || body.length > 8_000) {
-    submissionError('invalid_issue', 'Issue body is missing or too large.');
+export function parseSubmissionFile(content) {
+  if (typeof content !== 'string' || Buffer.byteLength(content) > MAX_SUBMISSION_BYTES) {
+    submissionError('invalid_submission', 'Submission file is missing or too large.');
   }
-  const sections = new Map();
-  let heading;
-  let lines = [];
-  const finish = () => {
-    if (!heading) return;
-    if (sections.has(heading)) submissionError('invalid_issue', `Duplicate section: ${heading}.`);
-    sections.set(heading, lines.join('\n').trim());
-  };
-  for (const line of body.split(/\r?\n/)) {
-    if (line.startsWith('### ')) {
-      finish();
-      heading = line.slice(4).trim();
-      lines = [];
-    } else if (heading) {
-      lines.push(line);
-    }
+  let value;
+  try {
+    value = JSON.parse(content);
+  } catch {
+    submissionError('invalid_submission', 'Submission file must contain valid JSON.');
   }
-  finish();
-  return sections;
-};
-
-export function parseSubmissionIssue(body) {
-  const sections = issueSections(body);
-  const required = (name) => {
-    const value = sections.get(name)?.trim();
-    if (!value) submissionError('missing_field', `Missing Issue section: ${name}.`);
-    return value;
-  };
-  const repository = normalizeRepository(required('GitHub repository'));
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+    submissionError('invalid_submission', 'Submission file must contain a JSON object.');
+  }
+  const keys = Object.keys(value).sort();
+  if (keys.join(',') !== 'repository,schemaVersion') {
+    submissionError(
+      'invalid_submission',
+      'Submission files may contain only schemaVersion and repository.',
+    );
+  }
+  if (value.schemaVersion !== 1 || typeof value.repository !== 'string') {
+    submissionError('invalid_submission', 'Submission file schemaVersion must be 1.');
+  }
+  const repository = normalizeRepository(value.repository);
   return {
     directory: '',
     ...repository,
   };
 }
+
+export const submissionFilePath = ({ owner, repo }) =>
+  `submissions/${owner.toLocaleLowerCase()}--${repo.toLocaleLowerCase()}.json`;
 
 const githubRequest = async (url, { fetch: fetcher, token }, notFoundCode) => {
   const response = await fetcher(url, {
@@ -406,12 +401,12 @@ const uniquePageSlug = (submission, entries) => {
 const sourceCoordinate = ({ owner, repo, directory }) =>
   `github:${owner}/${repo}${directory ? `#${directory}` : ''}`;
 
-const submittedEntry = (submission, issue, slug) => {
-  const submittedAt = issue.createdAt.slice(0, 10);
+const submittedEntry = (submission, request, slug) => {
+  const submittedAt = request.createdAt.slice(0, 10);
   const descriptionZh = submission.descriptionZh || submission.descriptionEn;
   const statement = {
-    en: 'Submitted through the public Issue queue. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.',
-    zh: '通过公开 Issue 队列提名。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。',
+    en: 'Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.',
+    zh: '通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。',
   };
   return {
     id: sourceCoordinate(submission),
@@ -424,9 +419,9 @@ const submittedEntry = (submission, issue, slug) => {
     builtIn: false,
     provenance: {
       status: 'community-submitted',
-      submittedVia: 'github-issue',
+      submittedVia: 'github-pull-request',
       submittedAt,
-      issue: issue.url,
+      pullRequest: request.url,
       statement,
     },
     description: { en: submission.descriptionEn, zh: descriptionZh },
@@ -468,7 +463,7 @@ const submittedEntry = (submission, issue, slug) => {
   };
 };
 
-const sourceRecord = (submission, issue) => ({
+const sourceRecord = (submission, request) => ({
   repository: submission.repository,
   commit: submission.commit,
   directory: submission.directory,
@@ -479,8 +474,9 @@ const sourceRecord = (submission, issue) => ({
   readmePath: submission.readmePath,
   licensePath: submission.licensePath,
   submission: {
-    issue: issue.url,
-    submittedAt: issue.createdAt.slice(0, 10),
+    file: `https://github.com/dsh-pub/dsh-pub/blob/main/${request.path}`,
+    pullRequest: request.url,
+    submittedAt: request.createdAt.slice(0, 10),
     category: submission.category,
     description: { en: submission.descriptionEn, zh: submission.descriptionZh },
   },
@@ -490,11 +486,27 @@ export async function createSubmissionUpdate({
   communityCatalog,
   communitySources,
   fetch: fetcher,
-  issue,
+  request,
   registry,
   token,
 }) {
-  const submission = parseSubmissionIssue(issue.body);
+  const submission = parseSubmissionFile(request?.content);
+  if (request?.path !== submissionFilePath(submission)) {
+    submissionError(
+      'invalid_submission_path',
+      'Submission filename must match the normalized repository coordinate.',
+    );
+  }
+  if (
+    typeof request?.createdAt !== 'string' ||
+    typeof request?.updatedAt !== 'string' ||
+    !Number.isFinite(Date.parse(request.createdAt)) ||
+    !Number.isFinite(Date.parse(request.updatedAt)) ||
+    typeof request?.url !== 'string' ||
+    !/^https:\/\/github\.com\/dsh-pub\/dsh-pub\/pull\/[1-9][0-9]*$/.test(request.url)
+  ) {
+    submissionError('invalid_submission', 'Submission pull request metadata is invalid.');
+  }
   const coordinateMatches = (entry) =>
     entry.source.repository.toLocaleLowerCase() === submission.repository.toLocaleLowerCase() &&
     entry.source.directory === submission.directory;
@@ -513,7 +525,7 @@ export async function createSubmissionUpdate({
   const inspected = await inspectSubmission(submission, { fetch: fetcher, token });
 
   const slug = uniquePageSlug(inspected, communityCatalog.entries);
-  const entry = submittedEntry(inspected, issue, slug);
+  const entry = submittedEntry(inspected, request, slug);
   const catalogEntries = [...communityCatalog.entries];
   catalogEntries.push(entry);
 
@@ -523,7 +535,7 @@ export async function createSubmissionUpdate({
       candidate.directory === inspected.directory,
   );
   const sourceEntries = [...communitySources.entries];
-  const source = sourceRecord(inspected, issue);
+  const source = sourceRecord(inspected, request);
   if (sourceIndex >= 0) {
     submissionError('catalog_conflict', 'Catalog source coordinate is already registered.');
   }
@@ -551,8 +563,8 @@ export async function createSubmissionUpdate({
     communityCatalog: {
       ...communityCatalog,
       source: {
-        repository: 'https://github.com/dsh-pub/dsh-pub/issues',
-        generatedAt: new Date(issue.updatedAt).toISOString(),
+        repository: 'https://github.com/dsh-pub/dsh-pub',
+        generatedAt: new Date(request.updatedAt).toISOString(),
         policy: 'pinned-source-contracts',
       },
       totals: { reviewed, submitted, automated, installable: catalogEntries.length },
@@ -561,7 +573,7 @@ export async function createSubmissionUpdate({
     communitySources: {
       ...communitySources,
       schemaVersion: 2,
-      intake: 'https://github.com/dsh-pub/dsh-pub/issues/new?template=plugin-submission.yml',
+      intake: 'https://dsh.pub/en/submit/',
       entries: sourceEntries,
     },
     entry,
