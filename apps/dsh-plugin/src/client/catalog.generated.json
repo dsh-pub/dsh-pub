@@ -8,7 +8,7 @@
     },
     "community": {
       "repository": "https://github.com/dsh-pub/dsh-pub",
-      "generatedAt": "2026-08-14T21:08:32.000Z",
+      "generatedAt": "2026-08-15T15:16:28.000Z",
       "policy": "pinned-source-contracts"
     }
   },
@@ -15128,6 +15128,26 @@
       "repository": "https://github.com/dsh-pub/dsh-meow-cat",
       "directory": "",
       "commit": "c9b9c6807b5edebaef2112f52317d55da75e98cd"
+    },
+    {
+      "slug": "huyansheng3-dsh-skin",
+      "name": "dsh-skin",
+      "description": {
+        "en": "Theme / skin plugin for DeepSeek Harness (DSH) web client. Override CSS variables, add background images, and switch themes — loaded as a native Cordis plugin, no browser extension or CDP required.",
+        "zh": "Theme / skin plugin for DeepSeek Harness (DSH) web client. Override CSS variables, add background images, and switch themes — loaded as a native Cordis plugin, no browser extension or CDP required."
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/huyansheng3/dsh-skin",
+      "directory": "",
+      "commit": "1fb374694cee5eb08788b61e0af86dfb5c305ba7"
     }
   ]
 }

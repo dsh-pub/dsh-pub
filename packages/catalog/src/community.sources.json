@@ -7089,6 +7089,27 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/huyansheng3/dsh-skin",
+      "commit": "1fb374694cee5eb08788b61e0af86dfb5c305ba7",
+      "directory": "",
+      "packageName": "dsh-skin",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "src/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/huyansheng3--dsh-skin.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/13",
+        "submittedAt": "2026-08-15",
+        "category": "client-ui",
+        "description": {
+          "en": "Theme / skin plugin for DeepSeek Harness (DSH) web client. Override CSS variables, add background images, and switch themes — loaded as a native Cordis plugin, no browser extension or CDP required.",
+          "zh": ""
+        }
+      }
     }
   ]
 }
