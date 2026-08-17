@@ -8,7 +8,7 @@
     },
     "community": {
       "repository": "https://github.com/dsh-pub/dsh-pub",
-      "generatedAt": "2026-08-15T15:16:28.000Z",
+      "generatedAt": "2026-08-17T08:20:48.000Z",
       "policy": "pinned-source-contracts"
     }
   },
@@ -15148,6 +15148,26 @@
       "repository": "https://github.com/huyansheng3/dsh-skin",
       "directory": "",
       "commit": "1fb374694cee5eb08788b61e0af86dfb5c305ba7"
+    },
+    {
+      "slug": "dsh-ambiguity-handling",
+      "name": "dsh-ambiguity-handling",
+      "description": {
+        "en": "Append ambiguity-handling rules to dsh system prompt",
+        "zh": "Append ambiguity-handling rules to dsh system prompt"
+      },
+      "topic": "other",
+      "category": "bundles",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/changlianxiya-139/dsh-ambiguity-handling",
+      "directory": "",
+      "commit": "575ba36de0f1bceeb31da1218b080ea2139042ac"
     }
   ]
 }

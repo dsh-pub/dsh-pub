@@ -7110,6 +7110,24 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/changlianxiya-139/dsh-ambiguity-handling",
+      "commit": "575ba36de0f1bceeb31da1218b080ea2139042ac",
+      "directory": "",
+      "packageName": "dsh-ambiguity-handling",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/changlianxiya-139--dsh-ambiguity-handling.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/17",
+        "submittedAt": "2026-08-17",
+        "category": "bundles",
+        "description": { "en": "Append ambiguity-handling rules to dsh system prompt", "zh": "" }
+      }
     }
   ]
 }
