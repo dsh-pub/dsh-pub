@@ -1,10 +1,10 @@
 {
   "source": {
     "repository": "https://github.com/dsh-pub/dsh-pub",
-    "generatedAt": "2026-08-17T08:20:48.000Z",
+    "generatedAt": "2026-08-18T03:23:02.000Z",
     "policy": "pinned-source-contracts"
   },
-  "totals": { "reviewed": 6, "submitted": 3, "automated": 558, "installable": 567 },
+  "totals": { "reviewed": 6, "submitted": 4, "automated": 558, "installable": 568 },
   "entries": [
     {
       "id": "github:omdsh-dev/dsh-open-in-vscode",
@@ -40412,6 +40412,67 @@
         "readme": {
           "en": "## Source-derived summary\n\nAppend ambiguity-handling rules to dsh system prompt",
           "zh": "## 源码元数据简介\n\nAppend ambiguity-handling rules to dsh system prompt"
+        },
+        "modelExperience": {
+          "en": "Not inspected by the automated submission check; inspect the pinned source for model-facing behavior.",
+          "zh": "自动提交检查未核对模型侧行为；请查看固定版本的源码。"
+        },
+        "limitations": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      }
+    },
+    {
+      "id": "github:Xidong-AI/dsh-rate-limiter",
+      "slug": "dsh-rate-limiter",
+      "name": "@xidong-ai/dsh-rate-limiter",
+      "version": "0.1.1",
+      "license": "MIT",
+      "type": "bundle",
+      "category": "bundles",
+      "builtIn": false,
+      "provenance": {
+        "status": "community-submitted",
+        "submittedVia": "github-pull-request",
+        "submittedAt": "2026-08-18",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/19",
+        "statement": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      },
+      "description": {
+        "en": "DeepSeek Harness 主动限速插件：按 provider 令牌桶限速，超限延迟排队而非失败",
+        "zh": "DeepSeek Harness 主动限速插件：按 provider 令牌桶限速，超限延迟排队而非失败"
+      },
+      "source": {
+        "repository": "https://github.com/Xidong-AI/dsh-rate-limiter",
+        "directory": "",
+        "commit": "17fe0211f9de70f94e489315a38bc0748bc3acb1"
+      },
+      "runtime": { "hostLoadable": null, "configurable": null, "client": null },
+      "capabilities": { "tools": null, "uiContributions": null, "uiSlotsDeclared": null },
+      "availability": {
+        "profiles": null,
+        "defaultWeb": null,
+        "bundles": ["@xidong-ai/dsh-rate-limiter"]
+      },
+      "distribution": {
+        "installable": true,
+        "mode": "git-bundle",
+        "activation": "profile-layer",
+        "note": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      },
+      "docs": {
+        "readmePath": "README.md",
+        "readmeZhPath": "README.zh.md",
+        "readme": {
+          "en": "## Source-derived summary\n\nDeepSeek Harness 主动限速插件：按 provider 令牌桶限速，超限延迟排队而非失败",
+          "zh": "## 源码元数据简介\n\nDeepSeek Harness 主动限速插件：按 provider 令牌桶限速，超限延迟排队而非失败"
         },
         "modelExperience": {
           "en": "Not inspected by the automated submission check; inspect the pinned source for model-facing behavior.",
