@@ -7149,6 +7149,27 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/kazma258/dsh-usage-card",
+      "commit": "ff1f1b21b6880949e9adccb2724f46f8a9c49229",
+      "directory": "",
+      "packageName": "dsh-usage-card",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/kazma258--dsh-usage-card.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/23",
+        "submittedAt": "2026-08-18",
+        "category": "client-ui",
+        "description": {
+          "en": "Sidebar usage card for the dsh web GUI: 7d/30d token usage, spend and remaining DeepSeek balance, rendered above the settings button.",
+          "zh": ""
+        }
+      }
     }
   ]
 }

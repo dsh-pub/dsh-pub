@@ -1,10 +1,10 @@
 {
   "source": {
     "repository": "https://github.com/dsh-pub/dsh-pub",
-    "generatedAt": "2026-08-18T03:23:02.000Z",
+    "generatedAt": "2026-08-18T16:23:07.000Z",
     "policy": "pinned-source-contracts"
   },
-  "totals": { "reviewed": 6, "submitted": 4, "automated": 558, "installable": 568 },
+  "totals": { "reviewed": 6, "submitted": 5, "automated": 558, "installable": 569 },
   "entries": [
     {
       "id": "github:omdsh-dev/dsh-open-in-vscode",
@@ -40473,6 +40473,63 @@
         "readme": {
           "en": "## Source-derived summary\n\nDeepSeek Harness 主动限速插件：按 provider 令牌桶限速，超限延迟排队而非失败",
           "zh": "## 源码元数据简介\n\nDeepSeek Harness 主动限速插件：按 provider 令牌桶限速，超限延迟排队而非失败"
+        },
+        "modelExperience": {
+          "en": "Not inspected by the automated submission check; inspect the pinned source for model-facing behavior.",
+          "zh": "自动提交检查未核对模型侧行为；请查看固定版本的源码。"
+        },
+        "limitations": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      }
+    },
+    {
+      "id": "github:kazma258/dsh-usage-card",
+      "slug": "dsh-usage-card",
+      "name": "dsh-usage-card",
+      "version": "0.1.0",
+      "license": "MIT",
+      "type": "bundle",
+      "category": "client-ui",
+      "builtIn": false,
+      "provenance": {
+        "status": "community-submitted",
+        "submittedVia": "github-pull-request",
+        "submittedAt": "2026-08-18",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/23",
+        "statement": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      },
+      "description": {
+        "en": "Sidebar usage card for the dsh web GUI: 7d/30d token usage, spend and remaining DeepSeek balance, rendered above the settings button.",
+        "zh": "Sidebar usage card for the dsh web GUI: 7d/30d token usage, spend and remaining DeepSeek balance, rendered above the settings button."
+      },
+      "source": {
+        "repository": "https://github.com/kazma258/dsh-usage-card",
+        "directory": "",
+        "commit": "ff1f1b21b6880949e9adccb2724f46f8a9c49229"
+      },
+      "runtime": { "hostLoadable": null, "configurable": null, "client": null },
+      "capabilities": { "tools": null, "uiContributions": null, "uiSlotsDeclared": null },
+      "availability": { "profiles": null, "defaultWeb": null, "bundles": ["dsh-usage-card"] },
+      "distribution": {
+        "installable": true,
+        "mode": "git-bundle",
+        "activation": "profile-layer",
+        "note": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      },
+      "docs": {
+        "readmePath": "README.md",
+        "readmeZhPath": "README.md",
+        "readme": {
+          "en": "## Source-derived summary\n\nSidebar usage card for the dsh web GUI: 7d/30d token usage, spend and remaining DeepSeek balance, rendered above the settings button.",
+          "zh": "## 源码元数据简介\n\nSidebar usage card for the dsh web GUI: 7d/30d token usage, spend and remaining DeepSeek balance, rendered above the settings button."
         },
         "modelExperience": {
           "en": "Not inspected by the automated submission check; inspect the pinned source for model-facing behavior.",

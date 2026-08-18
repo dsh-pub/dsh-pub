@@ -8,7 +8,7 @@
     },
     "community": {
       "repository": "https://github.com/dsh-pub/dsh-pub",
-      "generatedAt": "2026-08-18T03:23:02.000Z",
+      "generatedAt": "2026-08-18T16:23:07.000Z",
       "policy": "pinned-source-contracts"
     }
   },
@@ -15188,6 +15188,26 @@
       "repository": "https://github.com/Xidong-AI/dsh-rate-limiter",
       "directory": "",
       "commit": "17fe0211f9de70f94e489315a38bc0748bc3acb1"
+    },
+    {
+      "slug": "dsh-usage-card",
+      "name": "dsh-usage-card",
+      "description": {
+        "en": "Sidebar usage card for the dsh web GUI: 7d/30d token usage, spend and remaining DeepSeek balance, rendered above the settings button.",
+        "zh": "Sidebar usage card for the dsh web GUI: 7d/30d token usage, spend and remaining DeepSeek balance, rendered above the settings button."
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/kazma258/dsh-usage-card",
+      "directory": "",
+      "commit": "ff1f1b21b6880949e9adccb2724f46f8a9c49229"
     }
   ]
 }
