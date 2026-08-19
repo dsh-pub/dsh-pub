@@ -8,7 +8,7 @@
     },
     "community": {
       "repository": "https://github.com/dsh-pub/dsh-pub",
-      "generatedAt": "2026-08-18T16:23:07.000Z",
+      "generatedAt": "2026-08-19T17:38:07.000Z",
       "policy": "pinned-source-contracts"
     }
   },
@@ -15208,6 +15208,26 @@
       "repository": "https://github.com/kazma258/dsh-usage-card",
       "directory": "",
       "commit": "ff1f1b21b6880949e9adccb2724f46f8a9c49229"
+    },
+    {
+      "slug": "dsh-plugin-deploy",
+      "name": "dsh-plugin-deploy",
+      "description": {
+        "en": "DeepSeek Harness 插件：一句话把当前项目部署到 Cloudflare",
+        "zh": "DeepSeek Harness 插件：一句话把当前项目部署到 Cloudflare"
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/Octo-o-o-o/dsh-plugin-deploy",
+      "directory": "",
+      "commit": "da8ba62b18a7a5ce9e65b079c1c7912e95b36da7"
     }
   ]
 }

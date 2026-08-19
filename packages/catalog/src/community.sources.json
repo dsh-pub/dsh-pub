@@ -7170,6 +7170,27 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/Octo-o-o-o/dsh-plugin-deploy",
+      "commit": "da8ba62b18a7a5ce9e65b079c1c7912e95b36da7",
+      "directory": "",
+      "packageName": "dsh-plugin-deploy",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/octo-o-o-o--dsh-plugin-deploy.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/24",
+        "submittedAt": "2026-08-19",
+        "category": "client-ui",
+        "description": {
+          "en": "DeepSeek Harness 插件：一句话把当前项目部署到 Cloudflare",
+          "zh": ""
+        }
+      }
     }
   ]
 }
