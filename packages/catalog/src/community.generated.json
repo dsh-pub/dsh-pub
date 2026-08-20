@@ -1,10 +1,10 @@
 {
   "source": {
     "repository": "https://github.com/dsh-pub/dsh-pub",
-    "generatedAt": "2026-08-20T05:08:12.000Z",
+    "generatedAt": "2026-08-20T08:47:02.000Z",
     "policy": "pinned-source-contracts"
   },
-  "totals": { "reviewed": 6, "submitted": 7, "automated": 558, "installable": 571 },
+  "totals": { "reviewed": 6, "submitted": 8, "automated": 558, "installable": 572 },
   "entries": [
     {
       "id": "github:omdsh-dev/dsh-open-in-vscode",
@@ -40644,6 +40644,63 @@
         "readme": {
           "en": "## Source-derived summary\n\nAutoRouter (model routing gateway / relay) LLM adapter for the DeepSeek Harness",
           "zh": "## 源码元数据简介\n\nAutoRouter (model routing gateway / relay) LLM adapter for the DeepSeek Harness"
+        },
+        "modelExperience": {
+          "en": "Not inspected by the automated submission check; inspect the pinned source for model-facing behavior.",
+          "zh": "自动提交检查未核对模型侧行为；请查看固定版本的源码。"
+        },
+        "limitations": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      }
+    },
+    {
+      "id": "github:wangyihao0001-oss/dsh-task-memory",
+      "slug": "dsh-task-memory",
+      "name": "dsh-task-memory",
+      "version": "0.1.0",
+      "license": "MIT",
+      "type": "bundle",
+      "category": "bundles",
+      "builtIn": false,
+      "provenance": {
+        "status": "community-submitted",
+        "submittedVia": "github-pull-request",
+        "submittedAt": "2026-08-20",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/26",
+        "statement": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      },
+      "description": {
+        "en": "Task-isolated long-term memory for DeepSeek Harness: remember / recall / search stay inside one task boundary, with optional prompt injection.",
+        "zh": "Task-isolated long-term memory for DeepSeek Harness: remember / recall / search stay inside one task boundary, with optional prompt injection."
+      },
+      "source": {
+        "repository": "https://github.com/wangyihao0001-oss/dsh-task-memory",
+        "directory": "",
+        "commit": "4044616d052168a439c226ad968b4e7465aacc13"
+      },
+      "runtime": { "hostLoadable": null, "configurable": null, "client": null },
+      "capabilities": { "tools": null, "uiContributions": null, "uiSlotsDeclared": null },
+      "availability": { "profiles": null, "defaultWeb": null, "bundles": ["dsh-task-memory"] },
+      "distribution": {
+        "installable": true,
+        "mode": "git-bundle",
+        "activation": "profile-layer",
+        "note": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      },
+      "docs": {
+        "readmePath": "README.md",
+        "readmeZhPath": "README.zh.md",
+        "readme": {
+          "en": "## Source-derived summary\n\nTask-isolated long-term memory for DeepSeek Harness: remember / recall / search stay inside one task boundary, with optional prompt injection.",
+          "zh": "## 源码元数据简介\n\nTask-isolated long-term memory for DeepSeek Harness: remember / recall / search stay inside one task boundary, with optional prompt injection."
         },
         "modelExperience": {
           "en": "Not inspected by the automated submission check; inspect the pinned source for model-facing behavior.",

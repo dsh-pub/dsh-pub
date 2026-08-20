@@ -7212,6 +7212,27 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/wangyihao0001-oss/dsh-task-memory",
+      "commit": "4044616d052168a439c226ad968b4e7465aacc13",
+      "directory": "",
+      "packageName": "dsh-task-memory",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/wangyihao0001-oss--dsh-task-memory.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/26",
+        "submittedAt": "2026-08-20",
+        "category": "bundles",
+        "description": {
+          "en": "Task-isolated long-term memory for DeepSeek Harness: remember / recall / search stay inside one task boundary, with optional prompt injection.",
+          "zh": ""
+        }
+      }
     }
   ]
 }

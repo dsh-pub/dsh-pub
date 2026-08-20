@@ -8,7 +8,7 @@
     },
     "community": {
       "repository": "https://github.com/dsh-pub/dsh-pub",
-      "generatedAt": "2026-08-20T05:08:12.000Z",
+      "generatedAt": "2026-08-20T08:47:02.000Z",
       "policy": "pinned-source-contracts"
     }
   },
@@ -15248,6 +15248,26 @@
       "repository": "https://github.com/autorouter0-ai/dsh-llm-autorouter",
       "directory": "",
       "commit": "d9b291b9bdf346d73fe9836f4f63c607a2453c8f"
+    },
+    {
+      "slug": "dsh-task-memory",
+      "name": "dsh-task-memory",
+      "description": {
+        "en": "Task-isolated long-term memory for DeepSeek Harness: remember / recall / search stay inside one task boundary, with optional prompt injection.",
+        "zh": "Task-isolated long-term memory for DeepSeek Harness: remember / recall / search stay inside one task boundary, with optional prompt injection."
+      },
+      "topic": "other",
+      "category": "bundles",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/wangyihao0001-oss/dsh-task-memory",
+      "directory": "",
+      "commit": "4044616d052168a439c226ad968b4e7465aacc13"
     }
   ]
 }
