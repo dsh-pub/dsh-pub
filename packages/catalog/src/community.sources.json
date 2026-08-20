@@ -7191,6 +7191,27 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/autorouter0-ai/dsh-llm-autorouter",
+      "commit": "d9b291b9bdf346d73fe9836f4f63c607a2453c8f",
+      "directory": "",
+      "packageName": "dsh-llm-autorouter",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/autorouter0-ai--dsh-llm-autorouter.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/25",
+        "submittedAt": "2026-08-20",
+        "category": "client-ui",
+        "description": {
+          "en": "AutoRouter (model routing gateway / relay) LLM adapter for the DeepSeek Harness",
+          "zh": ""
+        }
+      }
     }
   ]
 }

@@ -8,7 +8,7 @@
     },
     "community": {
       "repository": "https://github.com/dsh-pub/dsh-pub",
-      "generatedAt": "2026-08-19T17:38:07.000Z",
+      "generatedAt": "2026-08-20T05:08:12.000Z",
       "policy": "pinned-source-contracts"
     }
   },
@@ -15228,6 +15228,26 @@
       "repository": "https://github.com/Octo-o-o-o/dsh-plugin-deploy",
       "directory": "",
       "commit": "da8ba62b18a7a5ce9e65b079c1c7912e95b36da7"
+    },
+    {
+      "slug": "dsh-llm-autorouter",
+      "name": "dsh-llm-autorouter",
+      "description": {
+        "en": "AutoRouter (model routing gateway / relay) LLM adapter for the DeepSeek Harness",
+        "zh": "AutoRouter (model routing gateway / relay) LLM adapter for the DeepSeek Harness"
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/autorouter0-ai/dsh-llm-autorouter",
+      "directory": "",
+      "commit": "d9b291b9bdf346d73fe9836f4f63c607a2453c8f"
     }
   ]
 }
