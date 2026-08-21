@@ -8,7 +8,7 @@
     },
     "community": {
       "repository": "https://github.com/dsh-pub/dsh-pub",
-      "generatedAt": "2026-08-20T08:47:02.000Z",
+      "generatedAt": "2026-08-21T12:36:34.000Z",
       "policy": "pinned-source-contracts"
     }
   },
@@ -15268,6 +15268,26 @@
       "repository": "https://github.com/wangyihao0001-oss/dsh-task-memory",
       "directory": "",
       "commit": "4044616d052168a439c226ad968b4e7465aacc13"
+    },
+    {
+      "slug": "dsh-codex-sync",
+      "name": "dsh-codex-sync",
+      "description": {
+        "en": "One-tap Codex move-in to DSH: auto-import Codex project chats; two-way Skills and MCP sync.",
+        "zh": "One-tap Codex move-in to DSH: auto-import Codex project chats; two-way Skills and MCP sync."
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/Walvez/dsh-codex-sync",
+      "directory": "",
+      "commit": "8916b56ef4e2d1273e847e6fc6a20c25d0b2db9b"
     }
   ]
 }

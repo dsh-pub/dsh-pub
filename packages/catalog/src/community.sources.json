@@ -7233,6 +7233,27 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/Walvez/dsh-codex-sync",
+      "commit": "8916b56ef4e2d1273e847e6fc6a20c25d0b2db9b",
+      "directory": "",
+      "packageName": "dsh-codex-sync",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/walvez--dsh-codex-sync.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/28",
+        "submittedAt": "2026-08-21",
+        "category": "client-ui",
+        "description": {
+          "en": "One-tap Codex move-in to DSH: auto-import Codex project chats; two-way Skills and MCP sync.",
+          "zh": ""
+        }
+      }
     }
   ]
 }
