@@ -4,6 +4,9 @@ const API_URL = 'https://api.github.com/graphql';
 const BATCH_SIZE = 50;
 const INSPECTION_BATCH_SIZE = 20;
 const MAX_CONCURRENCY = 4;
+const TOPIC_PAGE_SIZE = 100;
+const TOPIC_PAGE_BUFFER = 10;
+export const TOPIC_MAX_PAGES = 250;
 const RETRYABLE_STATUS = new Set([403, 429, 502, 503, 504]);
 const RATE_LIMIT_STATUS = new Set([403, 429]);
 const RATE_LIMIT_MESSAGE = /(?:rate limit|abuse detection|submitted too quickly)/i;
@@ -131,6 +134,12 @@ const retryDelay = (response, attempt, rateLimited) => {
   return (rateLimited ? 60_000 : 1_000) * 2 ** attempt;
 };
 
+export const topicPaginationBudget = (observedTotalCount) =>
+  Math.min(
+    TOPIC_MAX_PAGES,
+    Math.max(1, Math.ceil(observedTotalCount / TOPIC_PAGE_SIZE) + TOPIC_PAGE_BUFFER),
+  );
+
 export function createGitHubTopicClient({
   fetch: fetcher,
   now = () => new Date(),
@@ -216,10 +225,10 @@ export function createGitHubTopicClient({
     let cursor = null;
     let totalCount;
     let pages = 0;
+    let pageBudget = TOPIC_MAX_PAGES;
     let hasNextPage = true;
     while (hasNextPage) {
       pages += 1;
-      if (pages > 100) throw new Error('GitHub Topic pagination exceeded the safety limit.');
       const data = await request(TOPIC_QUERY, { cursor, topic });
       const connection = data.topic?.repositories;
       if (
@@ -231,6 +240,12 @@ export function createGitHubTopicClient({
         throw new Error('GitHub Topic response is incomplete.');
       }
       totalCount = connection.totalCount;
+      pageBudget = topicPaginationBudget(totalCount);
+      if (pages > pageBudget) {
+        throw new Error(
+          `GitHub Topic pagination exceeded the safety limit (${pageBudget} pages for ${totalCount} repositories).`,
+        );
+      }
       for (const node of connection.nodes) {
         const commit = node.defaultBranchRef?.target?.oid;
         const coordinate = node.nameWithOwner?.toLocaleLowerCase();

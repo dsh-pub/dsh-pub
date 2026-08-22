@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
-import { createGitHubTopicClient } from './lib/github-topic-client.mjs';
+import {
+  createGitHubTopicClient,
+  TOPIC_MAX_PAGES,
+  topicPaginationBudget,
+} from './lib/github-topic-client.mjs';
 
 const response = (data: unknown) =>
   new Response(JSON.stringify({ data }), {
@@ -27,6 +31,12 @@ const repositoryNode = ({
 });
 
 describe('GitHub Topic GraphQL client', () => {
+  it('sizes Topic pagination budget from observed repository totals', () => {
+    expect(topicPaginationBudget(10_295)).toBe(113);
+    expect(topicPaginationBudget(100)).toBe(11);
+    expect(topicPaginationBudget(25_000)).toBe(TOPIC_MAX_PAGES);
+  });
+
   it('paginates the complete topic and reads candidate files at pinned commits', async () => {
     const calls: Array<{ query: string; variables: Record<string, unknown> }> = [];
     const pages = [
