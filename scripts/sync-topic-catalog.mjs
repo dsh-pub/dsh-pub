@@ -1,5 +1,7 @@
 import { appendFile, readFile, writeFile } from 'node:fs/promises';
+import { execFile } from 'node:child_process';
 import { dirname, join } from 'node:path';
+import { promisify } from 'node:util';
 import { fileURLToPath } from 'node:url';
 
 import { format } from 'prettier';
@@ -22,6 +24,7 @@ const token = process.env.GITHUB_TOKEN ?? process.env.GH_TOKEN;
 if (!token) throw new Error('GITHUB_TOKEN or GH_TOKEN is required.');
 
 const readJson = async (path) => JSON.parse(await readFile(path, 'utf8'));
+const execFileAsync = promisify(execFile);
 const formattedJson = (value) => format(JSON.stringify(value), { parser: 'json', printWidth: 100 });
 const current = {
   analysis: await readJson(paths.analysis),
@@ -47,9 +50,19 @@ for (const [key, path] of Object.entries(paths)) {
   if (!dryRun) await writeFile(path, next);
 }
 
+if (changed.length > 0 && !dryRun) {
+  await execFileAsync(
+    process.execPath,
+    ['--experimental-strip-types', join(root, 'apps/dsh-plugin/scripts/generate-catalog.ts')],
+    { cwd: root },
+  );
+  changed.push('apps/dsh-plugin/src/client/catalog.generated.json');
+}
+
+const changedFiles = [...new Set(changed)];
 const summary = {
-  changed: changed.length > 0,
-  changedFiles: changed.length,
+  changed: changedFiles.length > 0,
+  changedFiles: changedFiles.length,
   dryRun,
   ...result.analysis.totals,
 };

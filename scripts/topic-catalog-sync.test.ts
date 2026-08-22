@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { syncTopicCatalogData } from './lib/topic-catalog-sync.mjs';
+import { normalizeCommunitySlugs, syncTopicCatalogData } from './lib/topic-catalog-sync.mjs';
 
 const reviewedEntry = {
   id: 'github:example/reviewed',
@@ -66,6 +66,32 @@ const validManifest = JSON.stringify({
 });
 
 describe('GitHub Topic catalog sync', () => {
+  it('renames community slugs that collide with reserved official slugs', () => {
+    const reserved = ['acp', 'reviewed'];
+    const entries = normalizeCommunitySlugs(
+      [
+        {
+          ...reviewedEntry,
+          slug: 'acp',
+        },
+        {
+          ...reviewedEntry,
+          slug: 'reviewed',
+          source: {
+            ...reviewedEntry.source,
+            repository: 'https://github.com/example/another-reviewed',
+          },
+          name: '@example/another-reviewed',
+        },
+      ],
+      reserved,
+    );
+
+    expect(entries.map((entry) => entry.slug)).toEqual(['example-reviewed', 'another-reviewed']);
+    expect(new Set(entries.map((entry) => entry.slug)).size).toBe(2);
+    expect(entries.every((entry) => !reserved.includes(entry.slug))).toBe(true);
+  });
+
   it('preserves reviewed entries, lists verified bundles, and records rejected analysis', async () => {
     const github = {
       discoverTopic: async () => ({

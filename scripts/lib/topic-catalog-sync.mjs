@@ -236,6 +236,37 @@ const uniqueSlug = (name, repository, entries, reservedSlugs) => {
   reject('catalog_conflict', `No unique catalog slug is available for ${repository}.`);
 };
 
+const communitySlugCandidates = (entry) => {
+  const [owner, repo] = new URL(entry.source.repository).pathname.split('/').filter(Boolean);
+  const base = slugPart(entry.name.replace(/^@[^/]+\//, ''));
+  return [
+    entry.slug,
+    base,
+    slugPart(`${owner}-${base}`),
+    slugPart(`${owner}-${repo}-${base}`),
+    slugPart(`${owner}-${repo}-${base}-plugin`),
+  ];
+};
+
+export const normalizeCommunitySlugs = (entries, reservedSlugs) => {
+  const used = new Set(reservedSlugs);
+  return entries.map((entry) => {
+    if (!entry.provenance?.status?.startsWith('community')) {
+      used.add(entry.slug);
+      return entry;
+    }
+    for (const candidate of communitySlugCandidates(entry)) {
+      if (!candidate || used.has(candidate)) continue;
+      used.add(candidate);
+      return candidate === entry.slug ? entry : { ...entry, slug: candidate };
+    }
+    reject(
+      'catalog_conflict',
+      `No unique catalog slug is available for ${entry.source.repository}.`,
+    );
+  });
+};
+
 const sourceCoordinate = (repository) => {
   const [owner, repo] = new URL(repository).pathname.split('/').filter(Boolean);
   return `github:${owner}/${repo}`;
@@ -553,13 +584,16 @@ export async function syncTopicCatalogData({
     }
   }
 
-  const entries = [
-    ...preservedEntries,
-    ...deferredEntries,
-    ...unresolvedEntries,
-    ...cachedEntries,
-    ...automatedEntries,
-  ];
+  const entries = normalizeCommunitySlugs(
+    [
+      ...preservedEntries,
+      ...deferredEntries,
+      ...unresolvedEntries,
+      ...cachedEntries,
+      ...automatedEntries,
+    ],
+    reservedSlugs,
+  );
   const nextAnalysis = {
     schemaVersion: 1,
     topic,
