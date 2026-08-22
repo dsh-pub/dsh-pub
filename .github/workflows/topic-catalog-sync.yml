@@ -1,6 +1,14 @@
 name: Topic catalog sync
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/topic-catalog-sync.yml
+      - scripts/sync-topic-catalog.mjs
+      - scripts/lib/github-topic-client.mjs
+      - scripts/lib/topic-catalog-sync.mjs
   schedule:
     - cron: '0 1 * * *'
       timezone: 'Asia/Shanghai'

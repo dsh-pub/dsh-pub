@@ -10,6 +10,15 @@ describe('Topic catalog sync workflow contract', () => {
     const workflow = parse(await readFile(workflowPath, 'utf8'));
 
     expect(workflow.on).toEqual({
+      push: {
+        branches: ['main'],
+        paths: [
+          '.github/workflows/topic-catalog-sync.yml',
+          'scripts/sync-topic-catalog.mjs',
+          'scripts/lib/github-topic-client.mjs',
+          'scripts/lib/topic-catalog-sync.mjs',
+        ],
+      },
       schedule: [{ cron: '0 1 * * *', timezone: 'Asia/Shanghai' }],
       workflow_dispatch: null,
     });
