@@ -67,9 +67,9 @@ describe('Topic catalog sync workflow contract', () => {
       'permission-contents': 'write',
       'private-key': '${{ secrets.DSH_PUB_APP_PRIVATE_KEY_PKCS8 }}',
     });
-    expect(job.steps.indexOf(build)).toBeLessThan(job.steps.indexOf(e2e));
-    expect(job.steps.indexOf(token)).toBeGreaterThan(job.steps.indexOf(build));
+    expect(job.steps.indexOf(build)).toBeLessThan(job.steps.indexOf(token));
     expect(job.steps.indexOf(token)).toBeLessThan(job.steps.indexOf(commit));
+    expect(job.steps.indexOf(commit)).toBeLessThan(job.steps.indexOf(e2e));
     expect(commit.env.GH_TOKEN).toBe('${{ steps.catalog-app-token.outputs.token }}');
     for (const path of [
       'apps/dsh-plugin/lib/client.js',
