@@ -58,12 +58,6 @@ jobs:
       - name: Build deployable workspace
         run: npm run build
 
-      - name: Install browser for E2E
-        run: npx playwright install --with-deps chromium
-
-      - name: Run integration tests
-        run: npm run e2e
-
       - name: Create catalog push token
         id: catalog-app-token
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
@@ -105,3 +99,9 @@ jobs:
           git commit -m "chore(catalog): sync dsh-plugin topic"
           gh auth setup-git
           git push origin HEAD:main
+
+      - name: Install browser for E2E
+        run: npx playwright install --with-deps chromium
+
+      - name: Run integration tests
+        run: npm run e2e

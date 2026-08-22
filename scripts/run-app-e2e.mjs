@@ -1,7 +1,6 @@
+import { spawnSync } from 'node:child_process';
 import { readdir, readFile } from 'node:fs/promises';
 import { join, relative, resolve, sep } from 'node:path';
-
-import { runCommand } from '../e2e/support/run-command.mjs';
 
 const APP_TIMEOUT_MS = 15 * 60_000;
 
@@ -45,13 +44,16 @@ async function main() {
 
   for (const workspace of await activeAppWorkspaces(root)) {
     console.log(`Running ${workspace} E2E`);
-    const result = runCommand(npm, ['run', 'e2e', '--workspace', workspace], {
+    const result = spawnSync(npm, ['run', 'e2e', '--workspace', workspace], {
       cwd: root,
       env: process.env,
-      timeoutMs: APP_TIMEOUT_MS,
+      shell: false,
+      stdio: 'inherit',
+      timeout: APP_TIMEOUT_MS,
     });
-    process.stdout.write(result.stdout);
-    process.stderr.write(result.stderr);
+    if (result.error && result.error.code !== 'ETIMEDOUT') {
+      throw result.error;
+    }
     if (result.status !== 0) {
       process.exitCode = result.status ?? 1;
       return;
