@@ -8,7 +8,7 @@
     },
     "community": {
       "repository": "https://github.com/dsh-pub/dsh-pub",
-      "generatedAt": "2026-08-21T12:36:34.000Z",
+      "generatedAt": "2026-08-22T03:37:27.000Z",
       "policy": "pinned-source-contracts"
     }
   },
@@ -15288,6 +15288,26 @@
       "repository": "https://github.com/Walvez/dsh-codex-sync",
       "directory": "",
       "commit": "8916b56ef4e2d1273e847e6fc6a20c25d0b2db9b"
+    },
+    {
+      "slug": "dsh-session-insights",
+      "name": "dsh-session-insights",
+      "description": {
+        "en": "Local-first, evidence-backed session retrospectives for DeepSeek Harness",
+        "zh": "Local-first, evidence-backed session retrospectives for DeepSeek Harness"
+      },
+      "topic": "other",
+      "category": "bundles",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/GreenLv/dsh-session-insights",
+      "directory": "",
+      "commit": "18818ed11f68dda509dbc9a42385ec7743fde1ca"
     }
   ]
 }

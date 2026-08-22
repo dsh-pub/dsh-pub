@@ -7254,6 +7254,27 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/GreenLv/dsh-session-insights",
+      "commit": "18818ed11f68dda509dbc9a42385ec7743fde1ca",
+      "directory": "",
+      "packageName": "dsh-session-insights",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "plugin/lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/greenlv--dsh-session-insights.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/29",
+        "submittedAt": "2026-08-22",
+        "category": "bundles",
+        "description": {
+          "en": "Local-first, evidence-backed session retrospectives for DeepSeek Harness",
+          "zh": ""
+        }
+      }
     }
   ]
 }

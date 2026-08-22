@@ -1,10 +1,10 @@
 {
   "source": {
     "repository": "https://github.com/dsh-pub/dsh-pub",
-    "generatedAt": "2026-08-21T12:36:34.000Z",
+    "generatedAt": "2026-08-22T03:37:27.000Z",
     "policy": "pinned-source-contracts"
   },
-  "totals": { "reviewed": 6, "submitted": 9, "automated": 558, "installable": 573 },
+  "totals": { "reviewed": 6, "submitted": 10, "automated": 558, "installable": 574 },
   "entries": [
     {
       "id": "github:omdsh-dev/dsh-open-in-vscode",
@@ -40758,6 +40758,63 @@
         "readme": {
           "en": "## Source-derived summary\n\nOne-tap Codex move-in to DSH: auto-import Codex project chats; two-way Skills and MCP sync.",
           "zh": "## 源码元数据简介\n\nOne-tap Codex move-in to DSH: auto-import Codex project chats; two-way Skills and MCP sync."
+        },
+        "modelExperience": {
+          "en": "Not inspected by the automated submission check; inspect the pinned source for model-facing behavior.",
+          "zh": "自动提交检查未核对模型侧行为；请查看固定版本的源码。"
+        },
+        "limitations": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      }
+    },
+    {
+      "id": "github:GreenLv/dsh-session-insights",
+      "slug": "dsh-session-insights",
+      "name": "dsh-session-insights",
+      "version": "0.2.0",
+      "license": "MIT",
+      "type": "bundle",
+      "category": "bundles",
+      "builtIn": false,
+      "provenance": {
+        "status": "community-submitted",
+        "submittedVia": "github-pull-request",
+        "submittedAt": "2026-08-22",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/29",
+        "statement": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      },
+      "description": {
+        "en": "Local-first, evidence-backed session retrospectives for DeepSeek Harness",
+        "zh": "Local-first, evidence-backed session retrospectives for DeepSeek Harness"
+      },
+      "source": {
+        "repository": "https://github.com/GreenLv/dsh-session-insights",
+        "directory": "",
+        "commit": "18818ed11f68dda509dbc9a42385ec7743fde1ca"
+      },
+      "runtime": { "hostLoadable": null, "configurable": null, "client": null },
+      "capabilities": { "tools": null, "uiContributions": null, "uiSlotsDeclared": null },
+      "availability": { "profiles": null, "defaultWeb": null, "bundles": ["dsh-session-insights"] },
+      "distribution": {
+        "installable": true,
+        "mode": "git-bundle",
+        "activation": "profile-layer",
+        "note": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      },
+      "docs": {
+        "readmePath": "README.md",
+        "readmeZhPath": "README.zh-CN.md",
+        "readme": {
+          "en": "## Source-derived summary\n\nLocal-first, evidence-backed session retrospectives for DeepSeek Harness",
+          "zh": "## 源码元数据简介\n\nLocal-first, evidence-backed session retrospectives for DeepSeek Harness"
         },
         "modelExperience": {
           "en": "Not inspected by the automated submission check; inspect the pinned source for model-facing behavior.",
