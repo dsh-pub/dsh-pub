@@ -17,6 +17,7 @@ const paths = {
   sources: join(root, 'packages/catalog/src/community.sources.json'),
 };
 const dryRun = process.argv.includes('--dry-run');
+// Topic sync also regenerates the bundled directory snapshot when catalog data changes.
 const unknownArguments = process.argv.slice(2).filter((argument) => argument !== '--dry-run');
 if (unknownArguments.length) throw new Error(`Unknown arguments: ${unknownArguments.join(', ')}`);
 
