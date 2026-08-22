@@ -71,6 +71,7 @@ describe('DSH client assembly', () => {
       { get: (target, key: string) => target[key as keyof typeof target] ?? key },
     );
     expect(Section).toBeDefined();
+    const entryCount = new Intl.NumberFormat('en').format(snapshot.entries.length);
     const html = renderToStaticMarkup(
       createElement(Section!, {
         t: (key: string) => dictionary[key as keyof typeof dictionary],
@@ -78,7 +79,7 @@ describe('DSH client assembly', () => {
     );
 
     expect(html).toContain('Discover the DSH ecosystem');
-    expect(html).toContain(`<strong>${snapshot.entries.length}</strong>`);
+    expect(html).toContain(`<strong>${entryCount}</strong>`);
     expect(html).toContain('Search plugins');
     expect(html).toContain('<option value="profile">profile</option>');
     expect(html).toContain('https://dsh.pub/en/plugins/');
