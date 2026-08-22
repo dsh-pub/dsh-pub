@@ -107,3 +107,31 @@ Keep features close to the app that owns them. Extract into `packages/*` only wh
 - Pull requests targeting `main` may use merge commits or rebase merges.
 - Do not squash merge pull requests.
 - With GitHub CLI, use `gh pr merge <number> --merge` or `gh pr merge <number> --rebase`; never use `--squash`.
+
+## Cursor Cloud specific instructions
+
+Standard commands and their contracts are already documented in `README.md` and `## Quality Gates`
+above; this section only records durable, non-obvious environment caveats.
+
+- Node version: the full quality chain requires Node `>=22.18`. The `apps/dsh-plugin` build (invoked
+  by `npm run e2e` via `tsdown`, which loads a TypeScript `tsdown.config.ts`) and `npm run build:og`
+  fail on the base image's default `node` (`/exec-daemon/node`, v22.14). The environment ships nvm
+  with a suitable `v22.x`, and setup symlinks `node`/`npm`/`npx` into `/usr/local/cargo/bin` (which
+  precedes `/exec-daemon` on `PATH`) so the correct version is the default. If `node -v` reports
+  `22.14`, recreate the shims: `ln -sf "$(ls -d "$HOME"/.nvm/versions/node/v22.*/bin | sort -V | tail -1)"/{node,npm,npx} /usr/local/cargo/bin/`.
+- Playwright: `npm run e2e` and `npm run build:og` drive a headless Chromium via Playwright. Browser
+  binaries are installed with `npx playwright install chromium`. If Chromium fails to launch due to
+  missing system libraries, run `sudo npx playwright install-deps chromium` (system packages are not
+  part of the update script).
+- `npm run build:og` re-renders `apps/web/public/og/dsh-pub.png` and typically produces a byte-diff
+  from the committed image (Chromium/font rendering differences). Do not commit that regenerated PNG
+  unless the OG image is intentionally being changed.
+- Web app (primary product): `npm run dev --workspace @dsh-pub/web` serves the static registry at
+  `http://127.0.0.1:4321`. Catalog search and topic filters are client-side and work without any
+  secrets.
+- Worker boundary (Cloudflare): run local D1 migrations with `npx wrangler d1 migrations apply dsh-pub --local`,
+  then `npx wrangler dev --local --port 8787`. The install-count API (`/api/install-intents`,
+  `/api/install-completions`, `/api/plugins/<slug>/stats`) works fully against local D1 with no
+  secrets; only registry slugs are accepted (e.g. `omdsh-dev--dsh-genui`). The submission flow
+  (`/api/submissions`, Turnstile, GitHub App) needs runtime bindings — put non-production values in
+  an ignored `.dev.vars` (see `README.md` → Cloudflare deployment).
