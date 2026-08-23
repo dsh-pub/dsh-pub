@@ -1,0 +1,284 @@
+---
+import { copy, isLocale, locales } from '../../../lib/i18n.js';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+export function getStaticPaths() {
+  return locales.map((lang) => ({ params: { lang } }));
+}
+
+const locale = Astro.params.lang;
+if (!isLocale(locale)) throw new Error(`Unsupported locale: ${locale}`);
+const t = copy[locale];
+
+const content =
+  locale === 'zh'
+    ? {
+        title: 'DSH 插件体系概念说明',
+        description:
+          '解释 DeepSeek Harness 插件目录里的常见标签：插件、组合包、Profile 层、可安装、已内置、生态发现与 CLI 安装量。',
+        eyebrow: 'DSH / GUIDE',
+        lead: '目录页上的标签回答的是「怎么用它」，不是术语堆砌。下面按浏览者最常卡住的词解释。',
+        sections: [
+          {
+            id: 'plugin',
+            title: '插件',
+            body: '可被 Cordis 加载的运行时模块。它可能贡献模型工具、UI 插槽、配置项或客户端能力。内置插件已随 Harness 源码快照提供；社区插件通常以可安装组合包的形式发布。',
+          },
+          {
+            id: 'bundle',
+            title: '组合包',
+            body: '一组用于激活 Profile 或交付能力的补丁/清单，不是「随便一个 Git 仓库」的同义词。内置 Profile 层是 Harness 自带的组合包；外部可安装条目也是组合包，但有独立仓库和安装命令。',
+          },
+          {
+            id: 'profile',
+            title: 'Profile 层',
+            body: '通过组合包补丁激活的内置体验层。它本身通常不能用 CLI 单独安装，而是随某个 Profile（例如 web / headless）一起启用。',
+          },
+          {
+            id: 'installable',
+            title: '可安装',
+            body: '有固定公开源码与分发契约，可以用 `npx dshpub add …` 安装。目录只在确认可安装时展示安装命令；CLI 安装量也只统计这类成功上报。',
+          },
+          {
+            id: 'included',
+            title: 'DSH 已内置',
+            body: '已经包含在固定的 deepseek-ai/deepseek-harness 源码快照里，无需再装一遍。用法是打开对应源码、看它属于哪些 Profile，而不是复制安装命令。',
+          },
+          {
+            id: 'ecosystem',
+            title: '生态发现',
+            body: '来自公开生态索引的候选项目。它帮助发现，不代表兼容、可安装、已审核或安全。源仓库仍是事实来源。',
+          },
+          {
+            id: 'cli',
+            title: 'CLI 安装量',
+            body: '仅统计 dshpub CLI 上报的成功安装。直接 Git clone 或原生 DSH 安装不会出现在这个数字里；它也不是独立用户数。',
+          },
+          {
+            id: 'runtime',
+            title: '运行时构成',
+            body: '宿主可加载、Web 客户端、界面贡献、模型工具、数据与存储、流程编排。清单只展示已核查为「有」的能力；未核查不等于没有。',
+          },
+        ],
+        nextTitle: '接下来',
+        browse: '浏览插件目录',
+        develop: '阅读插件开发契约',
+      }
+    : {
+        title: 'DeepSeek Harness plugin concepts',
+        description:
+          'Plain-language definitions for the labels used across the DSH plugin registry: plugins, bundles, profile layers, installable, included, ecosystem finds, and CLI installs.',
+        eyebrow: 'DSH / GUIDE',
+        lead: 'Catalog labels answer how you use a record, not jargon for its own sake. These are the words people get stuck on first.',
+        sections: [
+          {
+            id: 'plugin',
+            title: 'Plugin',
+            body: 'A Cordis-loadable runtime module. It may contribute model tools, UI slots, configuration, or client capabilities. Built-in plugins ship in the Harness source snapshot; community plugins are usually published as installable bundles.',
+          },
+          {
+            id: 'bundle',
+            title: 'Bundle',
+            body: 'A patch or manifest layer used to activate a profile or deliver capabilities. It is not a synonym for “any Git repository”. Built-in profile layers are Harness-owned bundles; external installable records are also bundles, but with their own repository and install command.',
+          },
+          {
+            id: 'profile',
+            title: 'Profile layer',
+            body: 'A built-in activation layer applied through a bundle patch. It usually cannot be installed with the CLI on its own; it is enabled with a profile such as web or headless.',
+          },
+          {
+            id: 'installable',
+            title: 'Installable',
+            body: 'Has pinned public source and a distribution contract, so `npx dshpub add …` works. The catalog only shows an install command when that contract is present, and CLI install counts only cover those completed reports.',
+          },
+          {
+            id: 'included',
+            title: 'Included in DSH',
+            body: 'Already shipped in the pinned deepseek-ai/deepseek-harness source snapshot. There is nothing to install again—open the source and check which profiles include it.',
+          },
+          {
+            id: 'ecosystem',
+            title: 'Ecosystem find',
+            body: 'A candidate from the public ecosystem index. It is for discovery only: not a claim of compatibility, installability, review, or safety. The source repository remains canonical.',
+          },
+          {
+            id: 'cli',
+            title: 'CLI installs',
+            body: 'Completed installs reported by the dshpub CLI. Direct Git clones or native DSH installs are invisible here, and the number is not unique users.',
+          },
+          {
+            id: 'runtime',
+            title: 'Runtime anatomy',
+            body: 'Host-loadable, web client, UI surface, model tools, data & storage, and workflow. The checklist only lists capabilities verified as present; “not inspected” does not mean absent.',
+          },
+        ],
+        nextTitle: 'Next',
+        browse: 'Browse the plugin catalog',
+        develop: 'Read the plugin development contract',
+      };
+
+const pageUrl = `https://dsh.pub/${locale}/guide/`;
+---
+
+<BaseLayout
+  locale={locale}
+  title={content.title}
+  description={content.description}
+  structuredData={[
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      name: content.title,
+      url: pageUrl,
+      description: content.description,
+      inLanguage: locale === 'zh' ? 'zh-CN' : 'en',
+      isPartOf: { '@type': 'WebSite', name: 'dsh.pub', url: `https://dsh.pub/${locale}/` },
+    },
+  ]}
+>
+  <section class="guide-masthead">
+    <div class="page-shell">
+      <p class="eyebrow">{content.eyebrow}</p>
+      <h1>{content.title}</h1>
+      <p>{content.lead}</p>
+    </div>
+  </section>
+
+  <div class="guide-layout page-shell">
+    <nav class="guide-toc" aria-label={t.guide}>
+      {content.sections.map((section) => <a href={`#${section.id}`}>{section.title}</a>)}
+    </nav>
+
+    <article class="guide-body">
+      {
+        content.sections.map((section) => (
+          <section id={section.id}>
+            <h2>{section.title}</h2>
+            <p>{section.body}</p>
+          </section>
+        ))
+      }
+
+      <section class="guide-next">
+        <h2>{content.nextTitle}</h2>
+        <div class="guide-actions">
+          <a href={`/${locale}/plugins/`}>{content.browse}</a>
+          <a href="/develop-plugin.md">{content.develop}</a>
+        </div>
+      </section>
+    </article>
+  </div>
+</BaseLayout>
+
+<style>
+  .guide-masthead {
+    background: var(--color-navy-900);
+    color: white;
+    padding: 3.4rem 0 4.2rem;
+  }
+
+  .guide-masthead :global(.eyebrow) {
+    color: var(--color-blue-300);
+    margin: 0 0 0.8rem;
+  }
+
+  .guide-masthead h1 {
+    font-size: clamp(2.1rem, 4vw, 3.4rem);
+    font-weight: 500;
+    letter-spacing: -0.045em;
+    line-height: 1.05;
+    margin: 0;
+    max-width: 18ch;
+  }
+
+  .guide-masthead p {
+    color: #c4d0de;
+    line-height: 1.6;
+    margin: 1.1rem 0 0;
+    max-width: 42rem;
+  }
+
+  .guide-layout {
+    display: grid;
+    gap: 2.5rem;
+    grid-template-columns: 12rem minmax(0, 1fr);
+    padding: 2.5rem 0 4rem;
+  }
+
+  .guide-toc {
+    align-self: start;
+    display: grid;
+    gap: 0.55rem;
+    position: sticky;
+    top: 1.2rem;
+  }
+
+  .guide-toc a {
+    color: var(--color-text-muted);
+    font-size: 0.86rem;
+  }
+
+  .guide-toc a:hover {
+    color: var(--color-accent);
+  }
+
+  .guide-body {
+    display: grid;
+    gap: 1.8rem;
+    max-width: 44rem;
+  }
+
+  .guide-body section {
+    border-top: 1px solid var(--color-rule);
+    padding-top: 1.4rem;
+  }
+
+  .guide-body h2 {
+    font-size: 1.35rem;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    margin: 0;
+  }
+
+  .guide-body p {
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1.7;
+    margin: 0.7rem 0 0;
+  }
+
+  .guide-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 1rem;
+  }
+
+  .guide-actions a {
+    background: var(--color-surface);
+    border: 1px solid var(--color-rule);
+    border-radius: 7px;
+    color: var(--color-text);
+    min-height: 42px;
+    padding: 0.7rem 1rem;
+  }
+
+  .guide-actions a:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  @media (max-width: 820px) {
+    .guide-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .guide-toc {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem 1rem;
+      position: static;
+    }
+  }
+</style>

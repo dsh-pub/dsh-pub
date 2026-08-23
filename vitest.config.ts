@@ -3,7 +3,10 @@ import { configDefaults, defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     coverage: {
-      exclude: ['**/*.d.ts'],
+      // Route modules are integration surface measured by `npm run e2e`. They are also
+      // unreadable to the v8 provider under dynamic segments such as `pages/[lang]/`,
+      // where the encoded directory name defeats its source lookup.
+      exclude: ['**/*.d.ts', 'apps/*/src/pages/**'],
       experimentalAstAwareRemapping: true,
       include: ['apps/*/src/**/*.{ts,tsx}', 'packages/*/src/**/*.{ts,tsx}'],
       provider: 'v8',
