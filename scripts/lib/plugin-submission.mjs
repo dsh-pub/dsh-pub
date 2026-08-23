@@ -2,6 +2,8 @@ import { Buffer } from 'node:buffer';
 
 import { parseDocument } from 'yaml';
 
+import { githubRawUrl } from './readme-url.mjs';
+
 const OWNER_PATTERN = /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$/;
 const REPOSITORY_PATTERN = /^[A-Za-z0-9._-]{1,100}$/;
 const SHA_PATTERN = /^[a-f0-9]{40}$/;
@@ -488,8 +490,8 @@ const submittedEntry = (submission, request, slug) => {
       readmePath: submission.readmePath,
       readmeZhPath: submission.readmeZhPath,
       readme: {
-        en: `## Source-derived summary\n\n${submission.descriptionEn}`,
-        zh: `## 源码元数据简介\n\n${descriptionZh}`,
+        en: githubRawUrl(submission.repository, submission.commit, submission.readmePath),
+        zh: githubRawUrl(submission.repository, submission.commit, submission.readmeZhPath),
       },
       modelExperience: {
         en: 'Not inspected by the automated submission check; inspect the pinned source for model-facing behavior.',

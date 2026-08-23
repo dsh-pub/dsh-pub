@@ -5,6 +5,8 @@ import { fileURLToPath } from 'node:url';
 import { format } from 'prettier';
 import ts from 'typescript';
 
+import { githubRawUrl } from './lib/readme-url.mjs';
+
 const SOURCE_COMMIT = '47f943859bef60e4160492346772ded9b24f765a';
 const SOURCE_REPOSITORY = 'https://github.com/deepseek-ai/deepseek-harness';
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -260,7 +262,10 @@ function catalogEntry(sourceRoot, directory, memberships) {
     docs: {
       readmePath,
       readmeZhPath,
-      readme: { en: readmeEn, zh: readmeZh },
+      readme: {
+        en: githubRawUrl(SOURCE_REPOSITORY, SOURCE_COMMIT, readmePath),
+        zh: githubRawUrl(SOURCE_REPOSITORY, SOURCE_COMMIT, readmeZhPath),
+      },
       modelExperience: {
         en: section(readmeEn, ['model experience']),
         zh: section(readmeZh, ['模型体验', 'model experience']),

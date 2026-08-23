@@ -28,7 +28,9 @@ flowchart LR
 - DSH.Tools supplies a checked-in discovery snapshot; every ecosystem record points back to its
   canonical GitHub repository and carries no compatibility, installability, review, or safety claim.
 - The generated JSON is a build artifact checked into this repository for deterministic static
-  builds.
+  builds. Catalog entries store pinned `raw.githubusercontent.com` README URLs rather than README
+  bodies; the Astro build fetches those URLs and embeds sanitized HTML into detail pages
+  (`DSH_SKIP_README_FETCH=1` skips the network for offline checks).
 - The DSH plugin generator projects the same public `plugin` and `bundle` records into a smaller
   checked-in snapshot. Its browser bundle reads only that local data, contributes one
   `settings.section`, and has an empty Host `apply`; browsing performs no network fetch and loads no
