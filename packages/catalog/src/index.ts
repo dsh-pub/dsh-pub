@@ -84,6 +84,7 @@ export interface CatalogEntry {
   docs: {
     readmePath: string;
     readmeZhPath: string;
+    /** Pinned raw.githubusercontent.com URLs (not markdown bodies). */
     readme: { en: string; zh: string };
     modelExperience: { en: string; zh: string };
     limitations: { en: string; zh: string };

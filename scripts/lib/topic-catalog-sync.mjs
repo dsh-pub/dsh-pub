@@ -1,5 +1,7 @@
 import { parseDocument } from 'yaml';
 
+import { githubRawUrl } from './readme-url.mjs';
+
 const SHA_PATTERN = /^[a-f0-9]{40}$/;
 const PACKAGE_NAME_PATTERN = /^(?:@[a-z0-9][a-z0-9._~-]*\/)?[a-z0-9][a-z0-9._~-]*$/;
 const VERSION_PATTERN = /^[0-9A-Za-z][0-9A-Za-z.+_-]{0,127}$/;
@@ -171,28 +173,6 @@ const assertPatch = (blob) => {
   }
 };
 
-const firstParagraph = (markdown) => {
-  const paragraph = [];
-  for (const rawLine of markdown.split(/\r?\n/)) {
-    const line = rawLine.trim();
-    if (!paragraph.length && (!line || line.startsWith('#'))) continue;
-    if (!line && paragraph.length) break;
-    if (line) paragraph.push(line);
-  }
-  return paragraph
-    .join(' ')
-    .replace(/!\[[^\]]*]\([^)]*\)/g, '')
-    .replace(/!\[[^\]]*]\[[^\]]*]/g, '')
-    .replace(/\[([^\]]+)]\([^)]*\)/g, '$1')
-    .replace(/<[^>]*>/g, ' ')
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .slice(0, 2_000);
-};
-
 const section = (markdown, headings) => {
   const lines = markdown.split(/\r?\n/);
   const start = lines.findIndex((line) => {
@@ -352,8 +332,12 @@ const automatedEntry = ({ contract, files, repository }, entries, analyzedAt, re
       readmePath: 'README.md',
       readmeZhPath: files.readmeZh ? files.readmeZh.path : 'README.md',
       readme: {
-        en: firstParagraph(readmeEn) || contract.description,
-        zh: firstParagraph(readmeZh) || contract.description,
+        en: githubRawUrl(repository.repository, repository.commit, 'README.md'),
+        zh: githubRawUrl(
+          repository.repository,
+          repository.commit,
+          files.readmeZh ? files.readmeZh.path : 'README.md',
+        ),
       },
       modelExperience: {
         en: section(readmeEn, ['model experience']),

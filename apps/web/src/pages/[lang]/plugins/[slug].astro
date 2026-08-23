@@ -2,7 +2,6 @@
 import { marked } from 'marked';
 import sanitizeHtml from 'sanitize-html';
 
-import CapabilityChecklist from '../../../components/CapabilityChecklist.astro';
 import CopyCommand from '../../../components/CopyCommand.astro';
 import Icon from '../../../components/Icon.astro';
 import {
@@ -18,7 +17,9 @@ import {
 } from '../../../lib/catalog-types.js';
 import { marketplaceEntries } from '../../../lib/catalog.js';
 import { categoryLabel, typeLabel } from '../../../lib/categories.js';
+import { buildCapabilityTableRows } from '../../../lib/contribution-display.js';
 import { copy, locales, type Locale } from '../../../lib/i18n.js';
+import { loadReadmeHtml, readmeContentUrl } from '../../../lib/readme.js';
 import { localizedTopic, topicForEntry } from '../../../lib/topics.js';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 
@@ -71,30 +72,22 @@ const provenanceStatement =
   entry.provenance?.status === 'community-automated'
     ? localized(entry.provenance.statement, locale)
     : t.builtInSourceHelp;
-const readmeSource = localized(entry.docs?.readme, locale);
-const rawReadme = readmeSource ? await marked.parse(readmeSource, { gfm: true }) : '';
-const readme = sanitizeHtml(rawReadme, {
-  allowedTags: sanitizeHtml.defaults.allowedTags.concat(
-    provenance === 'community-automated' ? ['details', 'summary'] : ['img', 'details', 'summary'],
-  ),
-  allowedAttributes: {
-    a: ['href', 'name', 'target', 'rel'],
-    img: ['src', 'alt', 'title', 'width', 'height'],
-    code: ['class'],
-  },
-  allowedSchemes: ['https', 'http'],
-  transformTags: {
-    a: sanitizeHtml.simpleTransform('a', { rel: 'nofollow noopener noreferrer' }, true),
-  },
-});
-const limitation = localized(entry.docs?.limitations, locale);
+const readmeSource = readmeContentUrl(entry, locale);
+const readme = await loadReadmeHtml(entry, locale);
+const limitationRaw = localized(entry.docs?.limitations, locale);
+const limitation =
+  limitationRaw &&
+  !/未核对|not inspected|自动提交检查未核对|not inspected by the automated/i.test(limitationRaw)
+    ? limitationRaw
+    : '';
 const tools = entry.capabilities.tools;
 const uiContributions = entry.capabilities.uiContributions;
-const uiSlotsDeclared = entry.capabilities.uiSlotsDeclared;
-const factsInspected = tools !== null && uiContributions !== null && uiSlotsDeclared !== null;
-const contributionCount = factsInspected
-  ? tools.length + uiContributions.length + uiSlotsDeclared.length
-  : null;
+const capabilityRows = buildCapabilityTableRows({
+  locale,
+  tools,
+  uiContributions,
+});
+const hasContributions = capabilityRows.length > 0;
 const metricSlug = entry.distribution.installable ? installMetricSlug(entry) : undefined;
 const canonical = `https://dsh.pub/${locale}/plugins/${entry.slug}/`;
 const inLanguage = locale === 'zh' ? 'zh-CN' : 'en';
@@ -195,10 +188,6 @@ const structuredData = [
         <a class="masthead-source" href={source} rel={sourceRel}>
           <Icon name="github" size={17} />{t.openGitHub}<Icon name="external" size={14} />
         </a>
-        <div class="masthead-bus">
-          <span>{t.runtime}</span>
-          <CapabilityChecklist entry={entry} locale={locale} />
-        </div>
       </div>
     </div>
   </section>
@@ -206,7 +195,7 @@ const structuredData = [
   <nav class="package-tabs" aria-label="Package sections">
     <div class="page-shell tabs-inner">
       <a class="active" href="#overview">{t.overview}</a>
-      <a href="#capabilities">{t.capabilities}</a>
+      {hasContributions && <a href="#capabilities">{t.capabilities}</a>}
       <a href="#installing">{entry.distribution.installable ? t.installing : t.availability}</a>
       <a href="#source">{t.sourceTab}</a>
     </div>
@@ -234,155 +223,50 @@ const structuredData = [
             <div class="lead" set:html={descriptionHtml} />
           )
         }
-        {
-          provenance !== 'built-in' && (
-            <div class="review-notice">
-              <Icon name="check" size={18} />
-              <p>
-                <strong>{provenanceLabel}</strong> — {provenanceStatement}
-              </p>
-            </div>
-          )
-        }
-        {
-          entry.distribution.installable ? (
-            <div class="install-callout" id="installing">
-              <div>
-                <span class="eyebrow">{t.install}</span>
-                <h3>
-                  {locale === 'zh' ? '从 GitHub 安装此组合包' : 'Install this bundle from GitHub'}
-                </h3>
-                <p>{t.installHelp}</p>
-              </div>
-              {command && <CopyCommand command={command} locale={locale} />}
-            </div>
-          ) : (
-            <div class="included-callout" id="installing">
-              <span class="coordinate">
-                {entry.type === 'bundle' ? 'BUILT-IN / PROFILE LAYER' : 'BUILT-IN / ATOMIC'}
-              </span>
-              <div>
-                <Icon name="check" size={19} />
-                <div>
-                  <strong>
-                    {entry.type === 'bundle' ? t.builtInProfileTitle : t.builtInModuleTitle}
-                  </strong>
-                  <p>{distributionNote || t.builtInNotice}</p>
-                </div>
-              </div>
-            </div>
-          )
-        }
       </section>
 
-      <section id="capabilities" class="content-section">
-        <p class="eyebrow">{t.capabilities}</p>
-        <h2>{t.contributions}</h2>
-        <div class="capability-table">
-          <div>
-            <span>Host</span>
-            <strong>
-              {
-                entry.runtime.hostLoadable === null
-                  ? t.notInspected
-                  : entry.runtime.hostLoadable
-                    ? 'Cordis loadable'
-                    : 'No host entry'
-              }
-            </strong>
-            <small>
-              {
-                entry.runtime.configurable === null
-                  ? t.notInspected
-                  : entry.runtime.configurable
-                    ? t.configurable
-                    : 'Zero-config'
-              }
-            </small>
-          </div>
-          <div>
-            <span>Client / UI</span>
-            <strong>
-              {
-                entry.runtime.client === null
-                  ? t.notInspected
-                  : entry.runtime.client
-                    ? t.webUi
-                    : 'Host only'
-              }
-            </strong>
-            <small
-              >{
-                uiContributions === null
-                  ? t.notInspected
-                  : `${uiContributions.length} contributions`
-              }</small
-            >
-          </div>
-          <div>
-            <span>Model tools</span>
-            <strong>{tools === null ? t.notInspected : tools.length}</strong>
-            <small
-              >{
-                tools === null
-                  ? t.notInspected
-                  : tools
-                      .slice(0, 2)
-                      .map((tool) => tool.name)
-                      .join(', ') || 'None declared'
-              }</small
-            >
-          </div>
-          <div>
-            <span>Profile state</span>
-            <strong
-              >{
-                entry.availability.defaultWeb === null
-                  ? t.notInspected
-                  : entry.availability.defaultWeb === true
-                    ? 'enabled'
-                    : entry.availability.defaultWeb === false
-                      ? 'absent'
-                      : entry.availability.defaultWeb
-              }</strong
-            >
-            <small>
-              {
-                entry.availability.profiles === null
-                  ? t.notInspected
-                  : entry.availability.profiles.join(', ') || t.included
-              }
-            </small>
-          </div>
-        </div>
-
-        {
-          uiContributions !== null && uiContributions.length > 0 && (
-            <div class="contribution-list">
-              <h3>UI contributions</h3>
-              {uiContributions.map((item) => (
-                <div>
-                  <code>{item.slot}</code>
-                  <span>{item.component || item.id || 'component'}</span>
-                </div>
-              ))}
-            </div>
-          )
-        }
-        {
-          tools !== null && tools.length > 0 && (
-            <div class="contribution-list">
-              <h3>Model tools</h3>
-              {tools.map((tool) => (
-                <div>
-                  <code>{tool.name}</code>
-                  <span>{tool.description || 'Harness model tool'}</span>
-                </div>
-              ))}
-            </div>
-          )
-        }
-      </section>
+      {
+        hasContributions && (
+          <section id="capabilities" class="content-section">
+            <p class="eyebrow">{t.capabilities}</p>
+            <table class="capability-table">
+              <thead>
+                <tr>
+                  <th scope="col">{locale === 'zh' ? '能力' : 'Capability'}</th>
+                  <th scope="col">{locale === 'zh' ? '内容' : 'Detail'}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {capabilityRows.map((row) => (
+                  <tr>
+                    <th scope="row">
+                      <button
+                        type="button"
+                        class="capability-kind"
+                        aria-label={`${row.kindLabel}：${row.kindTooltip}`}
+                        data-tooltip={row.kindTooltip}
+                      >
+                        {row.kindLabel}
+                        <span class="capability-tip" aria-hidden="true">
+                          ?
+                        </span>
+                      </button>
+                    </th>
+                    <td>
+                      <span
+                        class:list={['capability-value', { 'has-tip': Boolean(row.valueHint) }]}
+                        data-tooltip={row.valueHint || undefined}
+                      >
+                        {row.kind === 'tool' ? <code>{row.value}</code> : row.value}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
+        )
+      }
 
       <section class="content-section" id="readme">
         <p class="eyebrow">README / {locale.toUpperCase()}</p>
@@ -400,7 +284,12 @@ const structuredData = [
               </p>
               <a
                 class="text-link"
-                href={`${source}/README${locale === 'zh' ? '.zh' : ''}.md`}
+                href={
+                  readmeSource.replace(
+                    /^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([^/]+)\/(.+)$/i,
+                    'https://github.com/$1/$2/blob/$3/$4',
+                  ) || `${source}/README${locale === 'zh' ? '.zh' : ''}.md`
+                }
                 rel={sourceRel}
               >
                 {t.openGitHub}
@@ -425,31 +314,33 @@ const structuredData = [
     <aside class="package-sidebar" aria-label="Package metadata">
       {
         entry.distribution.installable ? (
-          <section class="metric-panel">
-            <div>
+          <section class="install-panel" id="installing">
+            <span class="eyebrow">{t.install}</span>
+            <h2>{locale === 'zh' ? '从 GitHub 安装' : 'Install from GitHub'}</h2>
+            <p>{t.installHelp}</p>
+            {command && <CopyCommand command={command} locale={locale} />}
+            <div class="install-metric">
               <strong data-detail-install-count={metricSlug}>—</strong>
               <span>{t.cliInstalls}</span>
             </div>
-            <p>{t.cliInstallsHelp}</p>
+            <p class="install-metric-help">{t.cliInstallsHelp}</p>
           </section>
         ) : (
-          <section class="distribution-panel">
-            <span class="distribution-panel-label">{t.distribution}</span>
-            <div class="distribution-panel-status">
-              <span class="distribution-panel-mark">
-                <Icon name="check" size={16} />
-              </span>
-              <strong>{entry.type === 'bundle' ? t.profileLayer : t.included}</strong>
+          <section class="install-panel included-panel" id="installing">
+            <span class="eyebrow">{t.availability}</span>
+            <span class="coordinate">
+              {entry.type === 'bundle' ? 'BUILT-IN / PROFILE LAYER' : 'BUILT-IN / ATOMIC'}
+            </span>
+            <div class="included-status">
+              <Icon name="check" size={18} />
+              <div>
+                <h2>{entry.type === 'bundle' ? t.builtInProfileTitle : t.builtInModuleTitle}</h2>
+                <p>{distributionNote || t.builtInNotice}</p>
+              </div>
             </div>
-            <p>{entry.type === 'bundle' ? t.builtInProfileHelp : t.builtInModuleHelp}</p>
           </section>
         )
       }
-
-      <section>
-        <h2>{t.runtime}</h2>
-        <CapabilityChecklist entry={entry} locale={locale} compact />
-      </section>
 
       <section>
         <h2>{t.source}</h2>
@@ -470,31 +361,22 @@ const structuredData = [
         </a>
       </section>
 
-      <section>
-        <h2>{t.profiles}</h2>
-        <div class="tag-row">
-          {
-            entry.availability.profiles === null ? (
-              <span class="tag">{t.notInspected}</span>
-            ) : entry.availability.profiles.length > 0 ? (
-              entry.availability.profiles.map((profile) => (
-                <span class="tag primary">{profile}</span>
-              ))
-            ) : (
-              <span class="tag">{t.included}</span>
-            )
-          }
-        </div>
-      </section>
-
-      <section class="sidebar-coordinate">
-        <span>REGISTRY RECORD</span>
-        <strong
-          >{contributionCount === null ? '--' : String(contributionCount).padStart(2, '0')} / {
-            entry.slug.slice(0, 16)
-          }</strong
-        >
-      </section>
+      {
+        entry.availability.profiles !== null && (
+          <section>
+            <h2>{t.profiles}</h2>
+            <div class="tag-row">
+              {entry.availability.profiles.length > 0 ? (
+                entry.availability.profiles.map((profile) => (
+                  <span class="tag primary">{profile}</span>
+                ))
+              ) : (
+                <span class="tag">{t.included}</span>
+              )}
+            </div>
+          </section>
+        )
+      }
     </aside>
   </div>
 </BaseLayout>
@@ -616,27 +498,6 @@ const structuredData = [
     text-decoration: none;
   }
 
-  .masthead-bus {
-    background: var(--color-surface-subtle);
-    border: 1px solid var(--color-rule);
-    border-radius: 10px;
-    justify-self: end;
-    max-width: 100%;
-    min-width: 11rem;
-    padding: 0.9rem 1.1rem;
-    width: fit-content;
-  }
-
-  .masthead-bus > span {
-    color: var(--color-text-faint);
-    display: block;
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.06em;
-    margin-bottom: 0.7rem;
-    text-transform: uppercase;
-  }
-
   .package-tabs {
     background: color-mix(in srgb, var(--color-surface) 94%, transparent);
     border-bottom: 1px solid var(--color-rule);
@@ -675,23 +536,6 @@ const structuredData = [
     gap: 1.5rem;
     grid-template-columns: minmax(0, 1fr) 310px;
     padding-top: 2.7rem;
-  }
-
-  .review-notice {
-    align-items: flex-start;
-    background: #edf5f0;
-    border: 1px solid #bad0c2;
-    color: #315c49;
-    border-radius: 8px;
-    display: flex;
-    gap: 0.65rem;
-    margin-top: 1.35rem;
-    padding: 0.9rem 1rem;
-  }
-
-  .review-notice p {
-    line-height: 1.55;
-    margin: 0;
   }
 
   .content-section {
@@ -814,126 +658,128 @@ const structuredData = [
     padding: 0.2rem 0 0.2rem 1rem;
   }
 
-  .install-callout {
-    background: var(--color-surface-subtle);
-    border-left: 3px solid var(--color-accent);
-    border-radius: 8px;
-    display: grid;
-    gap: 1.2rem;
-    padding: 1.35rem 1.45rem 1.5rem;
-  }
-
-  .install-callout h3 {
-    font-size: 1.12rem;
-    margin: 0.4rem 0 0;
-  }
-
-  .install-callout p {
-    color: var(--color-text-muted);
-    margin: 0.35rem 0 0;
-  }
-
-  .included-callout {
-    background: var(--color-accent-soft);
-    border-left: 3px solid var(--color-accent);
-    border-radius: 8px;
-    padding: 1rem 1.2rem;
-  }
-
-  .included-callout .coordinate {
-    color: var(--color-accent);
-    font-family: var(--font-mono);
-    font-size: 0.63rem;
-    letter-spacing: 0.07em;
-  }
-
-  .included-callout > div {
-    align-items: flex-start;
-    display: flex;
-    gap: 0.6rem;
-    margin-top: 0.65rem;
-  }
-
-  .included-callout > div > :global(.icon) {
-    flex: none;
-    margin-top: 0.1rem;
-  }
-
-  .included-callout strong {
-    font-size: 0.96rem;
-    font-weight: 570;
-  }
-
-  .included-callout p {
-    color: var(--color-text-muted);
-    font-size: 0.88rem;
-    line-height: 1.6;
-    margin: 0.3rem 0 0;
-  }
-
   .capability-table {
-    border-radius: 8px;
-    border-left: 1px solid var(--color-rule);
+    border-collapse: collapse;
+    margin-top: 0.35rem;
+    overflow: visible;
+    width: 100%;
+  }
+
+  .capability-table th,
+  .capability-table td {
     border-top: 1px solid var(--color-rule);
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    overflow: hidden;
+    overflow: visible;
+    padding: 0.85rem 0.75rem 0.85rem 0;
+    text-align: left;
+    vertical-align: top;
   }
 
-  .capability-table > div {
-    border-bottom: 1px solid var(--color-rule);
-    border-right: 1px solid var(--color-rule);
-    display: grid;
-    min-height: 118px;
-    padding: 1rem 1.1rem;
-  }
-
-  .capability-table span {
+  .capability-table thead th {
+    border-top: 0;
     color: var(--color-text-faint);
     font-family: var(--font-mono);
     font-size: 0.66rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    padding-bottom: 0.55rem;
     text-transform: uppercase;
   }
 
-  .capability-table strong {
-    align-self: end;
-    font-family: var(--font-mono);
-    font-size: 1rem;
-    font-weight: 500;
-  }
-
-  .capability-table small {
-    color: var(--color-text-muted);
-    font-size: 0.74rem;
-    margin-top: 0.25rem;
-  }
-
-  .contribution-list {
-    margin-top: 2rem;
-  }
-
-  .contribution-list h3 {
+  .capability-table tbody th {
+    color: var(--color-text);
     font-size: 0.92rem;
     font-weight: 560;
+    width: 7.5rem;
   }
 
-  .contribution-list > div {
-    border-top: 1px solid var(--color-rule);
-    display: grid;
-    gap: 1rem;
-    grid-template-columns: minmax(130px, 0.55fr) 1fr;
-    padding: 0.75rem 0;
+  .capability-kind {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    color: inherit;
+    cursor: help;
+    display: inline-flex;
+    font: inherit;
+    font-weight: 560;
+    gap: 0.35rem;
+    padding: 0;
+    position: relative;
   }
 
-  .contribution-list code {
+  .capability-tip {
+    align-items: center;
+    border: 1px solid var(--color-rule-strong);
+    border-radius: 999px;
+    color: var(--color-text-faint);
+    display: inline-flex;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    height: 1rem;
+    justify-content: center;
+    line-height: 1;
+    width: 1rem;
+  }
+
+  .capability-kind:hover .capability-tip,
+  .capability-kind:focus-visible .capability-tip {
+    border-color: var(--color-accent);
     color: var(--color-accent);
-    font-size: 0.78rem;
-    overflow-wrap: anywhere;
   }
 
-  .contribution-list span {
-    color: var(--color-text-muted);
-    font-size: 0.83rem;
+  .capability-kind[data-tooltip]::after,
+  .capability-value.has-tip[data-tooltip]::after {
+    background: var(--color-navy-950);
+    border-radius: 6px;
+    color: #eef6ff;
+    content: attr(data-tooltip);
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 450;
+    left: 0;
+    letter-spacing: 0;
+    line-height: 1.45;
+    max-width: min(22rem, 70vw);
+    opacity: 0;
+    padding: 0.55rem 0.7rem;
+    pointer-events: none;
+    position: absolute;
+    text-align: left;
+    text-transform: none;
+    top: calc(100% + 0.45rem);
+    transform: translateY(-2px);
+    transition:
+      opacity 0.12s ease,
+      transform 0.12s ease;
+    white-space: normal;
+    width: max-content;
+    z-index: 5;
+  }
+
+  .capability-kind[data-tooltip]:hover::after,
+  .capability-kind[data-tooltip]:focus-visible::after,
+  .capability-value.has-tip[data-tooltip]:hover::after,
+  .capability-value.has-tip[data-tooltip]:focus-visible::after {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .capability-value {
+    color: var(--color-text);
+    display: inline-block;
+    font-size: 0.95rem;
+    font-weight: 500;
+    line-height: 1.4;
+    position: relative;
+  }
+
+  .capability-value.has-tip {
+    cursor: help;
+    border-bottom: 1px dotted color-mix(in srgb, var(--color-text-faint) 70%, transparent);
+  }
+
+  .capability-value code {
+    color: var(--color-accent);
+    font-size: 0.9em;
   }
 
   .readme-fallback {
@@ -1029,69 +875,115 @@ const structuredData = [
     margin: 0 0 1rem;
   }
 
-  .metric-panel > div {
-    align-items: baseline;
-    display: flex;
-    gap: 0.6rem;
+  .install-panel {
+    border-left: 3px solid var(--color-accent);
   }
 
-  .metric-panel strong {
+  .install-panel .eyebrow {
+    margin-bottom: 0.35rem;
+  }
+
+  .install-panel > h2 {
+    font-size: 1.05rem;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.55rem;
+  }
+
+  .install-panel > p {
+    color: var(--color-text-muted);
+    font-size: 0.78rem;
+    line-height: 1.55;
+    margin: 0 0 0.95rem;
+  }
+
+  .install-panel :global(.command-box) {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0;
+    min-height: 0;
+    padding: 0;
+  }
+
+  .install-panel :global(.command-box > span[aria-hidden='true']) {
+    display: none;
+  }
+
+  .install-panel :global(.command-box code) {
+    overflow-wrap: anywhere;
+    padding: 0.7rem 0.75rem 0.55rem;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  .install-panel :global(.command-box button) {
+    align-self: stretch;
+    border-left: 0;
+    border-radius: 0 0 4px 4px;
+    border-top: 1px solid #334b67;
+    min-height: 38px;
+    width: 100%;
+  }
+
+  .install-metric {
+    align-items: baseline;
+    display: flex;
+    gap: 0.55rem;
+    margin-top: 1rem;
+  }
+
+  .install-metric strong {
     color: var(--color-accent);
     font-family: var(--font-mono);
-    font-size: 2rem;
+    font-size: 1.65rem;
     font-weight: 400;
   }
 
-  .metric-panel span {
+  .install-metric span {
     color: var(--color-text-muted);
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     text-transform: uppercase;
   }
 
-  .metric-panel p {
-    color: var(--color-text-faint);
-    font-size: 0.71rem;
-    line-height: 1.5;
-    margin: 0.55rem 0 0;
+  .install-metric-help {
+    color: var(--color-text-faint) !important;
+    font-size: 0.68rem !important;
+    margin: 0.4rem 0 0 !important;
   }
 
-  .distribution-panel-label {
-    color: var(--color-text-faint);
+  .install-panel.included-panel {
+    background: color-mix(in srgb, var(--color-accent-soft) 70%, var(--color-surface));
+  }
+
+  .install-panel .coordinate {
+    color: var(--color-accent);
     display: block;
     font-family: var(--font-mono);
-    font-size: 0.63rem;
-    letter-spacing: 0.07em;
-    margin-bottom: 0.75rem;
-    text-transform: uppercase;
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    margin: 0.15rem 0 0.75rem;
   }
 
-  .distribution-panel-status {
-    align-items: center;
+  .included-status {
+    align-items: flex-start;
     display: flex;
-    gap: 0.65rem;
+    gap: 0.55rem;
   }
 
-  .distribution-panel-mark {
-    align-items: center;
-    background: var(--color-accent-soft);
-    border: 1px solid color-mix(in srgb, var(--color-accent) 35%, var(--color-rule));
+  .included-status > :global(.icon) {
     color: var(--color-accent);
-    display: inline-flex;
-    height: 30px;
-    justify-content: center;
-    width: 30px;
+    flex: none;
+    margin-top: 0.15rem;
   }
 
-  .distribution-panel-status strong {
-    font-size: 0.9rem;
-    font-weight: 560;
+  .included-status h2 {
+    margin-bottom: 0.4rem;
   }
 
-  .distribution-panel p {
-    color: var(--color-text-faint);
-    font-size: 0.71rem;
+  .included-status p {
+    color: var(--color-text-muted);
+    font-size: 0.78rem;
     line-height: 1.55;
-    margin: 0.65rem 0 0;
+    margin: 0;
   }
 
   .package-sidebar dl {
@@ -1138,33 +1030,10 @@ const structuredData = [
     text-decoration: none;
   }
 
-  .sidebar-coordinate span,
-  .sidebar-coordinate strong {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: 0.62rem;
-  }
-
-  .sidebar-coordinate span {
-    color: var(--color-text-faint);
-  }
-
-  .sidebar-coordinate strong {
-    color: var(--color-text-muted);
-    font-weight: 400;
-    margin-top: 0.3rem;
-    text-transform: uppercase;
-  }
-
   @media (max-width: 900px) {
     .masthead-inner,
     .package-layout {
       grid-template-columns: 1fr;
-    }
-
-    .masthead-bus {
-      justify-self: start;
-      max-width: 520px;
     }
 
     .package-sidebar {
@@ -1184,7 +1053,6 @@ const structuredData = [
       gap: 1.5rem;
     }
 
-    .capability-table,
     .package-sidebar {
       grid-template-columns: 1fr;
     }
@@ -1193,8 +1061,8 @@ const structuredData = [
       padding-top: 1.25rem;
     }
 
-    .contribution-list > div {
-      grid-template-columns: 1fr;
+    .capability-table tbody th {
+      width: 5.5rem;
     }
   }
 </style>

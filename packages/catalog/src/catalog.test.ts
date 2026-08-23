@@ -50,8 +50,12 @@ describe('Harness catalog snapshot', () => {
       expect(entry.capabilities.uiSlotsDeclared).toEqual(expect.any(Array));
       expect(entry.availability.profiles).toEqual(expect.any(Array));
       expect(entry.docs.readmePath).toMatch(/^packages\//);
-      expect(entry.docs.readme.en).toEqual(expect.any(String));
-      expect(entry.docs.readme.zh).toEqual(expect.any(String));
+      expect(entry.docs.readme.en).toMatch(
+        /^https:\/\/raw\.githubusercontent\.com\/deepseek-ai\/deepseek-harness\//,
+      );
+      expect(entry.docs.readme.zh).toMatch(
+        /^https:\/\/raw\.githubusercontent\.com\/deepseek-ai\/deepseek-harness\//,
+      );
     }
     const shellEnv = catalog.entries.find((entry) => entry.name === '@deepseek-ai/dsh-shell-env');
     const uiPlan = catalog.entries.find(

@@ -215,7 +215,9 @@ describe('GitHub Topic catalog sync', () => {
       },
       source: { commit: '2'.repeat(40) },
     });
-    expect(result.catalog.entries[1].docs.readme.en).toBe('Adds a clock panel.');
+    expect(result.catalog.entries[1].docs.readme.en).toBe(
+      `https://raw.githubusercontent.com/example/dsh-clock/${'2'.repeat(40)}/README.md`,
+    );
     expect(result.analysis).toMatchObject({
       schemaVersion: 1,
       snapshotAt: '2026-08-14T00:30:00.000Z',

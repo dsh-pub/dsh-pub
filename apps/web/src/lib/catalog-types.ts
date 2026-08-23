@@ -47,6 +47,9 @@ export interface CatalogEntry {
   };
   description: LocalizedText;
   docs?: {
+    readmePath?: string;
+    readmeZhPath?: string;
+    /** Pinned raw.githubusercontent.com URLs (not markdown bodies). */
     readme?: Partial<LocalizedText>;
     modelExperience?: Partial<LocalizedText>;
     limitations?: Partial<LocalizedText>;
