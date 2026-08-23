@@ -1,0 +1,135 @@
+---
+import type { CatalogEntry } from '../lib/catalog-types.js';
+import type { Locale } from '../lib/i18n.js';
+import Icon from './Icon.astro';
+
+interface Props {
+  entry: CatalogEntry;
+  locale: Locale;
+  /** Row variant: ticks only, without the uninspected-remainder line. */
+  compact?: boolean;
+}
+
+const { entry, locale, compact = false } = Astro.props;
+
+const labels = {
+  host: { en: 'Host-loadable', zh: '宿主可加载' },
+  client: { en: 'Web client', zh: 'Web 客户端' },
+  ui: { en: 'UI surface', zh: '界面贡献' },
+  tool: { en: 'Model tools', zh: '模型工具' },
+  data: { en: 'Data & storage', zh: '数据与存储' },
+  flow: { en: 'Workflow', zh: '流程编排' },
+} as const;
+
+// Topic auto-analysis reads a bundle contract without running the plugin, so tools and UI
+// contributions stay null for all but a few hundred records. Those capabilities are
+// unverified rather than absent, which is why the two are counted separately below.
+const factsUnknown =
+  entry.runtime.hostLoadable === null ||
+  entry.capabilities.tools === null ||
+  entry.capabilities.uiContributions === null;
+const hasClient = factsUnknown ? null : Boolean(entry.runtime.client);
+const hasUi = factsUnknown
+  ? null
+  : hasClient ||
+    (entry.capabilities.uiContributions?.length ?? 0) > 0 ||
+    ['ui', 'client-ui'].includes(entry.category);
+const hasTool = factsUnknown
+  ? null
+  : (entry.capabilities.tools?.length ?? 0) > 0 || ['tool', 'tools'].includes(entry.category);
+const hasData = factsUnknown ? null : ['storage', 'session', 'sessions'].includes(entry.category);
+const hasFlow = factsUnknown
+  ? null
+  : ['workflow', 'orchestration', 'session', 'sessions'].includes(entry.category) ||
+    entry.type === 'bundle';
+
+const capabilities = [
+  ['host', entry.runtime.hostLoadable],
+  ['client', hasClient],
+  ['ui', hasUi],
+  ['tool', hasTool],
+  ['data', hasData],
+  ['flow', hasFlow],
+] as const;
+
+const confirmed = capabilities.filter(([, state]) => state === true);
+const unverified = capabilities.filter(([, state]) => state === null).length;
+
+const remainder =
+  unverified === 0
+    ? ''
+    : confirmed.length === 0
+      ? locale === 'zh'
+        ? '运行时能力未核查'
+        : 'Runtime capabilities not inspected'
+      : locale === 'zh'
+        ? `其余 ${unverified} 项未核查`
+        : `${unverified} more not inspected`;
+// Rows stay quiet about the remainder, but a record with nothing confirmed still needs a line
+// so the surrounding heading is never left with an empty body.
+const showRemainder = remainder !== '' && (!compact || confirmed.length === 0);
+---
+
+<div class:list={['capability-check', { compact }]}>
+  {
+    confirmed.length > 0 && (
+      <ul>
+        {confirmed.map(([id]) => (
+          <li>
+            <Icon name="check" size={compact ? 12 : 14} />
+            {labels[id][locale]}
+          </li>
+        ))}
+      </ul>
+    )
+  }
+  {showRemainder && <p>{remainder}</p>}
+</div>
+
+<style>
+  .capability-check ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem 1.15rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .capability-check li {
+    align-items: center;
+    color: var(--color-text);
+    display: flex;
+    font-size: 0.82rem;
+    gap: 0.34rem;
+    line-height: 1.3;
+  }
+
+  .capability-check li :global(.icon) {
+    color: var(--color-accent);
+    flex: none;
+    stroke-width: 2.4;
+  }
+
+  .capability-check p {
+    color: var(--color-text-faint);
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+    margin: 0;
+  }
+
+  .capability-check ul + p {
+    margin-top: 0.7rem;
+  }
+
+  .capability-check.compact ul {
+    gap: 0.3rem 0.8rem;
+  }
+
+  .capability-check.compact li {
+    color: var(--color-text-muted);
+    font-size: 0.72rem;
+    gap: 0.26rem;
+  }
+</style>

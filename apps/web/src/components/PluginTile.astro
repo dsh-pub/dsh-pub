@@ -1,0 +1,127 @@
+---
+import type { BrowseTile } from '../lib/browse.js';
+import type { Locale } from '../lib/i18n.js';
+import { useCaseLabel } from '../lib/use-cases.js';
+
+interface Props {
+  tile: BrowseTile;
+  locale: Locale;
+  /** GitHub stars of the source repository; only shown for the featured row. */
+  stars?: number;
+}
+
+const { tile, locale, stars } = Astro.props;
+const featured = stars !== undefined;
+---
+
+<a
+  class:list={['plugin-tile', { featured }]}
+  href={`/${locale}/plugins/${tile.slug}/`}
+  data-use-case={tile.useCase}
+  data-search={`${tile.name} ${tile.description}`.toLocaleLowerCase()}
+>
+  <strong>{tile.name}</strong>
+  <span>{tile.description}</span>
+  <em>
+    {useCaseLabel(tile.useCase, locale)}
+    {featured && <b>★ {stars.toLocaleString()}</b>}
+  </em>
+</a>
+
+<!--
+  The home page wall also appends tiles from the browse index at runtime, and those nodes
+  cannot carry Astro's scoped class hash. Styling `.plugin-tile` globally keeps the
+  server-rendered rows and the appended rows looking identical.
+-->
+<style is:global>
+  .plugin-tile {
+    background: var(--color-surface);
+    border: 1px solid var(--color-rule);
+    border-radius: 9px;
+    color: var(--color-text);
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-height: 118px;
+    padding: 0.85rem 0.9rem;
+    transition:
+      border-color var(--transition-fast),
+      transform var(--transition-fast);
+  }
+
+  .plugin-tile:hover {
+    border-color: var(--color-accent);
+    text-decoration: none;
+    transform: translateY(-2px);
+  }
+
+  .plugin-tile[hidden] {
+    display: none;
+  }
+
+  .plugin-tile > strong {
+    font-size: 0.88rem;
+    font-weight: 620;
+    letter-spacing: -0.02em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .plugin-tile > span {
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    color: var(--color-text-muted);
+    display: -webkit-box;
+    font-size: 0.79rem;
+    line-height: 1.45;
+    overflow: hidden;
+  }
+
+  .plugin-tile > em {
+    align-items: center;
+    color: var(--color-text-faint);
+    display: flex;
+    font-family: var(--font-mono);
+    font-size: 0.63rem;
+    font-style: normal;
+    gap: 0.5rem;
+    justify-content: space-between;
+    letter-spacing: 0.04em;
+    margin-top: auto;
+    overflow: hidden;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .plugin-tile > em > b {
+    color: var(--color-accent);
+    flex: none;
+    font-weight: 500;
+  }
+
+  .plugin-tile.featured {
+    background: var(--color-surface);
+    border-color: color-mix(in srgb, var(--color-accent) 30%, var(--color-rule));
+    min-height: 142px;
+  }
+
+  .plugin-tile.featured > strong {
+    font-size: 0.96rem;
+  }
+
+  .plugin-tile.featured > span {
+    -webkit-line-clamp: 3;
+    font-size: 0.83rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .plugin-tile {
+      transition: none;
+    }
+
+    .plugin-tile:hover {
+      transform: none;
+    }
+  }
+</style>

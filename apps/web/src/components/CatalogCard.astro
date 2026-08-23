@@ -1,0 +1,133 @@
+---
+import { modeLabel, type CatalogCardModel } from '../lib/catalog-list.js';
+import { copy, type Locale } from '../lib/i18n.js';
+
+interface Props {
+  card: CatalogCardModel;
+  locale: Locale;
+}
+
+const { card, locale } = Astro.props;
+const t = copy[locale];
+const external = card.origin === 'ecosystem';
+const provenanceLabel =
+  card.provenance === 'community-reviewed'
+    ? t.communityReviewed
+    : card.provenance === 'community-submitted'
+      ? t.communitySubmitted
+      : card.provenance === 'community-automated'
+        ? t.communityAutomated
+        : card.provenance === 'built-in'
+          ? t.builtInSource
+          : card.provenance === 'ecosystem-indexed'
+            ? modeLabel('indexed', locale)
+            : '';
+---
+
+<a
+  class="catalog-card"
+  href={card.href}
+  rel={external ? 'ugc nofollow noopener' : undefined}
+  data-catalog-item
+  data-origin={card.origin}
+  data-mode={card.mode}
+  data-category={card.category}
+  data-provenance={card.provenance}
+  data-search={card.search}
+  data-name={card.name.toLocaleLowerCase()}
+  data-stars={card.stars}
+  data-updated={card.updated}
+>
+  <strong>{card.name}</strong>
+  <span>{card.description}</span>
+  <em>
+    {modeLabel(card.mode, locale)}
+    {card.stars > 0 && <b>★ {card.stars.toLocaleString()}</b>}
+  </em>
+  {provenanceLabel && <span class="visually-hidden">{provenanceLabel}</span>}
+</a>
+
+<style is:global>
+  .catalog-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-rule);
+    border-radius: 10px;
+    color: var(--color-text);
+    contain-intrinsic-size: auto 128px;
+    content-visibility: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-height: 128px;
+    min-width: 0;
+    padding: 0.9rem 1rem;
+    transition:
+      border-color var(--transition-fast),
+      transform var(--transition-fast);
+  }
+
+  .catalog-card[hidden] {
+    display: none;
+  }
+
+  .catalog-card:hover {
+    border-color: var(--color-accent);
+    text-decoration: none;
+    transform: translateY(-2px);
+  }
+
+  .catalog-card > strong {
+    font-size: 0.92rem;
+    font-weight: 620;
+    letter-spacing: -0.02em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .catalog-card > span {
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    color: var(--color-text-muted);
+    display: -webkit-box;
+    font-size: 0.8rem;
+    line-height: 1.45;
+    overflow: hidden;
+  }
+
+  .catalog-card > em {
+    align-items: center;
+    color: var(--color-accent);
+    display: flex;
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    font-style: normal;
+    gap: 0.5rem;
+    justify-content: space-between;
+    letter-spacing: 0.04em;
+    margin-top: auto;
+    overflow: hidden;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .catalog-card > em > b {
+    color: var(--color-text-faint);
+    flex: none;
+    font-weight: 500;
+  }
+
+  .catalog-card[data-mode='indexed'] > em {
+    color: var(--color-text-faint);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .catalog-card {
+      transition: none;
+    }
+
+    .catalog-card:hover {
+      transform: none;
+    }
+  }
+</style>

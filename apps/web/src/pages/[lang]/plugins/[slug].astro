@@ -2,7 +2,7 @@
 import { marked } from 'marked';
 import sanitizeHtml from 'sanitize-html';
 
-import CapabilityBus from '../../../components/CapabilityBus.astro';
+import CapabilityChecklist from '../../../components/CapabilityChecklist.astro';
 import CopyCommand from '../../../components/CopyCommand.astro';
 import Icon from '../../../components/Icon.astro';
 import {
@@ -197,7 +197,7 @@ const structuredData = [
         </a>
         <div class="masthead-bus">
           <span>{t.runtime}</span>
-          <CapabilityBus entry={entry} />
+          <CapabilityChecklist entry={entry} locale={locale} />
         </div>
       </div>
     </div>
@@ -448,7 +448,7 @@ const structuredData = [
 
       <section>
         <h2>{t.runtime}</h2>
-        <CapabilityBus entry={entry} compact />
+        <CapabilityChecklist entry={entry} locale={locale} compact />
       </section>
 
       <section>
@@ -620,7 +620,11 @@ const structuredData = [
     background: var(--color-surface-subtle);
     border: 1px solid var(--color-rule);
     border-radius: 10px;
-    padding: 1rem;
+    justify-self: end;
+    max-width: 100%;
+    min-width: 11rem;
+    padding: 0.9rem 1.1rem;
+    width: fit-content;
   }
 
   .masthead-bus > span {
@@ -629,7 +633,7 @@ const structuredData = [
     font-family: var(--font-mono);
     font-size: 0.65rem;
     letter-spacing: 0.06em;
-    margin-bottom: 1rem;
+    margin-bottom: 0.7rem;
     text-transform: uppercase;
   }
 
@@ -1159,6 +1163,7 @@ const structuredData = [
     }
 
     .masthead-bus {
+      justify-self: start;
       max-width: 520px;
     }
 

@@ -10,7 +10,7 @@ import {
 import { entrySearchText } from '../lib/catalog.js';
 import { categoryLabel, typeLabel } from '../lib/categories.js';
 import { copy, type Locale } from '../lib/i18n.js';
-import CapabilityBus from './CapabilityBus.astro';
+import CapabilityChecklist from './CapabilityChecklist.astro';
 
 interface Props {
   entry: CatalogEntry;
@@ -77,7 +77,6 @@ const provenanceStatement =
     <p>{localized(entry.description, locale)}</p>
     <div class="tag-row">
       <span class="tag primary">{categoryLabel(entry.category, locale)}</span>
-      <span class="tag">{typeLabel(entry.type, locale)}</span>
       {entry.runtime.configurable && <span class="tag">{t.configurable}</span>}
       {client && <span class="tag">{t.webUi}</span>}
       {
@@ -86,7 +85,7 @@ const provenanceStatement =
           .map((profile) => <span class="tag">{profile}</span>)
       }
     </div>
-    {!compact && <CapabilityBus entry={entry} compact />}
+    {!compact && <CapabilityChecklist entry={entry} locale={locale} compact />}
   </div>
   <dl class="plugin-facts">
     <div>
@@ -213,7 +212,7 @@ const provenanceStatement =
     overflow: hidden;
   }
 
-  .plugin-main :global(.capability-bus) {
+  .plugin-main :global(.capability-check) {
     margin-top: 1rem;
   }
 

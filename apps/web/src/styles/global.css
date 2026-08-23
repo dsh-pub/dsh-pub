@@ -383,69 +383,6 @@ kbd,
   color: var(--color-warning);
 }
 
-.capability-bus {
-  align-items: center;
-  display: grid;
-  gap: 3px;
-  grid-template-columns: repeat(6, minmax(44px, 1fr));
-  isolation: isolate;
-  max-width: 490px;
-  position: relative;
-}
-
-.capability-bus .bus-line {
-  background: var(--color-rule-strong);
-  height: 1px;
-  left: 3%;
-  position: absolute;
-  right: 3%;
-  top: 7px;
-  z-index: -1;
-}
-
-.bus-cell {
-  color: var(--color-text-faint);
-  font-family: var(--font-mono);
-  font-size: 0.61rem;
-  letter-spacing: 0.03em;
-  min-width: 0;
-  text-align: center;
-}
-
-.bus-cell i {
-  background: var(--color-surface);
-  border: 1px solid var(--color-rule-strong);
-  display: block;
-  height: 13px;
-  margin: 0 auto 0.28rem;
-  transform: rotate(45deg);
-  width: 13px;
-}
-
-.bus-cell.active {
-  color: var(--color-accent);
-  font-weight: 500;
-}
-
-.bus-cell.active i {
-  background: var(--color-accent);
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px var(--color-accent-soft);
-}
-
-.capability-bus.compact {
-  max-width: 340px;
-}
-
-.capability-bus.compact .bus-cell {
-  font-size: 0.54rem;
-}
-
-.capability-bus.compact .bus-cell i {
-  height: 10px;
-  width: 10px;
-}
-
 .command-box {
   align-items: center;
   background: var(--color-navy-950);
@@ -561,15 +498,6 @@ kbd,
 
   .footer-inner nav {
     flex-wrap: wrap;
-  }
-
-  .capability-bus {
-    grid-template-columns: repeat(3, 1fr);
-    row-gap: 0.85rem;
-  }
-
-  .capability-bus .bus-line {
-    display: none;
   }
 }
 

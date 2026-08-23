@@ -1,11 +1,10 @@
 ---
-import EcosystemCard from '../../../components/EcosystemCard.astro';
+import CatalogCard from '../../../components/CatalogCard.astro';
 import Icon from '../../../components/Icon.astro';
-import PluginRow from '../../../components/PluginRow.astro';
-import { communityEntries, marketplaceEntries } from '../../../lib/catalog.js';
+import { catalogCard, catalogListItems, initialCatalogCount } from '../../../lib/catalog-list.js';
 import { displayName } from '../../../lib/catalog-types.js';
-import { ecosystemCatalog, ecosystemCategories, ecosystemEntries } from '../../../lib/ecosystem.js';
-import { typeLabel } from '../../../lib/categories.js';
+import { marketplaceEntries } from '../../../lib/catalog.js';
+import { ecosystemCategories, ecosystemEntries } from '../../../lib/ecosystem.js';
 import { copy, isLocale, locales } from '../../../lib/i18n.js';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 
@@ -16,63 +15,41 @@ export function getStaticPaths() {
 const locale = Astro.params.lang;
 if (!isLocale(locale)) throw new Error(`Unsupported locale: ${locale}`);
 const t = copy[locale];
-const ecosystemTypes = [...new Set(ecosystemEntries.map((entry) => entry.resourceType))]
-  .map((type) => ({
-    type,
-    count: ecosystemEntries.filter((entry) => entry.resourceType === type).length,
-  }))
-  .sort((left, right) => right.count - left.count);
-const reviewedCount = communityEntries.filter(
-  (entry) => entry.provenance?.status === 'community-reviewed',
-).length;
-const submittedCount = communityEntries.filter(
-  (entry) => entry.provenance?.status === 'community-submitted',
-).length;
-const automatedCount = communityEntries.filter(
-  (entry) => entry.provenance?.status === 'community-automated',
-).length;
+const catalogCount = catalogListItems.length;
+const starsByRepository = new Map(
+  ecosystemEntries.map((entry) => [entry.sourceRepository.toLocaleLowerCase(), entry.stars]),
+);
+const initialCards = catalogListItems
+  .slice(0, initialCatalogCount)
+  .map((item) => catalogCard(item, locale, starsByRepository));
 const registryUrl = `https://dsh.pub/${locale}/plugins/`;
 const ui =
   locale === 'zh'
     ? {
-        coordinate: 'DSH / REGISTRY / ECOSYSTEM',
-        lead: `浏览 ${marketplaceEntries.length} 条结构化 Registry 记录与 ${ecosystemCatalog.totals.indexed} 条公开生态索引。先发现，再核对来源、能力和安装边界。`,
+        coordinate: 'DSH / PLUGINS',
         search: '按插件名、作者、能力、Tool 或仓库搜索…',
-        registry: 'Registry 记录',
-        ecosystem: '生态索引',
-        all: '全部',
         shown: '条结果',
-        scope: '数据范围',
-        allTypes: '全部类型',
-        allSignals: '全部来源状态',
-        ecosystemIndexed: '生态索引 · 未验证',
+        all: '全部',
         quickUseCases: '按使用场景',
-        discoveryNote:
-          '生态索引来自 DSH.Tools 的公开目录，源仓库仍是事实来源。Indexed 不代表兼容、可安装、已审核或安全。',
         sortStars: 'Stars',
         sortUpdated: '最近更新',
-        registryCount: `${marketplaceEntries.length} 条结构化记录`,
-        ecosystemCount: `${ecosystemEntries.length} 条公开候选`,
+        more: '加载更多',
+        loading: '加载中…',
+        failed: '目录索引暂时不可用。',
+        concepts: '这些标签是什么意思？',
       }
     : {
-        coordinate: 'DSH / REGISTRY / ECOSYSTEM',
-        lead: `Browse ${marketplaceEntries.length} structured Registry records and ${ecosystemCatalog.totals.indexed} public ecosystem entries. Discover broadly, then inspect source, capability, and installation boundaries.`,
+        coordinate: 'DSH / PLUGINS',
         search: 'Search by plugin, author, capability, tool, or repository…',
-        registry: 'Registry records',
-        ecosystem: 'Ecosystem index',
-        all: 'All',
         shown: 'results',
-        scope: 'Data scope',
-        allTypes: 'All types',
-        allSignals: 'All source signals',
-        ecosystemIndexed: 'Ecosystem indexed · unverified',
+        all: 'All',
         quickUseCases: 'Browse by use case',
-        discoveryNote:
-          'The ecosystem index is imported from the public DSH.Tools directory. Source repositories remain canonical. Indexed does not mean compatible, installable, reviewed, or safe.',
         sortStars: 'Stars',
         sortUpdated: 'Recently updated',
-        registryCount: `${marketplaceEntries.length} structured records`,
-        ecosystemCount: `${ecosystemEntries.length} public candidates`,
+        more: 'Load more',
+        loading: 'Loading…',
+        failed: 'Catalog index temporarily unavailable.',
+        concepts: 'What do these labels mean?',
       };
 const structuredData = [
   {
@@ -86,7 +63,7 @@ const structuredData = [
     mainEntity: {
       '@type': 'ItemList',
       numberOfItems: marketplaceEntries.length,
-      itemListElement: marketplaceEntries.map((entry, index) => ({
+      itemListElement: marketplaceEntries.slice(0, 50).map((entry, index) => ({
         '@type': 'ListItem',
         position: index + 1,
         name: displayName(entry),
@@ -122,16 +99,18 @@ const structuredData = [
       <p class="eyebrow">{ui.coordinate}</p>
       <h1>{t.registryHeading}</h1>
       <p class="registry-guide-title">{t.registryGuideTitle}</p>
-      <p>{ui.lead}</p>
+      <p>{t.registryLead}</p>
+      <p class="concepts-link">
+        <a href={`/${locale}/guide/`}>{ui.concepts}</a>
+      </p>
     </div>
   </section>
 
   <main
     class="catalog-shell page-shell"
     data-catalog
-    data-title-registry={ui.registry}
-    data-title-ecosystem={ui.ecosystem}
-    data-title-all={ui.all}
+    data-index-url={`/${locale}/catalog.json`}
+    data-page-size={initialCatalogCount}
   >
     <section class="catalog-controls" aria-label={t.filters}>
       <form class="catalog-search" role="search" data-catalog-search>
@@ -144,64 +123,8 @@ const structuredData = [
           autocomplete="off"
         />
         <kbd>/</kbd>
-        <span><strong data-result-count>{marketplaceEntries.length}</strong> {ui.shown}</span>
+        <span><strong data-result-count>{catalogCount}</strong> {ui.shown}</span>
       </form>
-
-      <div class="control-row">
-        <div class="scope-switch" role="group" aria-label={ui.scope}>
-          <button type="button" class="active" data-scope="registry">
-            <strong>{ui.registry}</strong><small>{ui.registryCount}</small>
-          </button>
-          <button type="button" data-scope="ecosystem">
-            <strong>{ui.ecosystem}</strong><small>{ui.ecosystemCount}</small>
-          </button>
-          <button type="button" data-scope="all"><strong>{ui.all}</strong></button>
-        </div>
-
-        <div class="select-filters">
-          <label>
-            <span>{t.type}</span>
-            <select data-type-filter>
-              <option value="">{ui.allTypes}</option>
-              {
-                (['plugin', 'bundle'] as const).map((type) => (
-                  <option value={type}>{typeLabel(type, locale)}</option>
-                ))
-              }
-              {
-                ecosystemTypes.map(({ type, count }) => (
-                  <option value={type}>
-                    {type} · {count}
-                  </option>
-                ))
-              }
-            </select>
-          </label>
-          <label>
-            <span>{t.sourceScope}</span>
-            <select data-provenance-filter>
-              <option value="">{ui.allSignals}</option>
-              <option value="built-in">{t.builtInSource}</option>
-              <option value="community-reviewed">{t.communityReviewed} · {reviewedCount}</option>
-              {
-                automatedCount > 0 && (
-                  <option value="community-automated">
-                    {t.communityAutomated} · {automatedCount}
-                  </option>
-                )
-              }
-              {
-                submittedCount > 0 && (
-                  <option value="community-submitted">
-                    {t.communitySubmitted} · {submittedCount}
-                  </option>
-                )
-              }
-              <option value="ecosystem-indexed">{ui.ecosystemIndexed}</option>
-            </select>
-          </label>
-        </div>
-      </div>
     </section>
 
     <nav class="use-case-filters" aria-label={ui.quickUseCases}>
@@ -218,10 +141,6 @@ const structuredData = [
     </nav>
 
     <div class="results-toolbar">
-      <div>
-        <strong data-results-title>{ui.registry}</strong>
-        <p>{ui.discoveryNote}</p>
-      </div>
       <label>
         <span>{t.sort}</span>
         <select data-sort>
@@ -236,9 +155,21 @@ const structuredData = [
 
     <div class="active-filters" data-active-filters aria-live="polite"></div>
     <section class="catalog-grid" data-results aria-label={t.browse}>
-      {marketplaceEntries.map((entry) => <PluginRow entry={entry} locale={locale} />)}
-      {ecosystemEntries.map((entry) => <EcosystemCard entry={entry} locale={locale} />)}
+      {initialCards.map((card) => <CatalogCard card={card} locale={locale} />)}
     </section>
+
+    <div class="catalog-foot">
+      <button
+        type="button"
+        data-catalog-more
+        data-label={ui.more}
+        data-loading={ui.loading}
+        data-failed={ui.failed}
+      >
+        {ui.more}
+      </button>
+      <span data-catalog-status aria-live="polite"></span>
+    </div>
 
     <div class="empty-results" data-empty hidden>
       <span aria-hidden="true">0×00</span>
@@ -250,25 +181,46 @@ const structuredData = [
 </BaseLayout>
 
 <script>
+  type CatalogRow = readonly [
+    number,
+    string,
+    string,
+    string,
+    string,
+    number,
+    string,
+    string,
+    string,
+    number,
+    string,
+  ];
+
+  interface CatalogIndex {
+    total: number;
+    modes: string[];
+    modeLabels: string[];
+    rows: CatalogRow[];
+  }
+
   const root = document.querySelector<HTMLElement>('[data-catalog]');
   const searchForm = document.querySelector<HTMLFormElement>('[data-catalog-search]');
   const searchInput = searchForm?.querySelector<HTMLInputElement>('input[name="q"]');
   const resultContainer = root?.querySelector<HTMLElement>('[data-results]');
   const count = root?.querySelector<HTMLElement>('[data-result-count]');
-  const resultsTitle = root?.querySelector<HTMLElement>('[data-results-title]');
   const empty = root?.querySelector<HTMLElement>('[data-empty]');
   const active = root?.querySelector<HTMLElement>('[data-active-filters]');
   const sort = root?.querySelector<HTMLSelectElement>('[data-sort]');
-  const typeFilter = root?.querySelector<HTMLSelectElement>('[data-type-filter]');
-  const provenanceFilter = root?.querySelector<HTMLSelectElement>('[data-provenance-filter]');
-  const scopeButtons = [...(root?.querySelectorAll<HTMLButtonElement>('[data-scope]') ?? [])];
+  const moreButton = root?.querySelector<HTMLButtonElement>('[data-catalog-more]');
+  const status = root?.querySelector<HTMLElement>('[data-catalog-status]');
   const categoryButtons = [
     ...(root?.querySelectorAll<HTMLButtonElement>('[data-category-filter]') ?? []),
   ];
-  const items = [...(root?.querySelectorAll<HTMLElement>('[data-catalog-item]') ?? [])];
-  const originalOrder = new Map(items.map((item, index) => [item, index]));
-  let scope = 'registry';
+  const pageSize = Number(root?.dataset.pageSize ?? 60);
+  const indexUrl = root?.dataset.indexUrl ?? '';
   let category = '';
+  let rendered = pageSize;
+  let index: CatalogIndex | undefined;
+  let indexPromise: Promise<CatalogIndex | undefined> | undefined;
 
   function freshness(value = ''): number {
     if (value === 'today') return 0;
@@ -282,9 +234,30 @@ const structuredData = [
     return 9999;
   }
 
+  function escape(value: string): string {
+    return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function cardMarkup(row: CatalogRow, data: CatalogIndex): string {
+    const [
+      origin,
+      ,
+      href,
+      name,
+      description,
+      mode,
+      categoryValue,
+      provenance,
+      search,
+      stars,
+      updated,
+    ] = row;
+    const external = origin === 1 ? ' rel="ugc nofollow noopener"' : '';
+    const star = stars > 0 ? `<b>★ ${stars.toLocaleString()}</b>` : '';
+    return `<a class="catalog-card" href="${escape(href)}"${external} data-catalog-item data-origin="${origin === 0 ? 'registry' : 'ecosystem'}" data-mode="${escape(data.modes[mode] ?? '')}" data-category="${escape(categoryValue)}" data-provenance="${escape(provenance)}" data-search="${escape(search)}" data-name="${escape(name.toLocaleLowerCase())}" data-stars="${stars}" data-updated="${escape(updated)}"><strong>${escape(name)}</strong><span>${escape(description)}</span><em>${escape(data.modeLabels[mode] ?? '')}${star}</em></a>`;
+  }
+
   function setActiveButtons() {
-    for (const button of scopeButtons)
-      button.classList.toggle('active', button.dataset.scope === scope);
     for (const button of categoryButtons) {
       button.classList.toggle('active', (button.dataset.categoryFilter ?? '') === category);
     }
@@ -293,110 +266,136 @@ const structuredData = [
   function setFromUrl() {
     const params = new URLSearchParams(location.search);
     if (searchInput) searchInput.value = params.get('q') ?? '';
-    scope = params.get('scope') ?? 'registry';
-    if (!['registry', 'ecosystem', 'all'].includes(scope)) scope = 'registry';
     category = params.get('category') ?? '';
-    if (typeFilter) typeFilter.value = params.get('type') ?? '';
-    if (provenanceFilter) provenanceFilter.value = params.get('provenance') ?? '';
     if (sort) sort.value = params.get('sort') ?? 'featured';
     setActiveButtons();
   }
 
-  function render() {
+  async function loadIndex(): Promise<CatalogIndex | undefined> {
+    if (index) return index;
+    if (indexPromise) return indexPromise;
+    if (!moreButton) return undefined;
+    moreButton.disabled = true;
+    moreButton.textContent = moreButton.dataset.loading ?? 'Loading…';
+    indexPromise = fetch(indexUrl)
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`catalog index unavailable: ${response.status}`);
+        index = (await response.json()) as CatalogIndex;
+        return index;
+      })
+      .catch(() => {
+        if (moreButton) moreButton.hidden = true;
+        if (status) status.textContent = moreButton?.dataset.failed ?? '';
+        return undefined;
+      })
+      .finally(() => {
+        if (moreButton) {
+          moreButton.disabled = false;
+          moreButton.textContent = moreButton.dataset.label ?? 'Load more';
+        }
+      });
+    return indexPromise;
+  }
+
+  function matchingRows(data: CatalogIndex): CatalogRow[] {
     const query = searchInput?.value.trim().toLocaleLowerCase() ?? '';
-    const type = typeFilter?.value ?? '';
-    const provenance = provenanceFilter?.value ?? '';
-    let visible = 0;
-
-    for (const item of items) {
-      const origin = item.dataset.origin ?? 'registry';
-      const match =
-        (!query || item.dataset.search?.includes(query)) &&
-        (scope === 'all' || origin === scope) &&
-        (!category || item.dataset.category === category) &&
-        (!type || item.dataset.type === type) &&
-        (!provenance || item.dataset.provenance === provenance);
-      item.hidden = !match;
-      if (match) visible += 1;
-    }
-
-    const sorted = [...items].sort((left, right) => {
-      if (sort?.value === 'name')
-        return (left.dataset.name ?? '').localeCompare(right.dataset.name ?? '');
-      if (sort?.value === 'type')
-        return (left.dataset.type ?? '').localeCompare(right.dataset.type ?? '');
-      if (sort?.value === 'stars')
-        return Number(right.dataset.stars ?? 0) - Number(left.dataset.stars ?? 0);
-      if (sort?.value === 'updated')
-        return freshness(left.dataset.updated) - freshness(right.dataset.updated);
-      return (originalOrder.get(left) ?? 0) - (originalOrder.get(right) ?? 0);
+    let rows = data.rows.filter((row) => {
+      const [, , , , , , categoryValue, , search] = row;
+      return (!query || search.includes(query)) && (!category || categoryValue === category);
     });
-    for (const item of sorted) resultContainer?.append(item);
 
-    if (count) count.textContent = String(visible);
-    if (empty) empty.hidden = visible !== 0;
-    if (resultsTitle) {
-      resultsTitle.textContent =
-        scope === 'registry'
-          ? (root?.dataset.titleRegistry ?? '')
-          : scope === 'ecosystem'
-            ? (root?.dataset.titleEcosystem ?? '')
-            : (root?.dataset.titleAll ?? '');
+    const sortValue = sort?.value ?? 'featured';
+    if (sortValue === 'name') {
+      rows = [...rows].sort((left, right) => left[3].localeCompare(right[3]));
+    } else if (sortValue === 'type') {
+      rows = [...rows].sort((left, right) => left[5] - right[5]);
+    } else if (sortValue === 'stars') {
+      rows = [...rows].sort((left, right) => right[9] - left[9]);
+    } else if (sortValue === 'updated') {
+      rows = [...rows].sort((left, right) => freshness(left[10]) - freshness(right[10]));
+    }
+    return rows;
+  }
+
+  function paint(data: CatalogIndex) {
+    if (!resultContainer) return;
+    const rows = matchingRows(data);
+    const slice = rows.slice(0, rendered);
+    resultContainer.innerHTML = slice.map((row) => cardMarkup(row, data)).join('');
+    if (count) count.textContent = String(rows.length);
+    if (empty) empty.hidden = rows.length !== 0;
+    if (moreButton) moreButton.hidden = slice.length >= rows.length;
+    if (status) {
+      status.textContent = rows.length
+        ? `${slice.length.toLocaleString()} / ${rows.length.toLocaleString()}`
+        : '';
     }
 
     const params = new URLSearchParams();
+    const query = searchInput?.value.trim() ?? '';
     if (query) params.set('q', query);
-    if (scope !== 'registry') params.set('scope', scope);
     if (category) params.set('category', category);
-    if (type) params.set('type', type);
-    if (provenance) params.set('provenance', provenance);
     if (sort?.value && sort.value !== 'featured') params.set('sort', sort.value);
     history.replaceState({}, '', `${location.pathname}?${params}`);
 
     if (active) {
       active.replaceChildren();
-      for (const value of [query, category, type, provenance].filter(Boolean)) {
+      for (const value of [query, category].filter(Boolean)) {
         const chip = document.createElement('span');
         chip.textContent = value;
         active.append(chip);
       }
     }
-    root?.classList.add('ready');
   }
 
-  setFromUrl();
-  render();
-  searchForm?.addEventListener('submit', (event) => event.preventDefault());
-  searchInput?.addEventListener('input', render);
-  typeFilter?.addEventListener('change', render);
-  provenanceFilter?.addEventListener('change', render);
-  sort?.addEventListener('change', render);
-  for (const button of scopeButtons) {
-    button.addEventListener('click', () => {
-      scope = button.dataset.scope ?? 'registry';
-      if (scope === 'registry') category = '';
-      setActiveButtons();
-      render();
-    });
+  async function render(options: { resetPage?: boolean } = {}) {
+    if (options.resetPage) rendered = pageSize;
+    const query = searchInput?.value.trim() ?? '';
+    const needsIndex =
+      Boolean(query) ||
+      Boolean(category) ||
+      (sort?.value && sort.value !== 'featured') ||
+      rendered > pageSize ||
+      index;
+
+    if (!needsIndex) {
+      if (count) count.textContent = count.dataset.total ?? '';
+      if (empty) empty.hidden = true;
+      if (moreButton) moreButton.hidden = false;
+      if (status) status.textContent = '';
+      return;
+    }
+
+    const data = await loadIndex();
+    if (data) paint(data);
   }
+
+  if (count) count.dataset.total = count.textContent ?? '';
+
+  setFromUrl();
+  void render({ resetPage: true });
+  searchForm?.addEventListener('submit', (event) => event.preventDefault());
+  searchInput?.addEventListener('input', () => void render({ resetPage: true }));
+  sort?.addEventListener('change', () => void render({ resetPage: true }));
   for (const button of categoryButtons) {
     button.addEventListener('click', () => {
       category = button.dataset.categoryFilter ?? '';
-      if (category) scope = 'ecosystem';
       setActiveButtons();
-      render();
+      void render({ resetPage: true });
     });
   }
+  moreButton?.addEventListener('click', async () => {
+    rendered += pageSize * 2;
+    const data = await loadIndex();
+    if (data) paint(data);
+  });
   for (const button of document.querySelectorAll<HTMLButtonElement>('[data-clear-filters]')) {
     button.addEventListener('click', () => {
       if (searchInput) searchInput.value = '';
-      if (typeFilter) typeFilter.value = '';
-      if (provenanceFilter) provenanceFilter.value = '';
       if (sort) sort.value = 'featured';
-      scope = 'registry';
       category = '';
       setActiveButtons();
-      render();
+      void render({ resetPage: true });
       searchInput?.focus();
     });
   }
@@ -406,19 +405,6 @@ const structuredData = [
       searchInput?.focus();
     }
   });
-
-  for (const element of document.querySelectorAll<HTMLElement>('[data-install-count]')) {
-    const slug = element.dataset.installCount;
-    if (!slug) continue;
-    fetch(`/api/plugins/${encodeURIComponent(slug)}/stats`)
-      .then((response) =>
-        response.ok ? response.json() : Promise.reject(new Error('stats unavailable')),
-      )
-      .then((data: { total?: number }) => {
-        element.textContent = new Intl.NumberFormat().format(data.total ?? 0);
-      })
-      .catch(() => undefined);
-  }
 </script>
 
 <style>
@@ -451,11 +437,20 @@ const structuredData = [
     text-transform: uppercase;
   }
 
-  .catalog-masthead p:last-child {
+  .catalog-masthead p:not(.concepts-link) {
     color: #c4d0de;
     line-height: 1.6;
     margin: 1.1rem 0 0;
     max-width: 780px;
+  }
+
+  .concepts-link {
+    margin: 1.2rem 0 0;
+  }
+
+  .concepts-link a {
+    color: var(--color-blue-300);
+    font-size: 0.86rem;
   }
 
   .catalog-shell {
@@ -473,7 +468,6 @@ const structuredData = [
 
   .catalog-search {
     align-items: center;
-    border-bottom: 1px solid var(--color-rule);
     color: var(--color-text-faint);
     display: grid;
     gap: 0.75rem;
@@ -512,68 +506,18 @@ const structuredData = [
     font-family: var(--font-mono);
   }
 
-  .control-row {
-    align-items: stretch;
+  .results-toolbar {
+    align-items: end;
     display: flex;
-    gap: 1rem;
-    justify-content: space-between;
-    padding: 0.8rem 1rem;
+    justify-content: flex-end;
+    padding: 1.6rem 0 1rem;
   }
 
-  .scope-switch {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem;
-  }
-
-  .scope-switch button,
-  .use-case-filters button {
-    background: transparent;
-    border: 1px solid var(--color-rule);
-    color: var(--color-text-muted);
-    cursor: pointer;
-  }
-
-  .scope-switch button {
-    align-items: flex-start;
-    border-radius: 7px;
-    display: flex;
-    flex-direction: column;
-    min-height: 48px;
-    padding: 0.5rem 0.8rem;
-  }
-
-  .scope-switch button strong {
-    color: inherit;
-    font-size: 0.79rem;
-    font-weight: 580;
-  }
-
-  .scope-switch button small {
-    color: var(--color-text-faint);
-    font-size: 0.64rem;
-    margin-top: 0.12rem;
-  }
-
-  .scope-switch button.active,
-  .use-case-filters button.active {
-    background: var(--color-accent-soft);
-    border-color: color-mix(in srgb, var(--color-accent) 42%, var(--color-rule));
-    color: var(--color-accent);
-  }
-
-  .select-filters {
-    display: flex;
-    gap: 0.65rem;
-  }
-
-  .select-filters label,
   .results-toolbar label {
     display: grid;
     gap: 0.25rem;
   }
 
-  .select-filters label > span,
   .results-toolbar label > span {
     color: var(--color-text-faint);
     font-size: 0.62rem;
@@ -581,7 +525,6 @@ const structuredData = [
     text-transform: uppercase;
   }
 
-  .select-filters select,
   .results-toolbar select {
     background: var(--color-surface);
     border: 1px solid var(--color-rule);
@@ -609,36 +552,25 @@ const structuredData = [
   }
 
   .use-case-filters button {
+    background: transparent;
+    border: 1px solid var(--color-rule);
     border-radius: 999px;
+    color: var(--color-text-muted);
+    cursor: pointer;
     font-size: 0.74rem;
     min-height: 34px;
     padding: 0 0.75rem;
   }
 
+  .use-case-filters button.active {
+    background: var(--color-accent-soft);
+    border-color: color-mix(in srgb, var(--color-accent) 42%, var(--color-rule));
+    color: var(--color-accent);
+  }
+
   .use-case-filters button small {
     color: var(--color-text-faint);
     margin-left: 0.35rem;
-  }
-
-  .results-toolbar {
-    align-items: end;
-    display: flex;
-    gap: 2rem;
-    justify-content: space-between;
-    padding: 2.5rem 0 1.2rem;
-  }
-
-  .results-toolbar strong {
-    font-size: 1.2rem;
-    font-weight: 610;
-  }
-
-  .results-toolbar p {
-    color: var(--color-text-faint);
-    font-size: 0.75rem;
-    line-height: 1.5;
-    margin: 0.45rem 0 0;
-    max-width: 720px;
   }
 
   .active-filters {
@@ -664,12 +596,37 @@ const structuredData = [
 
   .catalog-grid {
     display: grid;
-    gap: 1rem;
+    gap: 0.85rem;
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .catalog-shell:not(.ready) .catalog-grid :global([data-origin='ecosystem']) {
-    display: none;
+  .catalog-foot {
+    align-items: center;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    padding: 1.8rem 0 0.5rem;
+  }
+
+  .catalog-foot button {
+    background: var(--color-surface);
+    border: 1px solid var(--color-rule);
+    border-radius: 7px;
+    color: var(--color-text);
+    cursor: pointer;
+    min-height: 42px;
+    padding: 0 1.1rem;
+  }
+
+  .catalog-foot button:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .catalog-foot span {
+    color: var(--color-text-faint);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
   }
 
   .empty-results {
@@ -708,11 +665,6 @@ const structuredData = [
     .catalog-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-
-    .control-row {
-      align-items: flex-start;
-      flex-direction: column;
-    }
   }
 
   @media (max-width: 720px) {
@@ -730,27 +682,8 @@ const structuredData = [
       padding: 0 0 0.2rem 2rem;
     }
 
-    .scope-switch,
-    .select-filters {
-      width: 100%;
-    }
-
-    .scope-switch button {
-      flex: 1 1 130px;
-    }
-
-    .select-filters {
-      flex-direction: column;
-    }
-
-    .select-filters select {
-      width: 100%;
-    }
-
     .results-toolbar {
       align-items: stretch;
-      flex-direction: column;
-      gap: 1rem;
     }
 
     .results-toolbar select {
@@ -763,15 +696,9 @@ const structuredData = [
   }
 
   @media (max-width: 500px) {
-    .control-row,
     .catalog-search {
       padding-left: 0.75rem;
       padding-right: 0.75rem;
-    }
-
-    .scope-switch {
-      display: grid;
-      grid-template-columns: 1fr;
     }
   }
 </style>

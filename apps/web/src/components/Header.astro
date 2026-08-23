@@ -14,6 +14,7 @@ const t = copy[locale];
 const alternate = path.replace(`/${locale}`, `/${otherLocale(locale)}`);
 const pluginsActive = path.startsWith(`/${locale}/plugins`);
 const submitActive = path.startsWith(`/${locale}/submit`);
+const guideActive = path.startsWith(`/${locale}/guide`);
 ---
 
 <header class="site-header">
@@ -49,7 +50,11 @@ const submitActive = path.startsWith(`/${locale}/submit`);
         href={`/${locale}/submit/`}
         aria-current={submitActive ? 'page' : undefined}>{t.submit}</a
       >
-      <a href="/develop-plugin.md">{t.documentation}</a>
+      <a
+        class:list={{ 'nav-primary': guideActive }}
+        href={`/${locale}/guide/`}
+        aria-current={guideActive ? 'page' : undefined}>{t.guide}</a
+      >
       <a class="language-link" href={alternate} hreflang={otherLocale(locale)}>{t.language}</a>
       <a
         class="icon-link"
