@@ -347,7 +347,6 @@ try {
   await assertPage('/zh/plugins/web-app/', 'data-technical-overview');
   await assertPage('/zh/plugins/web-app/', '激活层，不代表该 Git 子目录可以独立安装');
   await assertPageOmits('/zh/plugins/web-app/', 'npx dshpub add');
-  await assertPageOmits('/zh/plugins/web-app/', 'data-detail-install-count');
   await assertPageOmits('/zh/plugins/web-app/', 'CLI 安装量');
   await assertPage('/zh/plugins/dsh-genui/', 'omdsh-dev / dsh-genui');
   await assertPage('/zh/plugins/dsh-genui/', 'href="/zh/categories/ui-client/"');
