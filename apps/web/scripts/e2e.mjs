@@ -341,11 +341,14 @@ try {
   await assertPage('/en/plugins/', 'data-provenance="community-reviewed"');
   await assertStylesContain('/en/plugins/', '[hidden]{display:none}');
   await assertPage('/zh/plugins/client-ui-trajectory/', 'dsh-client-ui-trajectory');
-  await assertPage('/zh/plugins/web-app/', '内置 Profile 层');
+  await assertPage('/zh/plugins/web-app/', '随 Profile 使用，无需单独安装');
+  await assertPage('/zh/plugins/web-app/', 'BUILT-IN / PROFILE LAYER');
   await assertPage('/zh/plugins/web-app/', '<code>cordis.patch.yml</code>');
   await assertPage('/zh/plugins/web-app/', 'data-technical-overview');
-  await assertPage('/zh/plugins/web-app/', '不适用 CLI 安装量');
+  await assertPage('/zh/plugins/web-app/', '激活层，不代表该 Git 子目录可以独立安装');
   await assertPageOmits('/zh/plugins/web-app/', 'npx dshpub add');
+  await assertPageOmits('/zh/plugins/web-app/', 'data-detail-install-count');
+  await assertPageOmits('/zh/plugins/web-app/', 'CLI 安装量');
   await assertPage('/zh/plugins/dsh-genui/', 'omdsh-dev / dsh-genui');
   await assertPage('/zh/plugins/dsh-genui/', 'href="/zh/categories/ui-client/"');
   await assertPage(
