@@ -23,9 +23,6 @@ const ecosystemCatalog = JSON.parse(
 const marketplaceCount =
   sourceCatalog.entries.filter((entry) => entry.type === 'plugin' || entry.type === 'bundle')
     .length + communityCatalog.entries.length;
-const reviewedCommunityCount = communityCatalog.entries.filter(
-  (entry) => entry.provenance?.status === 'community-reviewed',
-).length;
 const host = '127.0.0.1';
 let origin = `http://${host}`;
 
@@ -337,8 +334,9 @@ try {
   await assertPage('/zh/', 'src="/brand/dshbot.png"');
   await assertPageOmits('/zh/', '目录源码');
   await assertPage('/en/plugins/', 'Browse plugins');
-  await assertPage('/en/plugins/?provenance=community-reviewed', 'Community · source reviewed');
+  await assertPage('/en/plugins/', 'Community · source reviewed');
   await assertPage('/en/plugins/', 'data-provenance="community-reviewed"');
+  await assertPage('/en/plugins/', 'data-category-filter');
   await assertStylesContain('/en/plugins/', '[hidden]{display:none}');
   await assertPage('/zh/plugins/client-ui-trajectory/', 'dsh-client-ui-trajectory');
   await assertPage('/zh/plugins/web-app/', '随 Profile 使用，无需单独安装');
@@ -418,35 +416,37 @@ try {
       );
     }
 
-    await page.goto(`${origin}/en/plugins/?provenance=community-reviewed`);
-    await page.waitForFunction(
-      (expected) =>
-        globalThis.document.querySelector('[data-result-count]')?.textContent?.trim() ===
-        String(expected),
-      reviewedCommunityCount,
-    );
+    await page.goto(`${origin}/en/plugins/`);
+    const categoryFilter = page.locator('[data-category-filter="Web UI"]');
+    await categoryFilter.waitFor();
+    await categoryFilter.click();
+    await page.waitForFunction(() => {
+      const active = globalThis.document.querySelector('[data-category-filter].active');
+      const count = Number(
+        globalThis.document.querySelector('[data-result-count]')?.textContent?.trim() ?? '',
+      );
+      return active?.getAttribute('data-category-filter') === 'Web UI' && count > 0;
+    });
     const browserState = await page.evaluate(() => {
-      const rows = [...globalThis.document.querySelectorAll('[data-plugin-row]')];
-      const visibleRows = rows.filter((row) => !row.hasAttribute('hidden'));
+      const items = [...globalThis.document.querySelectorAll('[data-catalog-item]')];
       return {
-        provenance: globalThis.document.querySelector('[data-provenance-filter]')?.value,
-        count: globalThis.document.querySelector('[data-result-count]')?.textContent?.trim(),
-        visible: visibleRows.length,
-        visibleAreCommunity: visibleRows.every(
-          (row) => row.getAttribute('data-provenance') === 'community-reviewed',
+        category: globalThis.document
+          .querySelector('[data-category-filter].active')
+          ?.getAttribute('data-category-filter'),
+        count: Number(
+          globalThis.document.querySelector('[data-result-count]')?.textContent?.trim() ?? '',
         ),
-        builtInsHidden: rows
-          .filter((row) => row.getAttribute('data-provenance') === 'built-in')
-          .every((row) => row.hasAttribute('hidden')),
+        visible: items.length,
+        allMatchCategory: items.every((item) => item.getAttribute('data-category') === 'Web UI'),
+        search: globalThis.location.search,
       };
     });
     if (
-      browserState.provenance !== 'community-reviewed' ||
-      browserState.count !== String(reviewedCommunityCount) ||
-      browserState.visible !== reviewedCommunityCount ||
-      !browserState.visibleAreCommunity ||
-      !browserState.builtInsHidden ||
-      !page.url().endsWith('/en/plugins/?provenance=community-reviewed')
+      browserState.category !== 'Web UI' ||
+      browserState.count < 1 ||
+      browserState.visible < 1 ||
+      !browserState.allMatchCategory ||
+      !browserState.search.includes('category=Web')
     ) {
       throw new Error(`Browser catalog filter failed: ${JSON.stringify(browserState)}`);
     }
@@ -460,7 +460,7 @@ try {
         inlineCode: details.querySelector('code')?.textContent,
         literalBackticks: details.textContent?.includes('`cordis.patch.yml`'),
         installMetric: Boolean(globalThis.document.querySelector('[data-detail-install-count]')),
-        builtInDistribution: Boolean(globalThis.document.querySelector('.distribution-panel')),
+        builtInDistribution: Boolean(globalThis.document.querySelector('.included-panel')),
       };
     });
     if (
