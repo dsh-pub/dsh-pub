@@ -419,14 +419,18 @@ try {
     await page.goto(`${origin}/en/plugins/`);
     const categoryFilter = page.locator('[data-category-filter="Web UI"]');
     await categoryFilter.waitFor();
+    const unfilteredCount = await page.locator('[data-result-count]').innerText();
     await categoryFilter.click();
-    await page.waitForFunction(() => {
+    await page.waitForFunction((baseline) => {
       const active = globalThis.document.querySelector('[data-category-filter].active');
-      const count = Number(
-        globalThis.document.querySelector('[data-result-count]')?.textContent?.trim() ?? '',
+      const count = globalThis.document.querySelector('[data-result-count]')?.textContent?.trim();
+      return (
+        active?.getAttribute('data-category-filter') === 'Web UI' &&
+        globalThis.location.search.includes('category=') &&
+        Boolean(count) &&
+        count !== baseline
       );
-      return active?.getAttribute('data-category-filter') === 'Web UI' && count > 0;
-    });
+    }, unfilteredCount.trim());
     const browserState = await page.evaluate(() => {
       const items = [...globalThis.document.querySelectorAll('[data-catalog-item]')];
       return {
