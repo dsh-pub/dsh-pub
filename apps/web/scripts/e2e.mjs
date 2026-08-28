@@ -26,13 +26,33 @@ const marketplaceCount =
 const host = '127.0.0.1';
 let origin = `http://${host}`;
 
-const build = spawnSync('npm', ['run', 'build'], {
-  cwd: appRoot,
-  encoding: 'utf8',
-  env: { ...process.env, PUBLIC_GA_MEASUREMENT_ID: 'G-TEST123456' },
-  stdio: 'inherit',
-});
-if (build.status !== 0) process.exit(build.status ?? 1);
+async function distReady() {
+  try {
+    await stat(join(distRoot, 'en/index.html'));
+    await stat(join(distRoot, 'zh/plugins/web-app/index.html'));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+if (process.env.E2E_SKIP_BUILD === '1') {
+  if (!(await distReady())) {
+    console.error(
+      'E2E_SKIP_BUILD is set, but apps/web/dist is missing required pages. Run `npm run build -w @dsh-pub/web` first.',
+    );
+    process.exit(1);
+  }
+  console.log('Skipping web build: reusing existing apps/web/dist');
+} else {
+  const build = spawnSync('npm', ['run', 'build'], {
+    cwd: appRoot,
+    encoding: 'utf8',
+    env: { ...process.env, PUBLIC_GA_MEASUREMENT_ID: 'G-TEST123456' },
+    stdio: 'inherit',
+  });
+  if (build.status !== 0) process.exit(build.status ?? 1);
+}
 
 const contentTypes = {
   '.css': 'text/css; charset=utf-8',
