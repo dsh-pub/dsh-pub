@@ -37,8 +37,16 @@ jobs:
       - name: Run unit tests
         run: npm run test
 
+      - name: Build deployable web app
+        run: npm run build -w @dsh-pub/web
+        env:
+          PUBLIC_GA_MEASUREMENT_ID: G-TEST123456
+
       - name: Run integration tests
         run: npm run e2e
+        env:
+          E2E_SKIP_BUILD: '1'
+          PUBLIC_GA_MEASUREMENT_ID: G-TEST123456
 
       - name: Upload E2E evidence
         if: ${{ always() }}
