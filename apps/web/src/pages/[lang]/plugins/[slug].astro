@@ -407,7 +407,14 @@ const structuredData = [
     background: var(--color-surface);
     border-bottom: 1px solid var(--color-rule);
     color: var(--color-text);
+    max-width: 100%;
+    overflow-x: clip;
     padding: 2.8rem 0 3.2rem;
+  }
+
+  .package-identity {
+    max-width: 100%;
+    min-width: 0;
   }
 
   .masthead-inner {
@@ -535,7 +542,15 @@ const structuredData = [
     display: grid;
     gap: 1.5rem;
     grid-template-columns: minmax(0, 1fr) 310px;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: clip;
     padding-top: 2.7rem;
+  }
+
+  .package-content {
+    max-width: 100%;
+    min-width: 0;
   }
 
   .content-section {
@@ -791,6 +806,8 @@ const structuredData = [
     color: var(--color-text-muted);
     font-size: 0.96rem;
     line-height: 1.72;
+    max-width: 100%;
+    min-width: 0;
     overflow-wrap: anywhere;
   }
 
@@ -820,8 +837,14 @@ const structuredData = [
     border-radius: var(--radius-medium);
     color: #e7f1fc;
     line-height: 1.55;
+    max-width: 100%;
     overflow-x: auto;
     padding: 1rem 1.1rem;
+  }
+
+  .readme-content :global(pre code) {
+    display: block;
+    max-width: 100%;
   }
 
   .readme-content :global(:not(pre) > code) {
@@ -834,17 +857,29 @@ const structuredData = [
   }
 
   .readme-content :global(table) {
+    -webkit-overflow-scrolling: touch;
     border-collapse: collapse;
     display: block;
+    max-width: 100%;
     overflow-x: auto;
     width: 100%;
+  }
+
+  .readme-content :global(table thead),
+  .readme-content :global(table tbody),
+  .readme-content :global(table tr) {
+    display: table;
+    min-width: 100%;
+    width: max-content;
   }
 
   .readme-content :global(th),
   .readme-content :global(td) {
     border: 1px solid var(--color-rule);
+    min-width: 6.5rem;
     padding: 0.5rem 0.65rem;
     text-align: left;
+    vertical-align: top;
   }
 
   .readme-content :global(img) {
@@ -1036,24 +1071,78 @@ const structuredData = [
       grid-template-columns: 1fr;
     }
 
+    .masthead-aside {
+      width: 100%;
+    }
+
+    .masthead-source {
+      justify-self: stretch;
+      width: 100%;
+    }
+
     .package-sidebar {
       display: grid;
       gap: 0 2rem;
       grid-template-columns: repeat(2, 1fr);
+      max-width: 100%;
+      min-width: 0;
       position: static;
     }
   }
 
   @media (max-width: 600px) {
     .package-masthead {
-      padding: 2.2rem 0 2rem;
+      padding: 1.75rem 0 1.6rem;
+    }
+
+    .package-layout {
+      padding-top: 1.5rem;
+    }
+
+    .content-section {
+      padding: 1.15rem 1rem 1.25rem;
+    }
+
+    .content-section h2 {
+      font-size: 1.45rem;
+    }
+
+    .readme-content {
+      font-size: 1rem;
+      line-height: 1.75;
+    }
+
+    .readme-content :global(pre) {
+      font-size: 0.84rem;
+      padding: 0.85rem 0.9rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .readme-content :global(pre code) {
+      white-space: pre-wrap;
+      word-break: break-word;
     }
 
     .tabs-inner {
-      gap: 1.5rem;
+      gap: 1.25rem;
+      min-height: 52px;
+    }
+
+    .tabs-inner a {
+      font-size: 0.84rem;
+    }
+
+    .package-title h1 {
+      font-size: clamp(1.55rem, 8vw, 2rem);
+    }
+
+    .package-meta {
+      font-size: 0.76rem;
     }
 
     .package-sidebar {
+      gap: 0.75rem;
       grid-template-columns: 1fr;
     }
 
@@ -1061,8 +1150,28 @@ const structuredData = [
       padding-top: 1.25rem;
     }
 
+    .capability-table {
+      display: block;
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .capability-table thead,
+    .capability-table tbody,
+    .capability-table tr {
+      display: table;
+      min-width: 100%;
+      width: max-content;
+    }
+
     .capability-table tbody th {
-      width: 5.5rem;
+      min-width: 5.5rem;
+      width: auto;
+    }
+
+    .capability-table td {
+      min-width: 10rem;
     }
   }
 </style>
