@@ -16,7 +16,13 @@ const host = '127.0.0.1';
 const build = spawnSync('npm', ['run', 'build'], {
   cwd: appRoot,
   encoding: 'utf8',
-  env: { ...process.env, PUBLIC_GA_MEASUREMENT_ID: '' },
+  env: {
+    ...process.env,
+    PUBLIC_GA_MEASUREMENT_ID: '',
+    PUBLIC_ADSENSE_CLIENT_ID: '',
+    PUBLIC_ADSENSE_SLOT_DETAIL: '',
+    PUBLIC_ADSENSE_SLOT_CATALOG: '',
+  },
   stdio: 'inherit',
 });
 if (build.status !== 0) process.exit(build.status ?? 1);

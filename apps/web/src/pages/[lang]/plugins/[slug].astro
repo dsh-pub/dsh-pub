@@ -3,6 +3,7 @@ import { marked } from 'marked';
 import sanitizeHtml from 'sanitize-html';
 
 import CopyCommand from '../../../components/CopyCommand.astro';
+import AdSlot from '../../../components/AdSlot.astro';
 import Icon from '../../../components/Icon.astro';
 import {
   displayName,
@@ -18,6 +19,7 @@ import {
 import { marketplaceEntries } from '../../../lib/catalog.js';
 import { categoryLabel, typeLabel } from '../../../lib/categories.js';
 import { buildCapabilityTableRows } from '../../../lib/contribution-display.js';
+import { normalizeAdSenseSlotId } from '../../../lib/adsense.js';
 import { copy, locales, type Locale } from '../../../lib/i18n.js';
 import { loadReadmeHtml, readmeContentUrl } from '../../../lib/readme.js';
 import { localizedTopic, topicForEntry } from '../../../lib/topics.js';
@@ -39,6 +41,7 @@ interface Props {
 
 const { entry, locale } = Astro.props;
 const t = copy[locale];
+const detailSlot = normalizeAdSenseSlotId(import.meta.env.PUBLIC_ADSENSE_SLOT_DETAIL);
 const description = localized(entry.description, locale);
 const rawDescription = await marked.parseInline(description, { gfm: true });
 const descriptionHtml = sanitizeHtml(rawDescription, {
@@ -377,6 +380,8 @@ const structuredData = [
           </section>
         )
       }
+
+      {detailSlot && <AdSlot locale={locale} unit={detailSlot} class="detail-ad" />}
     </aside>
   </div>
 </BaseLayout>
