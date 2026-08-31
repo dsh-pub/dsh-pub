@@ -1,8 +1,5 @@
 ---
-import {
-  normalizeAdSenseClientId,
-  normalizeAdSenseSlotId,
-} from '../lib/adsense.js';
+import { normalizeAdSenseClientId, normalizeAdSenseSlotId } from '../lib/adsense.js';
 import { copy, type Locale } from '../lib/i18n.js';
 
 interface Props {
@@ -31,9 +28,7 @@ const t = copy[locale];
         data-ad-format={format}
         data-full-width-responsive="true"
       />
-      <script is:inline>
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
+      <script is:inline>(window.adsbygoogle = window.adsbygoogle || []).push({});</script>
     </aside>
   )
 }
