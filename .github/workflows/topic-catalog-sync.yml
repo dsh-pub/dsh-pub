@@ -57,6 +57,8 @@ jobs:
 
       - name: Build deployable workspace
         run: npm run build
+        env:
+          PUBLIC_GA_MEASUREMENT_ID: G-TEST123456
 
       - name: Create catalog push token
         id: catalog-app-token
@@ -105,3 +107,6 @@ jobs:
 
       - name: Run integration tests
         run: npm run e2e
+        env:
+          E2E_SKIP_BUILD: '1'
+          PUBLIC_GA_MEASUREMENT_ID: G-TEST123456
