@@ -1,5 +1,6 @@
 name: Topic catalog sync
 
+# Manual re-run: GitHub Actions → Topic catalog sync → Run workflow.
 on:
   push:
     branches:
