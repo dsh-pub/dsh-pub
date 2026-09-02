@@ -48,7 +48,13 @@ if (process.env.E2E_SKIP_BUILD === '1') {
   const build = spawnSync('npm', ['run', 'build'], {
     cwd: appRoot,
     encoding: 'utf8',
-    env: { ...process.env, PUBLIC_GA_MEASUREMENT_ID: 'G-TEST123456' },
+    env: {
+      ...process.env,
+      PUBLIC_GA_MEASUREMENT_ID: 'G-TEST123456',
+      PUBLIC_ADSENSE_CLIENT_ID: 'ca-pub-7584943302476161',
+      PUBLIC_ADSENSE_SLOT_DETAIL: '1234567890',
+      PUBLIC_ADSENSE_SLOT_CATALOG: '0987654321',
+    },
     stdio: 'inherit',
   });
   if (build.status !== 0) process.exit(build.status ?? 1);
@@ -200,9 +206,22 @@ async function assertSeoSurface() {
     !homepage.includes('"name":"如何安装 DSH 插件？"') ||
     !homepage.includes('id="faq-title"') ||
     !homepage.includes('DeepSeek Harness 插件常见问题</h2>') ||
-    !homepage.includes('googletagmanager.com/gtag/js?id=G-TEST123456')
+    !homepage.includes('googletagmanager.com/gtag/js?id=G-TEST123456') ||
+    !homepage.includes('name="google-adsense-account"') ||
+    !homepage.includes('content="ca-pub-7584943302476161"') ||
+    !homepage.includes(
+      'pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7584943302476161',
+    ) ||
+    !homepage.includes('页面可能展示 Google 广告')
   ) {
-    throw new Error('The localized homepage SEO or conditional Analytics tag is incomplete.');
+    throw new Error(
+      'The localized homepage SEO, Analytics, or AdSense account tags are incomplete.',
+    );
+  }
+
+  const adsTxt = await responseBody('/ads.txt');
+  if (!adsTxt.includes('google.com, pub-7584943302476161, DIRECT, f08c47fec0942fa0')) {
+    throw new Error(`ads.txt is missing the AdSense publisher line: ${JSON.stringify(adsTxt)}`);
   }
 
   const englishHomepage = await responseBody('/en/');
@@ -366,6 +385,10 @@ try {
   await assertPage('/zh/plugins/web-app/', '激活层，不代表该 Git 子目录可以独立安装');
   await assertPageOmits('/zh/plugins/web-app/', 'npx dshpub add');
   await assertPageOmits('/zh/plugins/web-app/', 'CLI 安装量');
+  await assertPage('/zh/plugins/web-app/', 'data-ad-slot="1234567890"');
+  await assertPage('/en/plugins/', 'data-ad-slot="0987654321"');
+  await assertPageOmits('/en/submit/', 'data-ad-slot=');
+  await assertPageOmits('/zh/submit/', 'class="adsbygoogle"');
   await assertPage('/zh/plugins/dsh-genui/', 'omdsh-dev / dsh-genui');
   await assertPage('/zh/plugins/dsh-genui/', 'href="/zh/categories/ui-client/"');
   await assertPage(

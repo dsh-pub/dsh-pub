@@ -50,6 +50,22 @@ To enable Google Analytics in a production build, provide the public GA4 Measure
 PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX npm run build
 ```
 
+To enable Google AdSense account tags and optional manual units:
+
+```bash
+PUBLIC_ADSENSE_CLIENT_ID=ca-pub-XXXXXXXXXXXXXXXX \
+PUBLIC_ADSENSE_SLOT_DETAIL=1234567890 \
+PUBLIC_ADSENSE_SLOT_CATALOG=0987654321 \
+npm run build
+```
+
+When `PUBLIC_ADSENSE_CLIENT_ID` is set, every page emits the AdSense account meta tag and loads
+`adsbygoogle.js`. Manual units render only when the matching slot env var is set: detail pages use
+`PUBLIC_ADSENSE_SLOT_DETAIL`, and the catalog uses `PUBLIC_ADSENSE_SLOT_CATALOG`. The submission
+flow never hosts an ad unit. `apps/web/public/ads.txt` must stay aligned with the publisher ID.
+Auto ads can be turned on later in the AdSense console once the site is approved; prefer the
+manual slots above so discovery pages keep a restrained layout.
+
 The build emits a bilingual sitemap index at `/sitemap-index.xml`, crawler policy at
 `/robots.txt`, and canonical, hreflang, Open Graph, Twitter Card, and JSON-LD metadata on every
 indexable page.

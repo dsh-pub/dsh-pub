@@ -1,11 +1,13 @@
 ---
 import CatalogCard from '../../../components/CatalogCard.astro';
+import AdSlot from '../../../components/AdSlot.astro';
 import Icon from '../../../components/Icon.astro';
 import { catalogCard, catalogListItems, initialCatalogCount } from '../../../lib/catalog-list.js';
 import { displayName } from '../../../lib/catalog-types.js';
 import { marketplaceEntries } from '../../../lib/catalog.js';
 import { ecosystemCategories, ecosystemEntries } from '../../../lib/ecosystem.js';
 import { copy, isLocale, locales } from '../../../lib/i18n.js';
+import { normalizeAdSenseSlotId } from '../../../lib/adsense.js';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 
 export function getStaticPaths() {
@@ -15,6 +17,7 @@ export function getStaticPaths() {
 const locale = Astro.params.lang;
 if (!isLocale(locale)) throw new Error(`Unsupported locale: ${locale}`);
 const t = copy[locale];
+const catalogSlot = normalizeAdSenseSlotId(import.meta.env.PUBLIC_ADSENSE_SLOT_CATALOG);
 const catalogCount = catalogListItems.length;
 const starsByRepository = new Map(
   ecosystemEntries.map((entry) => [entry.sourceRepository.toLocaleLowerCase(), entry.stars]),
@@ -170,6 +173,8 @@ const structuredData = [
       </button>
       <span data-catalog-status aria-live="polite"></span>
     </div>
+
+    {catalogSlot && <AdSlot locale={locale} unit={catalogSlot} class="catalog-ad" />}
 
     <div class="empty-results" data-empty hidden>
       <span aria-hidden="true">0×00</span>

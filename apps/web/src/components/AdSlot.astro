@@ -1,0 +1,55 @@
+---
+import { normalizeAdSenseClientId, normalizeAdSenseSlotId } from '../lib/adsense.js';
+import { copy, type Locale } from '../lib/i18n.js';
+
+interface Props {
+  locale: Locale;
+  unit: string;
+  format?: 'auto' | 'rectangle' | 'horizontal' | 'vertical';
+  class?: string;
+}
+
+const { locale, unit: rawUnit, format = 'auto', class: className } = Astro.props;
+const client = normalizeAdSenseClientId(import.meta.env.PUBLIC_ADSENSE_CLIENT_ID);
+const unit = normalizeAdSenseSlotId(rawUnit);
+const enabled = Boolean(client && unit);
+const t = copy[locale];
+---
+
+{
+  enabled && (
+    <aside class:list={['ad-slot', className]} aria-label={t.adLabel} data-ad-slot={unit}>
+      <p class="ad-slot-label">{t.adLabel}</p>
+      <ins
+        class="adsbygoogle"
+        style="display:block"
+        data-ad-client={client}
+        data-ad-slot={unit}
+        data-ad-format={format}
+        data-full-width-responsive="true"
+      />
+      <script is:inline>(window.adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </aside>
+  )
+}
+
+<style>
+  .ad-slot {
+    margin-block: 1rem 0;
+    padding-block-start: 0.75rem;
+    border-block-start: 1px solid var(--border-subtle, #d7dde6);
+  }
+
+  .ad-slot-label {
+    margin: 0 0 0.5rem;
+    color: var(--text-muted, #667488);
+    font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .ad-slot :global(ins.adsbygoogle) {
+    min-height: 90px;
+  }
+</style>

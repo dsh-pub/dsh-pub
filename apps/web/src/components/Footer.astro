@@ -1,4 +1,5 @@
 ---
+import { normalizeAdSenseClientId } from '../lib/adsense.js';
 import { copy, type Locale } from '../lib/i18n.js';
 import Logo from './Logo.astro';
 
@@ -8,6 +9,7 @@ interface Props {
 
 const { locale } = Astro.props;
 const t = copy[locale];
+const adsenseEnabled = Boolean(normalizeAdSenseClientId(import.meta.env.PUBLIC_ADSENSE_CLIENT_ID));
 ---
 
 <footer class="site-footer">
@@ -15,6 +17,16 @@ const t = copy[locale];
     <div>
       <Logo />
       <p>{t.footerLine}</p>
+      {
+        adsenseEnabled && (
+          <p class="ads-disclosure">
+            {t.adsDisclosure}{' '}
+            <a href="https://policies.google.com/technologies/ads" rel="noopener noreferrer">
+              {t.adsPrivacy}
+            </a>
+          </p>
+        )
+      }
     </div>
     <nav aria-label={t.footerNavigation}>
       <a href={`/${locale}/plugins/`}>{t.plugins}</a>
@@ -24,3 +36,18 @@ const t = copy[locale];
     </nav>
   </div>
 </footer>
+
+<style>
+  .ads-disclosure {
+    margin-block-start: 0.75rem;
+    color: var(--text-muted, #667488);
+    font-size: 0.85rem;
+    line-height: 1.45;
+  }
+
+  .ads-disclosure a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 0.12em;
+  }
+</style>

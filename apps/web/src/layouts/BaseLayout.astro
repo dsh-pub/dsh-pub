@@ -1,6 +1,7 @@
 ---
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
+import { normalizeAdSenseClientId } from '../lib/adsense.js';
 import { copy, otherLocale, type Locale } from '../lib/i18n.js';
 import '../styles/global.css';
 
@@ -42,6 +43,8 @@ const analyticsEnabled = Boolean(gaMeasurementId && /^G-[A-Z0-9]+$/.test(gaMeasu
 const analyticsConfig = analyticsEnabled
   ? `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config',${JSON.stringify(gaMeasurementId)});`
   : '';
+const adsenseClientId = normalizeAdSenseClientId(import.meta.env.PUBLIC_ADSENSE_CLIENT_ID);
+const adsenseEnabled = Boolean(adsenseClientId);
 ---
 
 <!doctype html>
@@ -100,6 +103,19 @@ const analyticsConfig = analyticsEnabled
             src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}
           />
           <script is:inline set:html={analyticsConfig} />
+        </>
+      )
+    }
+    {
+      adsenseEnabled && (
+        <>
+          <meta name="google-adsense-account" content={adsenseClientId} />
+          <script
+            is:inline
+            async
+            crossorigin="anonymous"
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClientId}`}
+          />
         </>
       )
     }
