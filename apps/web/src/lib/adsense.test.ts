@@ -9,11 +9,11 @@ import {
 
 describe('adsense helpers', () => {
   it('accepts a ca-pub client id and rejects malformed values', () => {
-    expect(normalizeAdSenseClientId('ca-pub-6970014519897262')).toBe('ca-pub-6970014519897262');
-    expect(normalizeAdSenseClientId('  ca-pub-6970014519897262  ')).toBe('ca-pub-6970014519897262');
-    expect(isAdSenseClientId('ca-pub-6970014519897262')).toBe(true);
+    expect(normalizeAdSenseClientId('ca-pub-7584943302476161')).toBe('ca-pub-7584943302476161');
+    expect(normalizeAdSenseClientId('  ca-pub-7584943302476161  ')).toBe('ca-pub-7584943302476161');
+    expect(isAdSenseClientId('ca-pub-7584943302476161')).toBe(true);
     expect(normalizeAdSenseClientId('G-NCRVRTNZEX')).toBeUndefined();
-    expect(normalizeAdSenseClientId('pub-6970014519897262')).toBeUndefined();
+    expect(normalizeAdSenseClientId('pub-7584943302476161')).toBeUndefined();
     expect(normalizeAdSenseClientId('')).toBeUndefined();
     expect(isAdSenseClientId(undefined)).toBe(false);
   });
@@ -26,8 +26,8 @@ describe('adsense helpers', () => {
   });
 
   it('renders the canonical ads.txt line for a client id', () => {
-    expect(adsTxtBody('ca-pub-6970014519897262')).toBe(
-      'google.com, pub-6970014519897262, DIRECT, f08c47fec0942fa0\n',
+    expect(adsTxtBody('ca-pub-7584943302476161')).toBe(
+      'google.com, pub-7584943302476161, DIRECT, f08c47fec0942fa0\n',
     );
   });
 });

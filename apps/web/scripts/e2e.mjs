@@ -51,7 +51,7 @@ if (process.env.E2E_SKIP_BUILD === '1') {
     env: {
       ...process.env,
       PUBLIC_GA_MEASUREMENT_ID: 'G-TEST123456',
-      PUBLIC_ADSENSE_CLIENT_ID: 'ca-pub-6970014519897262',
+      PUBLIC_ADSENSE_CLIENT_ID: 'ca-pub-7584943302476161',
       PUBLIC_ADSENSE_SLOT_DETAIL: '1234567890',
       PUBLIC_ADSENSE_SLOT_CATALOG: '0987654321',
     },
@@ -208,9 +208,9 @@ async function assertSeoSurface() {
     !homepage.includes('DeepSeek Harness 插件常见问题</h2>') ||
     !homepage.includes('googletagmanager.com/gtag/js?id=G-TEST123456') ||
     !homepage.includes('name="google-adsense-account"') ||
-    !homepage.includes('content="ca-pub-6970014519897262"') ||
+    !homepage.includes('content="ca-pub-7584943302476161"') ||
     !homepage.includes(
-      'pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6970014519897262',
+      'pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7584943302476161',
     ) ||
     !homepage.includes('页面可能展示 Google 广告')
   ) {
@@ -220,7 +220,7 @@ async function assertSeoSurface() {
   }
 
   const adsTxt = await responseBody('/ads.txt');
-  if (!adsTxt.includes('google.com, pub-6970014519897262, DIRECT, f08c47fec0942fa0')) {
+  if (!adsTxt.includes('google.com, pub-7584943302476161, DIRECT, f08c47fec0942fa0')) {
     throw new Error(`ads.txt is missing the AdSense publisher line: ${JSON.stringify(adsTxt)}`);
   }
 
