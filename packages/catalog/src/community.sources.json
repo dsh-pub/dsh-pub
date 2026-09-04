@@ -88586,6 +88586,27 @@
       "readmePath": "README.md",
       "licensePath": "LICENSE",
       "automation": { "analyzedAt": "2026-09-04", "method": "automated-static-contract" }
+    },
+    {
+      "repository": "https://github.com/bbqisbbq/dsh-tiddlywiki",
+      "commit": "fbfd605800eab1d254c8029528070a72b1a1a722",
+      "directory": "",
+      "packageName": "dsh-tiddlywiki",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/bbqisbbq--dsh-tiddlywiki.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/83",
+        "submittedAt": "2026-09-04",
+        "category": "client-ui",
+        "description": {
+          "en": "TiddlyWiki 5 as the DSH persistent knowledge base: tiddlywiki_* agent tools (search with filters/recent/tags/batch/rename + git sync & conflict resolve), a full TiddlyWiki editor embedded in the GUI center column (same-origin proxy, works over Tailscale/LAN/domain), a quick-note card with draft auto-save & recent-notes picker behind a single knowledge FAB, and git-based sync with auto-commit. Mounts via the official dsh plugin system — no DSH source changes.",
+          "zh": ""
+        }
+      }
     }
   ]
 }

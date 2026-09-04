@@ -7,9 +7,9 @@
       "generatedAt": "2026-08-13T19:38:46+08:00"
     },
     "community": {
-      "repository": "https://github.com/topics/dsh-plugin",
-      "generatedAt": "2026-09-03T19:39:23.598Z",
-      "policy": "automated-pinned-source-contracts"
+      "repository": "https://github.com/dsh-pub/dsh-pub",
+      "generatedAt": "2026-09-04T10:10:29.000Z",
+      "policy": "pinned-source-contracts"
     }
   },
   "topics": [
@@ -148555,6 +148555,26 @@
       "repository": "https://github.com/zyfgood/dsh-feishu-bot",
       "directory": "",
       "commit": "4ad6e83ae18f386fe7b0f743bf35f3f426dcaea5"
+    },
+    {
+      "slug": "dsh-tiddlywiki",
+      "name": "dsh-tiddlywiki",
+      "description": {
+        "en": "TiddlyWiki 5 as the DSH persistent knowledge base: tiddlywiki_* agent tools (search with filters/recent/tags/batch/rename + git sync & conflict resolve), a full TiddlyWiki editor embedded in the GUI center column (same-origin proxy, works over Tailscale/LAN/domain), a quick-note card with draft auto-save & recent-notes picker behind a single knowledge FAB, and git-based sync with auto-commit. Mounts via the official dsh plugin system — no DSH source changes.",
+        "zh": "TiddlyWiki 5 as the DSH persistent knowledge base: tiddlywiki_* agent tools (search with filters/recent/tags/batch/rename + git sync & conflict resolve), a full TiddlyWiki editor embedded in the GUI center column (same-origin proxy, works over Tailscale/LAN/domain), a quick-note card with draft auto-save & recent-notes picker behind a single knowledge FAB, and git-based sync with auto-commit. Mounts via the official dsh plugin system — no DSH source changes."
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/bbqisbbq/dsh-tiddlywiki",
+      "directory": "",
+      "commit": "fbfd605800eab1d254c8029528070a72b1a1a722"
     }
   ]
 }
