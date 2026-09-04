@@ -265,6 +265,9 @@ async function assertSeoSurface() {
   if (relatedCount < 3 || relatedCount > 6) {
     throw new Error(`Expected 3–6 related plugin links, found ${relatedCount}.`);
   }
+  if (!detail.includes('data-related-plugin="dsh-at-file"')) {
+    throw new Error('Related plugins omitted the shared conversation.input.dock overlap.');
+  }
   if (
     /related-method[\s\S]{0,400}\b(similar|best|compatible)\b/i.test(detail) ||
     !detail.includes('/en/guide/#installable')

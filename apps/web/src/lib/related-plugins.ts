@@ -24,6 +24,7 @@ interface RelatedFeatures {
 }
 
 interface IndexedEntry {
+  builtIn: boolean;
   entry: CatalogEntry;
   installable: boolean;
   slots: Set<string>;
@@ -31,8 +32,11 @@ interface IndexedEntry {
 }
 
 interface RelatedIndex {
+  byBoundary: Map<string, IndexedEntry[]>;
   byCategory: Map<string, IndexedEntry[]>;
+  bySlot: Map<string, IndexedEntry[]>;
   bySource: Map<string, IndexedEntry[]>;
+  byTool: Map<string, IndexedEntry[]>;
   byTopic: Map<string, IndexedEntry[]>;
 }
 
@@ -43,6 +47,8 @@ const isBuiltIn = (entry: CatalogEntry) =>
   (entry.provenance?.status ?? (entry.builtIn ? 'built-in' : undefined)) === 'built-in';
 
 const sourceKey = (entry: CatalogEntry) => entry.source.repository.replace(/\.git$/i, '');
+
+const boundaryKey = (installable: boolean, builtIn: boolean) => `${installable}:${builtIn}`;
 
 const valueSet = (values: readonly string[]) =>
   new Set(values.map((value) => value.toLocaleLowerCase()));
@@ -61,6 +67,16 @@ const uiSlots = (entry: CatalogEntry) =>
     ...(entry.capabilities.uiContributions ?? []).map((item) => item.slot),
     ...(entry.capabilities.uiSlotsDeclared ?? []).map((item) => item.slot),
   ]);
+
+const sameBoundary = (
+  entry: RelatedFeatures | IndexedEntry,
+  candidate: RelatedFeatures | IndexedEntry,
+) => entry.installable === candidate.installable && entry.builtIn === candidate.builtIn;
+
+const overlapCount = (
+  left: Pick<IndexedEntry, 'slots' | 'tools'>,
+  right: Pick<IndexedEntry, 'slots' | 'tools'>,
+) => intersectionSize(left.tools, right.tools) + intersectionSize(left.slots, right.slots);
 
 const featuresFor = (entry: CatalogEntry): RelatedFeatures => {
   const cached = relatedFeatureCache.get(entry);
@@ -95,23 +111,30 @@ const indexCatalog = (catalog: readonly CatalogEntry[]): RelatedIndex => {
   const cached = relatedIndexCache.get(catalog);
   if (cached) return cached;
 
+  const byBoundary = new Map<string, IndexedEntry[]>();
   const byCategory = new Map<string, IndexedEntry[]>();
+  const bySlot = new Map<string, IndexedEntry[]>();
   const bySource = new Map<string, IndexedEntry[]>();
+  const byTool = new Map<string, IndexedEntry[]>();
   const byTopic = new Map<string, IndexedEntry[]>();
   for (const entry of catalog) {
     const item: IndexedEntry = {
+      builtIn: isBuiltIn(entry),
       entry,
       installable: entry.distribution.installable,
       slots: uiSlots(entry),
       tools: toolNames(entry),
     };
+    pushIndexed(byBoundary, boundaryKey(item.installable, item.builtIn), item);
     pushIndexed(byCategory, entry.category, item);
     pushIndexed(byTopic, topicForEntry(entry).id, item);
-    if (!isBuiltIn(entry)) pushIndexed(bySource, sourceKey(entry), item);
+    if (!item.builtIn) pushIndexed(bySource, sourceKey(entry), item);
+    for (const tool of item.tools) pushIndexed(byTool, tool, item);
+    for (const slot of item.slots) pushIndexed(bySlot, slot, item);
   }
 
-  const created = { byCategory, bySource, byTopic };
-  for (const buckets of [byCategory, bySource, byTopic]) {
+  const created = { byBoundary, byCategory, bySlot, bySource, byTool, byTopic };
+  for (const buckets of [byBoundary, byCategory, bySource, byTopic]) {
     for (const bucket of buckets.values()) {
       bucket.sort((left, right) => left.entry.slug.localeCompare(right.entry.slug));
     }
@@ -142,47 +165,57 @@ const takeUnique = (
   }
 };
 
+const overlappingEntries = (entry: CatalogEntry, origin: IndexedEntry, index: RelatedIndex) => {
+  const matches = new Map<string, IndexedEntry>();
+  const consider = (item: IndexedEntry) => {
+    if (item.entry.slug === entry.slug || !sameBoundary(origin, item)) return;
+    if (overlapCount(origin, item) > 0) matches.set(item.entry.slug, item);
+  };
+  for (const tool of origin.tools) {
+    for (const item of index.byTool.get(tool) ?? []) consider(item);
+  }
+  for (const slot of origin.slots) {
+    for (const item of index.bySlot.get(slot) ?? []) consider(item);
+  }
+  return [...matches.values()]
+    .sort((left, right) => {
+      const overlapDelta = overlapCount(origin, right) - overlapCount(origin, left);
+      return overlapDelta !== 0 ? overlapDelta : left.entry.slug.localeCompare(right.entry.slug);
+    })
+    .map((item) => item.entry);
+};
+
 const relatedPool = (entry: CatalogEntry, catalog: readonly CatalogEntry[]): CatalogEntry[] => {
   const index = indexCatalog(catalog);
-  const originTools = toolNames(entry);
-  const originSlots = uiSlots(entry);
-  const categoryPeers = index.byCategory.get(entry.category) ?? [];
-  const topicPeers = index.byTopic.get(topicForEntry(entry).id) ?? [];
+  const origin: IndexedEntry = {
+    builtIn: isBuiltIn(entry),
+    entry,
+    installable: entry.distribution.installable,
+    slots: uiSlots(entry),
+    tools: toolNames(entry),
+  };
+  const categoryPeers = (index.byCategory.get(entry.category) ?? []).filter((item) =>
+    sameBoundary(origin, item),
+  );
+  const topicPeers = (index.byTopic.get(topicForEntry(entry).id) ?? []).filter((item) =>
+    sameBoundary(origin, item),
+  );
+  const boundaryPeers = index.byBoundary.get(boundaryKey(origin.installable, origin.builtIn)) ?? [];
   const siblings = (index.bySource.get(sourceKey(entry)) ?? [])
     .map((item) => item.entry)
     .filter(
       (candidate) =>
         candidate.slug !== entry.slug && candidate.source.directory !== entry.source.directory,
     );
-  const overlapping: CatalogEntry[] = [];
-  if (originTools.size > 0 || originSlots.size > 0) {
-    for (const item of categoryPeers) {
-      if (overlapping.length >= RELATED_POOL_LIMIT) break;
-      if (item.entry.slug === entry.slug) continue;
-      if (
-        intersectionSize(originTools, item.tools) > 0 ||
-        intersectionSize(originSlots, item.slots) > 0
-      ) {
-        overlapping.push(item.entry);
-      }
-    }
-  }
-  const sameAvailabilityPeers = categoryPeers.filter(
-    (item) => item.entry.slug !== entry.slug && item.installable === entry.distribution.installable,
-  );
+  const overlapping = overlappingEntries(entry, origin, index);
 
   const selected: CatalogEntry[] = [];
   const seen = new Set<string>([entry.slug]);
-  takeUnique(selected, seen, siblings, RELATED_POOL_LIMIT);
   takeUnique(selected, seen, overlapping, RELATED_POOL_LIMIT);
-  takeUnique(
-    selected,
-    seen,
-    slugNeighbors(sameAvailabilityPeers, entry.slug, 24),
-    RELATED_POOL_LIMIT,
-  );
+  takeUnique(selected, seen, siblings, RELATED_POOL_LIMIT);
   takeUnique(selected, seen, slugNeighbors(categoryPeers, entry.slug, 16), RELATED_POOL_LIMIT);
   takeUnique(selected, seen, slugNeighbors(topicPeers, entry.slug, 16), RELATED_POOL_LIMIT);
+  takeUnique(selected, seen, slugNeighbors(boundaryPeers, entry.slug, 16), RELATED_POOL_LIMIT);
   return selected;
 };
 
@@ -202,13 +235,17 @@ const scoreFeatures = (entry: RelatedFeatures, candidate: RelatedFeatures): numb
   if (entry.category === candidate.category) score += 4;
   else if (entry.topicId === candidate.topicId) score += 2;
 
-  if (entry.installable === candidate.installable) score += 1;
+  if (entry.installable === candidate.installable) score += 6;
+  if (entry.builtIn === candidate.builtIn) score += 5;
   if (entry.type === candidate.type) score += 1;
   if (entry.useCase !== 'other' && entry.useCase === candidate.useCase) score += 2;
 
+  const toolOverlap = intersectionSize(entry.tools, candidate.tools);
+  const slotOverlap = intersectionSize(entry.slots, candidate.slots);
+  if (toolOverlap + slotOverlap > 0) score += 8;
+  score += toolOverlap * 2 + slotOverlap * 2;
+
   score += intersectionSize(entry.capabilities, candidate.capabilities);
-  score += intersectionSize(entry.tools, candidate.tools) * 2;
-  score += intersectionSize(entry.slots, candidate.slots) * 2;
 
   if (entry.client !== null && candidate.client !== null && entry.client === candidate.client) {
     score += 1;
@@ -238,11 +275,22 @@ export function relatedPlugins(
   const seen = new Set<string>();
   const take = (candidate: CatalogEntry) => {
     if (selected.length >= limit || seen.has(candidate.slug)) return;
+    if (!sameBoundary(origin, featuresFor(candidate))) return;
     seen.add(candidate.slug);
     selected.push(candidate);
   };
 
-  for (const { candidate, score } of ranked) {
+  const overlapRanked = ranked.filter(
+    ({ candidate }) => overlapCount(origin, featuresFor(candidate)) > 0,
+  );
+  const restRanked = ranked.filter(
+    ({ candidate }) => overlapCount(origin, featuresFor(candidate)) === 0,
+  );
+
+  for (const { candidate, score } of overlapRanked) {
+    if (score > 0) take(candidate);
+  }
+  for (const { candidate, score } of restRanked) {
     if (score > 0) take(candidate);
   }
   if (selected.length < 3) {
