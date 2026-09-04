@@ -22,6 +22,7 @@ import { buildCapabilityTableRows } from '../../../lib/contribution-display.js';
 import { normalizeAdSenseSlotId } from '../../../lib/adsense.js';
 import { copy, locales, type Locale } from '../../../lib/i18n.js';
 import { loadReadmeHtml, readmeContentUrl } from '../../../lib/readme.js';
+import { relatedGuideHash, relatedPlugins } from '../../../lib/related-plugins.js';
 import { localizedTopic, topicForEntry } from '../../../lib/topics.js';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 
@@ -92,6 +93,9 @@ const capabilityRows = buildCapabilityTableRows({
 });
 const hasContributions = capabilityRows.length > 0;
 const metricSlug = entry.distribution.installable ? installMetricSlug(entry) : undefined;
+const related = relatedPlugins(entry, marketplaceEntries);
+const guideHash = relatedGuideHash(entry);
+const topicLabel = localizedTopic(topic.label, locale);
 const canonical = `https://dsh.pub/${locale}/plugins/${entry.slug}/`;
 const inLanguage = locale === 'zh' ? 'zh-CN' : 'en';
 const pageTitle =
@@ -128,7 +132,13 @@ const structuredData = [
         name: t.plugins,
         item: `https://dsh.pub/${locale}/plugins/`,
       },
-      { '@type': 'ListItem', position: 3, name: displayName(entry), item: canonical },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: topicLabel,
+        item: `https://dsh.pub/${locale}/categories/${topic.id}/`,
+      },
+      { '@type': 'ListItem', position: 4, name: displayName(entry), item: canonical },
     ],
   },
 ];
@@ -201,6 +211,7 @@ const structuredData = [
       {hasContributions && <a href="#capabilities">{t.capabilities}</a>}
       <a href="#installing">{entry.distribution.installable ? t.installing : t.availability}</a>
       <a href="#source">{t.sourceTab}</a>
+      {related.length > 0 && <a href="#related">{t.relatedHeading}</a>}
     </div>
   </nav>
 
@@ -384,6 +395,52 @@ const structuredData = [
       {detailSlot && <AdSlot locale={locale} unit={detailSlot} class="detail-ad" />}
     </aside>
   </div>
+
+  {
+    related.length > 0 && (
+      <section class="related-plugins page-shell" id="related" data-related-plugins>
+        <p class="eyebrow">{t.relatedEyebrow}</p>
+        <h2>{t.relatedHeading}</h2>
+        <p class="related-method">{t.relatedMethod}</p>
+        <ul class="related-grid">
+          {related.map((item) => {
+            const itemTopic = topicForEntry(item);
+            return (
+              <li>
+                <a href={`/${locale}/plugins/${item.slug}/`} data-related-plugin={item.slug}>
+                  <strong>{displayName(item)}</strong>
+                  <span>{localized(item.description, locale)}</span>
+                  <em>
+                    {localizedTopic(itemTopic.label, locale)}
+                    {' · '}
+                    {item.distribution.installable
+                      ? t.installable
+                      : item.type === 'bundle'
+                        ? t.profileLayer
+                        : t.included}
+                  </em>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+        <nav class="related-guides" aria-label={t.relatedGuides}>
+          <a href={`/${locale}/categories/${topic.id}/`}>
+            {topicLabel}
+            <Icon name="arrow" size={15} />
+          </a>
+          <a href={`/${locale}/guide/#${guideHash}`}>
+            {entry.distribution.installable ? t.relatedInstallGuide : t.relatedIncludedGuide}
+            <Icon name="arrow" size={15} />
+          </a>
+          <a href={`/${locale}/guide/`}>
+            {t.relatedConcepts}
+            <Icon name="arrow" size={15} />
+          </a>
+        </nav>
+      </section>
+    )
+  }
 </BaseLayout>
 
 <script>
@@ -551,6 +608,104 @@ const structuredData = [
     min-width: 0;
     overflow-x: clip;
     padding-top: 2.7rem;
+  }
+
+  .related-plugins {
+    padding-bottom: 4.5rem;
+    padding-top: 2.4rem;
+    scroll-margin-top: 1rem;
+  }
+
+  .related-plugins h2 {
+    font-size: clamp(1.55rem, 3vw, 2.1rem);
+    font-weight: 560;
+    letter-spacing: -0.04em;
+    margin: 0.35rem 0 0;
+  }
+
+  .related-method {
+    color: var(--color-text-muted);
+    font-size: 0.92rem;
+    line-height: 1.6;
+    margin: 0.75rem 0 1.4rem;
+    max-width: 46rem;
+  }
+
+  .related-grid {
+    display: grid;
+    gap: 0.9rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .related-grid a {
+    background: var(--color-surface);
+    border: 1px solid var(--color-rule);
+    border-radius: 10px;
+    color: var(--color-text);
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-height: 132px;
+    padding: 0.95rem 1rem;
+    transition:
+      border-color var(--transition-fast),
+      transform var(--transition-fast);
+  }
+
+  .related-grid a:hover {
+    border-color: var(--color-accent);
+    text-decoration: none;
+    transform: translateY(-2px);
+  }
+
+  .related-grid strong {
+    font-size: 0.92rem;
+    font-weight: 620;
+    letter-spacing: -0.02em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .related-grid span {
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    color: var(--color-text-muted);
+    display: -webkit-box;
+    font-size: 0.8rem;
+    line-height: 1.45;
+    overflow: hidden;
+  }
+
+  .related-grid em {
+    color: var(--color-text-faint);
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    font-style: normal;
+    letter-spacing: 0.04em;
+    margin-top: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .related-guides {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.1rem 1.6rem;
+    margin-top: 1.5rem;
+  }
+
+  .related-guides a {
+    align-items: center;
+    color: var(--color-accent);
+    display: inline-flex;
+    font-size: 0.86rem;
+    gap: 0.35rem;
   }
 
   .package-content {
@@ -1093,6 +1248,10 @@ const structuredData = [
       min-width: 0;
       position: static;
     }
+
+    .related-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 
   @media (max-width: 600px) {
@@ -1155,6 +1314,10 @@ const structuredData = [
       padding-top: 1.25rem;
     }
 
+    .related-grid {
+      grid-template-columns: 1fr;
+    }
+
     .capability-table {
       display: block;
       max-width: 100%;
@@ -1177,6 +1340,16 @@ const structuredData = [
 
     .capability-table td {
       min-width: 10rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .related-grid a {
+      transition: none;
+    }
+
+    .related-grid a:hover {
+      transform: none;
     }
   }
 </style>
