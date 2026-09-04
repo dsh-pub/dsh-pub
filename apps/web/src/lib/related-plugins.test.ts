@@ -68,6 +68,8 @@ describe('related plugin ranking', () => {
     expect(relatedGuideHash(genui)).toBe('installable');
     expect(related.every((item) => topicForEntry(item).id === 'ui-client')).toBe(true);
     expect(related.some((item) => item.distribution.installable)).toBe(true);
+    expect(related.some((item) => item.slug.startsWith('dsh-g'))).toBe(true);
+    expect(related.every((item) => !item.slug.startsWith('1010'))).toBe(true);
   });
 
   it('labels built-in profile layers as included rather than installable', () => {

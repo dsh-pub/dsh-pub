@@ -167,18 +167,20 @@ const relatedPool = (entry: CatalogEntry, catalog: readonly CatalogEntry[]): Cat
       }
     }
   }
-  const sameAvailability: CatalogEntry[] = [];
-  for (const item of categoryPeers) {
-    if (sameAvailability.length >= RELATED_POOL_LIMIT) break;
-    if (item.entry.slug === entry.slug) continue;
-    if (item.installable === entry.distribution.installable) sameAvailability.push(item.entry);
-  }
+  const sameAvailabilityPeers = categoryPeers.filter(
+    (item) => item.entry.slug !== entry.slug && item.installable === entry.distribution.installable,
+  );
 
   const selected: CatalogEntry[] = [];
   const seen = new Set<string>([entry.slug]);
   takeUnique(selected, seen, siblings, RELATED_POOL_LIMIT);
   takeUnique(selected, seen, overlapping, RELATED_POOL_LIMIT);
-  takeUnique(selected, seen, sameAvailability, RELATED_POOL_LIMIT);
+  takeUnique(
+    selected,
+    seen,
+    slugNeighbors(sameAvailabilityPeers, entry.slug, 24),
+    RELATED_POOL_LIMIT,
+  );
   takeUnique(selected, seen, slugNeighbors(categoryPeers, entry.slug, 16), RELATED_POOL_LIMIT);
   takeUnique(selected, seen, slugNeighbors(topicPeers, entry.slug, 16), RELATED_POOL_LIMIT);
   return selected;
