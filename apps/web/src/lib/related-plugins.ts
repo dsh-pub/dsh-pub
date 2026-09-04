@@ -23,13 +23,21 @@ interface RelatedFeatures {
   useCase: string;
 }
 
+interface IndexedEntry {
+  entry: CatalogEntry;
+  installable: boolean;
+  slots: Set<string>;
+  tools: Set<string>;
+}
+
 interface RelatedIndex {
-  byCategory: Map<string, CatalogEntry[]>;
-  bySource: Map<string, CatalogEntry[]>;
-  byTopic: Map<string, CatalogEntry[]>;
+  byCategory: Map<string, IndexedEntry[]>;
+  bySource: Map<string, IndexedEntry[]>;
+  byTopic: Map<string, IndexedEntry[]>;
 }
 
 const relatedIndexCache = new WeakMap<readonly CatalogEntry[], RelatedIndex>();
+const relatedFeatureCache = new WeakMap<CatalogEntry, RelatedFeatures>();
 
 const isBuiltIn = (entry: CatalogEntry) =>
   (entry.provenance?.status ?? (entry.builtIn ? 'built-in' : undefined)) === 'built-in';
@@ -54,56 +62,71 @@ const uiSlots = (entry: CatalogEntry) =>
     ...(entry.capabilities.uiSlotsDeclared ?? []).map((item) => item.slot),
   ]);
 
-const featuresFor = (entry: CatalogEntry): RelatedFeatures => ({
-  builtIn: isBuiltIn(entry),
-  capabilities: new Set(confirmedCapabilities(entry)),
-  category: entry.category,
-  client: entry.runtime.client === null ? null : Boolean(entry.runtime.client),
-  directory: entry.source.directory,
-  entry,
-  installable: entry.distribution.installable,
-  slots: uiSlots(entry),
-  slug: entry.slug,
-  source: sourceKey(entry),
-  tools: toolNames(entry),
-  topicId: topicForEntry(entry).id,
-  type: entry.type,
-  useCase: useCaseFor(entry),
-});
+const featuresFor = (entry: CatalogEntry): RelatedFeatures => {
+  const cached = relatedFeatureCache.get(entry);
+  if (cached) return cached;
+  const created: RelatedFeatures = {
+    builtIn: isBuiltIn(entry),
+    capabilities: new Set(confirmedCapabilities(entry)),
+    category: entry.category,
+    client: entry.runtime.client === null ? null : Boolean(entry.runtime.client),
+    directory: entry.source.directory,
+    entry,
+    installable: entry.distribution.installable,
+    slots: uiSlots(entry),
+    slug: entry.slug,
+    source: sourceKey(entry),
+    tools: toolNames(entry),
+    topicId: topicForEntry(entry).id,
+    type: entry.type,
+    useCase: useCaseFor(entry),
+  };
+  relatedFeatureCache.set(entry, created);
+  return created;
+};
 
-const pushIndexed = (index: Map<string, CatalogEntry[]>, key: string, entry: CatalogEntry) => {
+const pushIndexed = (index: Map<string, IndexedEntry[]>, key: string, item: IndexedEntry) => {
   const bucket = index.get(key);
-  if (bucket) bucket.push(entry);
-  else index.set(key, [entry]);
+  if (bucket) bucket.push(item);
+  else index.set(key, [item]);
 };
 
 const indexCatalog = (catalog: readonly CatalogEntry[]): RelatedIndex => {
   const cached = relatedIndexCache.get(catalog);
   if (cached) return cached;
 
-  const byCategory = new Map<string, CatalogEntry[]>();
-  const bySource = new Map<string, CatalogEntry[]>();
-  const byTopic = new Map<string, CatalogEntry[]>();
+  const byCategory = new Map<string, IndexedEntry[]>();
+  const bySource = new Map<string, IndexedEntry[]>();
+  const byTopic = new Map<string, IndexedEntry[]>();
   for (const entry of catalog) {
-    pushIndexed(byCategory, entry.category, entry);
-    pushIndexed(byTopic, topicForEntry(entry).id, entry);
-    if (!isBuiltIn(entry)) pushIndexed(bySource, sourceKey(entry), entry);
+    const item: IndexedEntry = {
+      entry,
+      installable: entry.distribution.installable,
+      slots: uiSlots(entry),
+      tools: toolNames(entry),
+    };
+    pushIndexed(byCategory, entry.category, item);
+    pushIndexed(byTopic, topicForEntry(entry).id, item);
+    if (!isBuiltIn(entry)) pushIndexed(bySource, sourceKey(entry), item);
   }
 
   const created = { byCategory, bySource, byTopic };
+  for (const buckets of [byCategory, bySource, byTopic]) {
+    for (const bucket of buckets.values()) {
+      bucket.sort((left, right) => left.entry.slug.localeCompare(right.entry.slug));
+    }
+  }
   relatedIndexCache.set(catalog, created);
   return created;
 };
 
-const slugNeighbors = (peers: readonly CatalogEntry[], slug: string, count: number) => {
-  const sorted = peers
-    .filter((entry) => entry.slug !== slug)
-    .sort((left, right) => left.slug.localeCompare(right.slug));
-  if (sorted.length <= count) return sorted;
-  const index = sorted.findIndex((entry) => entry.slug > slug);
+const slugNeighbors = (peers: readonly IndexedEntry[], slug: string, count: number) => {
+  const sorted = peers.filter((item) => item.entry.slug !== slug);
+  if (sorted.length <= count) return sorted.map((item) => item.entry);
+  const index = sorted.findIndex((item) => item.entry.slug > slug);
   const at = index === -1 ? sorted.length : index;
   const start = Math.max(0, Math.min(at - Math.floor(count / 2), sorted.length - count));
-  return sorted.slice(start, start + count);
+  return sorted.slice(start, start + count).map((item) => item.entry);
 };
 
 const takeUnique = (
@@ -125,25 +148,31 @@ const relatedPool = (entry: CatalogEntry, catalog: readonly CatalogEntry[]): Cat
   const originSlots = uiSlots(entry);
   const categoryPeers = index.byCategory.get(entry.category) ?? [];
   const topicPeers = index.byTopic.get(topicForEntry(entry).id) ?? [];
-  const siblings = (index.bySource.get(sourceKey(entry)) ?? []).filter(
-    (candidate) =>
-      candidate.slug !== entry.slug && candidate.source.directory !== entry.source.directory,
-  );
-  const overlapping =
-    originTools.size === 0 && originSlots.size === 0
-      ? []
-      : categoryPeers.filter((candidate) => {
-          if (candidate.slug === entry.slug) return false;
-          return (
-            intersectionSize(originTools, toolNames(candidate)) > 0 ||
-            intersectionSize(originSlots, uiSlots(candidate)) > 0
-          );
-        });
-  const sameAvailability = categoryPeers.filter(
-    (candidate) =>
-      candidate.slug !== entry.slug &&
-      candidate.distribution.installable === entry.distribution.installable,
-  );
+  const siblings = (index.bySource.get(sourceKey(entry)) ?? [])
+    .map((item) => item.entry)
+    .filter(
+      (candidate) =>
+        candidate.slug !== entry.slug && candidate.source.directory !== entry.source.directory,
+    );
+  const overlapping: CatalogEntry[] = [];
+  if (originTools.size > 0 || originSlots.size > 0) {
+    for (const item of categoryPeers) {
+      if (overlapping.length >= RELATED_POOL_LIMIT) break;
+      if (item.entry.slug === entry.slug) continue;
+      if (
+        intersectionSize(originTools, item.tools) > 0 ||
+        intersectionSize(originSlots, item.slots) > 0
+      ) {
+        overlapping.push(item.entry);
+      }
+    }
+  }
+  const sameAvailability: CatalogEntry[] = [];
+  for (const item of categoryPeers) {
+    if (sameAvailability.length >= RELATED_POOL_LIMIT) break;
+    if (item.entry.slug === entry.slug) continue;
+    if (item.installable === entry.distribution.installable) sameAvailability.push(item.entry);
+  }
 
   const selected: CatalogEntry[] = [];
   const seen = new Set<string>([entry.slug]);
