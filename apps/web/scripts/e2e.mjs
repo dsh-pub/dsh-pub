@@ -253,8 +253,26 @@ async function assertSeoSurface() {
     '<title>@omdsh-dev/dsh-genui — DeepSeek Harness plugin · dsh.pub</title>',
     '"@type":"SoftwareSourceCode"',
     '"@type":"BreadcrumbList"',
+    '/en/categories/ui-client/',
+    'data-related-plugins',
+    'How installable plugins work',
+    'Ranked by shared capability topic',
+    'CLI-reported installs',
   ]) {
     if (!detail.includes(expected)) throw new Error(`Plugin JSON-LD is missing ${expected}.`);
+  }
+  const relatedCount = [...detail.matchAll(/data-related-plugin="/g)].length;
+  if (relatedCount < 3 || relatedCount > 6) {
+    throw new Error(`Expected 3–6 related plugin links, found ${relatedCount}.`);
+  }
+  if (!detail.includes('data-related-plugin="dsh-at-file"')) {
+    throw new Error('Related plugins omitted the shared conversation.input.dock overlap.');
+  }
+  if (
+    /related-method[\s\S]{0,400}\b(similar|best|compatible)\b/i.test(detail) ||
+    !detail.includes('/en/guide/#installable')
+  ) {
+    throw new Error('Related plugins must disclose overlap ranking and link to the install guide.');
   }
 
   const topic = await responseBody('/en/categories/ui-client/');
@@ -508,6 +526,13 @@ try {
         literalBackticks: details.textContent?.includes('`cordis.patch.yml`'),
         installMetric: Boolean(globalThis.document.querySelector('[data-detail-install-count]')),
         builtInDistribution: Boolean(globalThis.document.querySelector('.included-panel')),
+        relatedCount: globalThis.document.querySelectorAll('[data-related-plugin]').length,
+        includedGuide: Boolean(
+          globalThis.document.querySelector('[data-related-plugins] a[href$="/guide/#included"]'),
+        ),
+        categoryHub: Boolean(
+          globalThis.document.querySelector('[data-related-plugins] a[href*="/categories/"]'),
+        ),
       };
     });
     if (
@@ -515,7 +540,10 @@ try {
       initialDetailState.inlineCode !== 'cordis.patch.yml' ||
       initialDetailState.literalBackticks ||
       initialDetailState.installMetric ||
-      !initialDetailState.builtInDistribution
+      !initialDetailState.builtInDistribution ||
+      initialDetailState.relatedCount < 3 ||
+      !initialDetailState.includedGuide ||
+      !initialDetailState.categoryHub
     ) {
       throw new Error(`Built-in detail summary failed: ${JSON.stringify(initialDetailState)}`);
     }

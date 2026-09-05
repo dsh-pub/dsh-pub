@@ -105,9 +105,17 @@ export const copy = {
     technicalOverview: 'Source-level overview',
     expandTechnicalOverview: 'Read the full technical overview',
     collapseTechnicalOverview: 'Collapse technical overview',
-    cliInstalls: 'CLI installs',
+    cliInstalls: 'CLI-reported installs',
     cliInstallsHelp:
-      'Completed installs reported by dshpub CLI. Direct Git or native DSH installs are not observed.',
+      'Completed installs reported by the dshpub CLI. This is not unique users, repository downloads, or native DSH installs.',
+    relatedEyebrow: 'Same capability topic',
+    relatedHeading: 'Related by capability',
+    relatedMethod:
+      'Ranked by shared capability topic, runtime face, tools or UI contributions, and distribution mode. This is not a similarity, quality, or compatibility ranking.',
+    relatedGuides: 'Keep exploring',
+    relatedInstallGuide: 'How installable plugins work',
+    relatedIncludedGuide: 'What included-in-DSH means',
+    relatedConcepts: 'Registry concepts',
     builtInProfileHelp:
       'Activated through a built-in profile in the pinned Harness source snapshot. CLI install metrics do not apply.',
     builtInModuleHelp:
@@ -234,8 +242,16 @@ export const copy = {
     technicalOverview: '源码级技术说明',
     expandTechnicalOverview: '展开完整技术说明',
     collapseTechnicalOverview: '收起技术说明',
-    cliInstalls: 'CLI 安装量',
-    cliInstallsHelp: '仅统计 dshpub CLI 上报的成功安装；直接 Git 或原生 DSH 安装不可见。',
+    cliInstalls: 'CLI 上报安装量',
+    cliInstallsHelp: '仅统计 dshpub CLI 上报的成功安装，不是独立用户、仓库下载或原生 DSH 安装。',
+    relatedEyebrow: '同一能力主题',
+    relatedHeading: '按能力继续看',
+    relatedMethod:
+      '按共享的能力主题、运行时形态、模型工具或 UI 贡献，以及分发方式排序。这不是质量排名，也不表示可以互相替换。',
+    relatedGuides: '继续了解',
+    relatedInstallGuide: '可安装插件如何工作',
+    relatedIncludedGuide: '什么是「DSH 已内置」',
+    relatedConcepts: '目录概念说明',
     builtInProfileHelp: '随固定的 Harness 源码快照提供，并由内置 Profile 激活；不适用 CLI 安装量。',
     builtInModuleHelp: '随固定的 Harness 源码快照提供；不适用 CLI 安装量。',
     builtInProfileTitle: '随 Profile 使用，无需单独安装',
