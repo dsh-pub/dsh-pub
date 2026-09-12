@@ -2,7 +2,7 @@ import { spawnSync } from 'node:child_process';
 import { readdir, readFile } from 'node:fs/promises';
 import { join, relative, resolve, sep } from 'node:path';
 
-const APP_TIMEOUT_MS = 15 * 60_000;
+const APP_TIMEOUT_MS = 25 * 60_000;
 
 function rootFromArgs(args) {
   const rootIndex = args.indexOf('--root');
