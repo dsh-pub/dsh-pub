@@ -99310,6 +99310,27 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/GooDAnDReaDY/dsh-plugin-notify",
+      "commit": "e351575cf0926b5104afe3e6ea32de814a36a776",
+      "directory": "",
+      "packageName": "@goodandready/dsh-plugin-notify",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/goodandready--dsh-plugin-notify.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/100",
+        "submittedAt": "2026-09-20",
+        "category": "client-ui",
+        "description": {
+          "en": "DSH plugin: audio chimes, cross-session toasts, desktop push, and IM webhooks for turn completion, errors, and approvals.",
+          "zh": ""
+        }
+      }
     }
   ]
 }
