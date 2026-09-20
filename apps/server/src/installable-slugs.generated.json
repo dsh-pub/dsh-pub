@@ -1923,6 +1923,7 @@
     "goodandready--dsh-cron",
     "goodandready--dsh-dsml-artifact-guard",
     "goodandready--dsh-gitea",
+    "goodandready--dsh-github-ops",
     "goodandready--dsh-goal",
     "goodandready--dsh-grok-xsearch",
     "goodandready--dsh-im-hub-media",

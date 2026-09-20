@@ -99331,6 +99331,27 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/GooDAnDReaDY/dsh-github-ops",
+      "commit": "f1731ea279870fcf428399c6523349b7eaa80a51",
+      "directory": "",
+      "packageName": "@goodandready/dsh-github-ops",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/goodandready--dsh-github-ops.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/102",
+        "submittedAt": "2026-09-20",
+        "category": "client-ui",
+        "description": {
+          "en": "GitHub operations for DeepSeek Harness: releases, tags, a guarded generic API pass-through, workflow runs, secrets and sanitized mirror publication.",
+          "zh": ""
+        }
+      }
     }
   ]
 }

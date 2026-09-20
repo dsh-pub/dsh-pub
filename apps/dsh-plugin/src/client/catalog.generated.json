@@ -8,7 +8,7 @@
     },
     "community": {
       "repository": "https://github.com/dsh-pub/dsh-pub",
-      "generatedAt": "2026-09-20T16:54:55.000Z",
+      "generatedAt": "2026-09-20T17:07:38.000Z",
       "policy": "pinned-source-contracts"
     }
   },
@@ -165887,6 +165887,26 @@
       "repository": "https://github.com/GooDAnDReaDY/dsh-plugin-notify",
       "directory": "",
       "commit": "e351575cf0926b5104afe3e6ea32de814a36a776"
+    },
+    {
+      "slug": "dsh-github-ops",
+      "name": "@goodandready/dsh-github-ops",
+      "description": {
+        "en": "GitHub operations for DeepSeek Harness: releases, tags, a guarded generic API pass-through, workflow runs, secrets and sanitized mirror publication.",
+        "zh": "GitHub operations for DeepSeek Harness: releases, tags, a guarded generic API pass-through, workflow runs, secrets and sanitized mirror publication."
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/GooDAnDReaDY/dsh-github-ops",
+      "directory": "",
+      "commit": "f1731ea279870fcf428399c6523349b7eaa80a51"
     }
   ]
 }
