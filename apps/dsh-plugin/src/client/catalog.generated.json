@@ -8,7 +8,7 @@
     },
     "community": {
       "repository": "https://github.com/dsh-pub/dsh-pub",
-      "generatedAt": "2026-09-20T07:56:17.000Z",
+      "generatedAt": "2026-09-20T16:54:55.000Z",
       "policy": "pinned-source-contracts"
     }
   },
@@ -165867,6 +165867,26 @@
       "repository": "https://github.com/xltxai/skills",
       "directory": "",
       "commit": "71ab7bfd9a4f96ddad61d5493a6d565282654ee0"
+    },
+    {
+      "slug": "dsh-plugin-notify",
+      "name": "@goodandready/dsh-plugin-notify",
+      "description": {
+        "en": "DSH plugin: audio chimes, cross-session toasts, desktop push, and IM webhooks for turn completion, errors, and approvals.",
+        "zh": "DSH plugin: audio chimes, cross-session toasts, desktop push, and IM webhooks for turn completion, errors, and approvals."
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/GooDAnDReaDY/dsh-plugin-notify",
+      "directory": "",
+      "commit": "e351575cf0926b5104afe3e6ea32de814a36a776"
     }
   ]
 }
