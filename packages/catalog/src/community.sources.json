@@ -100522,6 +100522,27 @@
       "readmePath": "README.md",
       "licensePath": "LICENSE",
       "automation": { "analyzedAt": "2026-09-21", "method": "automated-static-contract" }
+    },
+    {
+      "repository": "https://github.com/mrbeandev/dsh-discord-notify",
+      "commit": "51961b26721161fdcb021a21ce2467f202243617",
+      "directory": "",
+      "packageName": "dsh-discord-notify",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "src/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/mrbeandev--dsh-discord-notify.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/103",
+        "submittedAt": "2026-09-21",
+        "category": "client-ui",
+        "description": {
+          "en": "One-way Discord webhook notifications for DeepSeek Harness agent turns, tool calls, and matching bash commands.",
+          "zh": ""
+        }
+      }
     }
   ]
 }
