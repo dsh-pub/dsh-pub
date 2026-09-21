@@ -8,7 +8,7 @@
     },
     "community": {
       "repository": "https://github.com/dsh-pub/dsh-pub",
-      "generatedAt": "2026-09-21T17:42:15.000Z",
+      "generatedAt": "2026-09-21T17:54:57.000Z",
       "policy": "pinned-source-contracts"
     }
   },
@@ -167833,6 +167833,26 @@
       "repository": "https://github.com/mrbeandev/dsh-discord-notify",
       "directory": "",
       "commit": "51961b26721161fdcb021a21ce2467f202243617"
+    },
+    {
+      "slug": "dsh-flowglass-en",
+      "name": "dsh-flowglass-en",
+      "description": {
+        "en": "English-only live session flow visualization for DeepSeek Harness.",
+        "zh": "English-only live session flow visualization for DeepSeek Harness."
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/mrbeandev/dsh-flowglass",
+      "directory": "",
+      "commit": "43f01c809f1a0ed107af87e10c91a4c375e296f5"
     }
   ]
 }

@@ -100543,6 +100543,27 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/mrbeandev/dsh-flowglass",
+      "commit": "43f01c809f1a0ed107af87e10c91a4c375e296f5",
+      "directory": "",
+      "packageName": "dsh-flowglass-en",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "flowglass/cordis.patch.yml",
+      "runtimeEntryPath": "flowglass/lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/mrbeandev--dsh-flowglass.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/104",
+        "submittedAt": "2026-09-21",
+        "category": "client-ui",
+        "description": {
+          "en": "English-only live session flow visualization for DeepSeek Harness.",
+          "zh": ""
+        }
+      }
     }
   ]
 }
