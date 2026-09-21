@@ -7,9 +7,9 @@
       "generatedAt": "2026-08-13T19:38:46+08:00"
     },
     "community": {
-      "repository": "https://github.com/topics/dsh-plugin",
-      "generatedAt": "2026-09-20T19:16:18.777Z",
-      "policy": "automated-pinned-source-contracts"
+      "repository": "https://github.com/dsh-pub/dsh-pub",
+      "generatedAt": "2026-09-21T17:42:15.000Z",
+      "policy": "pinned-source-contracts"
     }
   },
   "topics": [
@@ -167813,6 +167813,26 @@
       "repository": "https://github.com/zzzmmmnn/dsh-openkapsel",
       "directory": "",
       "commit": "c0d7cac5985ffbb294a185b702d5442c5e13c205"
+    },
+    {
+      "slug": "dsh-discord-notify",
+      "name": "dsh-discord-notify",
+      "description": {
+        "en": "One-way Discord webhook notifications for DeepSeek Harness agent turns, tool calls, and matching bash commands.",
+        "zh": "One-way Discord webhook notifications for DeepSeek Harness agent turns, tool calls, and matching bash commands."
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/mrbeandev/dsh-discord-notify",
+      "directory": "",
+      "commit": "51961b26721161fdcb021a21ce2467f202243617"
     }
   ]
 }
