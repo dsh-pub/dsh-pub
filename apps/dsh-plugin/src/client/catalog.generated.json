@@ -7,9 +7,9 @@
       "generatedAt": "2026-08-13T19:38:46+08:00"
     },
     "community": {
-      "repository": "https://github.com/topics/dsh-plugin",
-      "generatedAt": "2026-09-22T20:01:01.461Z",
-      "policy": "automated-pinned-source-contracts"
+      "repository": "https://github.com/dsh-pub/dsh-pub",
+      "generatedAt": "2026-09-23T16:55:35.000Z",
+      "policy": "pinned-source-contracts"
     }
   },
   "topics": [
@@ -171790,6 +171790,26 @@
       "repository": "https://github.com/zuoyunlai/lunheng-article-pipeline-dsh",
       "directory": "",
       "commit": "45d4cee08a0ddd350e4fe63f388479eb8976f20c"
+    },
+    {
+      "slug": "dsh-gpu-monitor-nvml",
+      "name": "dsh-gpu-monitor-nvml",
+      "description": {
+        "en": "NVIDIA-only real-time multi-GPU monitor pane (NVML / nvidia-smi) for DeepSeek Harness web UI. Not AMD/Intel/macOS.",
+        "zh": "NVIDIA-only real-time multi-GPU monitor pane (NVML / nvidia-smi) for DeepSeek Harness web UI. Not AMD/Intel/macOS."
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/janpauldahlke/dsh-gpu-monitor-nvml",
+      "directory": "",
+      "commit": "0bfbe764ae31f9bdd600affb604d7283accdbf4b"
     }
   ]
 }
