@@ -104726,6 +104726,27 @@
       "readmePath": "README.md",
       "licensePath": "LICENSE",
       "automation": { "analyzedAt": "2026-09-25", "method": "automated-static-contract" }
+    },
+    {
+      "repository": "https://github.com/janpauldahlke/dsh-slot-health",
+      "commit": "211f36b11c9b6e2d286e95bb1556602502f00431",
+      "directory": "",
+      "packageName": "dsh-slot-health",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/janpauldahlke--dsh-slot-health.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/108",
+        "submittedAt": "2026-09-25",
+        "category": "client-ui",
+        "description": {
+          "en": "Live health pane for local LLM endpoints (llama.cpp slots + Ollama models) in the DeepSeek Harness web UI.",
+          "zh": ""
+        }
+      }
     }
   ]
 }

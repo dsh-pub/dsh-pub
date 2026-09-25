@@ -7,9 +7,9 @@
       "generatedAt": "2026-08-13T19:38:46+08:00"
     },
     "community": {
-      "repository": "https://github.com/topics/dsh-plugin",
-      "generatedAt": "2026-09-24T20:17:07.266Z",
-      "policy": "automated-pinned-source-contracts"
+      "repository": "https://github.com/dsh-pub/dsh-pub",
+      "generatedAt": "2026-09-25T18:14:29.000Z",
+      "policy": "pinned-source-contracts"
     }
   },
   "topics": [
@@ -174630,6 +174630,26 @@
       "repository": "https://github.com/zzzmmmnn/dsh-openkapsel",
       "directory": "",
       "commit": "d5e8ec1237404a6b8a5122564e0e0813e7fee36c"
+    },
+    {
+      "slug": "dsh-slot-health",
+      "name": "dsh-slot-health",
+      "description": {
+        "en": "Live health pane for local LLM endpoints (llama.cpp slots + Ollama models) in the DeepSeek Harness web UI.",
+        "zh": "Live health pane for local LLM endpoints (llama.cpp slots + Ollama models) in the DeepSeek Harness web UI."
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/janpauldahlke/dsh-slot-health",
+      "directory": "",
+      "commit": "211f36b11c9b6e2d286e95bb1556602502f00431"
     }
   ]
 }
