@@ -113418,6 +113418,27 @@
       "readmePath": "README.md",
       "licensePath": "LICENSE",
       "automation": { "analyzedAt": "2026-10-02", "method": "automated-static-contract" }
+    },
+    {
+      "repository": "https://github.com/cuguanren/Agent-Benchmark",
+      "commit": "af63bd4d2117b7be0cbb77890c9829a2b02e300a",
+      "directory": "",
+      "packageName": "dsh-agent-benchmark",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "dist/src/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/cuguanren--agent-benchmark.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/119",
+        "submittedAt": "2026-10-02",
+        "category": "bundles",
+        "description": {
+          "en": "Installable dsh context-strategy plugin and reproducible Agent benchmark runner",
+          "zh": ""
+        }
+      }
     }
   ]
 }

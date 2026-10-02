@@ -7,9 +7,9 @@
       "generatedAt": "2026-08-13T19:38:46+08:00"
     },
     "community": {
-      "repository": "https://github.com/topics/dsh-plugin",
-      "generatedAt": "2026-10-01T21:34:11.899Z",
-      "policy": "automated-pinned-source-contracts"
+      "repository": "https://github.com/dsh-pub/dsh-pub",
+      "generatedAt": "2026-10-02T13:13:38.000Z",
+      "policy": "pinned-source-contracts"
     }
   },
   "topics": [
@@ -188736,6 +188736,26 @@
       "repository": "https://github.com/zyd232/dsh-compaction-policy",
       "directory": "",
       "commit": "6ec165b1a1e4f0470acb149a1764c52043467aa2"
+    },
+    {
+      "slug": "dsh-agent-benchmark",
+      "name": "dsh-agent-benchmark",
+      "description": {
+        "en": "Installable dsh context-strategy plugin and reproducible Agent benchmark runner",
+        "zh": "Installable dsh context-strategy plugin and reproducible Agent benchmark runner"
+      },
+      "topic": "other",
+      "category": "bundles",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/cuguanren/Agent-Benchmark",
+      "directory": "",
+      "commit": "af63bd4d2117b7be0cbb77890c9829a2b02e300a"
     }
   ]
 }
