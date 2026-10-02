@@ -8,7 +8,7 @@
     },
     "community": {
       "repository": "https://github.com/dsh-pub/dsh-pub",
-      "generatedAt": "2026-10-02T20:24:09.000Z",
+      "generatedAt": "2026-10-02T21:18:17.000Z",
       "policy": "pinned-source-contracts"
     }
   },
@@ -188776,6 +188776,26 @@
       "repository": "https://github.com/janpauldahlke/dsh-local-long-horizon",
       "directory": "",
       "commit": "cac8c59c4c2c27a82cd22cac86d4cd7cf848032f"
+    },
+    {
+      "slug": "dsh-agent-processes",
+      "name": "dsh-agent-processes",
+      "description": {
+        "en": "Host-owned process & port lifecycle for DeepSeek Harness local agents (start/stop/list/logs/wait-ready + dock chip + Processes rightbar).",
+        "zh": "Host-owned process & port lifecycle for DeepSeek Harness local agents (start/stop/list/logs/wait-ready + dock chip + Processes rightbar)."
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/janpauldahlke/dsh-agent-processes",
+      "directory": "",
+      "commit": "1f95e9a7e661ea801bccfe184333bd07e596ba9d"
     }
   ]
 }

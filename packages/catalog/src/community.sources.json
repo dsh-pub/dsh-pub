@@ -113460,6 +113460,27 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/janpauldahlke/dsh-agent-processes",
+      "commit": "1f95e9a7e661ea801bccfe184333bd07e596ba9d",
+      "directory": "",
+      "packageName": "dsh-agent-processes",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/janpauldahlke--dsh-agent-processes.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/121",
+        "submittedAt": "2026-10-02",
+        "category": "client-ui",
+        "description": {
+          "en": "Host-owned process & port lifecycle for DeepSeek Harness local agents (start/stop/list/logs/wait-ready + dock chip + Processes rightbar).",
+          "zh": ""
+        }
+      }
     }
   ]
 }
