@@ -113439,6 +113439,27 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/janpauldahlke/dsh-local-long-horizon",
+      "commit": "cac8c59c4c2c27a82cd22cac86d4cd7cf848032f",
+      "directory": "",
+      "packageName": "dsh-local-long-horizon",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/janpauldahlke--dsh-local-long-horizon.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/120",
+        "submittedAt": "2026-10-02",
+        "category": "client-ui",
+        "description": {
+          "en": "Host-owned long-horizon task status for DeepSeek Harness local coding agents (tools + inject + STATUS.md + rightbar).",
+          "zh": ""
+        }
+      }
     }
   ]
 }

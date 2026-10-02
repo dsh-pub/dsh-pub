@@ -8,7 +8,7 @@
     },
     "community": {
       "repository": "https://github.com/dsh-pub/dsh-pub",
-      "generatedAt": "2026-10-02T13:13:38.000Z",
+      "generatedAt": "2026-10-02T20:24:09.000Z",
       "policy": "pinned-source-contracts"
     }
   },
@@ -188756,6 +188756,26 @@
       "repository": "https://github.com/cuguanren/Agent-Benchmark",
       "directory": "",
       "commit": "af63bd4d2117b7be0cbb77890c9829a2b02e300a"
+    },
+    {
+      "slug": "dsh-local-long-horizon",
+      "name": "dsh-local-long-horizon",
+      "description": {
+        "en": "Host-owned long-horizon task status for DeepSeek Harness local coding agents (tools + inject + STATUS.md + rightbar).",
+        "zh": "Host-owned long-horizon task status for DeepSeek Harness local coding agents (tools + inject + STATUS.md + rightbar)."
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/janpauldahlke/dsh-local-long-horizon",
+      "directory": "",
+      "commit": "cac8c59c4c2c27a82cd22cac86d4cd7cf848032f"
     }
   ]
 }
