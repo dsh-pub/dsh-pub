@@ -113481,6 +113481,27 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/janpauldahlke/dsh-memento",
+      "commit": "b7f7ed5db9f38d4908b161502d18c16075e73526",
+      "directory": "",
+      "packageName": "dsh-memento",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/janpauldahlke--dsh-memento.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/122",
+        "submittedAt": "2026-10-03",
+        "category": "client-ui",
+        "description": {
+          "en": "Bounded-file memory for DeepSeek Harness local agents (ME.md + project MEMORY.md vault, cache-stable inject, inbox, Memory rightbar). No store, no embeddings, no LLM calls.",
+          "zh": ""
+        }
+      }
     }
   ]
 }

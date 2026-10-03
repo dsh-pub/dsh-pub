@@ -8,7 +8,7 @@
     },
     "community": {
       "repository": "https://github.com/dsh-pub/dsh-pub",
-      "generatedAt": "2026-10-02T21:18:17.000Z",
+      "generatedAt": "2026-10-03T12:42:13.000Z",
       "policy": "pinned-source-contracts"
     }
   },
@@ -188796,6 +188796,26 @@
       "repository": "https://github.com/janpauldahlke/dsh-agent-processes",
       "directory": "",
       "commit": "1f95e9a7e661ea801bccfe184333bd07e596ba9d"
+    },
+    {
+      "slug": "janpauldahlke-dsh-memento",
+      "name": "dsh-memento",
+      "description": {
+        "en": "Bounded-file memory for DeepSeek Harness local agents (ME.md + project MEMORY.md vault, cache-stable inject, inbox, Memory rightbar). No store, no embeddings, no LLM calls.",
+        "zh": "Bounded-file memory for DeepSeek Harness local agents (ME.md + project MEMORY.md vault, cache-stable inject, inbox, Memory rightbar). No store, no embeddings, no LLM calls."
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/janpauldahlke/dsh-memento",
+      "directory": "",
+      "commit": "b7f7ed5db9f38d4908b161502d18c16075e73526"
     }
   ]
 }
