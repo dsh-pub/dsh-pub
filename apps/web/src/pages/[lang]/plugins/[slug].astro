@@ -5,6 +5,10 @@ import sanitizeHtml from 'sanitize-html';
 import CopyCommand from '../../../components/CopyCommand.astro';
 import Icon from '../../../components/Icon.astro';
 import {
+  Content as WebPluginGuide,
+  frontmatter as webGuide,
+} from '../../../content/plugin-guides/web.en.md';
+import {
   displayName,
   installCommand,
   installMetricSlug,
@@ -40,7 +44,9 @@ interface Props {
 
 const { entry, locale } = Astro.props;
 const t = copy[locale];
-const description = localized(entry.description, locale);
+// Editorial copy lives outside the generated catalog and only applies to this pilot page.
+const hasWebGuide = locale === 'en' && entry.slug === 'web';
+const description = hasWebGuide ? webGuide.summary : localized(entry.description, locale);
 const rawDescription = await marked.parseInline(description, { gfm: true });
 const descriptionHtml = sanitizeHtml(rawDescription, {
   allowedTags: ['a', 'br', 'code', 'del', 'em', 'strong'],
@@ -51,7 +57,7 @@ const descriptionHtml = sanitizeHtml(rawDescription, {
   },
 });
 const hasLongDescription = description.length > (locale === 'zh' ? 300 : 520);
-const metaDescription = seoDescription(entry, locale);
+const metaDescription = hasWebGuide ? webGuide.description : seoDescription(entry, locale);
 const source = sourceUrl(entry);
 const sourceName = sourceCoordinate(entry);
 const provenance = provenanceStatus(entry);
@@ -75,7 +81,7 @@ const provenanceStatement =
     ? localized(entry.provenance.statement, locale)
     : t.builtInSourceHelp;
 const readmeSource = readmeContentUrl(entry, locale);
-const readme = noIndex ? '' : await loadReadmeHtml(entry, locale);
+const readme = noIndex || hasWebGuide ? '' : await loadReadmeHtml(entry, locale);
 const limitationRaw = localized(entry.docs?.limitations, locale);
 const limitation =
   limitationRaw &&
@@ -96,8 +102,9 @@ const guideHash = relatedGuideHash(entry);
 const topicLabel = localizedTopic(topic.label, locale);
 const canonical = `https://dsh.pub/${locale}/plugins/${entry.slug}/`;
 const inLanguage = locale === 'zh' ? 'zh-CN' : 'en';
-const pageTitle =
-  locale === 'zh'
+const pageTitle = hasWebGuide
+  ? webGuide.title
+  : locale === 'zh'
     ? `${displayName(entry)}：DeepSeek Harness 插件`
     : `${displayName(entry)} — DeepSeek Harness plugin`;
 const structuredData = [
@@ -207,6 +214,7 @@ const structuredData = [
   <nav class="package-tabs" aria-label="Package sections">
     <div class="page-shell tabs-inner">
       <a class="active" href="#overview">{t.overview}</a>
+      {hasWebGuide && <a href="#web-guide">Setup &amp; FAQ</a>}
       {hasContributions && <a href="#capabilities">{t.capabilities}</a>}
       <a href="#installing">{entry.distribution.installable ? t.installing : t.availability}</a>
       <a href="#source">{t.sourceTab}</a>
@@ -218,7 +226,7 @@ const structuredData = [
     <article class="package-content">
       <section id="overview" class="content-section introduction">
         <p class="eyebrow">{t.overview}</p>
-        <h2>{displayName(entry)}</h2>
+        <h2>{hasWebGuide ? webGuide.overviewHeading : displayName(entry)}</h2>
         {
           hasLongDescription ? (
             <details class="technical-overview" data-technical-overview>
@@ -281,37 +289,45 @@ const structuredData = [
         )
       }
 
-      <section class="content-section" id="readme">
-        <p class="eyebrow">README / {locale.toUpperCase()}</p>
-        <h2>{t.readme}</h2>
-        {
-          readme ? (
-            <div class="readme-content" set:html={readme} />
-          ) : (
-            <div class="readme-fallback">
-              <h3>{t.readmeSummaryTitle}</h3>
-              <div set:html={descriptionHtml} />
-              <p>{t.readmeSummaryBody}</p>
-              <a
-                class="text-link"
-                href={
-                  readmeSource.replace(
-                    /^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([^/]+)\/(.+)$/i,
-                    'https://github.com/$1/$2/blob/$3/$4',
-                  ) || `${source}/README${locale === 'zh' ? '.zh' : ''}.md`
-                }
-                rel={sourceRel}
-              >
-                {t.readmeSummaryLink}
-                <Icon name="external" size={15} />
-              </a>
+      {
+        hasWebGuide ? (
+          <section class="content-section" id="web-guide" aria-label="Web access setup and FAQ">
+            <div class="readme-content" data-web-guide>
+              <WebPluginGuide />
             </div>
-          )
-        }
-      </section>
+          </section>
+        ) : (
+          <section class="content-section" id="readme">
+            <p class="eyebrow">README / {locale.toUpperCase()}</p>
+            <h2>{t.readme}</h2>
+            {readme ? (
+              <div class="readme-content" set:html={readme} />
+            ) : (
+              <div class="readme-fallback">
+                <h3>{t.readmeSummaryTitle}</h3>
+                <div set:html={descriptionHtml} />
+                <p>{t.readmeSummaryBody}</p>
+                <a
+                  class="text-link"
+                  href={
+                    readmeSource.replace(
+                      /^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([^/]+)\/(.+)$/i,
+                      'https://github.com/$1/$2/blob/$3/$4',
+                    ) || `${source}/README${locale === 'zh' ? '.zh' : ''}.md`
+                  }
+                  rel={sourceRel}
+                >
+                  {t.readmeSummaryLink}
+                  <Icon name="external" size={15} />
+                </a>
+              </div>
+            )}
+          </section>
+        )
+      }
 
       {
-        limitation && (
+        !hasWebGuide && limitation && (
           <section class="content-section limitation-section">
             <p class="eyebrow">LIMITATIONS</p>
             <h2>{t.limitations}</h2>
