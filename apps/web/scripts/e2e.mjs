@@ -188,6 +188,9 @@ async function assertSeoSurface() {
   for (const url of urls) {
     const productionUrl = new URL(url);
     const html = await responseBody(productionUrl.pathname);
+    if (html.includes('data-web-guide') !== (productionUrl.pathname === '/en/plugins/web/')) {
+      throw new Error(`The English web guide leaked to another route or is missing: ${url}.`);
+    }
     const canonical = attribute(html, /<link[^>]+rel="canonical"[^>]*>/, 'href');
     if (canonical !== url) throw new Error(`${url} has canonical ${canonical}.`);
 
@@ -396,6 +399,79 @@ async function assertAgentGuide() {
   }
 }
 
+async function assertWebPluginGuide(page) {
+  await page.goto(`${origin}/en/plugins/web/`);
+  const guide = page.locator('[data-web-guide]');
+  if (
+    !(await guide.getByRole('heading', { name: 'Start Harness and use web search' }).isVisible())
+  ) {
+    throw new Error('The web setup guide must be rendered in the page.');
+  }
+  if (
+    (await page.locator('h1').count()) !== 1 ||
+    (await page.locator('meta[name="robots"][content*="noindex"]').count()) !== 0 ||
+    (await page.locator('[data-detail-install-count]').count()) !== 0 ||
+    (await guide.locator('pre').innerText()).trim() !== 'npx @deepseek-ai/dsh web'
+  ) {
+    throw new Error(
+      'The web guide must remain an indexable built-in module with one launch command.',
+    );
+  }
+  const title = await page.title();
+  const description = await page.locator('meta[name="description"]').getAttribute('content');
+  if (
+    title !== 'dsh-web: Web Search and Fetch for DeepSeek Harness · dsh.pub' ||
+    !description?.includes('built-in web access service')
+  ) {
+    throw new Error('The web page metadata must describe the web access service.');
+  }
+  for (const [selector, expected] of [
+    ['meta[property="og:title"]', title],
+    ['meta[name="twitter:title"]', title],
+    ['meta[property="og:description"]', description],
+    ['meta[name="twitter:description"]', description],
+  ]) {
+    if ((await page.locator(selector).getAttribute('content')) !== expected) {
+      throw new Error(`Web guide metadata is inconsistent: ${selector}.`);
+    }
+  }
+  const sourceData = JSON.parse(
+    await page.locator('script[type="application/ld+json"]').first().textContent(),
+  );
+  if (sourceData.description !== description)
+    throw new Error('Web guide JSON-LD description differs.');
+  for (const [language, path] of [
+    ['en', 'en'],
+    ['zh-CN', 'zh'],
+    ['x-default', 'en'],
+  ]) {
+    const href = await page.locator(`link[hreflang="${language}"]`).getAttribute('href');
+    if (href !== `https://dsh.pub/${path}/plugins/web/`) {
+      throw new Error(`Web guide hreflang target differs: ${language}.`);
+    }
+  }
+  const links = await guide
+    .locator('a')
+    .evaluateAll((anchors) => anchors.map((anchor) => anchor.getAttribute('href')));
+  for (const href of new Set(links)) {
+    if (href.startsWith('/')) {
+      const target = new URL(href, origin);
+      const html = await responseBody(target.pathname);
+      if (target.hash && !html.includes(`id="${target.hash.slice(1)}"`)) {
+        throw new Error(`Web guide link has a missing fragment: ${href}.`);
+      }
+    } else if (
+      !href.startsWith('https://github.com/deepseek-ai/deepseek-harness/') ||
+      ![
+        '47f943859bef60e4160492346772ded9b24f765a',
+        '5badb15009ae1756c3afe0ae0cef1faafc290ccc',
+      ].some((commit) => href.includes(commit))
+    ) {
+      throw new Error(`Web guide evidence must link to a reviewed official revision: ${href}.`);
+    }
+  }
+}
+
 await new Promise((resolve, reject) => {
   server.once('error', reject);
   server.listen(0, host, resolve);
@@ -544,6 +620,7 @@ try {
       await analyticsPage.close();
     }
     const page = await browser.newPage();
+    await assertWebPluginGuide(page);
     await page.goto(`${origin}/zh/`);
     const signalCanvas = page.locator('[data-backdrop-signals]');
     await signalCanvas.waitFor();
