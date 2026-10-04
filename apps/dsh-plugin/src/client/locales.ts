@@ -5,7 +5,7 @@ export const en = {
   title: 'Discover the DSH ecosystem',
   summary: 'Browse every public plugin and bundle from dsh.pub without leaving DeepSeek Harness.',
   desktopNote:
-    'Install this directory into the Web profile to browse dsh.pub inside DeepSeek Harness, including the official macOS and Windows desktop app.',
+    'Install this directory in the official desktop app by pasting its GitHub address into Add plugin.',
   desktopLink: 'Official desktop app',
   snapshot: 'Bundled snapshot',
   entries: 'entries',
@@ -62,8 +62,7 @@ export const zh: Record<DirectoryKey, string> = {
   eyebrow: '有源码依据的插件目录',
   title: '发现 DSH 插件生态',
   summary: '无需离开 DeepSeek Harness，即可浏览 dsh.pub 收录的全部公开插件与组合包。',
-  desktopNote:
-    '把本目录装进 Web Profile 后，即可在 DeepSeek Harness 里浏览 dsh.pub，官方 macOS 与 Windows 桌面端同样可用。',
+  desktopNote: '在官方桌面端的「添加插件」中粘贴本仓库的 GitHub 地址，即可安装并浏览 dsh.pub。',
   desktopLink: '官方桌面端',
   snapshot: '内置目录快照',
   entries: '个条目',

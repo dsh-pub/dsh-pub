@@ -4,7 +4,7 @@ export declare const en: {
     readonly eyebrow: "Source-backed plugin directory";
     readonly title: "Discover the DSH ecosystem";
     readonly summary: "Browse every public plugin and bundle from dsh.pub without leaving DeepSeek Harness.";
-    readonly desktopNote: "Install this directory into the Web profile to browse dsh.pub inside DeepSeek Harness, including the official macOS and Windows desktop app.";
+    readonly desktopNote: "Install this directory in the official desktop app by pasting its GitHub address into Add plugin.";
     readonly desktopLink: "Official desktop app";
     readonly snapshot: "Bundled snapshot";
     readonly entries: "entries";
