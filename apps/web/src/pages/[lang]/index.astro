@@ -56,10 +56,10 @@ const ui =
         desktopEyebrow: '官方桌面端',
         desktopTitle: 'DeepSeek Harness 桌面端现已开箱即用',
         desktopBody:
-          '官方提供 macOS 与 Windows 安装包。装好后，把 dsh.pub 目录插件装进桌面端使用的 Web Profile，重启即可在设置里直接浏览全部插件。',
+          '官方提供 macOS 与 Windows 安装包。在桌面端的「添加插件」里粘贴下面的 GitHub 地址并安装，重启后即可在设置里浏览全部插件。',
         desktopDownload: '下载官方桌面端',
-        desktopInstallLabel: '装进桌面端',
-        desktopInstallNote: '重启桌面端后，打开设置里的「dsh.pub 插件目录」。',
+        desktopInstallLabel: '添加插件时粘贴',
+        desktopInstallNote: '安装完成后重启桌面端，打开设置里的「dsh.pub 插件目录」。',
         faqTitle: 'DeepSeek Harness 插件常见问题',
         faqBrowse: '浏览插件目录',
         faqSubmit: '提交插件',
@@ -89,9 +89,9 @@ const ui =
         desktopEyebrow: 'OFFICIAL DESKTOP',
         desktopTitle: 'The DeepSeek Harness desktop app is ready to install',
         desktopBody:
-          'Official macOS and Windows installers are available. Add the dsh.pub directory to the Web profile the desktop app uses, then restart and browse every plugin from Settings.',
+          'Official macOS and Windows installers are available. In the desktop app, open Add plugin, paste the GitHub address below, and restart to browse every plugin from Settings.',
         desktopDownload: 'Download the official desktop app',
-        desktopInstallLabel: 'Install it in the desktop app',
+        desktopInstallLabel: 'Paste into Add plugin',
         desktopInstallNote: 'After a restart, open Settings and choose dsh.pub Registry.',
         faqTitle: 'DeepSeek Harness plugin FAQ',
         faqBrowse: 'Browse the registry',
@@ -122,8 +122,7 @@ const faqs = [
 ];
 
 const officialDesktopUrl = 'https://www.deepseek.com/harness/';
-const desktopInstall =
-  'dsh plugin --profile web add "github:dsh-pub/dsh-pub#main&path:/apps/dsh-plugin"';
+const desktopInstall = 'github:dsh-pub/dsh-pub#main&path:/apps/dsh-plugin';
 
 const structuredData = [
   {
