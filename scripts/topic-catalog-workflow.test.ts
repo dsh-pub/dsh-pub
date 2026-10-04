@@ -15,6 +15,7 @@ describe('Topic catalog sync workflow contract', () => {
         paths: [
           '.github/workflows/topic-catalog-sync.yml',
           'scripts/sync-topic-catalog.mjs',
+          'scripts/push-topic-catalog.mjs',
           'scripts/lib/github-topic-client.mjs',
           'scripts/lib/topic-catalog-sync.mjs',
         ],
@@ -77,6 +78,11 @@ describe('Topic catalog sync workflow contract', () => {
     expect(job.steps.indexOf(token)).toBeLessThan(job.steps.indexOf(commit));
     expect(job.steps.indexOf(commit)).toBeLessThan(job.steps.indexOf(e2e));
     expect(commit.env.GH_TOKEN).toBe('${{ steps.catalog-app-token.outputs.token }}');
+    expect(commit.env.GITHUB_TOKEN).toBe('${{ github.token }}');
+    expect(commit.env).toMatchObject(build.env);
+    expect(commit.run).toContain('gh auth setup-git');
+    expect(commit.run).toContain('node scripts/push-topic-catalog.mjs');
+    const pushScript = await readFile(new URL('./push-topic-catalog.mjs', import.meta.url), 'utf8');
     for (const path of [
       'apps/dsh-plugin/lib/client.js',
       'apps/dsh-plugin/src/client/catalog.generated.json',
@@ -85,9 +91,9 @@ describe('Topic catalog sync workflow contract', () => {
       'packages/catalog/src/community.sources.json',
       'packages/catalog/src/topic-analysis.generated.json',
     ]) {
-      expect(commit.run).toContain(path);
+      expect(pushScript).toContain(path);
     }
-    expect(commit.run).toContain('git push origin HEAD:main');
-    expect(commit.run).not.toMatch(/--force(?:-with-lease)?/);
+    expect(pushScript).toContain("['push', 'origin', 'HEAD:main']");
+    expect(pushScript).not.toMatch(/--force(?:-with-lease)?/);
   });
 });

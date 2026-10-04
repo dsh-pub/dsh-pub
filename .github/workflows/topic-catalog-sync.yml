@@ -8,6 +8,7 @@ on:
     paths:
       - .github/workflows/topic-catalog-sync.yml
       - scripts/sync-topic-catalog.mjs
+      - scripts/push-topic-catalog.mjs
       - scripts/lib/github-topic-client.mjs
       - scripts/lib/topic-catalog-sync.mjs
   schedule:
@@ -75,36 +76,17 @@ jobs:
       - name: Commit generated catalog data
         env:
           GH_TOKEN: ${{ steps.catalog-app-token.outputs.token }}
+          GITHUB_TOKEN: ${{ github.token }}
+          PUBLIC_ADSENSE_CLIENT_ID: ca-pub-7584943302476161
+          PUBLIC_ADSENSE_SLOT_CATALOG: '0987654321'
+          PUBLIC_ADSENSE_SLOT_DETAIL: '1234567890'
+          PUBLIC_GA_MEASUREMENT_ID: G-TEST123456
         shell: bash
         run: |
-          mapfile -t changed < <(git diff --name-only)
-          if [[ "${#changed[@]}" -eq 0 ]]; then
-            echo "Topic catalog is already current."
-            exit 0
-          fi
-          for path in "${changed[@]}"; do
-            case "$path" in
-              apps/dsh-plugin/lib/client.js) ;;
-              apps/dsh-plugin/src/client/catalog.generated.json) ;;
-              apps/server/src/installable-slugs.generated.json) ;;
-              packages/catalog/src/community.generated.json) ;;
-              packages/catalog/src/community.sources.json) ;;
-              packages/catalog/src/topic-analysis.generated.json) ;;
-              *) echo "Unexpected generated path: $path" >&2; exit 1 ;;
-            esac
-          done
           git config user.name "dsh.pub catalog bot"
           git config user.email "catalog-bot@dsh.pub"
-          git add \
-            apps/dsh-plugin/lib/client.js \
-            apps/dsh-plugin/src/client/catalog.generated.json \
-            apps/server/src/installable-slugs.generated.json \
-            packages/catalog/src/community.generated.json \
-            packages/catalog/src/community.sources.json \
-            packages/catalog/src/topic-analysis.generated.json
-          git commit -m "chore(catalog): sync dsh-plugin topic"
           gh auth setup-git
-          git push origin HEAD:main
+          node scripts/push-topic-catalog.mjs
 
       - name: Install browser for E2E
         run: npx playwright install --with-deps chromium
