@@ -36,7 +36,8 @@ dsh plugin --profile desktop add "github:dsh-pub/dsh-pub#main&path:/apps/dsh-plu
 
 Restart the desktop app and open **Settings → dsh.pub Registry**. The package is distributed from
 this Git repository. The add-plugin field resolves npm package names against the selected registry
-mirror; this directory is installed from the GitHub address above.
+mirror; this directory is installed from the GitHub address above. Its DSH client peer ranges accept
+the desktop runtime `0.2.0-rc.2`.
 
 ## Update and verify
 
