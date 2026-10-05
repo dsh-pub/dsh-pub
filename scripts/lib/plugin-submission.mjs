@@ -2,6 +2,12 @@ import { Buffer } from 'node:buffer';
 
 import { parseDocument } from 'yaml';
 
+import {
+  PUBLISHER_DELISTED,
+  createExcludedRepositorySet,
+  isExcludedRepository,
+  loadExcludedRepositories,
+} from './excluded-repositories.mjs';
 import { githubRawUrl } from './readme-url.mjs';
 
 const OWNER_PATTERN = /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$/;
@@ -524,6 +530,7 @@ const sourceRecord = (submission, request) => ({
 export async function createSubmissionUpdate({
   communityCatalog,
   communitySources,
+  excludedRepositories = loadExcludedRepositories(),
   fetch: fetcher,
   request,
   registry,
@@ -535,6 +542,10 @@ export async function createSubmissionUpdate({
       'invalid_submission_path',
       'Submission filename must match the normalized repository coordinate.',
     );
+  }
+  const excluded = createExcludedRepositorySet(excludedRepositories);
+  if (isExcludedRepository(submission.repository, excluded)) {
+    submissionError(PUBLISHER_DELISTED.code, PUBLISHER_DELISTED.message);
   }
   if (
     typeof request?.createdAt !== 'string' ||

@@ -1,5 +1,11 @@
 import { parseDocument } from 'yaml';
 
+import {
+  PUBLISHER_DELISTED,
+  createExcludedRepositorySet,
+  isExcludedRepository,
+  loadExcludedRepositories,
+} from './excluded-repositories.mjs';
 import { githubRawUrl } from './readme-url.mjs';
 
 const SHA_PATTERN = /^[a-f0-9]{40}$/;
@@ -380,8 +386,11 @@ const totals = (entries) => ({
   installable: entries.filter((entry) => entry.distribution.installable).length,
 });
 
+const excludedSet = (excludedRepositories) => createExcludedRepositorySet(excludedRepositories);
+
 export async function syncTopicCatalogData({
   catalog,
+  excludedRepositories = loadExcludedRepositories(),
   github,
   now,
   registry,
@@ -389,6 +398,8 @@ export async function syncTopicCatalogData({
   sources,
   topic,
 }) {
+  const excluded = excludedSet(excludedRepositories);
+  const isExcluded = (repository) => isExcludedRepository(repository, excluded);
   const discovery = await github.discoverTopic(topic);
   if (
     !Number.isSafeInteger(discovery.totalCount) ||
@@ -414,9 +425,12 @@ export async function syncTopicCatalogData({
   const analyzedAt = localDate(now);
   const reservedSlugSet = new Set(reservedSlugs);
   const preservedEntries = catalog.entries.filter(
-    (entry) => entry.provenance?.status !== 'community-automated',
+    (entry) =>
+      entry.provenance?.status !== 'community-automated' && !isExcluded(entry.source.repository),
   );
-  const preservedSources = sources.entries.filter((entry) => !entry.automation);
+  const preservedSources = sources.entries.filter(
+    (entry) => !entry.automation && !isExcluded(entry.repository),
+  );
   const previousAutomatedEntries = new Map(
     catalog.entries
       .filter((entry) => entry.provenance?.status === 'community-automated')
@@ -446,7 +460,9 @@ export async function syncTopicCatalogData({
 
   if (discovery.complete === false) {
     for (const [coordinate, previousEntry] of previousAutomatedEntries) {
-      if (visibleCoordinates.has(coordinate)) continue;
+      if (isExcluded(previousEntry.source.repository) || visibleCoordinates.has(coordinate)) {
+        continue;
+      }
       const previousSource = previousAutomatedSources.get(coordinate);
       if (!previousSource) {
         throw new Error(
@@ -467,6 +483,16 @@ export async function syncTopicCatalogData({
     const coordinate = repository.repository.toLocaleLowerCase();
     const previousEntry = previousAutomatedEntries.get(coordinate);
     const previousSource = previousAutomatedSources.get(coordinate);
+    if (isExcluded(repository.repository)) {
+      analysisEntries.push({
+        code: PUBLISHER_DELISTED.code,
+        commit: repository.commit,
+        message: PUBLISHER_DELISTED.message,
+        repository: repository.repository,
+        status: 'excluded',
+      });
+      continue;
+    }
     if (previousEntry && previousSource) {
       deferredEntries.push(previousEntry);
       deferredSources.push(previousSource);
@@ -482,6 +508,16 @@ export async function syncTopicCatalogData({
   for (const repository of [...discovery.repositories].sort((a, b) =>
     a.repository.localeCompare(b.repository),
   )) {
+    if (isExcluded(repository.repository)) {
+      analysisEntries.push({
+        code: PUBLISHER_DELISTED.code,
+        commit: repository.commit,
+        message: PUBLISHER_DELISTED.message,
+        repository: repository.repository,
+        status: 'excluded',
+      });
+      continue;
+    }
     if (preservedCoordinates.has(repository.repository.toLocaleLowerCase())) {
       analysisEntries.push({
         commit: repository.commit,
@@ -587,6 +623,7 @@ export async function syncTopicCatalogData({
       discovered: discovery.totalCount,
       observed: discovery.observedTotalCount ?? discovery.totalCount,
       listed: analysisEntries.filter((entry) => entry.status === 'listed').length,
+      excluded: analysisEntries.filter((entry) => entry.status === 'excluded').length,
       preserved: analysisEntries.filter((entry) => entry.status === 'preserved').length,
       deferred: analysisEntries.filter((entry) => entry.status === 'deferred').length,
       unresolved: unresolvedCount,

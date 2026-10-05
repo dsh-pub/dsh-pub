@@ -4,6 +4,12 @@ import { fileURLToPath } from 'node:url';
 
 import { format } from 'prettier';
 
+import {
+  createExcludedRepositorySet,
+  isExcludedRepository,
+  loadExcludedRepositories,
+} from './lib/excluded-repositories.mjs';
+
 const INDEX_URL = 'https://dsh.tools/plugins';
 const MINIMUM_EXPECTED_ENTRIES = 100;
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -77,13 +83,25 @@ export function parseDshToolsIndex(html) {
   return entries;
 }
 
-export async function syncDshToolsIndex({ fetchImpl = fetch, output = outputPath } = {}) {
+export function excludeCatalogRepositories(entries, excluded = loadExcludedRepositories()) {
+  const excludedSet = createExcludedRepositorySet(excluded);
+  return entries.filter((entry) => !isExcludedRepository(entry.sourceRepository, excludedSet));
+}
+
+export async function syncDshToolsIndex({
+  excludedRepositories = loadExcludedRepositories(),
+  fetchImpl = fetch,
+  output = outputPath,
+} = {}) {
   const response = await fetchImpl(INDEX_URL, {
     headers: { 'user-agent': 'dsh.pub ecosystem index sync (+https://dsh.pub)' },
   });
   if (!response.ok) throw new Error(`DSH.Tools index request failed with HTTP ${response.status}`);
 
-  const entries = parseDshToolsIndex(await response.text());
+  const entries = excludeCatalogRepositories(
+    parseDshToolsIndex(await response.text()),
+    excludedRepositories,
+  );
   if (entries.length < MINIMUM_EXPECTED_ENTRIES) {
     throw new Error(
       `DSH.Tools index returned only ${entries.length} parseable plugin cards; refusing to replace the catalog`,

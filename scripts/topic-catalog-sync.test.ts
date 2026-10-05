@@ -339,4 +339,190 @@ describe('GitHub Topic catalog sync', () => {
       status: 'unresolved',
     });
   });
+
+  it('drops excluded repositories from listed, preserved, deferred, and unresolved results', async () => {
+    const excludedRepo = 'https://github.com/GooDAnDReaDY/dsh-fal-image-gen';
+    const excludedEntry = {
+      ...reviewedEntry,
+      id: 'github:GooDAnDReaDY/dsh-fal-image-gen',
+      name: '@goodandready/dsh-fal-image-gen',
+      provenance: {
+        status: 'community-automated',
+        discoveredVia: 'github-topic:dsh-plugin',
+        analyzedAt: '2026-08-13',
+        statement: reviewedEntry.provenance.statement,
+      },
+      slug: 'dsh-fal-image-gen',
+      source: {
+        repository: excludedRepo,
+        directory: '',
+        commit: 'a'.repeat(40),
+      },
+    };
+    const excludedSource = {
+      ...sourceRecord,
+      automation: { analyzedAt: '2026-08-13', method: 'automated-static-contract' },
+      packageName: '@goodandready/dsh-fal-image-gen',
+      repository: excludedRepo,
+    };
+    const inspectedClock = {
+      client: { byteSize: 20, oid: '4'.repeat(40) },
+      license: { byteSize: 11, oid: '5'.repeat(40) },
+      patch: {
+        byteSize: 28,
+        oid: '6'.repeat(40),
+        text: '- name: dsh-clock\n  config: {}\n',
+      },
+      readme: {
+        byteSize: 32,
+        oid: '7'.repeat(40),
+        text: '# dsh-clock\n\nAdds a clock panel.',
+      },
+      readmeZh: null,
+      runtime: { byteSize: 20, oid: '8'.repeat(40) },
+    };
+    const result = await syncTopicCatalogData({
+      analysis: { entries: [], schemaVersion: 1, topic: 'dsh-plugin', totals: {} },
+      catalog: {
+        entries: [
+          reviewedEntry,
+          excludedEntry,
+          {
+            ...excludedEntry,
+            id: 'github:GooDAnDReaDY/dsh-im-hub-media',
+            name: '@goodandready/dsh-im-hub-media',
+            provenance: reviewedEntry.provenance,
+            slug: 'dsh-im-hub-media',
+            source: {
+              repository: 'https://github.com/GooDAnDReaDY/dsh-im-hub-media',
+              directory: '',
+              commit: 'b'.repeat(40),
+            },
+          },
+        ],
+        source: {
+          generatedAt: '2026-08-13T00:00:00.000Z',
+          policy: 'automated-pinned-source-contracts',
+          repository: 'https://github.com/topics/dsh-plugin',
+        },
+        totals: { automated: 1, installable: 3, reviewed: 2, submitted: 0 },
+      },
+      excludedRepositories: [excludedRepo, 'https://github.com/GooDAnDReaDY/dsh-im-hub-media'],
+      github: {
+        discoverTopic: async () => ({
+          repositories: [
+            {
+              archived: false,
+              commit: '2'.repeat(40),
+              description: 'Adds a clock panel to DeepSeek Harness.',
+              manifest: validManifest,
+              nameWithOwner: 'example/dsh-clock',
+              repository: 'https://github.com/example/dsh-clock',
+              updatedAt: '2026-08-14T00:30:00Z',
+            },
+            {
+              archived: true,
+              commit: 'c'.repeat(40),
+              description: 'Archived FAL plugin.',
+              manifest: validManifest,
+              nameWithOwner: 'GooDAnDReaDY/dsh-fal-image-gen',
+              repository: excludedRepo,
+              updatedAt: '2026-08-14T00:20:00Z',
+            },
+          ],
+          snapshotAt: '2026-08-14T00:30:00.000Z',
+          totalCount: 2,
+        }),
+        inspectBundles: async () =>
+          new Map([
+            ['https://github.com/example/dsh-clock', inspectedClock],
+            [excludedRepo, inspectedClock],
+          ]),
+      },
+      now: new Date('2026-08-14T01:00:00+08:00'),
+      registry: { generatedFrom: 'packages/catalog/src/community.generated.json', slugs: [] },
+      reservedSlugs: ['dsh-clock'],
+      sources: {
+        entries: [
+          sourceRecord,
+          excludedSource,
+          {
+            ...excludedSource,
+            repository: 'https://github.com/GooDAnDReaDY/dsh-im-hub-media',
+            automation: undefined,
+          },
+        ],
+        intake: 'https://dsh.pub/en/submit/',
+        policy: {},
+        reviewedAt: '2026-08-14',
+        schemaVersion: 2,
+        topic: 'dsh-plugin',
+      },
+      topic: 'dsh-plugin',
+    });
+
+    expect(result.catalog.entries.map((entry) => entry.source.repository)).toEqual([
+      reviewedEntry.source.repository,
+      'https://github.com/example/dsh-clock',
+    ]);
+    expect(result.sources.entries.map((entry) => entry.repository)).toEqual([
+      sourceRecord.repository,
+      'https://github.com/example/dsh-clock',
+    ]);
+    expect(result.registry.slugs).toEqual(['example--dsh-clock', 'example--reviewed']);
+    expect(result.analysis.totals.excluded).toBe(1);
+    expect(result.analysis.entries).toContainEqual(
+      expect.objectContaining({
+        code: 'publisher_delisted',
+        repository: excludedRepo,
+        status: 'excluded',
+      }),
+    );
+
+    const unresolved = await syncTopicCatalogData({
+      analysis: result.analysis,
+      catalog: {
+        ...result.catalog,
+        entries: [...result.catalog.entries, excludedEntry],
+      },
+      excludedRepositories: [excludedRepo],
+      github: {
+        discoverTopic: async () => ({
+          complete: false,
+          deferredRepositories: [
+            {
+              commit: 'd'.repeat(40),
+              nameWithOwner: 'GooDAnDReaDY/dsh-fal-image-gen',
+              repository: excludedRepo,
+              updatedAt: '2026-08-16T00:31:00Z',
+            },
+          ],
+          observedTotalCount: 1,
+          repositories: [],
+          snapshotAt: '2026-08-16T00:30:00.000Z',
+          totalCount: 0,
+          unresolvedCount: 0,
+        }),
+        inspectBundles: async () => new Map(),
+      },
+      now: new Date('2026-08-16T01:00:00+08:00'),
+      registry: result.registry,
+      reservedSlugs: ['dsh-clock'],
+      sources: {
+        ...result.sources,
+        entries: [...result.sources.entries, excludedSource],
+      },
+      topic: 'dsh-plugin',
+    });
+    expect(unresolved.catalog.entries.map((entry) => entry.source.repository)).not.toContain(
+      excludedRepo,
+    );
+    expect(unresolved.analysis.entries).toContainEqual(
+      expect.objectContaining({
+        code: 'publisher_delisted',
+        repository: excludedRepo,
+        status: 'excluded',
+      }),
+    );
+  });
 });

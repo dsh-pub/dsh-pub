@@ -1,6 +1,9 @@
 import communitySources from './community.sources.json';
+import ecosystemCatalog from './ecosystem.generated.json';
+import excludedRepositoryPolicy from './excluded-repositories.json';
 import catalog, { communityCatalog, getCatalogEntry } from './index.js';
 import installableRegistry from '../../../apps/server/src/installable-slugs.generated.json';
+import directorySnapshot from '../../../apps/dsh-plugin/src/client/catalog.generated.json';
 
 const slugPart = (value: string) =>
   value
@@ -169,5 +172,40 @@ describe('Harness catalog snapshot', () => {
         .map((entry) => installMetricSlug(entry.source.repository, entry.source.directory))
         .sort(),
     ).toEqual([...installableRegistry.slugs].sort());
+  });
+
+  it('keeps publisher-delisted repositories out of generated catalog surfaces', () => {
+    expect(excludedRepositoryPolicy.schemaVersion).toBe(1);
+    expect(excludedRepositoryPolicy.repositories).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          issue: 112,
+          repository: 'https://github.com/GooDAnDReaDY/dsh-fal-image-gen',
+        }),
+        expect.objectContaining({
+          issue: 112,
+          repository: 'https://github.com/GooDAnDReaDY/dsh-im-hub-media',
+        }),
+      ]),
+    );
+
+    const excluded = new Set(
+      excludedRepositoryPolicy.repositories.map((entry) => entry.repository.toLocaleLowerCase()),
+    );
+    const catalogRepositories = [
+      ...communityCatalog.entries.map((entry) => entry.source.repository),
+      ...communitySources.entries.map((entry) => entry.repository),
+      ...ecosystemCatalog.entries.map((entry) => entry.sourceRepository),
+      ...directorySnapshot.entries.map((entry) => entry.repository),
+    ];
+    expect(
+      catalogRepositories.some((repository) => excluded.has(repository.toLocaleLowerCase())),
+    ).toBe(false);
+    expect(installableRegistry.slugs).not.toContain('goodandready--dsh-fal-image-gen');
+    expect(installableRegistry.slugs).not.toContain('goodandready--dsh-im-hub-media');
+    expect(communityCatalog.entries.map((entry) => entry.slug)).not.toContain('dsh-fal-image-gen');
+    expect(communityCatalog.entries.map((entry) => entry.slug)).not.toContain('dsh-im-hub-media');
+    expect(getCatalogEntry('dsh-fal-image-gen')).toBeUndefined();
+    expect(getCatalogEntry('dsh-im-hub-media')).toBeUndefined();
   });
 });

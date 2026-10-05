@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "repositories": [
+    {
+      "repository": "https://github.com/GooDAnDReaDY/dsh-fal-image-gen",
+      "issue": 112,
+      "reason": "Publisher delisting request."
+    },
+    {
+      "repository": "https://github.com/GooDAnDReaDY/dsh-im-hub-media",
+      "issue": 112,
+      "reason": "Publisher delisting request."
+    }
+  ]
+}
