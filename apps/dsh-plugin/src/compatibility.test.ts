@@ -15,6 +15,7 @@ describe('DSH desktop peer compatibility', () => {
       '@deepseek-ai/dsh-client-runtime',
       '@deepseek-ai/dsh-client-ui-settings',
       '@deepseek-ai/dsh-client-ui-slots',
+      '@deepseek-ai/dsh-skill',
     ]);
 
     for (const runtime of desktopRuntimes) {

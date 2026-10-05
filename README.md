@@ -111,10 +111,13 @@ shows them as **built-in profile layers** without an install command or install 
 
 ## DSH plugin directory
 
-The repository also ships `@dsh-pub/plugin-directory`, a read-only visual catalog inside DSH
-Settings. It bundles the same public plugin and bundle surface as the site, supports bilingual
-search, eight capability topics, provenance/runtime/distribution/type filters, and deterministic
-sorting without loading third-party code.
+The repository also ships `@dsh-pub/plugin-directory`. It adds a read-only visual catalog inside DSH
+Settings — the same public plugin/bundle surface as the site, with bilingual search, eight
+capability topics, provenance/runtime/distribution/type filters, and deterministic sorting without
+loading third-party code. Its host half also registers an embedded `dsh-pub` skill, so agents in
+profiles that mount the DSH skill registry can search the machine-readable `https://dsh.pub/plugins.json`
+with natural language and install genuinely installable Git bundles via the exact commit-pinned
+`npx dshpub …` command the site published.
 
 ```bash
 npx dshpub add dsh-pub/dsh-pub --path apps/dsh-plugin --profile web
