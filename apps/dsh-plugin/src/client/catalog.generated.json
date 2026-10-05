@@ -7,9 +7,9 @@
       "generatedAt": "2026-08-13T19:38:46+08:00"
     },
     "community": {
-      "repository": "https://github.com/topics/dsh-plugin",
-      "generatedAt": "2026-10-04T19:54:33.029Z",
-      "policy": "automated-pinned-source-contracts"
+      "repository": "https://github.com/dsh-pub/dsh-pub",
+      "generatedAt": "2026-10-05T09:34:38.000Z",
+      "policy": "pinned-source-contracts"
     }
   },
   "topics": [
@@ -197432,6 +197432,26 @@
       "repository": "https://github.com/zuoyunlai/lunheng-article-pipeline-dsh",
       "directory": "",
       "commit": "a6763b7af8741f7fc719dc26c30e08686adff4e8"
+    },
+    {
+      "slug": "mizzlen-dsh-lineage",
+      "name": "dsh-lineage",
+      "description": {
+        "en": "A visual conversation map plugin for DeepSeek Harness: sessions, follow-ups and forks as one navigable canvas.",
+        "zh": "A visual conversation map plugin for DeepSeek Harness: sessions, follow-ups and forks as one navigable canvas."
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/Mizzlen/dsh-lineage",
+      "directory": "",
+      "commit": "cf28c7aba0ebb8020adf8dbcfc50df81f3b26f1a"
     }
   ]
 }

@@ -118798,6 +118798,27 @@
       "readmePath": "README.md",
       "licensePath": "LICENSE",
       "automation": { "analyzedAt": "2026-10-05", "method": "automated-static-contract" }
+    },
+    {
+      "repository": "https://github.com/Mizzlen/dsh-lineage",
+      "commit": "cf28c7aba0ebb8020adf8dbcfc50df81f3b26f1a",
+      "directory": "",
+      "packageName": "dsh-lineage",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/mizzlen--dsh-lineage.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/127",
+        "submittedAt": "2026-10-05",
+        "category": "client-ui",
+        "description": {
+          "en": "A visual conversation map plugin for DeepSeek Harness: sessions, follow-ups and forks as one navigable canvas.",
+          "zh": ""
+        }
+      }
     }
   ]
 }
