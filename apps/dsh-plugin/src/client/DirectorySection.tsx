@@ -1,4 +1,4 @@
-import { useMemo, useState, type ChangeEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react';
 
 import snapshotJson from './catalog.generated.json' with { type: 'json' };
 import {
@@ -11,6 +11,13 @@ import {
   type DirectoryTopic,
 } from './catalog-query.js';
 import type { DirectorySectionProps } from './dsh-contract.js';
+import { directoryGitInstallSpec } from './git-install-spec.js';
+import {
+  installDirectoryEntry,
+  type DirectoryInstallPhase,
+  type DirectoryPluginManager,
+} from './install-entry.js';
+import type { DirectoryKey } from './locales.js';
 
 interface DirectorySnapshot {
   schemaVersion: number;
@@ -41,15 +48,64 @@ function selectValue(event: ChangeEvent<HTMLSelectElement>): string {
   return event.currentTarget.value;
 }
 
-export function DirectorySection({ t }: DirectorySectionProps) {
+interface InstallState {
+  phase: 'installing' | DirectoryInstallPhase;
+  reason?: string;
+}
+
+function installButtonKey(phase: InstallState['phase'] | undefined): DirectoryKey {
+  if (phase === 'installing') return 'installing';
+  if (phase === 'failed') return 'retryInstall';
+  if (
+    phase === 'installed' ||
+    phase === 'already-installed' ||
+    phase === 'restart-required' ||
+    phase === 'overridden'
+  ) {
+    return 'installed';
+  }
+  return 'install';
+}
+
+export function DirectorySection({ t, installer }: DirectorySectionProps) {
   const [query, setQuery] = useState<DirectoryQuery>({ ...defaultDirectoryQuery });
+  const [installs, setInstalls] = useState<Record<string, InstallState>>({});
+  const mounted = useRef(true);
   const locale = t('locale') === 'zh' ? 'zh' : 'en';
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
   const counts = useMemo(() => topicCounts(snapshot.entries), []);
   const result = useMemo(() => queryDirectory(snapshot.entries, query), [query]);
   const number = useMemo(() => new Intl.NumberFormat(locale), [locale]);
 
   const update = <Key extends keyof DirectoryQuery>(key: Key, value: DirectoryQuery[Key]) => {
     setQuery((current) => ({ ...current, [key]: value, page: 1 }));
+  };
+
+  const installing = Object.values(installs).some((state) => state.phase === 'installing');
+
+  const install = (entry: DirectoryEntry, manager: DirectoryPluginManager, spec: string) => {
+    let started = false;
+    setInstalls((current) => {
+      if (Object.values(current).some((state) => state.phase === 'installing')) return current;
+      started = true;
+      return { ...current, [entry.slug]: { phase: 'installing' } };
+    });
+    if (!started) return;
+
+    void installDirectoryEntry(manager, spec).then((result) => {
+      if (!mounted.current) return;
+      setInstalls((current) => ({
+        ...current,
+        [entry.slug]: result.reason
+          ? { phase: result.status, reason: result.reason }
+          : { phase: result.status },
+      }));
+    });
   };
 
   const hasFilters =
@@ -257,9 +313,14 @@ export function DirectorySection({ t }: DirectorySectionProps) {
                       {t(surface)}
                     </span>
                   ))}
-                  <span className="dshpub-badge dshpub-badge-strong">
-                    {t(entry.installable ? 'installable' : 'included')}
-                  </span>
+                  <DirectoryInstallControl
+                    entry={entry}
+                    installer={installer}
+                    installing={installing}
+                    state={installs[entry.slug]}
+                    t={t}
+                    onInstall={install}
+                  />
                 </div>
               </li>
             );
@@ -295,5 +356,66 @@ export function DirectorySection({ t }: DirectorySectionProps) {
         </nav>
       </footer>
     </section>
+  );
+}
+
+function DirectoryInstallControl({
+  entry,
+  installer,
+  installing,
+  state,
+  t,
+  onInstall,
+}: {
+  entry: DirectoryEntry;
+  installer: DirectoryPluginManager | undefined;
+  installing: boolean;
+  state: InstallState | undefined;
+  t: DirectorySectionProps['t'];
+  onInstall: (entry: DirectoryEntry, installer: DirectoryPluginManager, spec: string) => void;
+}) {
+  const spec = installer ? directoryGitInstallSpec(entry) : null;
+  if (!installer || !spec) {
+    return (
+      <span className="dshpub-badge dshpub-badge-strong">
+        {t(entry.installable ? 'installable' : 'included')}
+      </span>
+    );
+  }
+
+  const phase = state?.phase;
+  const settled =
+    phase === 'installed' ||
+    phase === 'already-installed' ||
+    phase === 'restart-required' ||
+    phase === 'overridden';
+  const status =
+    phase === 'already-installed'
+      ? t('alreadyInstalled')
+      : phase === 'restart-required'
+        ? t('restartRequired')
+        : phase === 'overridden'
+          ? t('overridden')
+          : phase === 'failed'
+            ? state?.reason || t('installFailed')
+            : null;
+
+  return (
+    <>
+      <button
+        className="dshpub-install"
+        type="button"
+        disabled={installing || settled}
+        aria-label={`${entry.name} · ${t(installButtonKey(phase))}`}
+        onClick={() => onInstall(entry, installer, spec)}
+      >
+        {t(installButtonKey(phase))}
+      </button>
+      {status ? (
+        <span className="dshpub-install-status" data-state={phase}>
+          {status}
+        </span>
+      ) : null}
+    </>
   );
 }

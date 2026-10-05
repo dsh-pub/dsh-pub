@@ -90,7 +90,9 @@ tested; they are not hand-authored marketing claims.
 - Markdown and HTML registry badges whose live state is either `not listed` or `listed`.
 - An installable dsh.pub directory plugin that exposes the same public plugin and bundle records in
   DSH Settings, with bilingual search, capability/source/runtime/distribution/type filtering, and
-  deterministic sorting. It is read-only and never loads third-party plugin code while browsing.
+  deterministic sorting. Browsing uses the bundled snapshot. On the desktop app, Install fetches one
+  Git-installable entry at its catalog commit and enables it in the current profile. A listing is
+  not an audit.
 
 ## Non-goals
 

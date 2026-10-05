@@ -3,7 +3,7 @@ export declare const en: {
     readonly nav: "dsh.pub Registry";
     readonly eyebrow: "Source-backed plugin directory";
     readonly title: "Discover the DSH ecosystem";
-    readonly summary: "Browse every public plugin and bundle from dsh.pub without leaving DeepSeek Harness.";
+    readonly summary: "Browse every public plugin and bundle from dsh.pub, and install a Git-backed entry into this profile with one click.";
     readonly desktopNote: "Install this directory in the official desktop app by pasting its GitHub address into Add plugin.";
     readonly desktopLink: "Official desktop app";
     readonly snapshot: "Bundled snapshot";
@@ -29,6 +29,14 @@ export declare const en: {
     readonly allDistribution: "All distribution";
     readonly installable: "Git installable";
     readonly included: "Included with DSH";
+    readonly install: "Install";
+    readonly installing: "Installing…";
+    readonly installed: "Installed";
+    readonly alreadyInstalled: "Already in this profile";
+    readonly restartRequired: "Restart DSH to use it";
+    readonly overridden: "Installed. An existing plugin overrides part of it.";
+    readonly installFailed: "Install failed";
+    readonly retryInstall: "Retry";
     readonly entryType: "Type";
     readonly allTypes: "Plugins + bundles";
     readonly plugin: "Plugin";
@@ -49,7 +57,7 @@ export declare const en: {
     readonly next: "Next";
     readonly page: "Page";
     readonly of: "of";
-    readonly safetyNote: "Directory data only. Browsing this page does not load or execute third-party plugin code.";
+    readonly safetyNote: "Browsing uses the bundled snapshot. Install downloads that entry's pinned Git revision into this profile and enables it. A listing is not an audit.";
 };
 export type DirectoryKey = keyof typeof en;
 export declare const zh: Record<DirectoryKey, string>;

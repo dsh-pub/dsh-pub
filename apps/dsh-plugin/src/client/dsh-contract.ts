@@ -3,6 +3,7 @@ import type { SettingsSectionOwnerProps } from '@deepseek-ai/dsh-client-ui-setti
 import type { Translate } from '@deepseek-ai/dsh-client-ui-slots';
 import type {} from '@deepseek-ai/dsh-client-locale/client';
 
+import type { DirectoryPluginManager } from './install-entry.js';
 import type { DirectoryKey } from './locales.js';
 
 declare module '@deepseek-ai/dsh-client-ui-slots' {
@@ -13,6 +14,7 @@ declare module '@deepseek-ai/dsh-client-ui-slots' {
 
 export type DirectorySectionProps = SettingsSectionOwnerProps & {
   t: Translate<DirectoryKey>;
+  installer?: DirectoryPluginManager;
 };
 
 export type DshClientContext = ClientContext;
