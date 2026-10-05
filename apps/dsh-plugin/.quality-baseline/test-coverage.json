@@ -3,12 +3,12 @@
   "module": "apps/dsh-plugin",
   "command": "npm run test",
   "status": "measured",
-  "files": 7,
+  "files": 8,
   "coverage": {
     "statements": {
-      "covered": 80,
-      "pct": 70.18,
-      "total": 114
+      "covered": 88,
+      "pct": 72.13,
+      "total": 122
     },
     "branches": {
       "covered": 56,
@@ -16,14 +16,14 @@
       "total": 77
     },
     "functions": {
-      "covered": 24,
-      "pct": 53.33,
-      "total": 45
+      "covered": 27,
+      "pct": 57.45,
+      "total": 47
     },
     "lines": {
-      "covered": 65,
-      "pct": 74.71,
-      "total": 87
+      "covered": 73,
+      "pct": 76.84,
+      "total": 95
     }
   }
 }

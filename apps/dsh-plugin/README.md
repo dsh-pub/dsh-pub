@@ -1,12 +1,23 @@
 # dsh.pub Plugin Directory
 
-`@dsh-pub/plugin-directory` adds the bilingual dsh.pub Registry to DeepSeek Harness Settings. It
-ships a compact, source-pinned snapshot of every public plugin and bundle shown on dsh.pub, then
-provides local search, capability topics, source/runtime/distribution filters, deterministic sorts,
-and links back to the full source-backed detail pages.
+`@dsh-pub/plugin-directory` makes the dsh.pub Registry usable from inside DeepSeek Harness in two
+complementary ways:
 
-The page is a read-only catalog surface. Opening it does not fetch, install, import, or execute code
-from any catalog entry.
+- **A read-only Settings directory.** It ships a compact, source-pinned snapshot of every public
+  plugin and bundle shown on dsh.pub, then provides local search, capability topics,
+  source/runtime/distribution filters, deterministic sorts, and links back to the full source-backed
+  detail pages. Opening it does not fetch, install, import, or execute code from any catalog entry.
+- **A natural-language search + install skill.** The host half registers an embedded skill named
+  `dsh-pub`. When the profile also mounts the DSH skill registry and the `skill` tool, agents learn
+  to read the machine-readable registry at `https://dsh.pub/plugins.json`, match a user's request
+  against its documented search fields, and install only entries whose `install.installable` is true
+  through the exact commit-pinned `install.command` the site computed. Built-in modules, built-in
+  profile layers, and discovery-only ecosystem entries are never presented as installable, and
+  install counts stay labeled as CLI-reported completions.
+
+To enable natural-language search + install, mount this plugin in a profile that also mounts
+`@deepseek-ai/dsh-skill` and `@deepseek-ai/dsh-tool-skill` (the shipped Web and headless profiles do).
+If the skill registry is absent, the plugin silently degrades to the read-only Settings directory.
 
 ## Install from this repository
 
@@ -16,7 +27,9 @@ npx dshpub add dsh-pub/dsh-pub \
   --profile web
 ```
 
-Restart the DSH Web profile, open **Settings**, then choose **dsh.pub Registry**.
+Restart the DSH Web profile, open **Settings**, then choose **dsh.pub Registry**. To search and
+install plugins with natural language, ask the agent — for example _"find me a plugin that …"_ or
+_"install a plugin for …"_ — and confirm any install command it proposes.
 
 ## Official desktop app
 

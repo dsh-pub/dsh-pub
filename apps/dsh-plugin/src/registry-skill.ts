@@ -1,19 +1,36 @@
-const registrySkill = {
-	name: "dsh-pub",
-	source: "runtime",
-	description: [
-		"Discover, search and install DeepSeek Harness plugins and bundles from the",
-		"bilingual dsh.pub registry using natural language. Use it when the user wants",
-		"to find, search, compare, install, or remove a Harness plugin / bundle / module",
-		"(插件、扩展、模块), or asks what plugins exist for a task."
-	].join(" "),
-	whenToUse: [
-		"The user asks to find or install a DeepSeek Harness plugin, bundle, or module,",
-		"asks whether a plugin exists for a capability, or wants to browse or compare",
-		"the dsh.pub catalog. Also use it to explain the difference between built-in",
-		"modules, built-in profile layers, and installable Git bundles."
-	].join(" "),
-	content: `# dsh.pub plugin registry
+import type { SkillRegistration } from '@deepseek-ai/dsh-skill';
+
+/**
+ * The dsh.pub registry skill, embedded into the plugin's host half.
+ *
+ * Mounting `@dsh-pub/plugin-directory` into a profile that also mounts the DSH
+ * skill registry gives every agent in that profile a natural-language path to
+ * discover, compare, and install plugins from the dsh.pub registry.
+ *
+ * The body is deterministic prose: it teaches the agent to read the
+ * machine-readable registry at https://dsh.pub/plugins.json, match the user's
+ * request against the fields that JSON advertises, and install only entries
+ * whose `install.installable` is true through the exact `install.command` the
+ * site already computed from the entry's pinned source. It never executes
+ * third-party code and never fabricates an install claim for built-in modules
+ * or discovery-only ecosystem entries.
+ */
+
+const DESCRIPTION = [
+  'Discover, search and install DeepSeek Harness plugins and bundles from the',
+  'bilingual dsh.pub registry using natural language. Use it when the user wants',
+  'to find, search, compare, install, or remove a Harness plugin / bundle / module',
+  '(插件、扩展、模块), or asks what plugins exist for a task.',
+].join(' ');
+
+const WHEN_TO_USE = [
+  'The user asks to find or install a DeepSeek Harness plugin, bundle, or module,',
+  'asks whether a plugin exists for a capability, or wants to browse or compare',
+  'the dsh.pub catalog. Also use it to explain the difference between built-in',
+  'modules, built-in profile layers, and installable Git bundles.',
+].join(' ');
+
+const CONTENT = `# dsh.pub plugin registry
 
 You help users discover and install DeepSeek Harness plugins through the dsh.pub
 bilingual, source-backed registry. Only claims you can trace to
@@ -107,29 +124,12 @@ clones, downloads, or active installations. Say so when quoting it.
 - If you cannot confirm a plugin exists, say so and offer to re-search.
 - "Listed / installable" means a pinned public bundle contract passed automated
   checks. It is not a security audit, runtime smoke test, or endorsement.
-`
+`;
+
+export const registrySkill: SkillRegistration = {
+  name: 'dsh-pub',
+  source: 'runtime',
+  description: DESCRIPTION,
+  whenToUse: WHEN_TO_USE,
+  content: CONTENT,
 };
-//#endregion
-//#region src/index.ts
-/**
-* dsh.pub directory plugin, node half.
-*
-* The host half contributes one embedded skill to any profile that mounts the
-* DSH skill registry, so agents can use natural language to search the dsh.pub
-* registry and install genuinely installable Git bundles. The browser half
-* (`client`) remains the read-only bilingual directory in Settings.
-*/
-/** Service names this host plugin requires at startup. The skill registry is optional. */
-const inject = [];
-/**
-* Host plugin body. Register the dsh.pub registry skill the moment the `skills`
-* service is available; when the profile has no skill registry, the plugin
-* loads as a harmless read-only directory.
-*/
-function apply(ctx) {
-	ctx.inject(["skills"], (skillCtx) => {
-		skillCtx.effect(() => skillCtx.skills.register(registrySkill), "dsh-pub: register registry skill");
-	});
-}
-//#endregion
-export { apply, inject };
