@@ -3,6 +3,8 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 
 import snapshot from './catalog.generated.json' with { type: 'json' };
+import { defaultDirectoryQuery, queryDirectory } from './catalog-query.js';
+import { directoryGitInstallSpec } from './git-install-spec.js';
 import { apply } from './index.js';
 
 describe('DSH client assembly', () => {
@@ -87,6 +89,44 @@ describe('DSH client assembly', () => {
     expect(html).toContain('https://dsh.pub/en/plugins/');
     expect(html).toContain('https://www.deepseek.com/harness/');
     expect(html).toContain('Official desktop app');
+    expect(html).not.toContain('dshpub-install');
     expect(html).not.toContain('<script');
+  });
+
+  it('offers one install button for each pinned Git entry when the desktop manager is present', () => {
+    let Section: undefined | ((props: never) => React.ReactNode);
+    const installBundle = vi.fn(async () => ({ ok: true, value: { application: 'applied' } }));
+    const ctx = {
+      effect: vi.fn((factory: () => unknown) => factory()),
+      locale: {
+        register: vi.fn(() => vi.fn()),
+        bind: vi.fn(() => (key: string) => key),
+      },
+      remote: {
+        pluginManager: {
+          inspect: vi.fn(async () => ({ ok: true, value: { status: 'accepted' } })),
+          installBundle,
+        },
+      },
+      slots: {
+        inject: vi.fn((_name: string, factory: () => unknown) => factory()),
+        register: vi.fn((_options, component) => {
+          Section = component;
+          return vi.fn();
+        }),
+      },
+    };
+
+    apply(ctx);
+    const html = renderToStaticMarkup(
+      createElement(Section!, { t: (key: string) => key } as never),
+    );
+    const installable = queryDirectory(snapshot.entries, defaultDirectoryQuery).entries.filter(
+      (entry) => directoryGitInstallSpec(entry),
+    );
+
+    expect(installable.length).toBeGreaterThan(0);
+    expect(html.match(/class="dshpub-install"/g)).toHaveLength(installable.length);
+    expect(html).toContain('>install<');
   });
 });

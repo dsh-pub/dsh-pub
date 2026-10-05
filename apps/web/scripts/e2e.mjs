@@ -230,6 +230,7 @@ async function assertSeoSurface() {
     ) ||
     !homepage.includes('页面可能展示 Google 广告') ||
     !homepage.includes('DeepSeek Harness 桌面端现已开箱即用') ||
+    !homepage.includes('一键安装其中的插件') ||
     !homepage.includes('https://www.deepseek.com/harness/') ||
     !homepage.includes('github:dsh-pub/dsh-pub#main&amp;path:/apps/dsh-plugin')
   ) {
@@ -251,6 +252,7 @@ async function assertSeoSurface() {
     ) ||
     !englishHomepage.includes('How should I choose a DeepSeek Harness plugin?') ||
     !englishHomepage.includes('The DeepSeek Harness desktop app is ready to install') ||
+    !englishHomepage.includes('install its plugins in one click') ||
     !englishHomepage.includes('https://www.deepseek.com/harness/') ||
     !englishHomepage.includes('github:dsh-pub/dsh-pub#main&amp;path:/apps/dsh-plugin')
   ) {

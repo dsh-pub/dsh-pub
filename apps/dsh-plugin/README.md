@@ -5,8 +5,11 @@ ships a compact, source-pinned snapshot of every public plugin and bundle shown 
 provides local search, capability topics, source/runtime/distribution filters, deterministic sorts,
 and links back to the full source-backed detail pages.
 
-The page is a read-only catalog surface. Opening it does not fetch, install, import, or execute code
-from any catalog entry.
+Browsing uses the bundled snapshot and does not fetch or execute catalog entries. On the desktop
+app, each Git-installable entry has an Install button. That button asks the desktop plugin manager
+to fetch the entry's pinned GitHub commit and enable it in the current profile. Entries included
+with DSH stay labeled as included. A directory listing is not an audit: after installation, that
+plugin runs in the profile.
 
 ## Install from this repository
 

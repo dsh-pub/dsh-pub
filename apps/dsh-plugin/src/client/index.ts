@@ -1,5 +1,8 @@
+import { createElement } from 'react';
+
 import { DirectorySection } from './DirectorySection.js';
-import type { DshClientContext } from './dsh-contract.js';
+import type { DirectorySectionProps, DshClientContext } from './dsh-contract.js';
+import { directoryInstaller } from './install-entry.js';
 import { en, zh } from './locales.js';
 import { styles } from './styles.js';
 
@@ -33,6 +36,7 @@ export function apply(ctx: DshClientContext): void {
   ctx.effect(mountStyles, 'dsh.pub: directory styles');
 
   const t = ctx.locale.bind(namespace);
+  const installer = directoryInstaller(ctx);
   ctx.slots.inject('settings.section', () =>
     ctx.slots.register(
       {
@@ -42,7 +46,8 @@ export function apply(ctx: DshClientContext): void {
         label: () => t('nav'),
         locale: namespace,
       },
-      DirectorySection,
+      (props: DirectorySectionProps) =>
+        createElement(DirectorySection, installer ? { ...props, installer } : props),
     ),
   );
 }

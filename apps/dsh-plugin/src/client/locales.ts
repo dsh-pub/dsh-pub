@@ -3,7 +3,8 @@ export const en = {
   nav: 'dsh.pub Registry',
   eyebrow: 'Source-backed plugin directory',
   title: 'Discover the DSH ecosystem',
-  summary: 'Browse every public plugin and bundle from dsh.pub without leaving DeepSeek Harness.',
+  summary:
+    'Browse every public plugin and bundle from dsh.pub, and install a Git-backed entry into this profile with one click.',
   desktopNote:
     'Install this directory in the official desktop app by pasting its GitHub address into Add plugin.',
   desktopLink: 'Official desktop app',
@@ -30,6 +31,14 @@ export const en = {
   allDistribution: 'All distribution',
   installable: 'Git installable',
   included: 'Included with DSH',
+  install: 'Install',
+  installing: 'Installing…',
+  installed: 'Installed',
+  alreadyInstalled: 'Already in this profile',
+  restartRequired: 'Restart DSH to use it',
+  overridden: 'Installed. An existing plugin overrides part of it.',
+  installFailed: 'Install failed',
+  retryInstall: 'Retry',
   entryType: 'Type',
   allTypes: 'Plugins + bundles',
   plugin: 'Plugin',
@@ -51,7 +60,7 @@ export const en = {
   page: 'Page',
   of: 'of',
   safetyNote:
-    'Directory data only. Browsing this page does not load or execute third-party plugin code.',
+    "Browsing uses the bundled snapshot. Install downloads that entry's pinned Git revision into this profile and enables it. A listing is not an audit.",
 } as const;
 
 export type DirectoryKey = keyof typeof en;
@@ -61,7 +70,7 @@ export const zh: Record<DirectoryKey, string> = {
   nav: 'dsh.pub 插件目录',
   eyebrow: '有源码依据的插件目录',
   title: '发现 DSH 插件生态',
-  summary: '无需离开 DeepSeek Harness，即可浏览 dsh.pub 收录的全部公开插件与组合包。',
+  summary: '浏览 dsh.pub 收录的全部公开插件与组合包，并一键把可安装条目装进当前配置。',
   desktopNote: '在官方桌面端的「添加插件」中粘贴本仓库的 GitHub 地址，即可安装并浏览 dsh.pub。',
   desktopLink: '官方桌面端',
   snapshot: '内置目录快照',
@@ -87,6 +96,14 @@ export const zh: Record<DirectoryKey, string> = {
   allDistribution: '全部分发方式',
   installable: '可从 Git 安装',
   included: '随 DSH 提供',
+  install: '安装',
+  installing: '正在安装…',
+  installed: '已安装',
+  alreadyInstalled: '当前配置里已经有了',
+  restartRequired: '请重启 DSH 后再使用',
+  overridden: '已安装。已有插件覆盖了其中一部分。',
+  installFailed: '安装失败',
+  retryInstall: '重试',
   entryType: '条目类型',
   allTypes: '插件与组合包',
   plugin: '插件',
@@ -107,5 +124,6 @@ export const zh: Record<DirectoryKey, string> = {
   next: '下一页',
   page: '第',
   of: '页，共',
-  safetyNote: '这里只浏览目录数据，不会加载或执行任何第三方插件代码。',
+  safetyNote:
+    '浏览只用内置快照。安装会把该条目固定的 Git 版本下载到当前配置并启用。收录不代表已经审计。',
 };

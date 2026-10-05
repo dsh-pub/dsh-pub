@@ -348,6 +348,35 @@ export const styles = String.raw`
   color: var(--dsw-alias-label-secondary);
 }
 
+.dshpub-install {
+  min-height: 28px;
+  border: 1px solid var(--dsw-alias-brand-primary);
+  border-radius: 6px;
+  padding: 4px 10px;
+  background: transparent;
+  color: var(--dsw-alias-brand-primary);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.dshpub-install:disabled {
+  cursor: default;
+  opacity: .6;
+}
+
+.dshpub-install-status {
+  flex-basis: 100%;
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.dshpub-install-status[data-state="failed"] {
+  color: var(--dsw-alias-label-secondary);
+}
+
 .dshpub-empty {
   padding: 56px 20px;
   border-top: 1px solid var(--dsw-alias-border-l2);
