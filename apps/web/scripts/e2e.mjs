@@ -175,6 +175,12 @@ async function assertSeoSurface() {
   if (sitemap.includes('/plugins/open-sea-skin/')) {
     throw new Error('The sitemap still lists a noindex automated plugin page.');
   }
+  if (
+    sitemap.includes('/plugins/dsh-fal-image-gen/') ||
+    sitemap.includes('/plugins/dsh-im-hub-media/')
+  ) {
+    throw new Error('The sitemap still lists a publisher-delisted plugin page.');
+  }
   if (!sitemap.includes('hreflang="en"') || !sitemap.includes('hreflang="zh-CN"')) {
     throw new Error('The sitemap does not pair English and Chinese variants.');
   }
@@ -389,6 +395,16 @@ async function assertAgentGuide() {
     ) ||
     !index.ecosystem?.some(
       (entry) => entry.name === 'deepseek-harness' && entry.discoveryOnly === true,
+    ) ||
+    index.registry?.some(
+      (entry) =>
+        entry.source?.repository === 'https://github.com/GooDAnDReaDY/dsh-fal-image-gen' ||
+        entry.source?.repository === 'https://github.com/GooDAnDReaDY/dsh-im-hub-media',
+    ) ||
+    index.ecosystem?.some(
+      (entry) =>
+        entry.sourceRepository === 'https://github.com/GooDAnDReaDY/dsh-fal-image-gen' ||
+        entry.sourceRepository === 'https://github.com/GooDAnDReaDY/dsh-im-hub-media',
     )
   ) {
     throw new Error('The static plugin index is incomplete or inconsistent with catalog sources.');
@@ -489,6 +505,21 @@ try {
   await assertPage('/en/plugins/', 'Community · source reviewed');
   await assertPage('/en/plugins/', 'data-provenance="community-reviewed"');
   await assertPage('/en/plugins/', 'data-category-filter');
+  await assertPageOmits('/en/plugins/', 'dsh-fal-image-gen');
+  await assertPageOmits('/en/plugins/', 'dsh-im-hub-media');
+  await assertPageOmits('/zh/plugins/', 'dsh-fal-image-gen');
+  await assertPageOmits('/zh/plugins/', 'dsh-im-hub-media');
+  for (const path of [
+    '/en/plugins/dsh-fal-image-gen/',
+    '/zh/plugins/dsh-fal-image-gen/',
+    '/en/plugins/dsh-im-hub-media/',
+    '/zh/plugins/dsh-im-hub-media/',
+  ]) {
+    const response = await fetch(`${origin}${path}`);
+    if (response.status !== 404) {
+      throw new Error(`${path} should stay delisted (status ${response.status}).`);
+    }
+  }
   await assertStylesContain('/en/plugins/', '[hidden]{display:none}');
   await assertPage('/zh/plugins/client-ui-trajectory/', 'dsh-client-ui-trajectory');
   await assertPage('/zh/plugins/web-app/', '随 Profile 使用，无需单独安装');

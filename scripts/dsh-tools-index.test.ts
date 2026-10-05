@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { parseDshToolsIndex } from './sync-dsh-tools-index.mjs';
+import { excludeCatalogRepositories, parseDshToolsIndex } from './sync-dsh-tools-index.mjs';
 
 const fixture = `
 <article class="card">
@@ -36,5 +36,31 @@ describe('DSH.Tools public index parser', () => {
         detailUrl: 'https://dsh.tools/plugins/acme-memory',
       },
     ]);
+  });
+
+  it('removes publisher-delisted repositories from the ecosystem snapshot', () => {
+    const entries = parseDshToolsIndex(
+      `${fixture}
+<article class="card">
+  <div><img src="https://avatars.githubusercontent.com/u/2?v=4"><div>
+    <a href="/plugins/dsh-fal-image-gen">FAL Image Gen</a>
+    <p class="truncate text-xs text-zinc-500">GooDAnDReaDY</p>
+  </div></div>
+  <a href="https://github.com/GooDAnDReaDY/dsh-fal-image-gen">Source</a>
+  <p class="mt-4 line-clamp-3 text-sm">Archived FAL plugin.</p>
+  <div class="mt-4 flex flex-wrap gap-1.5">
+    <span>Native Plugin</span><span>Other</span><span>Archived</span>
+  </div>
+  <div>1 stars</div><div>0 forks</div><div>Updated 2d ago</div>
+</article>`,
+    );
+
+    expect(entries).toHaveLength(2);
+    expect(
+      excludeCatalogRepositories(
+        entries,
+        new Set(['https://github.com/goodandready/dsh-fal-image-gen']),
+      ).map((entry) => entry.sourceRepository),
+    ).toEqual(['https://github.com/Acme/memory-kit']);
   });
 });

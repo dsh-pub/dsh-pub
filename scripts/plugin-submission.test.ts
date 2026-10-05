@@ -376,6 +376,31 @@ describe('GitHub pull request plugin integration', () => {
     expect(second.entry.description.en).toBe('Adds a clock tool to DeepSeek Harness.');
   });
 
+  it('rejects publisher-delisted repositories even when they are already listed', async () => {
+    await expect(
+      createSubmissionUpdate({
+        ...submissionUpdateInput(fetchGitHub),
+        excludedRepositories: new Set(['https://github.com/example/dsh-clock']),
+      }),
+    ).rejects.toMatchObject({
+      code: 'publisher_delisted',
+      message: 'Repository is excluded from the catalog by publisher request.',
+    });
+
+    const listed = await createSubmissionUpdate(submissionUpdateInput(fetchGitHub));
+    await expect(
+      createSubmissionUpdate({
+        ...submissionUpdateInput(async () => {
+          throw new Error('excluded repositories must not be inspected');
+        }),
+        communityCatalog: listed.communityCatalog,
+        communitySources: listed.communitySources,
+        excludedRepositories: ['https://github.com/example/dsh-clock'],
+        registry: listed.registry,
+      }),
+    ).rejects.toMatchObject({ code: 'publisher_delisted' });
+  });
+
   it('rejects unbounded package metadata', async () => {
     const oversizedManifest = JSON.stringify({
       ...JSON.parse(manifest),

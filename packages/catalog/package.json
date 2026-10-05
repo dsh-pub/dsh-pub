@@ -8,6 +8,7 @@
     "./catalog": "./src/catalog.generated.json",
     "./community": "./src/community.generated.json",
     "./community-sources": "./src/community.sources.json",
+    "./excluded-repositories": "./src/excluded-repositories.json",
     "./topics": "./src/topics.ts"
   },
   "scripts": {

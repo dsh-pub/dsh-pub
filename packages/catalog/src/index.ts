@@ -1,5 +1,6 @@
 import catalogJson from './catalog.generated.json' with { type: 'json' };
 import communityCatalogJson from './community.generated.json' with { type: 'json' };
+import excludedRepositoryPolicyJson from './excluded-repositories.json' with { type: 'json' };
 
 export type CatalogEntryType = 'plugin' | 'bundle' | 'seam' | 'library';
 
@@ -120,6 +121,10 @@ export interface CommunityCatalog {
 
 export const catalog = catalogJson as Catalog;
 export const communityCatalog = communityCatalogJson as CommunityCatalog;
+export const excludedRepositoryPolicy = excludedRepositoryPolicyJson as {
+  schemaVersion: 1;
+  repositories: Array<{ issue: number; reason: string; repository: string }>;
+};
 export const allCatalogEntries = [...catalog.entries, ...communityCatalog.entries];
 
 export function getCatalogEntry(slug: string): CatalogEntry | undefined {

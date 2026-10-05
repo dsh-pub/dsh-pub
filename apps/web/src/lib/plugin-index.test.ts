@@ -62,5 +62,17 @@ describe('machine-readable plugin index', () => {
         sourceRepository: 'https://github.com/deepseek-ai/deepseek-harness',
       }),
     );
+    expect(
+      body.registry.map((entry: { source: { repository: string } }) => entry.source.repository),
+    ).not.toContain('https://github.com/GooDAnDReaDY/dsh-fal-image-gen');
+    expect(
+      body.registry.map((entry: { source: { repository: string } }) => entry.source.repository),
+    ).not.toContain('https://github.com/GooDAnDReaDY/dsh-im-hub-media');
+    expect(
+      body.ecosystem.map((entry: { sourceRepository: string }) => entry.sourceRepository),
+    ).not.toContain('https://github.com/GooDAnDReaDY/dsh-fal-image-gen');
+    expect(
+      body.ecosystem.map((entry: { sourceRepository: string }) => entry.sourceRepository),
+    ).not.toContain('https://github.com/GooDAnDReaDY/dsh-im-hub-media');
   });
 });
