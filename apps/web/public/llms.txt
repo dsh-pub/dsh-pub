@@ -10,8 +10,12 @@
 
 ## Catalog
 
-- [Machine-readable plugin index](https://dsh.pub/plugins.json): Static JSON for Agent-side search
-  across Registry records and discovery-only ecosystem candidates.
+- [Plugin search API](https://dsh.pub/api/plugins?q=web+search): Query the registry server-side and
+  receive only matching entries with their commit-pinned install commands. Preferred for Agent-side
+  search. Supports `q`, `category`, `type`, `installable`, `builtIn`, `limit`, and `offset`.
+- [Machine-readable plugin index](https://dsh.pub/plugins.json): Complete static JSON for Agent-side
+  search across Registry records and discovery-only ecosystem candidates. Several megabytes — prefer
+  the search API and avoid loading it whole.
 - [English plugin catalog](https://dsh.pub/en/plugins/): Built-in and source-reviewed community
   capabilities.
 - [中文插件目录](https://dsh.pub/zh/plugins/): 内置插件与经过源码契约核对的社区插件。

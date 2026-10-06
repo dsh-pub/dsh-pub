@@ -409,6 +409,32 @@ async function assertAgentGuide() {
   ) {
     throw new Error('The static plugin index is incomplete or inconsistent with catalog sources.');
   }
+
+  // The compact projection backs the `/api/plugins` search endpoint. It must
+  // cover exactly the same entries as the public index and honour the same
+  // delisting policy; `tuple.includes` keeps this assertion independent of the
+  // documented tuple order.
+  const searchResponse = await fetch(`${origin}/plugins-search.json`);
+  const search = await searchResponse.json();
+  const searchTuples = Array.isArray(search.entries) ? search.entries : [];
+  if (
+    !searchResponse.ok ||
+    searchResponse.headers.get('content-type') !== 'application/json; charset=utf-8' ||
+    search.schemaVersion !== 1 ||
+    !Array.isArray(search.dictionaries?.categories) ||
+    searchTuples.length !== marketplaceCount ||
+    !searchTuples.some((tuple) => Array.isArray(tuple) && tuple.includes('dsh-automation')) ||
+    searchTuples.some(
+      (tuple) =>
+        Array.isArray(tuple) &&
+        (tuple.includes('GooDAnDReaDY/dsh-fal-image-gen') ||
+          tuple.includes('GooDAnDReaDY/dsh-im-hub-media')),
+    )
+  ) {
+    throw new Error(
+      'The compact search projection is missing or inconsistent with catalog sources.',
+    );
+  }
 }
 
 async function assertWebPluginGuide(page) {

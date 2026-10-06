@@ -7,13 +7,15 @@ import type { SkillRegistration } from '@deepseek-ai/dsh-skill';
  * skill registry gives every agent in that profile a natural-language path to
  * discover, compare, and install plugins from the dsh.pub registry.
  *
- * The body is deterministic prose: it teaches the agent to read the
- * machine-readable registry at https://dsh.pub/plugins.json, match the user's
- * request against the fields that JSON advertises, and install only entries
- * whose `install.installable` is true through the exact `install.command` the
- * site already computed from the entry's pinned source. It never executes
- * third-party code and never fabricates an install claim for built-in modules
- * or discovery-only ecosystem entries.
+ * The body is deterministic prose: it teaches the agent to query the
+ * machine-readable search endpoint at https://dsh.pub/api/plugins, match the
+ * user's request against the fields that response advertises, and install only
+ * entries whose `install.installable` is true through the exact
+ * `install.command` the site already computed from the entry's pinned source. It
+ * never executes third-party code and never fabricates an install claim for
+ * built-in modules or discovery-only ecosystem entries. The complete
+ * `plugins.json` dump stays documented as a last resort because it is far too
+ * large for a single fetch.
  */
 
 const DESCRIPTION = [
@@ -33,37 +35,56 @@ const WHEN_TO_USE = [
 const CONTENT = `# dsh.pub plugin registry
 
 You help users discover and install DeepSeek Harness plugins through the dsh.pub
-bilingual, source-backed registry. Only claims you can trace to
-\`https://dsh.pub/plugins.json\` are trustworthy; never invent a plugin name or an
-install command.
+bilingual, source-backed registry. Only claims you can trace to a dsh.pub
+response are trustworthy; never invent a plugin name or an install command.
 
 ## Data source
 
-The registry publishes one machine-readable document:
+The registry publishes two machine-readable documents:
 
-- \`https://dsh.pub/plugins.json\` (schemaVersion 1)
+- \`https://dsh.pub/api/plugins\` — the **search endpoint**. Use this one.
+- \`https://dsh.pub/plugins.json\` (schemaVersion 1) — the complete dump of every
+  entry. It is several megabytes and will not fit in a single web fetch, so treat
+  it as a last resort and never try to load it whole.
 
-Fetch it with your web/fetch tool. It has two top-level collections:
+## Search
 
-- \`registry\` — plugins and bundles with a pinned source revision. These may be
-  installable (see below) or built-in.
-- \`ecosystem\` — discovery-only external projects (\`discoveryOnly: true\`).
-  They advertise related work but are never installable through dsh.pub.
+Query the search endpoint in natural language:
 
-Each registry entry has \`slug\`, \`name\`, bilingual \`description\`, \`category\`,
+\`\`\`text
+https://dsh.pub/api/plugins?q=<terms>&limit=20
+\`\`\`
+
+| Parameter     | Meaning                                                                   |
+| ------------- | ------------------------------------------------------------------------- |
+| \`q\`           | Free text in either language. Every whitespace-separated term must match.  |
+| \`category\`    | Exact, case-insensitive category filter.                                  |
+| \`type\`        | Exact, case-insensitive type filter (\`plugin\`, \`bundle\`, …).                |
+| \`installable\` | \`true\` keeps only entries with a commit-pinned install command.             |
+| \`builtIn\`     | \`true\` keeps only built-in modules.                                        |
+| \`limit\`       | Page size, 1–50 (default 20).                                              |
+| \`offset\`      | Skip that many ranked matches (default 0).                                 |
+
+Matching is case-insensitive and covers the \`searchFields\` the registry
+advertises: \`name\`, \`description\` (both languages), \`category\`, \`type\`,
+\`tools\`, \`uiSlots\`, \`profiles\`, and \`source.repository\`. A term that
+matches the name outranks one that matches only the description, and the
+ordering is stable, so the same query always returns the same page. The response
+reports \`total\`, \`returned\`, \`hasMore\`, and \`entries\`; page with \`offset\`
+rather than raising \`limit\` above 50.
+
+If your fetch tool cannot carry the response, query it from the shell instead of
+downloading the dump:
+
+\`\`\`bash
+curl -s 'https://dsh.pub/api/plugins?q=web+search&limit=10'
+\`\`\`
+
+Each entry has \`slug\`, \`name\`, bilingual \`description\`, \`category\`,
 \`type\`, \`provenance\`, \`builtIn\`, \`tools\`, \`uiSlots\`, \`profiles\`,
 \`source\` (\`repository\`, \`directory\`, \`commit\`), \`install\`
 (\`installable\` and a ready \`command\`), and \`urls.en\` / \`urls.zh\` detail
 pages.
-
-## Search
-
-Match the user's request against the \`searchFields\` the JSON names:
-\`name\`, \`description\`, \`category\`, \`type\`, \`tools\`, \`uiSlots\`,
-\`profiles\`, and \`source.repository\`. The descriptions are bilingual, so
-match both languages. If the full document is too large for one fetch, re-fetch
-and reason over the \`registry\` list, or instruct the user with candidate
-names and their \`urls.en\` / \`urls.zh\` pages.
 
 When several entries match, present the strongest candidates with, for each:
 name, one-line purpose, provenance, and — only when installable — the exact
@@ -107,7 +128,9 @@ Omit the \`&path:/…\` fragment when \`source.directory\` is empty.
   independent Git packages. Do not invent an install command; instead share the
   entry's detail page and explain that it is already included.
 - \`ecosystem\` entries are \`discoveryOnly: true\` and are never installed
-  through dsh.pub. Point to their source instead.
+  through dsh.pub. Search results do not include them; point the user at the
+  catalog pages (\`https://dsh.pub/en/plugins/\` or \`/zh/plugins/\`) and at the
+  project's own source instead.
 
 ## Telemetry and the install count
 
@@ -119,9 +142,12 @@ clones, downloads, or active installations. Say so when quoting it.
 
 ## Truthfulness checklist
 
-- Only the \`install.command\` the JSON returned (or the documented native
+- Only the \`install.command\` the response returned (or the documented native
   fallback) may be presented as an install route. Never invent commands.
-- If you cannot confirm a plugin exists, say so and offer to re-search.
+- If a query returns nothing, broaden the terms or drop a filter and re-query;
+  do not guess a plugin name.
+- Never present a truncated page as the whole result set — read \`total\` and
+  \`hasMore\`, and page with \`offset\`.
 - "Listed / installable" means a pinned public bundle contract passed automated
   checks. It is not a security audit, runtime smoke test, or endorsement.
 `;

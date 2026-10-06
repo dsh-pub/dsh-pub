@@ -62,7 +62,24 @@ describe('dsh.pub registry skill', () => {
   });
 
   it('teaches the agent to read the machine-readable registry', () => {
+    expect(registrySkill.content).toContain('https://dsh.pub/api/plugins');
     expect(registrySkill.content).toContain('https://dsh.pub/plugins.json');
+  });
+
+  it('documents the search endpoint contract', () => {
+    expect(registrySkill.content).toContain('installable');
+    expect(registrySkill.content).toContain('builtIn');
+    expect(registrySkill.content).toContain('limit');
+    expect(registrySkill.content).toContain('offset');
+    expect(registrySkill.content).toContain('hasMore');
+  });
+
+  it('warns that the complete dump is too large for one fetch', () => {
+    expect(registrySkill.content).toContain('will not fit in a single web fetch');
+  });
+
+  it('offers a shell fallback for the search endpoint', () => {
+    expect(registrySkill.content).toContain("curl -s 'https://dsh.pub/api/plugins");
   });
 
   it('teaches the exact, commit-pinned install command', () => {
