@@ -160,12 +160,23 @@ surface without an MVP need for authenticated or per-user rendering.
 
 | Method | Route                      | Purpose                                                 |
 | ------ | -------------------------- | ------------------------------------------------------- |
+| `GET`  | `/api/plugins`             | Search the registry and return only matching entries    |
 | `GET`  | `/api/submission-config`   | Return the public Turnstile site key                    |
 | `POST` | `/api/submissions`         | Verify Turnstile, persist a job, and start the Workflow |
 | `GET`  | `/api/submissions/:id`     | Read submission status and the Pull Request URL         |
 | `POST` | `/api/install-intents`     | Idempotently record a pending CLI event                 |
 | `POST` | `/api/install-completions` | Complete a known pending event and increment once       |
 | `GET`  | `/api/plugins/:slug/stats` | Read a plugin's completed CLI install total             |
+
+`GET /api/plugins` is the Agent-facing search surface. `/plugins.json` stays the complete public
+document, but at the current catalog size it is several megabytes and exceeds a model-facing fetch
+limit, so the Worker searches a compact projection instead: the web build emits
+`/plugins-search.json` from the same catalog entries (dictionary-coded positional tuples, built by
+`packages/catalog/src/plugin-search.ts`), and the route loads it once per isolate through the
+`ASSETS` binding. The route accepts `q`, `category`, `type`, `installable`, `builtIn`, `limit`
+(1–50, default 20), and `offset`, requires every `q` term to match, and returns the same entry shape
+as `/plugins.json` — including the commit-pinned `install.command` — so an Agent never has to carry
+the full dump.
 
 Install intents and statistics also require a slug from the checked-in installable registry; this
 keeps arbitrary keys out of D1 but does not prove that a caller used the CLI. CORS is limited to the

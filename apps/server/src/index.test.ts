@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
+import { buildPluginSearchIndex } from '@dsh-pub/catalog/plugin-search';
+
 import {
   handleRequest,
   type D1DatabaseLike,
@@ -748,5 +750,66 @@ describe('analytics verification', () => {
     });
     expect(response.status).toBe(503);
     expect(await response.json()).not.toHaveProperty('verified', true);
+  });
+});
+
+describe('plugin search endpoint', () => {
+  const searchIndex = buildPluginSearchIndex(
+    [
+      {
+        availability: { profiles: null },
+        builtIn: false,
+        capabilities: { tools: null, uiContributions: null, uiSlotsDeclared: null },
+        category: 'models',
+        description: { en: 'Adds a web search provider.', zh: '提供一个网页搜索能力。' },
+        distribution: { installable: true },
+        name: 'dsh-web-search',
+        slug: 'dsh-web-search',
+        source: {
+          commit: 'd'.repeat(40),
+          directory: '',
+          repository: 'https://github.com/example/dsh-web-search',
+        },
+        type: 'plugin',
+      },
+    ],
+    '2026-01-01T00:00:00.000Z',
+  );
+
+  const searchEnv = (): WorkerBindings => ({
+    ...createEnv().env,
+    ASSETS: { fetch: async () => Response.json(searchIndex) },
+  });
+
+  it('rejects a malformed query parameter', async () => {
+    const response = await handleRequest(
+      new Request('https://dsh.pub/api/plugins?limit=nope'),
+      searchEnv(),
+    );
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toMatchObject({ error: 'invalid_limit' });
+  });
+
+  it('serves a commit-pinned page from the published projection', async () => {
+    const response = await handleRequest(
+      new Request('https://dsh.pub/api/plugins?q=web&limit=5'),
+      searchEnv(),
+    );
+    expect(response.status).toBe(200);
+    expect(response.headers.get('Content-Type')).toBe('application/json; charset=utf-8');
+    expect(response.headers.get('Cache-Control')).toBe('public, max-age=300');
+    await expect(response.json()).resolves.toMatchObject({
+      entries: [
+        {
+          install: {
+            command: `npx dshpub add example/dsh-web-search --ref ${'d'.repeat(40)}`,
+            installable: true,
+          },
+          slug: 'dsh-web-search',
+        },
+      ],
+      returned: 1,
+      total: 1,
+    });
   });
 });

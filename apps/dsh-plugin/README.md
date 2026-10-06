@@ -9,11 +9,13 @@ complementary ways:
   detail pages. Opening it does not fetch, install, import, or execute code from any catalog entry.
 - **A natural-language search + install skill.** The host half registers an embedded skill named
   `dsh-pub`. When the profile also mounts the DSH skill registry and the `skill` tool, agents learn
-  to read the machine-readable registry at `https://dsh.pub/plugins.json`, match a user's request
-  against its documented search fields, and install only entries whose `install.installable` is true
-  through the exact commit-pinned `install.command` the site computed. Built-in modules, built-in
-  profile layers, and discovery-only ecosystem entries are never presented as installable, and
-  install counts stay labeled as CLI-reported completions.
+  to query the machine-readable search endpoint at `https://dsh.pub/api/plugins`, match a user's
+  request against its documented search fields, and install only entries whose
+  `install.installable` is true through the exact commit-pinned `install.command` the site computed.
+  The complete `https://dsh.pub/plugins.json` dump stays documented as a last resort because it is
+  several megabytes and does not fit in a single fetch. Built-in modules, built-in profile layers,
+  and discovery-only ecosystem entries are never presented as installable, and install counts stay
+  labeled as CLI-reported completions.
 
 To enable natural-language search + install, mount this plugin in a profile that also mounts
 `@deepseek-ai/dsh-skill` and `@deepseek-ai/dsh-tool-skill` (the shipped Web and headless profiles do).

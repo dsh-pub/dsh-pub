@@ -22,7 +22,10 @@ describe('dsh.pub DSH plugin artifact', () => {
     expect(client).toContain('window.__ModuleLoader__.load');
     expect(client).toContain('@dsh-pub/plugin-directory');
     expect(client).toContain('settings.section');
-    expect(host).toContain('function apply()');
+    // The Host entry takes a context so it can inject the optional skill registry,
+    // but it stays a plain, side-effect-free `apply` with no outbound fetch.
+    expect(host).toContain('function apply(');
+    expect(host).toContain('"skills"');
     expect(host).not.toContain('fetch(');
 
     let registration:

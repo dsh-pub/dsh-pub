@@ -1,4 +1,5 @@
 import installableRegistry from './installable-slugs.generated.json' with { type: 'json' };
+import { PluginSearchQueryError, runPluginSearch } from './plugin-search.js';
 
 const CLI_REPORTED_METRIC = 'CLI-reported completed installs';
 const MAX_BODY_BYTES = 4_096;
@@ -620,6 +621,19 @@ export const handleRequest = async (
   }
 
   try {
+    if (request.method === 'GET' && url.pathname === '/api/plugins') {
+      try {
+        const body = await runPluginSearch(env.ASSETS, request);
+        const response = json(body, 200, origin);
+        response.headers.set('Cache-Control', 'public, max-age=300');
+        return response;
+      } catch (error) {
+        if (error instanceof PluginSearchQueryError) {
+          return json({ error: error.code, message: error.message }, 400, origin);
+        }
+        throw error;
+      }
+    }
     if (request.method === 'GET' && url.pathname === '/api/analytics-config') {
       if (!env.TURNSTILE_SITE_KEY || !env.TURNSTILE_SECRET_KEY) {
         return json({ error: 'analytics_unavailable' }, 503, origin);
