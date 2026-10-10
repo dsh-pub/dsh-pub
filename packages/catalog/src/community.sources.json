@@ -126230,6 +126230,27 @@
       "readmePath": "README.md",
       "licensePath": "LICENSE",
       "automation": { "analyzedAt": "2026-10-10", "method": "automated-static-contract" }
+    },
+    {
+      "repository": "https://github.com/c6huli/dsh-llm-pricing-guard",
+      "commit": "9cd0d72746e868b48a6c8e01c229c11077f5cfa6",
+      "directory": "",
+      "packageName": "dsh-llm-pricing-guard",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/c6huli--dsh-llm-pricing-guard.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/132",
+        "submittedAt": "2026-10-10",
+        "category": "client-ui",
+        "description": {
+          "en": "DSH 插件：修复缺失 imageRequestPricing 的适配器导致 /compact 崩溃（command.execute failed: gateway/internal），并增加上下文压缩进度条 / DSH plugin: fixes /compact crashes on adapters missing imageRequestPricing, and adds a live compaction progress bar above the composer.",
+          "zh": ""
+        }
+      }
     }
   ]
 }

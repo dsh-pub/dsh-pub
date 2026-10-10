@@ -7,9 +7,9 @@
       "generatedAt": "2026-08-13T19:38:46+08:00"
     },
     "community": {
-      "repository": "https://github.com/topics/dsh-plugin",
-      "generatedAt": "2026-10-09T21:29:05.844Z",
-      "policy": "automated-pinned-source-contracts"
+      "repository": "https://github.com/dsh-pub/dsh-pub",
+      "generatedAt": "2026-10-10T19:23:48.000Z",
+      "policy": "pinned-source-contracts"
     }
   },
   "topics": [
@@ -209511,6 +209511,26 @@
       "repository": "https://github.com/zzzmmmnn/dsh-openkapsel",
       "directory": "",
       "commit": "2653a025a3e6a2c821751ff32cca758230c66146"
+    },
+    {
+      "slug": "dsh-llm-pricing-guard",
+      "name": "dsh-llm-pricing-guard",
+      "description": {
+        "en": "DSH 插件：修复缺失 imageRequestPricing 的适配器导致 /compact 崩溃（command.execute failed: gateway/internal），并增加上下文压缩进度条 / DSH plugin: fixes /compact crashes on adapters missing imageRequestPricing, and adds a live compaction progress bar above the composer.",
+        "zh": "DSH 插件：修复缺失 imageRequestPricing 的适配器导致 /compact 崩溃（command.execute failed: gateway/internal），并增加上下文压缩进度条 / DSH plugin: fixes /compact crashes on adapters missing imageRequestPricing, and adds a live compaction progress bar above the composer."
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/c6huli/dsh-llm-pricing-guard",
+      "directory": "",
+      "commit": "9cd0d72746e868b48a6c8e01c229c11077f5cfa6"
     }
   ]
 }
