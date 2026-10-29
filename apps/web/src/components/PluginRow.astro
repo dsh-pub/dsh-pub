@@ -7,7 +7,6 @@ import {
   sourceCoordinate,
   type CatalogEntry,
 } from '../lib/catalog-types.js';
-import { entrySearchText } from '../lib/catalog.js';
 import { categoryLabel, typeLabel } from '../lib/categories.js';
 import { copy, type Locale } from '../lib/i18n.js';
 import CapabilityChecklist from './CapabilityChecklist.astro';
@@ -44,22 +43,14 @@ const provenanceStatement =
   entry.provenance?.status === 'community-automated'
     ? localized(entry.provenance.statement, locale)
     : t.builtInSourceHelp;
+const rowDescription = localized(entry.description, locale).trim();
+const rowDescriptionSummary =
+  rowDescription.length <= 280
+    ? rowDescription
+    : `${rowDescription.slice(0, 279).replace(/[\s，、,;:.]+$/u, '')}…`;
 ---
 
-<article
-  class:list={['plugin-row', { compact }]}
-  data-plugin-row
-  data-catalog-item
-  data-origin="registry"
-  data-search={entrySearchText(entry)}
-  data-type={entry.type}
-  data-category={entry.category}
-  data-availability={entry.distribution.installable ? 'installable' : 'included'}
-  data-provenance={provenance}
-  data-name={displayName(entry).toLocaleLowerCase()}
-  data-stars="0"
-  data-updated="registry"
->
+<article class:list={['plugin-row', { compact }]}>
   <div class="plugin-main">
     <div class="plugin-card-head">
       <div class="plugin-identity">
@@ -74,7 +65,7 @@ const provenanceStatement =
         title={provenanceStatement}>{provenanceLabel}</span
       >
     </div>
-    <p>{localized(entry.description, locale)}</p>
+    <p>{rowDescriptionSummary}</p>
     <div class="tag-row">
       <span class="tag primary">{categoryLabel(entry.category, locale)}</span>
       {entry.runtime.configurable && <span class="tag">{t.configurable}</span>}
