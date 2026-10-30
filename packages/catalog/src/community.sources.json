@@ -188136,6 +188136,27 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/jalilahmad/deepseek-peak-indicator",
+      "commit": "6aa3de9705457fe2d3d05778573533639c40608b",
+      "directory": "",
+      "packageName": "@local/deepseek-peak-indicator",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/jalilahmad--deepseek-peak-indicator.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/170",
+        "submittedAt": "2026-10-30",
+        "category": "client-ui",
+        "description": {
+          "en": "Sidebar-foot DeepSeek API peak / off-peak pricing indicator with a minimal countdown popover.",
+          "zh": ""
+        }
+      }
     }
   ]
 }

@@ -8,7 +8,7 @@
     },
     "community": {
       "repository": "https://github.com/dsh-pub/dsh-pub",
-      "generatedAt": "2026-10-30T13:18:37.000Z",
+      "generatedAt": "2026-10-30T13:54:16.000Z",
       "policy": "pinned-source-contracts"
     }
   },
@@ -309979,6 +309979,26 @@
       "repository": "https://github.com/KB1SLN-Labs/dsh-linear",
       "directory": "",
       "commit": "ab24b723f201ed32918292765ab7e0dadd847217"
+    },
+    {
+      "slug": "deepseek-peak-indicator",
+      "name": "@local/deepseek-peak-indicator",
+      "description": {
+        "en": "Sidebar-foot DeepSeek API peak / off-peak pricing indicator with a minimal countdown popover.",
+        "zh": "Sidebar-foot DeepSeek API peak / off-peak pricing indicator with a minimal countdown popover."
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/jalilahmad/deepseek-peak-indicator",
+      "directory": "",
+      "commit": "6aa3de9705457fe2d3d05778573533639c40608b"
     }
   ]
 }
