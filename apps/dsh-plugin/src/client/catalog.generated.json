@@ -8,7 +8,7 @@
     },
     "community": {
       "repository": "https://github.com/dsh-pub/dsh-pub",
-      "generatedAt": "2026-10-30T08:56:27.000Z",
+      "generatedAt": "2026-10-30T13:18:37.000Z",
       "policy": "pinned-source-contracts"
     }
   },
@@ -309959,6 +309959,26 @@
       "repository": "https://github.com/Deiael/change-review",
       "directory": "",
       "commit": "9f2e2ba641f1029251dfea451e27e88280df2c8a"
+    },
+    {
+      "slug": "dsh-linear",
+      "name": "@kb1slnlabs/dsh-linear",
+      "description": {
+        "en": "Model-facing Linear issue-tracking tools (read, create, update, comments, relations, projects, teams, labels) over the Linear GraphQL API",
+        "zh": "Model-facing Linear issue-tracking tools (read, create, update, comments, relations, projects, teams, labels) over the Linear GraphQL API"
+      },
+      "topic": "other",
+      "category": "bundles",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/KB1SLN-Labs/dsh-linear",
+      "directory": "",
+      "commit": "ab24b723f201ed32918292765ab7e0dadd847217"
     }
   ]
 }

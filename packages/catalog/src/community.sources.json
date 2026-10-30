@@ -188115,6 +188115,27 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/KB1SLN-Labs/dsh-linear",
+      "commit": "ab24b723f201ed32918292765ab7e0dadd847217",
+      "directory": "",
+      "packageName": "@kb1slnlabs/dsh-linear",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/kb1sln-labs--dsh-linear.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/169",
+        "submittedAt": "2026-10-30",
+        "category": "bundles",
+        "description": {
+          "en": "Model-facing Linear issue-tracking tools (read, create, update, comments, relations, projects, teams, labels) over the Linear GraphQL API",
+          "zh": ""
+        }
+      }
     }
   ]
 }

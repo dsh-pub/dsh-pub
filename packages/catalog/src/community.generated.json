@@ -1,10 +1,10 @@
 {
   "source": {
     "repository": "https://github.com/dsh-pub/dsh-pub",
-    "generatedAt": "2026-10-30T08:56:27.000Z",
+    "generatedAt": "2026-10-30T13:18:37.000Z",
     "policy": "pinned-source-contracts"
   },
-  "totals": { "reviewed": 6, "submitted": 39, "automated": 14792, "installable": 14837 },
+  "totals": { "reviewed": 6, "submitted": 40, "automated": 14792, "installable": 14838 },
   "entries": [
     {
       "id": "github:omdsh-dev/dsh-open-in-vscode",
@@ -1080834,6 +1080834,67 @@
         "readme": {
           "en": "https://raw.githubusercontent.com/Deiael/change-review/9f2e2ba641f1029251dfea451e27e88280df2c8a/README.md",
           "zh": "https://raw.githubusercontent.com/Deiael/change-review/9f2e2ba641f1029251dfea451e27e88280df2c8a/README.md"
+        },
+        "modelExperience": {
+          "en": "Not inspected by the automated submission check; inspect the pinned source for model-facing behavior.",
+          "zh": "自动提交检查未核对模型侧行为；请查看固定版本的源码。"
+        },
+        "limitations": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      }
+    },
+    {
+      "id": "github:KB1SLN-Labs/dsh-linear",
+      "slug": "dsh-linear",
+      "name": "@kb1slnlabs/dsh-linear",
+      "version": "0.1.0",
+      "license": "MIT",
+      "type": "bundle",
+      "category": "bundles",
+      "builtIn": false,
+      "provenance": {
+        "status": "community-submitted",
+        "submittedVia": "github-pull-request",
+        "submittedAt": "2026-10-30",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/169",
+        "statement": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      },
+      "description": {
+        "en": "Model-facing Linear issue-tracking tools (read, create, update, comments, relations, projects, teams, labels) over the Linear GraphQL API",
+        "zh": "Model-facing Linear issue-tracking tools (read, create, update, comments, relations, projects, teams, labels) over the Linear GraphQL API"
+      },
+      "source": {
+        "repository": "https://github.com/KB1SLN-Labs/dsh-linear",
+        "directory": "",
+        "commit": "ab24b723f201ed32918292765ab7e0dadd847217"
+      },
+      "runtime": { "hostLoadable": null, "configurable": null, "client": null },
+      "capabilities": { "tools": null, "uiContributions": null, "uiSlotsDeclared": null },
+      "availability": {
+        "profiles": null,
+        "defaultWeb": null,
+        "bundles": ["@kb1slnlabs/dsh-linear"]
+      },
+      "distribution": {
+        "installable": true,
+        "mode": "git-bundle",
+        "activation": "profile-layer",
+        "note": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      },
+      "docs": {
+        "readmePath": "README.md",
+        "readmeZhPath": "README.md",
+        "readme": {
+          "en": "https://raw.githubusercontent.com/KB1SLN-Labs/dsh-linear/ab24b723f201ed32918292765ab7e0dadd847217/README.md",
+          "zh": "https://raw.githubusercontent.com/KB1SLN-Labs/dsh-linear/ab24b723f201ed32918292765ab7e0dadd847217/README.md"
         },
         "modelExperience": {
           "en": "Not inspected by the automated submission check; inspect the pinned source for model-facing behavior.",
