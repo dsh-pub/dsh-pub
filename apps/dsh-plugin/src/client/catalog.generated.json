@@ -7,9 +7,9 @@
       "generatedAt": "2026-08-13T19:38:46+08:00"
     },
     "community": {
-      "repository": "https://github.com/topics/dsh-plugin",
-      "generatedAt": "2026-10-29T21:33:27.239Z",
-      "policy": "automated-pinned-source-contracts"
+      "repository": "https://github.com/dsh-pub/dsh-pub",
+      "generatedAt": "2026-10-30T08:56:27.000Z",
+      "policy": "pinned-source-contracts"
     }
   },
   "topics": [
@@ -309939,6 +309939,26 @@
       "repository": "https://github.com/zztdandan/dsh-opencode-go-quota-settings",
       "directory": "",
       "commit": "2a7dbd4289497f050e8114af9b6c65f55c7babf9"
+    },
+    {
+      "slug": "change-review",
+      "name": "change-review",
+      "description": {
+        "en": "DSH change review board: list/diff/accept/revert agent file edits, then run diff-scoped unit, edge, and exploratory self-tests.",
+        "zh": "DSH change review board: list/diff/accept/revert agent file edits, then run diff-scoped unit, edge, and exploratory self-tests."
+      },
+      "topic": "other",
+      "category": "bundles",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/Deiael/change-review",
+      "directory": "",
+      "commit": "9f2e2ba641f1029251dfea451e27e88280df2c8a"
     }
   ]
 }

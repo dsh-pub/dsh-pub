@@ -188094,6 +188094,27 @@
       "readmePath": "README.md",
       "licensePath": "LICENSE",
       "automation": { "analyzedAt": "2026-10-30", "method": "automated-static-contract" }
+    },
+    {
+      "repository": "https://github.com/Deiael/change-review",
+      "commit": "9f2e2ba641f1029251dfea451e27e88280df2c8a",
+      "directory": "",
+      "packageName": "change-review",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/deiael--change-review.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/167",
+        "submittedAt": "2026-10-30",
+        "category": "bundles",
+        "description": {
+          "en": "DSH change review board: list/diff/accept/revert agent file edits, then run diff-scoped unit, edge, and exploratory self-tests.",
+          "zh": ""
+        }
+      }
     }
   ]
 }
