@@ -188220,6 +188220,27 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/exoticknight/dsh-better-left-sidebar",
+      "commit": "9308c1bbfada86704ad933a2889aedec225aebdb",
+      "directory": "",
+      "packageName": "dsh-better-left-sidebar",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/exoticknight--dsh-better-left-sidebar.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/174",
+        "submittedAt": "2026-10-31",
+        "category": "client-ui",
+        "description": {
+          "en": "A cleaner, better-organized DeepSeek Harness sidebar with support for multiple plugin-defined widgets.",
+          "zh": ""
+        }
+      }
     }
   ]
 }

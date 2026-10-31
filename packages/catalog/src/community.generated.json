@@ -1,10 +1,10 @@
 {
   "source": {
     "repository": "https://github.com/dsh-pub/dsh-pub",
-    "generatedAt": "2026-10-31T09:26:43.000Z",
+    "generatedAt": "2026-10-31T16:35:09.000Z",
     "policy": "pinned-source-contracts"
   },
-  "totals": { "reviewed": 6, "submitted": 44, "automated": 14792, "installable": 14842 },
+  "totals": { "reviewed": 6, "submitted": 45, "automated": 14792, "installable": 14843 },
   "entries": [
     {
       "id": "github:omdsh-dev/dsh-open-in-vscode",
@@ -1081127,6 +1081127,67 @@
         "readme": {
           "en": "https://raw.githubusercontent.com/yinsang0910-star/dsh-feishu-plugin/48ccedbfe10acb833ed4be5e0cc1d4de02ec5ecf/README.md",
           "zh": "https://raw.githubusercontent.com/yinsang0910-star/dsh-feishu-plugin/48ccedbfe10acb833ed4be5e0cc1d4de02ec5ecf/README.md"
+        },
+        "modelExperience": {
+          "en": "Not inspected by the automated submission check; inspect the pinned source for model-facing behavior.",
+          "zh": "自动提交检查未核对模型侧行为；请查看固定版本的源码。"
+        },
+        "limitations": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      }
+    },
+    {
+      "id": "github:exoticknight/dsh-better-left-sidebar",
+      "slug": "dsh-better-left-sidebar",
+      "name": "dsh-better-left-sidebar",
+      "version": "0.1.2",
+      "license": "Apache-2.0",
+      "type": "bundle",
+      "category": "client-ui",
+      "builtIn": false,
+      "provenance": {
+        "status": "community-submitted",
+        "submittedVia": "github-pull-request",
+        "submittedAt": "2026-10-31",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/174",
+        "statement": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      },
+      "description": {
+        "en": "A cleaner, better-organized DeepSeek Harness sidebar with support for multiple plugin-defined widgets.",
+        "zh": "A cleaner, better-organized DeepSeek Harness sidebar with support for multiple plugin-defined widgets."
+      },
+      "source": {
+        "repository": "https://github.com/exoticknight/dsh-better-left-sidebar",
+        "directory": "",
+        "commit": "9308c1bbfada86704ad933a2889aedec225aebdb"
+      },
+      "runtime": { "hostLoadable": null, "configurable": null, "client": null },
+      "capabilities": { "tools": null, "uiContributions": null, "uiSlotsDeclared": null },
+      "availability": {
+        "profiles": null,
+        "defaultWeb": null,
+        "bundles": ["dsh-better-left-sidebar"]
+      },
+      "distribution": {
+        "installable": true,
+        "mode": "git-bundle",
+        "activation": "profile-layer",
+        "note": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      },
+      "docs": {
+        "readmePath": "README.md",
+        "readmeZhPath": "README.md",
+        "readme": {
+          "en": "https://raw.githubusercontent.com/exoticknight/dsh-better-left-sidebar/9308c1bbfada86704ad933a2889aedec225aebdb/README.md",
+          "zh": "https://raw.githubusercontent.com/exoticknight/dsh-better-left-sidebar/9308c1bbfada86704ad933a2889aedec225aebdb/README.md"
         },
         "modelExperience": {
           "en": "Not inspected by the automated submission check; inspect the pinned source for model-facing behavior.",
