@@ -188199,6 +188199,27 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/yinsang0910-star/dsh-feishu-plugin",
+      "commit": "48ccedbfe10acb833ed4be5e0cc1d4de02ec5ecf",
+      "directory": "",
+      "packageName": "@dshfeishu/plugin",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "dist/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/yinsang0910-star--dsh-feishu-plugin.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/173",
+        "submittedAt": "2026-10-31",
+        "category": "client-ui",
+        "description": {
+          "en": "DeepSeek Harness 的飞书连接设置页：四步向导 + 扫码创建应用 + 九项自检",
+          "zh": ""
+        }
+      }
     }
   ]
 }

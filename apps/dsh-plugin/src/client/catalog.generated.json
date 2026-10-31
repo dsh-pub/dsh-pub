@@ -8,7 +8,7 @@
     },
     "community": {
       "repository": "https://github.com/dsh-pub/dsh-pub",
-      "generatedAt": "2026-10-31T08:43:49.000Z",
+      "generatedAt": "2026-10-31T09:26:43.000Z",
       "policy": "pinned-source-contracts"
     }
   },
@@ -310039,6 +310039,26 @@
       "repository": "https://github.com/Lionad-Morotar/dsh-jump",
       "directory": "",
       "commit": "2fb81ebaca7319c20e355d038914299e090258da"
+    },
+    {
+      "slug": "yinsang0910-star-dshfeishu-plugin",
+      "name": "@dshfeishu/plugin",
+      "description": {
+        "en": "DeepSeek Harness 的飞书连接设置页：四步向导 + 扫码创建应用 + 九项自检",
+        "zh": "DeepSeek Harness 的飞书连接设置页：四步向导 + 扫码创建应用 + 九项自检"
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/yinsang0910-star/dsh-feishu-plugin",
+      "directory": "",
+      "commit": "48ccedbfe10acb833ed4be5e0cc1d4de02ec5ecf"
     }
   ]
 }
