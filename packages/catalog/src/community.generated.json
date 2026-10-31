@@ -1,10 +1,10 @@
 {
   "source": {
     "repository": "https://github.com/dsh-pub/dsh-pub",
-    "generatedAt": "2026-10-31T06:28:53.000Z",
+    "generatedAt": "2026-10-31T08:43:49.000Z",
     "policy": "pinned-source-contracts"
   },
-  "totals": { "reviewed": 6, "submitted": 42, "automated": 14792, "installable": 14840 },
+  "totals": { "reviewed": 6, "submitted": 43, "automated": 14792, "installable": 14841 },
   "entries": [
     {
       "id": "github:omdsh-dev/dsh-open-in-vscode",
@@ -1081013,6 +1081013,63 @@
         "readme": {
           "en": "https://raw.githubusercontent.com/outloudvi/dsh-magpie-sync/59d81b3a6aa954245860e22cf0c8ca965bf8995f/README.md",
           "zh": "https://raw.githubusercontent.com/outloudvi/dsh-magpie-sync/59d81b3a6aa954245860e22cf0c8ca965bf8995f/README.md"
+        },
+        "modelExperience": {
+          "en": "Not inspected by the automated submission check; inspect the pinned source for model-facing behavior.",
+          "zh": "自动提交检查未核对模型侧行为；请查看固定版本的源码。"
+        },
+        "limitations": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      }
+    },
+    {
+      "id": "github:Lionad-Morotar/dsh-jump",
+      "slug": "dsh-jump",
+      "name": "dsh-jump",
+      "version": "0.1.0",
+      "license": "MIT",
+      "type": "bundle",
+      "category": "client-ui",
+      "builtIn": false,
+      "provenance": {
+        "status": "community-submitted",
+        "submittedVia": "github-pull-request",
+        "submittedAt": "2026-10-31",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/172",
+        "statement": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      },
+      "description": {
+        "en": "DeepSeek Harness jump plugin: Cmd+H labels clickable elements for click, Cmd+U for focus, Esc to leave",
+        "zh": "DeepSeek Harness jump plugin: Cmd+H labels clickable elements for click, Cmd+U for focus, Esc to leave"
+      },
+      "source": {
+        "repository": "https://github.com/Lionad-Morotar/dsh-jump",
+        "directory": "",
+        "commit": "2fb81ebaca7319c20e355d038914299e090258da"
+      },
+      "runtime": { "hostLoadable": null, "configurable": null, "client": null },
+      "capabilities": { "tools": null, "uiContributions": null, "uiSlotsDeclared": null },
+      "availability": { "profiles": null, "defaultWeb": null, "bundles": ["dsh-jump"] },
+      "distribution": {
+        "installable": true,
+        "mode": "git-bundle",
+        "activation": "profile-layer",
+        "note": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      },
+      "docs": {
+        "readmePath": "README.md",
+        "readmeZhPath": "README.md",
+        "readme": {
+          "en": "https://raw.githubusercontent.com/Lionad-Morotar/dsh-jump/2fb81ebaca7319c20e355d038914299e090258da/README.md",
+          "zh": "https://raw.githubusercontent.com/Lionad-Morotar/dsh-jump/2fb81ebaca7319c20e355d038914299e090258da/README.md"
         },
         "modelExperience": {
           "en": "Not inspected by the automated submission check; inspect the pinned source for model-facing behavior.",

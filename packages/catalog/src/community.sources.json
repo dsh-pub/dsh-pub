@@ -188178,6 +188178,27 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/Lionad-Morotar/dsh-jump",
+      "commit": "2fb81ebaca7319c20e355d038914299e090258da",
+      "directory": "",
+      "packageName": "dsh-jump",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/lionad-morotar--dsh-jump.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/172",
+        "submittedAt": "2026-10-31",
+        "category": "client-ui",
+        "description": {
+          "en": "DeepSeek Harness jump plugin: Cmd+H labels clickable elements for click, Cmd+U for focus, Esc to leave",
+          "zh": ""
+        }
+      }
     }
   ]
 }

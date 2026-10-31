@@ -8,7 +8,7 @@
     },
     "community": {
       "repository": "https://github.com/dsh-pub/dsh-pub",
-      "generatedAt": "2026-10-31T06:28:53.000Z",
+      "generatedAt": "2026-10-31T08:43:49.000Z",
       "policy": "pinned-source-contracts"
     }
   },
@@ -310019,6 +310019,26 @@
       "repository": "https://github.com/outloudvi/dsh-magpie-sync",
       "directory": "",
       "commit": "59d81b3a6aa954245860e22cf0c8ca965bf8995f"
+    },
+    {
+      "slug": "dsh-jump",
+      "name": "dsh-jump",
+      "description": {
+        "en": "DeepSeek Harness jump plugin: Cmd+H labels clickable elements for click, Cmd+U for focus, Esc to leave",
+        "zh": "DeepSeek Harness jump plugin: Cmd+H labels clickable elements for click, Cmd+U for focus, Esc to leave"
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/Lionad-Morotar/dsh-jump",
+      "directory": "",
+      "commit": "2fb81ebaca7319c20e355d038914299e090258da"
     }
   ]
 }
