@@ -9,7 +9,10 @@ import {
   pluginPageShardIndex as tsShardIndex,
 } from '../apps/server/src/plugin-page-shards.js';
 
-import { packAutomatedPluginPages } from './lib/pack-automated-plugin-pages.mjs';
+import {
+  assertCategoryPageSizeLimits,
+  packAutomatedPluginPages,
+} from './lib/pack-automated-plugin-pages.mjs';
 import {
   packedPluginPageAssetPath,
   pluginPageShardIndex,
@@ -94,5 +97,16 @@ describe('automated plugin page packing', () => {
     await expect(
       packAutomatedPluginPages({ catalog, distRoot, fileSizeLimit: 4, root }),
     ).rejects.toThrow(/larger than 4 bytes/);
+  });
+
+  it('fails before deploy when a category page exceeds the Workers per-file limit', async () => {
+    const root = mkdtempSync(join(tmpdir(), 'pack-plugin-pages-category-size-'));
+    directories.push(root);
+    const distRoot = join(root, 'apps/web/dist');
+    write(distRoot, 'en/categories/ui-client/index.html', 'too-large');
+
+    await expect(assertCategoryPageSizeLimits(distRoot, { fileSizeLimit: 4 })).rejects.toThrow(
+      /Category topic pages must stay under 4 bytes/,
+    );
   });
 });

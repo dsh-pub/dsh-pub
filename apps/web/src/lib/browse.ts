@@ -1,5 +1,6 @@
 import { communityEntries, installableEntries, marketplaceEntries } from './catalog.js';
 import { displayName, type CatalogEntry } from './catalog-types.js';
+import { summarize } from './catalog-list.js';
 import { ecosystemEntries } from './ecosystem.js';
 import type { Locale } from './i18n.js';
 import { useCaseCounts, useCaseFor, type UseCaseId } from './use-cases.js';
@@ -54,16 +55,6 @@ export interface BrowseTile {
   name: string;
   description: string;
   useCase: UseCaseId;
-}
-
-// A tile clamps its summary to two lines, so anything past this is never painted but
-// would still be paid for in the browse index, which carries every browsable record.
-const summaryLimit = 120;
-
-function summarize(value: string): string {
-  const text = value.trim();
-  if (text.length <= summaryLimit) return text;
-  return `${text.slice(0, summaryLimit - 1).replace(/[\s，、,;:.]+$/u, '')}…`;
 }
 
 export function browseTile(entry: CatalogEntry, locale: Locale): BrowseTile {

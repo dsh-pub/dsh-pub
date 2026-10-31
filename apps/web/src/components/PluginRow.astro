@@ -7,7 +7,7 @@ import {
   sourceCoordinate,
   type CatalogEntry,
 } from '../lib/catalog-types.js';
-import { entrySearchText } from '../lib/catalog.js';
+import { summarize } from '../lib/catalog-list.js';
 import { categoryLabel, typeLabel } from '../lib/categories.js';
 import { copy, type Locale } from '../lib/i18n.js';
 import CapabilityChecklist from './CapabilityChecklist.astro';
@@ -38,28 +38,10 @@ const provenanceLabel =
       : provenance === 'community-automated'
         ? t.communityAutomated
         : t.builtInSource;
-const provenanceStatement =
-  entry.provenance?.status === 'community-reviewed' ||
-  entry.provenance?.status === 'community-submitted' ||
-  entry.provenance?.status === 'community-automated'
-    ? localized(entry.provenance.statement, locale)
-    : t.builtInSourceHelp;
+const rowDescriptionSummary = summarize(localized(entry.description, locale));
 ---
 
-<article
-  class:list={['plugin-row', { compact }]}
-  data-plugin-row
-  data-catalog-item
-  data-origin="registry"
-  data-search={entrySearchText(entry)}
-  data-type={entry.type}
-  data-category={entry.category}
-  data-availability={entry.distribution.installable ? 'installable' : 'included'}
-  data-provenance={provenance}
-  data-name={displayName(entry).toLocaleLowerCase()}
-  data-stars="0"
-  data-updated="registry"
->
+<article class:list={['plugin-row', { compact }]}>
   <div class="plugin-main">
     <div class="plugin-card-head">
       <div class="plugin-identity">
@@ -69,12 +51,9 @@ const provenanceStatement =
       <span class:list={['tag', entry.distribution.installable && 'primary']}>{modeLabel}</span>
     </div>
     <div class="plugin-state-line">
-      <span
-        class:list={['tag', provenance !== 'built-in' && 'reviewed']}
-        title={provenanceStatement}>{provenanceLabel}</span
-      >
+      <span class:list={['tag', provenance !== 'built-in' && 'reviewed']}>{provenanceLabel}</span>
     </div>
-    <p>{localized(entry.description, locale)}</p>
+    <p>{rowDescriptionSummary}</p>
     <div class="tag-row">
       <span class="tag primary">{categoryLabel(entry.category, locale)}</span>
       {entry.runtime.configurable && <span class="tag">{t.configurable}</span>}
