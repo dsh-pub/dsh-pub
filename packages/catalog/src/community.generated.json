@@ -1,10 +1,10 @@
 {
   "source": {
     "repository": "https://github.com/dsh-pub/dsh-pub",
-    "generatedAt": "2026-10-30T13:54:16.000Z",
+    "generatedAt": "2026-10-31T06:28:53.000Z",
     "policy": "pinned-source-contracts"
   },
-  "totals": { "reviewed": 6, "submitted": 41, "automated": 14792, "installable": 14839 },
+  "totals": { "reviewed": 6, "submitted": 42, "automated": 14792, "installable": 14840 },
   "entries": [
     {
       "id": "github:omdsh-dev/dsh-open-in-vscode",
@@ -1080956,6 +1080956,63 @@
         "readme": {
           "en": "https://raw.githubusercontent.com/jalilahmad/deepseek-peak-indicator/6aa3de9705457fe2d3d05778573533639c40608b/README.md",
           "zh": "https://raw.githubusercontent.com/jalilahmad/deepseek-peak-indicator/6aa3de9705457fe2d3d05778573533639c40608b/README.zh-CN.md"
+        },
+        "modelExperience": {
+          "en": "Not inspected by the automated submission check; inspect the pinned source for model-facing behavior.",
+          "zh": "自动提交检查未核对模型侧行为；请查看固定版本的源码。"
+        },
+        "limitations": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      }
+    },
+    {
+      "id": "github:outloudvi/dsh-magpie-sync",
+      "slug": "dsh-magpie-sync",
+      "name": "@ovv/dsh-magpie-sync",
+      "version": "0.4.0",
+      "license": "MIT",
+      "type": "bundle",
+      "category": "client-ui",
+      "builtIn": false,
+      "provenance": {
+        "status": "community-submitted",
+        "submittedVia": "github-pull-request",
+        "submittedAt": "2026-10-31",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/171",
+        "statement": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      },
+      "description": {
+        "en": "为 DSH 添加利用 Magpie 宣告的输入模态及 thinking level 信息的功能。",
+        "zh": "为 DSH 添加利用 Magpie 宣告的输入模态及 thinking level 信息的功能。"
+      },
+      "source": {
+        "repository": "https://github.com/outloudvi/dsh-magpie-sync",
+        "directory": "",
+        "commit": "59d81b3a6aa954245860e22cf0c8ca965bf8995f"
+      },
+      "runtime": { "hostLoadable": null, "configurable": null, "client": null },
+      "capabilities": { "tools": null, "uiContributions": null, "uiSlotsDeclared": null },
+      "availability": { "profiles": null, "defaultWeb": null, "bundles": ["@ovv/dsh-magpie-sync"] },
+      "distribution": {
+        "installable": true,
+        "mode": "git-bundle",
+        "activation": "profile-layer",
+        "note": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      },
+      "docs": {
+        "readmePath": "README.md",
+        "readmeZhPath": "README.md",
+        "readme": {
+          "en": "https://raw.githubusercontent.com/outloudvi/dsh-magpie-sync/59d81b3a6aa954245860e22cf0c8ca965bf8995f/README.md",
+          "zh": "https://raw.githubusercontent.com/outloudvi/dsh-magpie-sync/59d81b3a6aa954245860e22cf0c8ca965bf8995f/README.md"
         },
         "modelExperience": {
           "en": "Not inspected by the automated submission check; inspect the pinned source for model-facing behavior.",

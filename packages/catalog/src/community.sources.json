@@ -188157,6 +188157,27 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/outloudvi/dsh-magpie-sync",
+      "commit": "59d81b3a6aa954245860e22cf0c8ca965bf8995f",
+      "directory": "",
+      "packageName": "@ovv/dsh-magpie-sync",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/outloudvi--dsh-magpie-sync.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/171",
+        "submittedAt": "2026-10-31",
+        "category": "client-ui",
+        "description": {
+          "en": "为 DSH 添加利用 Magpie 宣告的输入模态及 thinking level 信息的功能。",
+          "zh": ""
+        }
+      }
     }
   ]
 }

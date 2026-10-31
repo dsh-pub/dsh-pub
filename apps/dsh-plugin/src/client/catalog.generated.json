@@ -8,7 +8,7 @@
     },
     "community": {
       "repository": "https://github.com/dsh-pub/dsh-pub",
-      "generatedAt": "2026-10-30T13:54:16.000Z",
+      "generatedAt": "2026-10-31T06:28:53.000Z",
       "policy": "pinned-source-contracts"
     }
   },
@@ -309999,6 +309999,26 @@
       "repository": "https://github.com/jalilahmad/deepseek-peak-indicator",
       "directory": "",
       "commit": "6aa3de9705457fe2d3d05778573533639c40608b"
+    },
+    {
+      "slug": "dsh-magpie-sync",
+      "name": "@ovv/dsh-magpie-sync",
+      "description": {
+        "en": "为 DSH 添加利用 Magpie 宣告的输入模态及 thinking level 信息的功能。",
+        "zh": "为 DSH 添加利用 Magpie 宣告的输入模态及 thinking level 信息的功能。"
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/outloudvi/dsh-magpie-sync",
+      "directory": "",
+      "commit": "59d81b3a6aa954245860e22cf0c8ca965bf8995f"
     }
   ]
 }
