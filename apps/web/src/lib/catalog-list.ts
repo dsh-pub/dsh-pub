@@ -37,9 +37,9 @@ export function modeLabel(mode: CatalogMode, locale: Locale): string {
   return labels[mode][locale];
 }
 
-const summaryLimit = 120;
+export const summaryLimit = 120;
 
-function summarize(value: string): string {
+export function summarize(value: string): string {
   const text = value.trim();
   if (text.length <= summaryLimit) return text;
   return `${text.slice(0, summaryLimit - 1).replace(/[\s，、,;:.]+$/u, '')}…`;

@@ -1,15 +1,10 @@
 ---
+import CatalogCard from '../../../components/CatalogCard.astro';
 import Icon from '../../../components/Icon.astro';
-import PluginRow from '../../../components/PluginRow.astro';
-import { marketplaceEntries } from '../../../lib/catalog.js';
-import { displayName } from '../../../lib/catalog-types.js';
+import { catalogCard, catalogListItems, initialCatalogCount } from '../../../lib/catalog-list.js';
+import { ecosystemEntries } from '../../../lib/ecosystem.js';
 import { copy, locales, type Locale } from '../../../lib/i18n.js';
-import {
-  entriesForTopic,
-  localizedTopic,
-  registryTopics,
-  type RegistryTopic,
-} from '../../../lib/topics.js';
+import { localizedTopic, registryTopics, type RegistryTopic } from '../../../lib/topics.js';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 
 export function getStaticPaths() {
@@ -28,11 +23,25 @@ interface Props {
 
 const { locale, topic } = Astro.props;
 const t = copy[locale];
-const entries = entriesForTopic(marketplaceEntries, topic);
+const starsByRepository = new Map(
+  ecosystemEntries.map((entry) => [entry.sourceRepository.toLocaleLowerCase(), entry.stars]),
+);
+const registryCards = catalogListItems
+  .map((item) => catalogCard(item, locale, starsByRepository))
+  .filter((card) => card.origin === 'registry');
+const topicCards = registryCards.filter((card) => topic.sourceCategories.includes(card.category));
+const initialCards = topicCards.slice(0, initialCatalogCount);
+const topicCount = (candidate: RegistryTopic) =>
+  registryCards.filter((card) => candidate.sourceCategories.includes(card.category)).length;
 const label = localizedTopic(topic.label, locale);
 const description = localizedTopic(topic.description, locale);
 const selectionAdvice = localizedTopic(topic.selectionAdvice, locale);
 const canonical = `https://dsh.pub/${locale}/categories/${topic.id}/`;
+const topicCategories = topic.sourceCategories.join(',');
+const loadMoreLabel = locale === 'zh' ? '加载更多' : 'Load more';
+const loadingLabel = locale === 'zh' ? '加载中…' : 'Loading…';
+const failedLabel =
+  locale === 'zh' ? '目录索引暂时不可用。' : 'Catalog index temporarily unavailable.';
 const pageTitle =
   locale === 'zh' ? `${label}：DeepSeek Harness 插件` : `${label} for DeepSeek Harness`;
 const metaDescription = description;
@@ -51,12 +60,12 @@ const structuredData = [
     },
     mainEntity: {
       '@type': 'ItemList',
-      numberOfItems: entries.length,
-      itemListElement: entries.map((entry, index) => ({
+      numberOfItems: topicCards.length,
+      itemListElement: topicCards.slice(0, 50).map((card, index) => ({
         '@type': 'ListItem',
         position: index + 1,
-        name: displayName(entry),
-        url: `https://dsh.pub/${locale}/plugins/${entry.slug}/`,
+        name: card.name,
+        url: `https://dsh.pub${card.href}`,
       })),
     },
   },
@@ -113,29 +122,165 @@ const structuredData = [
               aria-current={candidate.id === topic.id ? 'page' : undefined}
             >
               {localizedTopic(candidate.label, locale)}
-              <small>{entriesForTopic(marketplaceEntries, candidate).length}</small>
+              <small>{topicCount(candidate)}</small>
             </a>
           ))
         }
       </nav>
     </aside>
 
-    <section class="topic-results" id="topic-results">
+    <section
+      class="topic-results"
+      id="topic-results"
+      data-topic-catalog
+      data-index-url={`/${locale}/catalog.json`}
+      data-page-size={initialCatalogCount}
+      data-topic-categories={topicCategories}
+    >
       <div class="topic-summary">
         <div>
           <span>{locale === 'zh' ? '收录条目' : 'Catalog records'}</span>
-          <strong>{entries.length}</strong>
+          <strong>{topicCards.length}</strong>
         </div>
         <p>
           <strong>{locale === 'zh' ? '选择提示：' : 'Selection note: '}</strong>{selectionAdvice}
         </p>
       </div>
-      <div>
-        {entries.map((entry) => <PluginRow entry={entry} locale={locale} />)}
+      <div class="topic-grid" data-topic-results>
+        {initialCards.map((card) => <CatalogCard card={card} locale={locale} />)}
+      </div>
+      <div class="topic-foot">
+        <button
+          type="button"
+          data-topic-more
+          data-label={loadMoreLabel}
+          data-loading={loadingLabel}
+          data-failed={failedLabel}
+          hidden={initialCards.length >= topicCards.length}
+        >
+          {loadMoreLabel}
+        </button>
+        <span data-topic-status aria-live="polite">
+          {
+            topicCards.length > initialCards.length &&
+              `${initialCards.length.toLocaleString()} / ${topicCards.length.toLocaleString()}`
+          }
+        </span>
       </div>
     </section>
   </div>
 </BaseLayout>
+
+<script>
+  type CatalogRow = readonly [
+    number,
+    string,
+    string,
+    string,
+    string,
+    number,
+    string,
+    string,
+    string,
+    number,
+    string,
+  ];
+
+  interface CatalogIndex {
+    total: number;
+    modes: string[];
+    modeLabels: string[];
+    rows: CatalogRow[];
+  }
+
+  const root = document.querySelector<HTMLElement>('[data-topic-catalog]');
+  const resultContainer = root?.querySelector<HTMLElement>('[data-topic-results]');
+  const moreButton = root?.querySelector<HTMLButtonElement>('[data-topic-more]');
+  const status = root?.querySelector<HTMLElement>('[data-topic-status]');
+  const pageSize = Number(root?.dataset.pageSize ?? 24);
+  const indexUrl = root?.dataset.indexUrl ?? '';
+  const topicCategories = new Set(
+    (root?.dataset.topicCategories ?? '')
+      .split(',')
+      .map((value) => value.trim())
+      .filter(Boolean),
+  );
+  let rendered = pageSize;
+  let index: CatalogIndex | undefined;
+  let indexPromise: Promise<CatalogIndex | undefined> | undefined;
+
+  function escape(value: string): string {
+    return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function cardMarkup(row: CatalogRow, data: CatalogIndex): string {
+    const [
+      origin,
+      ,
+      href,
+      name,
+      description,
+      mode,
+      categoryValue,
+      provenance,
+      search,
+      stars,
+      updated,
+    ] = row;
+    const external = origin === 1 ? ' rel="ugc nofollow noopener"' : '';
+    const star = stars > 0 ? `<b>★ ${stars.toLocaleString()}</b>` : '';
+    return `<a class="catalog-card" href="${escape(href)}"${external} data-catalog-item data-origin="${origin === 0 ? 'registry' : 'ecosystem'}" data-mode="${escape(data.modes[mode] ?? '')}" data-category="${escape(categoryValue)}" data-provenance="${escape(provenance)}" data-search="${escape(search)}" data-name="${escape(name.toLocaleLowerCase())}" data-stars="${stars}" data-updated="${escape(updated)}"><strong>${escape(name)}</strong><span>${escape(description)}</span><em>${escape(data.modeLabels[mode] ?? '')}${star}</em></a>`;
+  }
+
+  function topicRows(data: CatalogIndex): CatalogRow[] {
+    return data.rows.filter((row) => row[0] === 0 && topicCategories.has(row[6]));
+  }
+
+  async function loadIndex(): Promise<CatalogIndex | undefined> {
+    if (index) return index;
+    if (indexPromise) return indexPromise;
+    if (!moreButton) return undefined;
+    moreButton.disabled = true;
+    moreButton.textContent = moreButton.dataset.loading ?? 'Loading…';
+    indexPromise = fetch(indexUrl)
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`catalog index unavailable: ${response.status}`);
+        index = (await response.json()) as CatalogIndex;
+        return index;
+      })
+      .catch(() => {
+        if (moreButton) moreButton.hidden = true;
+        if (status) status.textContent = moreButton?.dataset.failed ?? '';
+        return undefined;
+      })
+      .finally(() => {
+        if (moreButton) {
+          moreButton.disabled = false;
+          moreButton.textContent = moreButton.dataset.label ?? 'Load more';
+        }
+      });
+    return indexPromise;
+  }
+
+  function paint(data: CatalogIndex) {
+    if (!resultContainer) return;
+    const rows = topicRows(data);
+    const slice = rows.slice(0, rendered);
+    resultContainer.innerHTML = slice.map((row) => cardMarkup(row, data)).join('');
+    if (moreButton) moreButton.hidden = slice.length >= rows.length;
+    if (status) {
+      status.textContent = rows.length
+        ? `${slice.length.toLocaleString()} / ${rows.length.toLocaleString()}`
+        : '';
+    }
+  }
+
+  moreButton?.addEventListener('click', async () => {
+    rendered += pageSize * 2;
+    const data = await loadIndex();
+    if (data) paint(data);
+  });
+</script>
 
 <style>
   .topic-hero {
@@ -267,6 +412,41 @@ const structuredData = [
     font-weight: 570;
   }
 
+  .topic-grid {
+    display: grid;
+    gap: 0.85rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .topic-foot {
+    align-items: center;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    padding: 1.8rem 0 0.5rem;
+  }
+
+  .topic-foot button {
+    background: var(--color-surface);
+    border: 1px solid var(--color-rule);
+    border-radius: 7px;
+    color: var(--color-text);
+    cursor: pointer;
+    min-height: 42px;
+    padding: 0 1.1rem;
+  }
+
+  .topic-foot button:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .topic-foot span {
+    color: var(--color-text-faint);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+  }
+
   @media (max-width: 760px) {
     .topic-layout {
       grid-template-columns: 1fr;
@@ -284,6 +464,10 @@ const structuredData = [
     .topic-layout nav a:nth-child(odd) {
       margin-right: 1rem;
     }
+
+    .topic-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 
   @media (max-width: 520px) {
@@ -294,6 +478,10 @@ const structuredData = [
     .topic-summary > div {
       border-bottom: 1px solid var(--color-rule);
       border-right: 0;
+    }
+
+    .topic-grid {
+      grid-template-columns: 1fr;
     }
   }
 </style>

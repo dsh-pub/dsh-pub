@@ -7,6 +7,7 @@ import {
   sourceCoordinate,
   type CatalogEntry,
 } from '../lib/catalog-types.js';
+import { summarize } from '../lib/catalog-list.js';
 import { categoryLabel, typeLabel } from '../lib/categories.js';
 import { copy, type Locale } from '../lib/i18n.js';
 import CapabilityChecklist from './CapabilityChecklist.astro';
@@ -37,17 +38,7 @@ const provenanceLabel =
       : provenance === 'community-automated'
         ? t.communityAutomated
         : t.builtInSource;
-const provenanceStatement =
-  entry.provenance?.status === 'community-reviewed' ||
-  entry.provenance?.status === 'community-submitted' ||
-  entry.provenance?.status === 'community-automated'
-    ? localized(entry.provenance.statement, locale)
-    : t.builtInSourceHelp;
-const rowDescription = localized(entry.description, locale).trim();
-const rowDescriptionSummary =
-  rowDescription.length <= 280
-    ? rowDescription
-    : `${rowDescription.slice(0, 279).replace(/[\s，、,;:.]+$/u, '')}…`;
+const rowDescriptionSummary = summarize(localized(entry.description, locale));
 ---
 
 <article class:list={['plugin-row', { compact }]}>
@@ -60,10 +51,7 @@ const rowDescriptionSummary =
       <span class:list={['tag', entry.distribution.installable && 'primary']}>{modeLabel}</span>
     </div>
     <div class="plugin-state-line">
-      <span
-        class:list={['tag', provenance !== 'built-in' && 'reviewed']}
-        title={provenanceStatement}>{provenanceLabel}</span
-      >
+      <span class:list={['tag', provenance !== 'built-in' && 'reviewed']}>{provenanceLabel}</span>
     </div>
     <p>{rowDescriptionSummary}</p>
     <div class="tag-row">
