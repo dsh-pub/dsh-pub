@@ -2612,7 +2612,7 @@
       "id": "github:KB1SLN-Labs/dsh-ponytail",
       "slug": "kb1sln-labs-kb1slnlabs-dsh-ponytail",
       "name": "@kb1slnlabs/dsh-ponytail",
-      "version": "5.3.3-dsh.5",
+      "version": "5.3.3-dsh.6",
       "license": "MIT",
       "type": "bundle",
       "category": "client-ui",
@@ -2634,7 +2634,7 @@
       "source": {
         "repository": "https://github.com/KB1SLN-Labs/dsh-ponytail",
         "directory": "",
-        "commit": "f155fb24439a8fba645e67af7c3c582144726df6"
+        "commit": "8f45822d4332204bd0a0322525cbc3079b48a5ba"
       },
       "runtime": { "hostLoadable": null, "configurable": null, "client": null },
       "capabilities": { "tools": null, "uiContributions": null, "uiSlotsDeclared": null },
@@ -2656,8 +2656,8 @@
         "readmePath": "README.md",
         "readmeZhPath": "README.md",
         "readme": {
-          "en": "https://raw.githubusercontent.com/KB1SLN-Labs/dsh-ponytail/f155fb24439a8fba645e67af7c3c582144726df6/README.md",
-          "zh": "https://raw.githubusercontent.com/KB1SLN-Labs/dsh-ponytail/f155fb24439a8fba645e67af7c3c582144726df6/README.md"
+          "en": "https://raw.githubusercontent.com/KB1SLN-Labs/dsh-ponytail/8f45822d4332204bd0a0322525cbc3079b48a5ba/README.md",
+          "zh": "https://raw.githubusercontent.com/KB1SLN-Labs/dsh-ponytail/8f45822d4332204bd0a0322525cbc3079b48a5ba/README.md"
         },
         "modelExperience": {
           "en": "Not inspected by the automated submission check; inspect the pinned source for model-facing behavior.",
@@ -1080849,7 +1080849,7 @@
       "id": "github:KB1SLN-Labs/dsh-linear",
       "slug": "dsh-linear",
       "name": "@kb1slnlabs/dsh-linear",
-      "version": "0.1.0",
+      "version": "0.2.5",
       "license": "MIT",
       "type": "bundle",
       "category": "bundles",
@@ -1080871,7 +1080871,7 @@
       "source": {
         "repository": "https://github.com/KB1SLN-Labs/dsh-linear",
         "directory": "",
-        "commit": "ab24b723f201ed32918292765ab7e0dadd847217"
+        "commit": "6d06ab3a1b338e36ec68321a96124e549c9e7017"
       },
       "runtime": { "hostLoadable": null, "configurable": null, "client": null },
       "capabilities": { "tools": null, "uiContributions": null, "uiSlotsDeclared": null },
@@ -1080893,8 +1080893,8 @@
         "readmePath": "README.md",
         "readmeZhPath": "README.md",
         "readme": {
-          "en": "https://raw.githubusercontent.com/KB1SLN-Labs/dsh-linear/ab24b723f201ed32918292765ab7e0dadd847217/README.md",
-          "zh": "https://raw.githubusercontent.com/KB1SLN-Labs/dsh-linear/ab24b723f201ed32918292765ab7e0dadd847217/README.md"
+          "en": "https://raw.githubusercontent.com/KB1SLN-Labs/dsh-linear/6d06ab3a1b338e36ec68321a96124e549c9e7017/README.md",
+          "zh": "https://raw.githubusercontent.com/KB1SLN-Labs/dsh-linear/6d06ab3a1b338e36ec68321a96124e549c9e7017/README.md"
         },
         "modelExperience": {
           "en": "Not inspected by the automated submission check; inspect the pinned source for model-facing behavior.",
