@@ -8,7 +8,7 @@
     },
     "community": {
       "repository": "https://github.com/dsh-pub/dsh-pub",
-      "generatedAt": "2026-10-31T16:35:09.000Z",
+      "generatedAt": "2026-11-01T12:59:28.000Z",
       "policy": "pinned-source-contracts"
     }
   },
@@ -310079,6 +310079,26 @@
       "repository": "https://github.com/exoticknight/dsh-better-left-sidebar",
       "directory": "",
       "commit": "9308c1bbfada86704ad933a2889aedec225aebdb"
+    },
+    {
+      "slug": "dsh-document-redactor",
+      "name": "dsh-document-redactor",
+      "description": {
+        "en": "Local document redaction and review powered by the frozen R99 engine",
+        "zh": "Local document redaction and review powered by the frozen R99 engine"
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/rainbowzhu22-eng/cece_legal_skills",
+      "directory": "",
+      "commit": "c098a53418c8f5e324449bac64eae22c08821bb1"
     }
   ]
 }

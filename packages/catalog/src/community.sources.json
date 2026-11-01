@@ -188241,6 +188241,27 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/rainbowzhu22-eng/cece_legal_skills",
+      "commit": "c098a53418c8f5e324449bac64eae22c08821bb1",
+      "directory": "",
+      "packageName": "dsh-document-redactor",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "001-contract-desensitizer/04-dsh-plugin/cordis.patch.yml",
+      "runtimeEntryPath": "001-contract-desensitizer/04-dsh-plugin/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/rainbowzhu22-eng--cece_legal_skills.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/176",
+        "submittedAt": "2026-11-01",
+        "category": "client-ui",
+        "description": {
+          "en": "Local document redaction and review powered by the frozen R99 engine",
+          "zh": ""
+        }
+      }
     }
   ]
 }
