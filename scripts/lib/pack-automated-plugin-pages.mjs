@@ -62,6 +62,50 @@ export async function assertWorkerAssetLimits(
   return { fileCount: files.length, fileLimit };
 }
 
+export async function assertCategoryPageSizeLimits(
+  distRoot,
+  { fileSizeLimit = WORKERS_STATIC_ASSET_FILE_SIZE_LIMIT } = {},
+) {
+  const oversized = [];
+  for (const locale of LOCALES) {
+    const categoryRoot = join(distRoot, locale, 'categories');
+    let entries;
+    try {
+      entries = await readdir(categoryRoot, { withFileTypes: true });
+    } catch (error) {
+      if (error && typeof error === 'object' && 'code' in error && error.code === 'ENOENT') {
+        continue;
+      }
+      throw error;
+    }
+
+    for (const entry of entries) {
+      if (!entry.isDirectory()) continue;
+      const pagePath = join(categoryRoot, entry.name, 'index.html');
+      let size = 0;
+      try {
+        ({ size } = await stat(pagePath));
+      } catch (error) {
+        if (error && typeof error === 'object' && 'code' in error && error.code === 'ENOENT') {
+          continue;
+        }
+        throw error;
+      }
+      if (size > fileSizeLimit) {
+        oversized.push(
+          `${assetRelativePath(distRoot, pagePath)} is ${size} bytes (limit ${fileSizeLimit})`,
+        );
+      }
+    }
+  }
+
+  if (oversized.length > 0) {
+    throw new Error(
+      `Category topic pages must stay under ${fileSizeLimit} bytes to satisfy Workers per-file limits:\n${oversized.join('\n')}`,
+    );
+  }
+}
+
 const automatedSlugs = (catalog) =>
   new Set(
     (catalog?.entries ?? [])
@@ -141,6 +185,7 @@ export async function packAutomatedPluginPages({
     );
   }
 
+  await assertCategoryPageSizeLimits(distRoot, { fileSizeLimit });
   const limits = await assertWorkerAssetLimits(distRoot, { fileLimit, fileSizeLimit });
   return { packed, slugs: slugs.size, ...limits };
 }
