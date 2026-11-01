@@ -4412,7 +4412,7 @@
       "capabilityCount": 0,
       "repository": "https://github.com/KB1SLN-Labs/dsh-ponytail",
       "directory": "",
-      "commit": "f155fb24439a8fba645e67af7c3c582144726df6"
+      "commit": "60d2d0b17b090d86c9c9165d4720d8413248d746"
     },
     {
       "slug": "dsh-engineering-workflow",
@@ -309978,7 +309978,7 @@
       "capabilityCount": 0,
       "repository": "https://github.com/KB1SLN-Labs/dsh-linear",
       "directory": "",
-      "commit": "ab24b723f201ed32918292765ab7e0dadd847217"
+      "commit": "91575b2cc4abe0dbcc590093e3aa28545b1fba7d"
     },
     {
       "slug": "deepseek-peak-indicator",
