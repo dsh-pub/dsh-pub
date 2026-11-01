@@ -854,7 +854,7 @@
     },
     {
       "repository": "https://github.com/KB1SLN-Labs/dsh-ponytail",
-      "commit": "60d2d0b17b090d86c9c9165d4720d8413248d746",
+      "commit": "8f45822d4332204bd0a0322525cbc3079b48a5ba",
       "directory": "",
       "packageName": "@kb1slnlabs/dsh-ponytail",
       "manifestPath": "package.json",
@@ -188118,7 +188118,7 @@
     },
     {
       "repository": "https://github.com/KB1SLN-Labs/dsh-linear",
-      "commit": "91575b2cc4abe0dbcc590093e3aa28545b1fba7d",
+      "commit": "6d06ab3a1b338e36ec68321a96124e549c9e7017",
       "directory": "",
       "packageName": "@kb1slnlabs/dsh-linear",
       "manifestPath": "package.json",
