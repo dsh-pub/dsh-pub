@@ -8,7 +8,7 @@
     },
     "community": {
       "repository": "https://github.com/dsh-pub/dsh-pub",
-      "generatedAt": "2026-11-01T12:59:28.000Z",
+      "generatedAt": "2026-11-02T09:51:24.000Z",
       "policy": "pinned-source-contracts"
     }
   },
@@ -310099,6 +310099,26 @@
       "repository": "https://github.com/rainbowzhu22-eng/cece_legal_skills",
       "directory": "",
       "commit": "c098a53418c8f5e324449bac64eae22c08821bb1"
+    },
+    {
+      "slug": "qwqbig-qwqbig-dsh-archive-delete",
+      "name": "@qwqbig/dsh-archive-delete",
+      "description": {
+        "en": "Recoverable archived-session cleanup for DeepSeek Harness · DSH 归档会话回收站",
+        "zh": "Recoverable archived-session cleanup for DeepSeek Harness · DSH 归档会话回收站"
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/QwQBiG/dsh-archive-delete",
+      "directory": "",
+      "commit": "ff2f106243690790f798eade1d8f567dc83273fe"
     }
   ]
 }

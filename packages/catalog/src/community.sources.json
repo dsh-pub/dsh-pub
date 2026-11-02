@@ -188262,6 +188262,27 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/QwQBiG/dsh-archive-delete",
+      "commit": "ff2f106243690790f798eade1d8f567dc83273fe",
+      "directory": "",
+      "packageName": "@qwqbig/dsh-archive-delete",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/qwqbig--dsh-archive-delete.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/177",
+        "submittedAt": "2026-11-02",
+        "category": "client-ui",
+        "description": {
+          "en": "Recoverable archived-session cleanup for DeepSeek Harness · DSH 归档会话回收站",
+          "zh": ""
+        }
+      }
     }
   ]
 }
