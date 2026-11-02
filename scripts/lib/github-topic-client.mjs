@@ -6,7 +6,6 @@ const INSPECTION_BATCH_SIZE = 20;
 const MAX_CONCURRENCY = 4;
 const TOPIC_PAGE_SIZE = 100;
 const TOPIC_PAGE_BUFFER = 10;
-export const TOPIC_MAX_PAGES = 250;
 const RETRYABLE_STATUS = new Set([403, 429, 502, 503, 504]);
 const RATE_LIMIT_STATUS = new Set([403, 429]);
 const RATE_LIMIT_MESSAGE = /(?:rate limit|abuse detection|submitted too quickly)/i;
@@ -143,10 +142,7 @@ const retryDelay = (response, attempt, rateLimited) => {
 };
 
 export const topicPaginationBudget = (observedTotalCount) =>
-  Math.min(
-    TOPIC_MAX_PAGES,
-    Math.max(1, Math.ceil(observedTotalCount / TOPIC_PAGE_SIZE) + TOPIC_PAGE_BUFFER),
-  );
+  Math.max(1, Math.ceil(observedTotalCount / TOPIC_PAGE_SIZE) + TOPIC_PAGE_BUFFER);
 
 export function createGitHubTopicClient({
   fetch: fetcher,
@@ -233,7 +229,7 @@ export function createGitHubTopicClient({
     let cursor = null;
     let totalCount;
     let pages = 0;
-    let pageBudget = TOPIC_MAX_PAGES;
+    let pageBudget = topicPaginationBudget(0);
     let hasNextPage = true;
     while (hasNextPage) {
       pages += 1;
@@ -249,11 +245,6 @@ export function createGitHubTopicClient({
       }
       totalCount = connection.totalCount;
       pageBudget = topicPaginationBudget(totalCount);
-      if (pages > pageBudget) {
-        throw new Error(
-          `GitHub Topic pagination exceeded the safety limit (${pageBudget} pages for ${totalCount} repositories).`,
-        );
-      }
       for (const node of connection.nodes) {
         const commit = node.defaultBranchRef?.target?.oid;
         const coordinate = node.nameWithOwner?.toLocaleLowerCase();
@@ -276,8 +267,18 @@ export function createGitHubTopicClient({
       if (hasNextPage && typeof cursor !== 'string') {
         throw new Error('GitHub Topic pagination is incomplete.');
       }
+      if (hasNextPage && pages >= pageBudget) {
+        return {
+          complete: false,
+          incompleteReason: 'pagination_budget_exhausted',
+          pageBudget,
+          pages,
+          repositories,
+          totalCount,
+        };
+      }
     }
-    return { repositories, totalCount };
+    return { complete: true, repositories, totalCount };
   };
 
   const readCompleteTopicPass = async (topic) => {
@@ -286,10 +287,16 @@ export function createGitHubTopicClient({
     for (let attempt = 0; attempt < 3; attempt += 1) {
       try {
         const pass = await readTopicPass(topic);
-        if (pass.repositories.length === pass.totalCount) {
+        if (pass.complete && pass.repositories.length === pass.totalCount) {
           return { ...pass, complete: true, unresolvedCount: 0 };
         }
         if (!bestPass || pass.repositories.length > bestPass.repositories.length) bestPass = pass;
+        if (pass.incompleteReason === 'pagination_budget_exhausted') {
+          lastError = new Error(
+            `GitHub Topic pagination exhausted the dynamic budget (${pass.pageBudget} pages for ${pass.totalCount} repositories).`,
+          );
+          break;
+        }
         lastError = new Error('GitHub Topic discovery is incomplete.');
       } catch (error) {
         lastError = error;
@@ -300,6 +307,15 @@ export function createGitHubTopicClient({
       return {
         ...bestPass,
         complete: false,
+        ...(bestPass.incompleteReason
+          ? {
+              incompleteReason: bestPass.incompleteReason,
+              pagination: {
+                pageBudget: bestPass.pageBudget,
+                pages: bestPass.pages,
+              },
+            }
+          : {}),
         unresolvedCount: Math.max(0, bestPass.totalCount - bestPass.repositories.length),
       };
     }
@@ -328,6 +344,12 @@ export function createGitHubTopicClient({
       return {
         complete: pass.complete,
         deferredRepositories,
+        ...(pass.incompleteReason
+          ? {
+              incompleteReason: pass.incompleteReason,
+              pagination: pass.pagination,
+            }
+          : {}),
         observedTotalCount: Math.max(pass.totalCount, pass.repositories.length),
         repositories,
         snapshotAt: cutoff.toISOString(),
