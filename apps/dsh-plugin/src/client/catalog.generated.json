@@ -8,7 +8,7 @@
     },
     "community": {
       "repository": "https://github.com/dsh-pub/dsh-pub",
-      "generatedAt": "2026-11-03T04:49:45.000Z",
+      "generatedAt": "2026-11-03T19:24:45.000Z",
       "policy": "pinned-source-contracts"
     }
   },
@@ -310159,6 +310159,26 @@
       "repository": "https://github.com/ilaomianyang/dsh-memory-graph",
       "directory": "",
       "commit": "f6b65d65fff5bb0f3ac4b4b02387cd6d1546ef7a"
+    },
+    {
+      "slug": "dsh-agent-compare",
+      "name": "dsh-agent-compare",
+      "description": {
+        "en": "同一需求，两版真跑：在 DSH 对话里比较、验证并审查采用。A DeepSeek Harness plugin for two implementations, live previews, shared checks and reviewed adoption.",
+        "zh": "同一需求，两版真跑：在 DSH 对话里比较、验证并审查采用。A DeepSeek Harness plugin for two implementations, live previews, shared checks and reviewed adoption."
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/lijiaqi-AI-Product-Manager/dsh-agent-compare",
+      "directory": "",
+      "commit": "24ca59307b42faca16190266d99501ef208f4aa7"
     }
   ]
 }

@@ -188325,6 +188325,27 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/lijiaqi-AI-Product-Manager/dsh-agent-compare",
+      "commit": "24ca59307b42faca16190266d99501ef208f4aa7",
+      "directory": "",
+      "packageName": "dsh-agent-compare",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/host/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/lijiaqi-ai-product-manager--dsh-agent-compare.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/181",
+        "submittedAt": "2026-11-03",
+        "category": "client-ui",
+        "description": {
+          "en": "同一需求，两版真跑：在 DSH 对话里比较、验证并审查采用。A DeepSeek Harness plugin for two implementations, live previews, shared checks and reviewed adoption.",
+          "zh": ""
+        }
+      }
     }
   ]
 }
