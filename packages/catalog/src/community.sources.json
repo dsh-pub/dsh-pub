@@ -188304,6 +188304,27 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/ilaomianyang/dsh-memory-graph",
+      "commit": "f6b65d65fff5bb0f3ac4b4b02387cd6d1546ef7a",
+      "directory": "",
+      "packageName": "dsh-memory-graph",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/ilaomianyang--dsh-memory-graph.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/180",
+        "submittedAt": "2026-11-03",
+        "category": "client-ui",
+        "description": {
+          "en": "Long-term associative memory for DeepSeek Harness: a local plain-text vault of raw episodes, typed memory cards and entity pages, configured from 设置 → 记忆图谱, and a Memory tab inside a conversation that draws what that session remembered. No build step; the only dependency is the harness's own schema library, used for the Settings page.",
+          "zh": ""
+        }
+      }
     }
   ]
 }

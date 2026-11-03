@@ -8,7 +8,7 @@
     },
     "community": {
       "repository": "https://github.com/dsh-pub/dsh-pub",
-      "generatedAt": "2026-11-03T04:01:22.000Z",
+      "generatedAt": "2026-11-03T04:49:45.000Z",
       "policy": "pinned-source-contracts"
     }
   },
@@ -310139,6 +310139,26 @@
       "repository": "https://github.com/jak1321-maker/dsh-go-token-meter",
       "directory": "",
       "commit": "afca0bfac798d20f01d3729d4e744dd940747104"
+    },
+    {
+      "slug": "dsh-memory-graph",
+      "name": "dsh-memory-graph",
+      "description": {
+        "en": "Long-term associative memory for DeepSeek Harness: a local plain-text vault of raw episodes, typed memory cards and entity pages, configured from 设置 → 记忆图谱, and a Memory tab inside a conversation that draws what that session remembered. No build step; the only dependency is the harness's own schema library, used for the Settings page.",
+        "zh": "Long-term associative memory for DeepSeek Harness: a local plain-text vault of raw episodes, typed memory cards and entity pages, configured from 设置 → 记忆图谱, and a Memory tab inside a conversation that draws what that session remembered. No build step; the only dependency is the harness's own schema library, used for the Settings page."
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/ilaomianyang/dsh-memory-graph",
+      "directory": "",
+      "commit": "f6b65d65fff5bb0f3ac4b4b02387cd6d1546ef7a"
     }
   ]
 }

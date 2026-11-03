@@ -1,10 +1,10 @@
 {
   "source": {
     "repository": "https://github.com/dsh-pub/dsh-pub",
-    "generatedAt": "2026-11-03T04:01:22.000Z",
+    "generatedAt": "2026-11-03T04:49:45.000Z",
     "policy": "pinned-source-contracts"
   },
-  "totals": { "reviewed": 6, "submitted": 48, "automated": 14792, "installable": 14846 },
+  "totals": { "reviewed": 6, "submitted": 49, "automated": 14792, "installable": 14847 },
   "entries": [
     {
       "id": "github:omdsh-dev/dsh-open-in-vscode",
@@ -1081367,6 +1081367,63 @@
         "readme": {
           "en": "https://raw.githubusercontent.com/jak1321-maker/dsh-go-token-meter/afca0bfac798d20f01d3729d4e744dd940747104/README.md",
           "zh": "https://raw.githubusercontent.com/jak1321-maker/dsh-go-token-meter/afca0bfac798d20f01d3729d4e744dd940747104/README.md"
+        },
+        "modelExperience": {
+          "en": "Not inspected by the automated submission check; inspect the pinned source for model-facing behavior.",
+          "zh": "自动提交检查未核对模型侧行为；请查看固定版本的源码。"
+        },
+        "limitations": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      }
+    },
+    {
+      "id": "github:ilaomianyang/dsh-memory-graph",
+      "slug": "dsh-memory-graph",
+      "name": "dsh-memory-graph",
+      "version": "0.9.1",
+      "license": "MIT",
+      "type": "bundle",
+      "category": "client-ui",
+      "builtIn": false,
+      "provenance": {
+        "status": "community-submitted",
+        "submittedVia": "github-pull-request",
+        "submittedAt": "2026-11-03",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/180",
+        "statement": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      },
+      "description": {
+        "en": "Long-term associative memory for DeepSeek Harness: a local plain-text vault of raw episodes, typed memory cards and entity pages, configured from 设置 → 记忆图谱, and a Memory tab inside a conversation that draws what that session remembered. No build step; the only dependency is the harness's own schema library, used for the Settings page.",
+        "zh": "Long-term associative memory for DeepSeek Harness: a local plain-text vault of raw episodes, typed memory cards and entity pages, configured from 设置 → 记忆图谱, and a Memory tab inside a conversation that draws what that session remembered. No build step; the only dependency is the harness's own schema library, used for the Settings page."
+      },
+      "source": {
+        "repository": "https://github.com/ilaomianyang/dsh-memory-graph",
+        "directory": "",
+        "commit": "f6b65d65fff5bb0f3ac4b4b02387cd6d1546ef7a"
+      },
+      "runtime": { "hostLoadable": null, "configurable": null, "client": null },
+      "capabilities": { "tools": null, "uiContributions": null, "uiSlotsDeclared": null },
+      "availability": { "profiles": null, "defaultWeb": null, "bundles": ["dsh-memory-graph"] },
+      "distribution": {
+        "installable": true,
+        "mode": "git-bundle",
+        "activation": "profile-layer",
+        "note": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      },
+      "docs": {
+        "readmePath": "README.md",
+        "readmeZhPath": "README.md",
+        "readme": {
+          "en": "https://raw.githubusercontent.com/ilaomianyang/dsh-memory-graph/f6b65d65fff5bb0f3ac4b4b02387cd6d1546ef7a/README.md",
+          "zh": "https://raw.githubusercontent.com/ilaomianyang/dsh-memory-graph/f6b65d65fff5bb0f3ac4b4b02387cd6d1546ef7a/README.md"
         },
         "modelExperience": {
           "en": "Not inspected by the automated submission check; inspect the pinned source for model-facing behavior.",
