@@ -8,7 +8,7 @@
     },
     "community": {
       "repository": "https://github.com/dsh-pub/dsh-pub",
-      "generatedAt": "2026-11-02T09:51:24.000Z",
+      "generatedAt": "2026-11-03T04:01:22.000Z",
       "policy": "pinned-source-contracts"
     }
   },
@@ -310119,6 +310119,26 @@
       "repository": "https://github.com/QwQBiG/dsh-archive-delete",
       "directory": "",
       "commit": "ff2f106243690790f798eade1d8f567dc83273fe"
+    },
+    {
+      "slug": "dsh-go-token-meter",
+      "name": "dsh-go-token-meter",
+      "description": {
+        "en": "在 dsh-go 原生界面显示 token 用量：输入框上方的实时状态条 + 明细面板（本对话 / 今日 / 近 7 天 / 按模型）。只读本机会话记录，不联网。",
+        "zh": "在 dsh-go 原生界面显示 token 用量：输入框上方的实时状态条 + 明细面板（本对话 / 今日 / 近 7 天 / 按模型）。只读本机会话记录，不联网。"
+      },
+      "topic": "other",
+      "category": "bundles",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/jak1321-maker/dsh-go-token-meter",
+      "directory": "",
+      "commit": "afca0bfac798d20f01d3729d4e744dd940747104"
     }
   ]
 }

@@ -188283,6 +188283,27 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/jak1321-maker/dsh-go-token-meter",
+      "commit": "afca0bfac798d20f01d3729d4e744dd940747104",
+      "directory": "",
+      "packageName": "dsh-go-token-meter",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/jak1321-maker--dsh-go-token-meter.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/179",
+        "submittedAt": "2026-11-03",
+        "category": "bundles",
+        "description": {
+          "en": "在 dsh-go 原生界面显示 token 用量：输入框上方的实时状态条 + 明细面板（本对话 / 今日 / 近 7 天 / 按模型）。只读本机会话记录，不联网。",
+          "zh": ""
+        }
+      }
     }
   ]
 }
