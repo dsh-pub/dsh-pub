@@ -188346,6 +188346,27 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/muhe0000001-dot/dsh-model-budget-router",
+      "commit": "b083409020beb3ef9276f995ce23a684ff823ba0",
+      "directory": "",
+      "packageName": "dsh-model-budget-router",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/muhe0000001-dot--dsh-model-budget-router.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/182",
+        "submittedAt": "2026-11-04",
+        "category": "bundles",
+        "description": {
+          "en": "按任务复杂度自动切换模型与推理强度，省 DeepSeek 的 token 钱。",
+          "zh": ""
+        }
+      }
     }
   ]
 }

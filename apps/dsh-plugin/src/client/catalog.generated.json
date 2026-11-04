@@ -8,7 +8,7 @@
     },
     "community": {
       "repository": "https://github.com/dsh-pub/dsh-pub",
-      "generatedAt": "2026-11-03T19:24:45.000Z",
+      "generatedAt": "2026-11-04T04:09:04.000Z",
       "policy": "pinned-source-contracts"
     }
   },
@@ -310179,6 +310179,26 @@
       "repository": "https://github.com/lijiaqi-AI-Product-Manager/dsh-agent-compare",
       "directory": "",
       "commit": "24ca59307b42faca16190266d99501ef208f4aa7"
+    },
+    {
+      "slug": "dsh-model-budget-router",
+      "name": "dsh-model-budget-router",
+      "description": {
+        "en": "按任务复杂度自动切换模型与推理强度，省 DeepSeek 的 token 钱。",
+        "zh": "按任务复杂度自动切换模型与推理强度，省 DeepSeek 的 token 钱。"
+      },
+      "topic": "other",
+      "category": "bundles",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/muhe0000001-dot/dsh-model-budget-router",
+      "directory": "",
+      "commit": "b083409020beb3ef9276f995ce23a684ff823ba0"
     }
   ]
 }
