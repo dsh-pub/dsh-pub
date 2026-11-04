@@ -1,10 +1,10 @@
 {
   "source": {
     "repository": "https://github.com/dsh-pub/dsh-pub",
-    "generatedAt": "2026-11-04T04:09:04.000Z",
+    "generatedAt": "2026-11-04T09:23:22.000Z",
     "policy": "pinned-source-contracts"
   },
-  "totals": { "reviewed": 6, "submitted": 51, "automated": 14792, "installable": 14849 },
+  "totals": { "reviewed": 6, "submitted": 53, "automated": 14792, "installable": 14851 },
   "entries": [
     {
       "id": "github:omdsh-dev/dsh-open-in-vscode",
@@ -1081542,6 +1081542,120 @@
         "readme": {
           "en": "https://raw.githubusercontent.com/muhe0000001-dot/dsh-model-budget-router/b083409020beb3ef9276f995ce23a684ff823ba0/README.md",
           "zh": "https://raw.githubusercontent.com/muhe0000001-dot/dsh-model-budget-router/b083409020beb3ef9276f995ce23a684ff823ba0/README.md"
+        },
+        "modelExperience": {
+          "en": "Not inspected by the automated submission check; inspect the pinned source for model-facing behavior.",
+          "zh": "自动提交检查未核对模型侧行为；请查看固定版本的源码。"
+        },
+        "limitations": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      }
+    },
+    {
+      "id": "github:lijiaqi-AI-Product-Manager/dsh-bug-gps",
+      "slug": "dsh-bug-gps",
+      "name": "dsh-bug-gps",
+      "version": "1.0.0",
+      "license": "MIT",
+      "type": "bundle",
+      "category": "bundles",
+      "builtIn": false,
+      "provenance": {
+        "status": "community-submitted",
+        "submittedVia": "github-pull-request",
+        "submittedAt": "2026-11-04",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/185",
+        "statement": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      },
+      "description": {
+        "en": "BugGPS：录制浏览器问题、固定预期，并以独立原代码对照复核修复。Browser bug reproduction and fix verification for DeepSeek Harness.",
+        "zh": "BugGPS：录制浏览器问题、固定预期，并以独立原代码对照复核修复。Browser bug reproduction and fix verification for DeepSeek Harness."
+      },
+      "source": {
+        "repository": "https://github.com/lijiaqi-AI-Product-Manager/dsh-bug-gps",
+        "directory": "",
+        "commit": "6aa4a9d191a408ebf982e657432ba66549fffabe"
+      },
+      "runtime": { "hostLoadable": null, "configurable": null, "client": null },
+      "capabilities": { "tools": null, "uiContributions": null, "uiSlotsDeclared": null },
+      "availability": { "profiles": null, "defaultWeb": null, "bundles": ["dsh-bug-gps"] },
+      "distribution": {
+        "installable": true,
+        "mode": "git-bundle",
+        "activation": "profile-layer",
+        "note": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      },
+      "docs": {
+        "readmePath": "README.md",
+        "readmeZhPath": "README.md",
+        "readme": {
+          "en": "https://raw.githubusercontent.com/lijiaqi-AI-Product-Manager/dsh-bug-gps/6aa4a9d191a408ebf982e657432ba66549fffabe/README.md",
+          "zh": "https://raw.githubusercontent.com/lijiaqi-AI-Product-Manager/dsh-bug-gps/6aa4a9d191a408ebf982e657432ba66549fffabe/README.md"
+        },
+        "modelExperience": {
+          "en": "Not inspected by the automated submission check; inspect the pinned source for model-facing behavior.",
+          "zh": "自动提交检查未核对模型侧行为；请查看固定版本的源码。"
+        },
+        "limitations": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      }
+    },
+    {
+      "id": "github:sakura-hly/dsh-codex-composer",
+      "slug": "dsh-codex-composer",
+      "name": "dsh-codex-composer",
+      "version": "0.1.0",
+      "license": "MIT",
+      "type": "bundle",
+      "category": "client-ui",
+      "builtIn": false,
+      "provenance": {
+        "status": "community-submitted",
+        "submittedVia": "github-pull-request",
+        "submittedAt": "2026-11-04",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/184",
+        "statement": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      },
+      "description": {
+        "en": "Codex-style composer for the DeepSeek Harness Web GUI: Up/Down recall previous prompts, Tab completes from history, and an empty-draft Tab generates a context-aware next prompt.",
+        "zh": "Codex-style composer for the DeepSeek Harness Web GUI: Up/Down recall previous prompts, Tab completes from history, and an empty-draft Tab generates a context-aware next prompt."
+      },
+      "source": {
+        "repository": "https://github.com/sakura-hly/dsh-codex-composer",
+        "directory": "",
+        "commit": "d40a24a15bb835d2298482c3c89321e4e6fd3683"
+      },
+      "runtime": { "hostLoadable": null, "configurable": null, "client": null },
+      "capabilities": { "tools": null, "uiContributions": null, "uiSlotsDeclared": null },
+      "availability": { "profiles": null, "defaultWeb": null, "bundles": ["dsh-codex-composer"] },
+      "distribution": {
+        "installable": true,
+        "mode": "git-bundle",
+        "activation": "profile-layer",
+        "note": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      },
+      "docs": {
+        "readmePath": "README.md",
+        "readmeZhPath": "README.md",
+        "readme": {
+          "en": "https://raw.githubusercontent.com/sakura-hly/dsh-codex-composer/d40a24a15bb835d2298482c3c89321e4e6fd3683/README.md",
+          "zh": "https://raw.githubusercontent.com/sakura-hly/dsh-codex-composer/d40a24a15bb835d2298482c3c89321e4e6fd3683/README.md"
         },
         "modelExperience": {
           "en": "Not inspected by the automated submission check; inspect the pinned source for model-facing behavior.",

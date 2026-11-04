@@ -8,7 +8,7 @@
     },
     "community": {
       "repository": "https://github.com/dsh-pub/dsh-pub",
-      "generatedAt": "2026-11-04T04:09:04.000Z",
+      "generatedAt": "2026-11-04T09:23:22.000Z",
       "policy": "pinned-source-contracts"
     }
   },
@@ -310199,6 +310199,46 @@
       "repository": "https://github.com/muhe0000001-dot/dsh-model-budget-router",
       "directory": "",
       "commit": "b083409020beb3ef9276f995ce23a684ff823ba0"
+    },
+    {
+      "slug": "dsh-bug-gps",
+      "name": "dsh-bug-gps",
+      "description": {
+        "en": "BugGPS：录制浏览器问题、固定预期，并以独立原代码对照复核修复。Browser bug reproduction and fix verification for DeepSeek Harness.",
+        "zh": "BugGPS：录制浏览器问题、固定预期，并以独立原代码对照复核修复。Browser bug reproduction and fix verification for DeepSeek Harness."
+      },
+      "topic": "other",
+      "category": "bundles",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/lijiaqi-AI-Product-Manager/dsh-bug-gps",
+      "directory": "",
+      "commit": "6aa4a9d191a408ebf982e657432ba66549fffabe"
+    },
+    {
+      "slug": "dsh-codex-composer",
+      "name": "dsh-codex-composer",
+      "description": {
+        "en": "Codex-style composer for the DeepSeek Harness Web GUI: Up/Down recall previous prompts, Tab completes from history, and an empty-draft Tab generates a context-aware next prompt.",
+        "zh": "Codex-style composer for the DeepSeek Harness Web GUI: Up/Down recall previous prompts, Tab completes from history, and an empty-draft Tab generates a context-aware next prompt."
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/sakura-hly/dsh-codex-composer",
+      "directory": "",
+      "commit": "d40a24a15bb835d2298482c3c89321e4e6fd3683"
     }
   ]
 }

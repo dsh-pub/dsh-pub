@@ -188367,6 +188367,48 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/lijiaqi-AI-Product-Manager/dsh-bug-gps",
+      "commit": "6aa4a9d191a408ebf982e657432ba66549fffabe",
+      "directory": "",
+      "packageName": "dsh-bug-gps",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "src/dsh/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/lijiaqi-ai-product-manager--dsh-bug-gps.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/185",
+        "submittedAt": "2026-11-04",
+        "category": "bundles",
+        "description": {
+          "en": "BugGPS：录制浏览器问题、固定预期，并以独立原代码对照复核修复。Browser bug reproduction and fix verification for DeepSeek Harness.",
+          "zh": ""
+        }
+      }
+    },
+    {
+      "repository": "https://github.com/sakura-hly/dsh-codex-composer",
+      "commit": "d40a24a15bb835d2298482c3c89321e4e6fd3683",
+      "directory": "",
+      "packageName": "dsh-codex-composer",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/sakura-hly--dsh-codex-composer.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/184",
+        "submittedAt": "2026-11-04",
+        "category": "client-ui",
+        "description": {
+          "en": "Codex-style composer for the DeepSeek Harness Web GUI: Up/Down recall previous prompts, Tab completes from history, and an empty-draft Tab generates a context-aware next prompt.",
+          "zh": ""
+        }
+      }
     }
   ]
 }
