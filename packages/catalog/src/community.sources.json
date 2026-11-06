@@ -188409,6 +188409,27 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/isdou/dsh-worktrace",
+      "commit": "a0e9a86ee68a40a8bab78e36417006803c06fd35",
+      "directory": "",
+      "packageName": "dsh-worktrace",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/host.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/isdou--dsh-worktrace.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/187",
+        "submittedAt": "2026-11-06",
+        "category": "client-ui",
+        "description": {
+          "en": "Worktrace 本机求职工作台：原版画布、本地 AI 与原生编译核心",
+          "zh": ""
+        }
+      }
     }
   ]
 }

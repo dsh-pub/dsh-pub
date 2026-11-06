@@ -1,3 +1,5 @@
+import { setTimeout as delay } from 'node:timers/promises';
+
 import { parseSubmissionFile, submissionFilePath, SubmissionError } from './plugin-submission.mjs';
 
 const SHA_PATTERN = /^[a-f0-9]{40}$/;
@@ -7,6 +9,7 @@ export async function loadMergedSubmissionRequest({
   fetch: fetcher,
   gitCommit,
   path,
+  sleep = delay,
   token,
 }) {
   const submission = parseSubmissionFile(content);
@@ -28,17 +31,23 @@ export async function loadMergedSubmissionRequest({
     );
   }
 
-  const response = await fetcher(
-    `https://api.github.com/repos/dsh-pub/dsh-pub/commits/${commit.sha}/pulls`,
-    {
-      headers: {
-        Accept: 'application/vnd.github+json',
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        'X-GitHub-Api-Version': '2022-11-28',
+  let response;
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    response = await fetcher(
+      `https://api.github.com/repos/dsh-pub/dsh-pub/commits/${commit.sha}/pulls`,
+      {
+        headers: {
+          Accept: 'application/vnd.github+json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+        signal: globalThis.AbortSignal.timeout(15_000),
       },
-      signal: globalThis.AbortSignal.timeout(15_000),
-    },
-  );
+    );
+    if (![500, 502, 503, 504].includes(response.status) || attempt === 2) break;
+    await response.body?.cancel();
+    await sleep(1_000 * 2 ** attempt);
+  }
   if (!response.ok) {
     throw new SubmissionError(
       'github_unavailable',
