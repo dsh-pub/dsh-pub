@@ -188412,7 +188412,7 @@
     },
     {
       "repository": "https://github.com/isdou/dsh-worktrace",
-      "commit": "6ee0f33a89b7bde52a2d548fd1ed11a55ac578ce",
+      "commit": "a0e9a86ee68a40a8bab78e36417006803c06fd35",
       "directory": "",
       "packageName": "dsh-worktrace",
       "manifestPath": "package.json",

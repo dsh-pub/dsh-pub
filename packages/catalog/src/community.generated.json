@@ -1081671,7 +1081671,7 @@
       "id": "github:isdou/dsh-worktrace",
       "slug": "dsh-worktrace",
       "name": "dsh-worktrace",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "license": "UNLICENSED",
       "type": "bundle",
       "category": "client-ui",
@@ -1081693,7 +1081693,7 @@
       "source": {
         "repository": "https://github.com/isdou/dsh-worktrace",
         "directory": "",
-        "commit": "6ee0f33a89b7bde52a2d548fd1ed11a55ac578ce"
+        "commit": "a0e9a86ee68a40a8bab78e36417006803c06fd35"
       },
       "runtime": { "hostLoadable": null, "configurable": null, "client": null },
       "capabilities": { "tools": null, "uiContributions": null, "uiSlotsDeclared": null },
@@ -1081711,8 +1081711,8 @@
         "readmePath": "README.md",
         "readmeZhPath": "README.md",
         "readme": {
-          "en": "https://raw.githubusercontent.com/isdou/dsh-worktrace/6ee0f33a89b7bde52a2d548fd1ed11a55ac578ce/README.md",
-          "zh": "https://raw.githubusercontent.com/isdou/dsh-worktrace/6ee0f33a89b7bde52a2d548fd1ed11a55ac578ce/README.md"
+          "en": "https://raw.githubusercontent.com/isdou/dsh-worktrace/a0e9a86ee68a40a8bab78e36417006803c06fd35/README.md",
+          "zh": "https://raw.githubusercontent.com/isdou/dsh-worktrace/a0e9a86ee68a40a8bab78e36417006803c06fd35/README.md"
         },
         "modelExperience": {
           "en": "Not inspected by the automated submission check; inspect the pinned source for model-facing behavior.",
