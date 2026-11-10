@@ -26,7 +26,8 @@ jobs:
   validate:
     name: Validate plugin submission
     if: github.event_name == 'pull_request_target' && github.event.pull_request.draft == false
-    runs-on: ubuntu-latest
+    # Playwright 1.58 supports Ubuntu 24.04; ubuntu-latest can select 26.04.
+    runs-on: ubuntu-24.04
     timeout-minutes: 120
     permissions:
       contents: read
@@ -143,7 +144,8 @@ jobs:
   integrate:
     name: Integrate merged submission
     if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
-    runs-on: ubuntu-latest
+    # Playwright 1.58 supports Ubuntu 24.04; ubuntu-latest can select 26.04.
+    runs-on: ubuntu-24.04
     timeout-minutes: 120
     permissions:
       contents: read
