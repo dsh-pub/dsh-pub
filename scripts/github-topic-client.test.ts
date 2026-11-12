@@ -1,10 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import {
-  createGitHubTopicClient,
-  TOPIC_MAX_PAGES,
-  topicPaginationBudget,
-} from './lib/github-topic-client.mjs';
+import { createGitHubTopicClient, topicPaginationBudget } from './lib/github-topic-client.mjs';
 
 const response = (data: unknown) =>
   new Response(JSON.stringify({ data }), {
@@ -34,7 +30,58 @@ describe('GitHub Topic GraphQL client', () => {
   it('sizes Topic pagination budget from observed repository totals', () => {
     expect(topicPaginationBudget(10_295)).toBe(113);
     expect(topicPaginationBudget(100)).toBe(11);
-    expect(topicPaginationBudget(25_000)).toBe(TOPIC_MAX_PAGES);
+    expect(topicPaginationBudget(25_000)).toBe(260);
+    expect(topicPaginationBudget(30_483)).toBe(315);
+  });
+
+  it('degrades gracefully when Topic pagination exhausts the dynamic budget', async () => {
+    let topicRequests = 0;
+    const client = createGitHubTopicClient({
+      fetch: async (_input, init) => {
+        const body = JSON.parse(String(init?.body));
+        if (body.query.includes('topic(name: $topic)')) {
+          topicRequests += 1;
+          return response({
+            rateLimit: { cost: 1, remaining: 999, resetAt: '2026-08-14T02:00:00Z' },
+            topic: {
+              repositories: {
+                nodes: [
+                  repositoryNode({
+                    commit: `${(topicRequests % 9) + 1}`.repeat(40),
+                    nameWithOwner: `example/repo-${topicRequests}`,
+                    updatedAt: '2026-08-14T00:00:00Z',
+                  }),
+                ],
+                pageInfo: { endCursor: `cursor-${topicRequests}`, hasNextPage: true },
+                totalCount: 101,
+              },
+            },
+          });
+        }
+        return response({
+          ...Object.fromEntries(
+            Array.from({ length: 12 }, (_, index) => [
+              `m${index}`,
+              { object: { byteSize: 2, oid: 'a'.repeat(40), text: '{}' } },
+            ]),
+          ),
+          rateLimit: { cost: 1, remaining: 998, resetAt: '2026-08-14T02:00:00Z' },
+        });
+      },
+      now: () => new Date('2026-08-14T00:30:00Z'),
+      sleep: async () => {},
+      token: 'test-token',
+    });
+
+    await expect(client.discoverTopic('dsh-plugin')).resolves.toMatchObject({
+      complete: false,
+      incompleteReason: 'pagination_budget_exhausted',
+      observedTotalCount: 101,
+      pagination: { pageBudget: 12, pages: 12 },
+      totalCount: 12,
+      unresolvedCount: 89,
+    });
+    expect(topicRequests).toBe(12);
   });
 
   it('paginates the complete topic and reads candidate files at pinned commits', async () => {

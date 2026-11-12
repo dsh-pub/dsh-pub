@@ -313,7 +313,9 @@ describe('GitHub Topic catalog sync', () => {
         discoverTopic: async () => ({
           complete: false,
           deferredRepositories: [],
+          incompleteReason: 'pagination_budget_exhausted',
           observedTotalCount: 1,
+          pagination: { pageBudget: 12, pages: 12 },
           repositories: [],
           snapshotAt: '2026-08-16T00:30:00.000Z',
           totalCount: 0,
@@ -331,6 +333,10 @@ describe('GitHub Topic catalog sync', () => {
     expect(unresolved.catalog.entries[1].source.commit).toBe('2'.repeat(40));
     expect(unresolved.analysis).toMatchObject({
       complete: false,
+      incomplete: {
+        pagination: { pageBudget: 12, pages: 12 },
+        reason: 'pagination_budget_exhausted',
+      },
       totals: { retainedUnresolved: 1, unresolved: 1 },
     });
     expect(unresolved.analysis.entries).toContainEqual({

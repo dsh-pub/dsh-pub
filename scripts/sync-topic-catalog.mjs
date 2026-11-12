@@ -64,7 +64,9 @@ const changedFiles = [...new Set(changed)];
 const summary = {
   changed: changedFiles.length > 0,
   changedFiles: changedFiles.length,
+  complete: result.analysis.complete ?? true,
   dryRun,
+  ...(result.analysis.incomplete ? { incompleteReason: result.analysis.incomplete.reason } : {}),
   ...result.analysis.totals,
 };
 if (process.env.GITHUB_OUTPUT) {
