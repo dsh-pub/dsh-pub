@@ -31,6 +31,7 @@ describe('GitHub Topic GraphQL client', () => {
     expect(topicPaginationBudget(10_295)).toBe(113);
     expect(topicPaginationBudget(100)).toBe(11);
     expect(topicPaginationBudget(25_000)).toBe(260);
+    expect(topicPaginationBudget(30_483)).toBe(315);
   });
 
   it('degrades gracefully when Topic pagination exhausts the dynamic budget', async () => {
