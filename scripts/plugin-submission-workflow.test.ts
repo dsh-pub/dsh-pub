@@ -19,6 +19,8 @@ describe('plugin submission workflow contract', () => {
       workflow_dispatch: null,
     });
     expect(workflow.permissions).toEqual({});
+    expect(workflow.jobs.validate['runs-on']).toBe('ubuntu-24.04');
+    expect(workflow.jobs.integrate['runs-on']).toBe('ubuntu-24.04');
     expect(workflow.jobs.validate.if).toContain("github.event_name == 'pull_request_target'");
     expect(workflow.jobs.validate.if).toContain('github.event.pull_request.draft == false');
     expect(workflow.jobs.integrate.if).toBe(

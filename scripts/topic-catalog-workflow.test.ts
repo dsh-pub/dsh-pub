@@ -35,6 +35,7 @@ describe('Topic catalog sync workflow contract', () => {
       .map((step: { uses?: string }) => step.uses)
       .filter((value: unknown): value is string => typeof value === 'string');
 
+    expect(job['runs-on']).toBe('ubuntu-24.04');
     expect(job.permissions).toEqual({ contents: 'read' });
     expect(actionReferences.length).toBeGreaterThan(0);
     for (const reference of actionReferences) {
