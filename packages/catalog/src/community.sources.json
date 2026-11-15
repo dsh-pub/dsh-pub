@@ -188409,6 +188409,48 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/beings-labs/dsh-cloudflare-connector",
+      "commit": "c12cf52622184df841a9011a25af170f4b423f09",
+      "directory": "",
+      "packageName": "@beings-labs/dsh-cloudflare-connector",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/beings-labs--dsh-cloudflare-connector.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/204",
+        "submittedAt": "2026-11-15",
+        "category": "bundles",
+        "description": {
+          "en": "Shared Cloudflare access for DeepSeek Harness agents and plugins, using official MCP tools and browser OAuth.",
+          "zh": ""
+        }
+      }
+    },
+    {
+      "repository": "https://github.com/isdou/dsh-worktrace",
+      "commit": "a0e9a86ee68a40a8bab78e36417006803c06fd35",
+      "directory": "",
+      "packageName": "dsh-worktrace",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/host.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/isdou--dsh-worktrace.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/187",
+        "submittedAt": "2026-11-06",
+        "category": "client-ui",
+        "description": {
+          "en": "Worktrace 本机求职工作台：原版画布、本地 AI 与原生编译核心",
+          "zh": ""
+        }
+      }
     }
   ]
 }
