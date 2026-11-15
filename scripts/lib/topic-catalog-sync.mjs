@@ -417,6 +417,12 @@ export async function syncTopicCatalogData({
   }
   const deferredRepositories = discovery.deferredRepositories ?? [];
   const unresolvedCount = discovery.unresolvedCount ?? 0;
+  const incompleteReason =
+    discovery.complete === false
+      ? (typeof discovery.incompleteReason === 'string' && discovery.incompleteReason) ||
+        'topic_pass_incomplete'
+      : null;
+  const pagination = discovery.pagination;
   if (
     !Array.isArray(deferredRepositories) ||
     !Number.isSafeInteger(unresolvedCount) ||
@@ -627,6 +633,23 @@ export async function syncTopicCatalogData({
     topic,
     snapshotAt: discovery.snapshotAt,
     complete: discovery.complete ?? true,
+    ...(incompleteReason
+      ? {
+          incomplete: {
+            reason: incompleteReason,
+            ...(pagination &&
+            Number.isSafeInteger(pagination.pageBudget) &&
+            Number.isSafeInteger(pagination.pages)
+              ? {
+                  pagination: {
+                    pageBudget: pagination.pageBudget,
+                    pages: pagination.pages,
+                  },
+                }
+              : {}),
+          },
+        }
+      : {}),
     totals: {
       discovered: discovery.totalCount,
       observed: discovery.observedTotalCount ?? discovery.totalCount,
