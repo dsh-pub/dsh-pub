@@ -188451,6 +188451,27 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/beings-labs/dsh-domain-manager",
+      "commit": "49a3b47045a2f9dc37761d8a2f93dad90a7dd0b2",
+      "directory": "",
+      "packageName": "@beings-labs/dsh-domain-manager",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/beings-labs--dsh-domain-manager.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/205",
+        "submittedAt": "2026-11-15",
+        "category": "bundles",
+        "description": {
+          "en": "Manage a domain portfolio in DeepSeek Harness: sync registrations from Namecheap and Cloudflare (API token or MCP browser login), track expiry dates, auto-renewal and yearly renewal costs, and check domain availability.",
+          "zh": ""
+        }
+      }
     }
   ]
 }

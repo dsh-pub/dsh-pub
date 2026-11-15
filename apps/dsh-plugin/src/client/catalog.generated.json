@@ -8,7 +8,7 @@
     },
     "community": {
       "repository": "https://github.com/dsh-pub/dsh-pub",
-      "generatedAt": "2026-11-06T04:41:45.000Z",
+      "generatedAt": "2026-11-15T22:40:39.000Z",
       "policy": "pinned-source-contracts"
     }
   },
@@ -310279,6 +310279,26 @@
       "repository": "https://github.com/isdou/dsh-worktrace",
       "directory": "",
       "commit": "a0e9a86ee68a40a8bab78e36417006803c06fd35"
+    },
+    {
+      "slug": "dsh-domain-manager",
+      "name": "@beings-labs/dsh-domain-manager",
+      "description": {
+        "en": "Manage a domain portfolio in DeepSeek Harness: sync registrations from Namecheap and Cloudflare (API token or MCP browser login), track expiry dates, auto-renewal and yearly renewal costs, and check domain availability.",
+        "zh": "Manage a domain portfolio in DeepSeek Harness: sync registrations from Namecheap and Cloudflare (API token or MCP browser login), track expiry dates, auto-renewal and yearly renewal costs, and check domain availability."
+      },
+      "topic": "other",
+      "category": "bundles",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/beings-labs/dsh-domain-manager",
+      "directory": "",
+      "commit": "49a3b47045a2f9dc37761d8a2f93dad90a7dd0b2"
     }
   ]
 }
