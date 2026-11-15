@@ -8,7 +8,7 @@
     },
     "community": {
       "repository": "https://github.com/dsh-pub/dsh-pub",
-      "generatedAt": "2026-11-02T09:51:24.000Z",
+      "generatedAt": "2026-11-04T09:23:22.000Z",
       "policy": "pinned-source-contracts"
     }
   },
@@ -310119,6 +310119,126 @@
       "repository": "https://github.com/QwQBiG/dsh-archive-delete",
       "directory": "",
       "commit": "ff2f106243690790f798eade1d8f567dc83273fe"
+    },
+    {
+      "slug": "dsh-go-token-meter",
+      "name": "dsh-go-token-meter",
+      "description": {
+        "en": "在 dsh-go 原生界面显示 token 用量：输入框上方的实时状态条 + 明细面板（本对话 / 今日 / 近 7 天 / 按模型）。只读本机会话记录，不联网。",
+        "zh": "在 dsh-go 原生界面显示 token 用量：输入框上方的实时状态条 + 明细面板（本对话 / 今日 / 近 7 天 / 按模型）。只读本机会话记录，不联网。"
+      },
+      "topic": "other",
+      "category": "bundles",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/jak1321-maker/dsh-go-token-meter",
+      "directory": "",
+      "commit": "afca0bfac798d20f01d3729d4e744dd940747104"
+    },
+    {
+      "slug": "dsh-memory-graph",
+      "name": "dsh-memory-graph",
+      "description": {
+        "en": "Long-term associative memory for DeepSeek Harness: a local plain-text vault of raw episodes, typed memory cards and entity pages, configured from 设置 → 记忆图谱, and a Memory tab inside a conversation that draws what that session remembered. No build step; the only dependency is the harness's own schema library, used for the Settings page.",
+        "zh": "Long-term associative memory for DeepSeek Harness: a local plain-text vault of raw episodes, typed memory cards and entity pages, configured from 设置 → 记忆图谱, and a Memory tab inside a conversation that draws what that session remembered. No build step; the only dependency is the harness's own schema library, used for the Settings page."
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/ilaomianyang/dsh-memory-graph",
+      "directory": "",
+      "commit": "f6b65d65fff5bb0f3ac4b4b02387cd6d1546ef7a"
+    },
+    {
+      "slug": "dsh-agent-compare",
+      "name": "dsh-agent-compare",
+      "description": {
+        "en": "同一需求，两版真跑：在 DSH 对话里比较、验证并审查采用。A DeepSeek Harness plugin for two implementations, live previews, shared checks and reviewed adoption.",
+        "zh": "同一需求，两版真跑：在 DSH 对话里比较、验证并审查采用。A DeepSeek Harness plugin for two implementations, live previews, shared checks and reviewed adoption."
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/lijiaqi-AI-Product-Manager/dsh-agent-compare",
+      "directory": "",
+      "commit": "24ca59307b42faca16190266d99501ef208f4aa7"
+    },
+    {
+      "slug": "dsh-model-budget-router",
+      "name": "dsh-model-budget-router",
+      "description": {
+        "en": "按任务复杂度自动切换模型与推理强度，省 DeepSeek 的 token 钱。",
+        "zh": "按任务复杂度自动切换模型与推理强度，省 DeepSeek 的 token 钱。"
+      },
+      "topic": "other",
+      "category": "bundles",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/muhe0000001-dot/dsh-model-budget-router",
+      "directory": "",
+      "commit": "b083409020beb3ef9276f995ce23a684ff823ba0"
+    },
+    {
+      "slug": "dsh-bug-gps",
+      "name": "dsh-bug-gps",
+      "description": {
+        "en": "BugGPS：录制浏览器问题、固定预期，并以独立原代码对照复核修复。Browser bug reproduction and fix verification for DeepSeek Harness.",
+        "zh": "BugGPS：录制浏览器问题、固定预期，并以独立原代码对照复核修复。Browser bug reproduction and fix verification for DeepSeek Harness."
+      },
+      "topic": "other",
+      "category": "bundles",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/lijiaqi-AI-Product-Manager/dsh-bug-gps",
+      "directory": "",
+      "commit": "6aa4a9d191a408ebf982e657432ba66549fffabe"
+    },
+    {
+      "slug": "dsh-codex-composer",
+      "name": "dsh-codex-composer",
+      "description": {
+        "en": "Codex-style composer for the DeepSeek Harness Web GUI: Up/Down recall previous prompts, Tab completes from history, and an empty-draft Tab generates a context-aware next prompt.",
+        "zh": "Codex-style composer for the DeepSeek Harness Web GUI: Up/Down recall previous prompts, Tab completes from history, and an empty-draft Tab generates a context-aware next prompt."
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/sakura-hly/dsh-codex-composer",
+      "directory": "",
+      "commit": "d40a24a15bb835d2298482c3c89321e4e6fd3683"
     }
   ]
 }

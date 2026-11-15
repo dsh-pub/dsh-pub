@@ -188283,6 +188283,132 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/jak1321-maker/dsh-go-token-meter",
+      "commit": "afca0bfac798d20f01d3729d4e744dd940747104",
+      "directory": "",
+      "packageName": "dsh-go-token-meter",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/jak1321-maker--dsh-go-token-meter.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/179",
+        "submittedAt": "2026-11-03",
+        "category": "bundles",
+        "description": {
+          "en": "在 dsh-go 原生界面显示 token 用量：输入框上方的实时状态条 + 明细面板（本对话 / 今日 / 近 7 天 / 按模型）。只读本机会话记录，不联网。",
+          "zh": ""
+        }
+      }
+    },
+    {
+      "repository": "https://github.com/ilaomianyang/dsh-memory-graph",
+      "commit": "f6b65d65fff5bb0f3ac4b4b02387cd6d1546ef7a",
+      "directory": "",
+      "packageName": "dsh-memory-graph",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/ilaomianyang--dsh-memory-graph.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/180",
+        "submittedAt": "2026-11-03",
+        "category": "client-ui",
+        "description": {
+          "en": "Long-term associative memory for DeepSeek Harness: a local plain-text vault of raw episodes, typed memory cards and entity pages, configured from 设置 → 记忆图谱, and a Memory tab inside a conversation that draws what that session remembered. No build step; the only dependency is the harness's own schema library, used for the Settings page.",
+          "zh": ""
+        }
+      }
+    },
+    {
+      "repository": "https://github.com/lijiaqi-AI-Product-Manager/dsh-agent-compare",
+      "commit": "24ca59307b42faca16190266d99501ef208f4aa7",
+      "directory": "",
+      "packageName": "dsh-agent-compare",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/host/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/lijiaqi-ai-product-manager--dsh-agent-compare.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/181",
+        "submittedAt": "2026-11-03",
+        "category": "client-ui",
+        "description": {
+          "en": "同一需求，两版真跑：在 DSH 对话里比较、验证并审查采用。A DeepSeek Harness plugin for two implementations, live previews, shared checks and reviewed adoption.",
+          "zh": ""
+        }
+      }
+    },
+    {
+      "repository": "https://github.com/muhe0000001-dot/dsh-model-budget-router",
+      "commit": "b083409020beb3ef9276f995ce23a684ff823ba0",
+      "directory": "",
+      "packageName": "dsh-model-budget-router",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/muhe0000001-dot--dsh-model-budget-router.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/182",
+        "submittedAt": "2026-11-04",
+        "category": "bundles",
+        "description": {
+          "en": "按任务复杂度自动切换模型与推理强度，省 DeepSeek 的 token 钱。",
+          "zh": ""
+        }
+      }
+    },
+    {
+      "repository": "https://github.com/lijiaqi-AI-Product-Manager/dsh-bug-gps",
+      "commit": "6aa4a9d191a408ebf982e657432ba66549fffabe",
+      "directory": "",
+      "packageName": "dsh-bug-gps",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "src/dsh/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/lijiaqi-ai-product-manager--dsh-bug-gps.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/185",
+        "submittedAt": "2026-11-04",
+        "category": "bundles",
+        "description": {
+          "en": "BugGPS：录制浏览器问题、固定预期，并以独立原代码对照复核修复。Browser bug reproduction and fix verification for DeepSeek Harness.",
+          "zh": ""
+        }
+      }
+    },
+    {
+      "repository": "https://github.com/sakura-hly/dsh-codex-composer",
+      "commit": "d40a24a15bb835d2298482c3c89321e4e6fd3683",
+      "directory": "",
+      "packageName": "dsh-codex-composer",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/sakura-hly--dsh-codex-composer.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/184",
+        "submittedAt": "2026-11-04",
+        "category": "client-ui",
+        "description": {
+          "en": "Codex-style composer for the DeepSeek Harness Web GUI: Up/Down recall previous prompts, Tab completes from history, and an empty-draft Tab generates a context-aware next prompt.",
+          "zh": ""
+        }
+      }
     }
   ]
 }
