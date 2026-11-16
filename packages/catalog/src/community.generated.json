@@ -1,10 +1,10 @@
 {
   "source": {
     "repository": "https://github.com/dsh-pub/dsh-pub",
-    "generatedAt": "2026-11-15T22:40:39.000Z",
+    "generatedAt": "2026-11-16T05:02:33.000Z",
     "policy": "pinned-source-contracts"
   },
-  "totals": { "reviewed": 6, "submitted": 56, "automated": 14792, "installable": 14854 },
+  "totals": { "reviewed": 6, "submitted": 57, "automated": 14792, "installable": 14855 },
   "entries": [
     {
       "id": "github:omdsh-dev/dsh-open-in-vscode",
@@ -1081835,6 +1081835,63 @@
         "readme": {
           "en": "https://raw.githubusercontent.com/beings-labs/dsh-domain-manager/49a3b47045a2f9dc37761d8a2f93dad90a7dd0b2/README.md",
           "zh": "https://raw.githubusercontent.com/beings-labs/dsh-domain-manager/49a3b47045a2f9dc37761d8a2f93dad90a7dd0b2/README.md"
+        },
+        "modelExperience": {
+          "en": "Not inspected by the automated submission check; inspect the pinned source for model-facing behavior.",
+          "zh": "自动提交检查未核对模型侧行为；请查看固定版本的源码。"
+        },
+        "limitations": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      }
+    },
+    {
+      "id": "github:yanmoren/dsh-whale-letter",
+      "slug": "dsh-whale-letter",
+      "name": "dsh-whale-letter",
+      "version": "1.0.0",
+      "license": "MIT",
+      "type": "bundle",
+      "category": "client-ui",
+      "builtIn": false,
+      "provenance": {
+        "status": "community-submitted",
+        "submittedVia": "github-pull-request",
+        "submittedAt": "2026-11-16",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/206",
+        "statement": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      },
+      "description": {
+        "en": "鲸鲸信箱：dsh 插件，自带本地 4B 模型与 llama.cpp 运行环境，寄出的信 2~8 小时后桌面弹提醒，点开是带纸张纤维与手写墨晕的长信。",
+        "zh": "鲸鲸信箱：dsh 插件，自带本地 4B 模型与 llama.cpp 运行环境，寄出的信 2~8 小时后桌面弹提醒，点开是带纸张纤维与手写墨晕的长信。"
+      },
+      "source": {
+        "repository": "https://github.com/yanmoren/dsh-whale-letter",
+        "directory": "",
+        "commit": "39fc7fc39c2209948698a743f68aef58cabc13c4"
+      },
+      "runtime": { "hostLoadable": null, "configurable": null, "client": null },
+      "capabilities": { "tools": null, "uiContributions": null, "uiSlotsDeclared": null },
+      "availability": { "profiles": null, "defaultWeb": null, "bundles": ["dsh-whale-letter"] },
+      "distribution": {
+        "installable": true,
+        "mode": "git-bundle",
+        "activation": "profile-layer",
+        "note": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      },
+      "docs": {
+        "readmePath": "README.md",
+        "readmeZhPath": "README.md",
+        "readme": {
+          "en": "https://raw.githubusercontent.com/yanmoren/dsh-whale-letter/39fc7fc39c2209948698a743f68aef58cabc13c4/README.md",
+          "zh": "https://raw.githubusercontent.com/yanmoren/dsh-whale-letter/39fc7fc39c2209948698a743f68aef58cabc13c4/README.md"
         },
         "modelExperience": {
           "en": "Not inspected by the automated submission check; inspect the pinned source for model-facing behavior.",

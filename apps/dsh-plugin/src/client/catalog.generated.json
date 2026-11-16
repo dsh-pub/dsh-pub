@@ -8,7 +8,7 @@
     },
     "community": {
       "repository": "https://github.com/dsh-pub/dsh-pub",
-      "generatedAt": "2026-11-15T22:40:39.000Z",
+      "generatedAt": "2026-11-16T05:02:33.000Z",
       "policy": "pinned-source-contracts"
     }
   },
@@ -310299,6 +310299,26 @@
       "repository": "https://github.com/beings-labs/dsh-domain-manager",
       "directory": "",
       "commit": "49a3b47045a2f9dc37761d8a2f93dad90a7dd0b2"
+    },
+    {
+      "slug": "dsh-whale-letter",
+      "name": "dsh-whale-letter",
+      "description": {
+        "en": "鲸鲸信箱：dsh 插件，自带本地 4B 模型与 llama.cpp 运行环境，寄出的信 2~8 小时后桌面弹提醒，点开是带纸张纤维与手写墨晕的长信。",
+        "zh": "鲸鲸信箱：dsh 插件，自带本地 4B 模型与 llama.cpp 运行环境，寄出的信 2~8 小时后桌面弹提醒，点开是带纸张纤维与手写墨晕的长信。"
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/yanmoren/dsh-whale-letter",
+      "directory": "",
+      "commit": "39fc7fc39c2209948698a743f68aef58cabc13c4"
     }
   ]
 }

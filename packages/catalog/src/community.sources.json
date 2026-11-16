@@ -188472,6 +188472,27 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/yanmoren/dsh-whale-letter",
+      "commit": "39fc7fc39c2209948698a743f68aef58cabc13c4",
+      "directory": "",
+      "packageName": "dsh-whale-letter",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/yanmoren--dsh-whale-letter.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/206",
+        "submittedAt": "2026-11-16",
+        "category": "client-ui",
+        "description": {
+          "en": "鲸鲸信箱：dsh 插件，自带本地 4B 模型与 llama.cpp 运行环境，寄出的信 2~8 小时后桌面弹提醒，点开是带纸张纤维与手写墨晕的长信。",
+          "zh": ""
+        }
+      }
     }
   ]
 }
