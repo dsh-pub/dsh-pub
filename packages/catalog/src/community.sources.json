@@ -188493,6 +188493,27 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/Yzm889/TianZheng-ai-plugin",
+      "commit": "dfacf6fbeb021ef5cec64781fd4e3e6fda9710f2",
+      "directory": "",
+      "packageName": "dsh-t20-arch",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "lib/index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/yzm889--tianzheng-ai-plugin.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/210",
+        "submittedAt": "2026-11-16",
+        "category": "bundles",
+        "description": {
+          "en": "T20/T30 天正建筑 (Tianzheng Architecture) connector for DeepSeek Harness via MCP — creates real Tianzheng objects (walls, doors, windows, columns, stairs, balconies, axis grids) by driving a running AutoCAD+Tianzheng instance.",
+          "zh": ""
+        }
+      }
     }
   ]
 }

@@ -8,7 +8,7 @@
     },
     "community": {
       "repository": "https://github.com/dsh-pub/dsh-pub",
-      "generatedAt": "2026-11-16T05:02:33.000Z",
+      "generatedAt": "2026-11-16T15:29:27.000Z",
       "policy": "pinned-source-contracts"
     }
   },
@@ -310319,6 +310319,26 @@
       "repository": "https://github.com/yanmoren/dsh-whale-letter",
       "directory": "",
       "commit": "39fc7fc39c2209948698a743f68aef58cabc13c4"
+    },
+    {
+      "slug": "dsh-t20-arch",
+      "name": "dsh-t20-arch",
+      "description": {
+        "en": "T20/T30 天正建筑 (Tianzheng Architecture) connector for DeepSeek Harness via MCP — creates real Tianzheng objects (walls, doors, windows, columns, stairs, balconies, axis grids) by driving a running AutoCAD+Tianzheng instance.",
+        "zh": "T20/T30 天正建筑 (Tianzheng Architecture) connector for DeepSeek Harness via MCP — creates real Tianzheng objects (walls, doors, windows, columns, stairs, balconies, axis grids) by driving a running AutoCAD+Tianzheng instance."
+      },
+      "topic": "other",
+      "category": "bundles",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/Yzm889/TianZheng-ai-plugin",
+      "directory": "",
+      "commit": "dfacf6fbeb021ef5cec64781fd4e3e6fda9710f2"
     }
   ]
 }
