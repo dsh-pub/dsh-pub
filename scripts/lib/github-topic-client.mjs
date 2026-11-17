@@ -184,7 +184,20 @@ export function createGitHubTopicClient({
         throw lastError;
       }
 
-      const payload = await response.json();
+      const rawPayload = await response.text();
+      let payload;
+      try {
+        payload = JSON.parse(rawPayload);
+      } catch {
+        lastError = new Error(
+          `GitHub GraphQL response returned invalid JSON (status ${response.status}, bytes ${rawPayload.length}).`,
+        );
+        if (attempt < 2) {
+          await sleep(retryDelay(response, attempt, false));
+          continue;
+        }
+        throw lastError;
+      }
       if (Array.isArray(payload.errors) && payload.errors.length) {
         const rateLimited = payload.errors.some(
           (error) => typeof error?.message === 'string' && RATE_LIMIT_MESSAGE.test(error.message),

@@ -36,6 +36,8 @@ describe('Topic catalog sync workflow contract', () => {
       .filter((value: unknown): value is string => typeof value === 'string');
 
     expect(job['runs-on']).toBe('ubuntu-24.04');
+    expect(job['timeout-minutes']).toBe(240);
+    expect(job.env).toEqual({ NODE_OPTIONS: '--max-old-space-size=6144' });
     expect(job.permissions).toEqual({ contents: 'read' });
     expect(actionReferences.length).toBeGreaterThan(0);
     for (const reference of actionReferences) {

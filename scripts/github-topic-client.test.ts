@@ -416,6 +416,41 @@ describe('GitHub Topic GraphQL client', () => {
     expect(requests).toBe(2);
   });
 
+  it('retries when a Topic response body is malformed JSON', async () => {
+    let requests = 0;
+    const waits: number[] = [];
+    const client = createGitHubTopicClient({
+      fetch: async () => {
+        requests += 1;
+        if (requests === 1) {
+          return new Response('{"data":{"topic"', {
+            headers: { 'Content-Type': 'application/json' },
+            status: 200,
+          });
+        }
+        return response({
+          rateLimit: { cost: 1, remaining: 999, resetAt: '2026-08-14T02:00:00Z' },
+          topic: {
+            repositories: {
+              nodes: [],
+              pageInfo: { endCursor: null, hasNextPage: false },
+              totalCount: 0,
+            },
+          },
+        });
+      },
+      now: () => new Date('2026-08-14T00:30:00Z'),
+      sleep: async (milliseconds) => {
+        waits.push(milliseconds);
+      },
+      token: 'test-token',
+    });
+
+    await expect(client.discoverTopic('dsh-plugin')).resolves.toMatchObject({ totalCount: 0 });
+    expect(requests).toBe(2);
+    expect(waits).toEqual([1_000]);
+  });
+
   it('retries an HTTP rate limit response and honors Retry-After', async () => {
     let requests = 0;
     const waits: number[] = [];
