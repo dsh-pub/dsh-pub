@@ -7,3 +7,4 @@ coverage/
 apps/server/src/worker-configuration.d.ts
 apps/dsh-plugin/lib/
 apps/dsh-plugin/src/client/catalog.generated.json
+submissions/mycroft-sherlock--plugins.json
