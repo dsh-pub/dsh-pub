@@ -28,7 +28,9 @@ jobs:
   sync:
     name: Sync dsh-plugin Topic
     runs-on: ubuntu-24.04
-    timeout-minutes: 120
+    timeout-minutes: 240
+    env:
+      NODE_OPTIONS: --max-old-space-size=6144
     permissions:
       contents: read
 
