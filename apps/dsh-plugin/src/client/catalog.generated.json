@@ -8,7 +8,7 @@
     },
     "community": {
       "repository": "https://github.com/dsh-pub/dsh-pub",
-      "generatedAt": "2026-11-16T15:29:27.000Z",
+      "generatedAt": "2026-11-18T10:17:01.000Z",
       "policy": "pinned-source-contracts"
     }
   },
@@ -310339,6 +310339,26 @@
       "repository": "https://github.com/Yzm889/TianZheng-ai-plugin",
       "directory": "",
       "commit": "dfacf6fbeb021ef5cec64781fd4e3e6fda9710f2"
+    },
+    {
+      "slug": "dsh-paper-dual",
+      "name": "dsh-paper-dual",
+      "description": {
+        "en": "论文双降工作台：诊断中文论文 .doc/.docx 的 AI 文风与篇内重复，AIGC 考官打分 + 9 维痕迹诊断，闭环改写与三栏对照。",
+        "zh": "论文双降工作台：诊断中文论文 .doc/.docx 的 AI 文风与篇内重复，AIGC 考官打分 + 9 维痕迹诊断，闭环改写与三栏对照。"
+      },
+      "topic": "ui-client",
+      "category": "client-ui",
+      "type": "bundle",
+      "provenance": "community",
+      "surfaces": [
+        "profile"
+      ],
+      "installable": true,
+      "capabilityCount": 0,
+      "repository": "https://github.com/mount9527/paper-dual-reducer",
+      "directory": "",
+      "commit": "9c7afc5875ab53b61c0c8b0972bf9537d4d55fb2"
     }
   ]
 }

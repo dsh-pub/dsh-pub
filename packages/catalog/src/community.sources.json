@@ -188514,6 +188514,27 @@
           "zh": ""
         }
       }
+    },
+    {
+      "repository": "https://github.com/mount9527/paper-dual-reducer",
+      "commit": "9c7afc5875ab53b61c0c8b0972bf9537d4d55fb2",
+      "directory": "",
+      "packageName": "dsh-paper-dual",
+      "manifestPath": "package.json",
+      "bundlePatchPath": "cordis.patch.yml",
+      "runtimeEntryPath": "index.js",
+      "readmePath": "README.md",
+      "licensePath": "LICENSE",
+      "submission": {
+        "file": "https://github.com/dsh-pub/dsh-pub/blob/main/submissions/mount9527--paper-dual-reducer.json",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/214",
+        "submittedAt": "2026-11-18",
+        "category": "client-ui",
+        "description": {
+          "en": "论文双降工作台：诊断中文论文 .doc/.docx 的 AI 文风与篇内重复，AIGC 考官打分 + 9 维痕迹诊断，闭环改写与三栏对照。",
+          "zh": ""
+        }
+      }
     }
   ]
 }

@@ -1,10 +1,10 @@
 {
   "source": {
     "repository": "https://github.com/dsh-pub/dsh-pub",
-    "generatedAt": "2026-11-16T15:29:27.000Z",
+    "generatedAt": "2026-11-18T10:17:01.000Z",
     "policy": "pinned-source-contracts"
   },
-  "totals": { "reviewed": 6, "submitted": 58, "automated": 14792, "installable": 14856 },
+  "totals": { "reviewed": 6, "submitted": 59, "automated": 14792, "installable": 14857 },
   "entries": [
     {
       "id": "github:omdsh-dev/dsh-open-in-vscode",
@@ -1081949,6 +1081949,63 @@
         "readme": {
           "en": "https://raw.githubusercontent.com/Yzm889/TianZheng-ai-plugin/dfacf6fbeb021ef5cec64781fd4e3e6fda9710f2/README.md",
           "zh": "https://raw.githubusercontent.com/Yzm889/TianZheng-ai-plugin/dfacf6fbeb021ef5cec64781fd4e3e6fda9710f2/README.md"
+        },
+        "modelExperience": {
+          "en": "Not inspected by the automated submission check; inspect the pinned source for model-facing behavior.",
+          "zh": "自动提交检查未核对模型侧行为；请查看固定版本的源码。"
+        },
+        "limitations": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      }
+    },
+    {
+      "id": "github:mount9527/paper-dual-reducer",
+      "slug": "dsh-paper-dual",
+      "name": "dsh-paper-dual",
+      "version": "0.8.1",
+      "license": "MIT",
+      "type": "bundle",
+      "category": "client-ui",
+      "builtIn": false,
+      "provenance": {
+        "status": "community-submitted",
+        "submittedVia": "github-pull-request",
+        "submittedAt": "2026-11-18",
+        "pullRequest": "https://github.com/dsh-pub/dsh-pub/pull/214",
+        "statement": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      },
+      "description": {
+        "en": "论文双降工作台：诊断中文论文 .doc/.docx 的 AI 文风与篇内重复，AIGC 考官打分 + 9 维痕迹诊断，闭环改写与三栏对照。",
+        "zh": "论文双降工作台：诊断中文论文 .doc/.docx 的 AI 文风与篇内重复，AIGC 考官打分 + 9 维痕迹诊断，闭环改写与三栏对照。"
+      },
+      "source": {
+        "repository": "https://github.com/mount9527/paper-dual-reducer",
+        "directory": "",
+        "commit": "9c7afc5875ab53b61c0c8b0972bf9537d4d55fb2"
+      },
+      "runtime": { "hostLoadable": null, "configurable": null, "client": null },
+      "capabilities": { "tools": null, "uiContributions": null, "uiSlotsDeclared": null },
+      "availability": { "profiles": null, "defaultWeb": null, "bundles": ["dsh-paper-dual"] },
+      "distribution": {
+        "installable": true,
+        "mode": "git-bundle",
+        "activation": "profile-layer",
+        "note": {
+          "en": "Submitted through a public pull request. Automated checks verified the public bundle contract and committed files, but did not inspect runtime capabilities. This is not a human review, security audit, publisher identity check, or official endorsement.",
+          "zh": "通过公开 Pull Request 提交。自动检查验证了公开组合包契约与已提交文件，但未核对运行时能力；这不等于人工审核、安全审计、发布者身份验证或官方背书。"
+        }
+      },
+      "docs": {
+        "readmePath": "README.md",
+        "readmeZhPath": "README.md",
+        "readme": {
+          "en": "https://raw.githubusercontent.com/mount9527/paper-dual-reducer/9c7afc5875ab53b61c0c8b0972bf9537d4d55fb2/README.md",
+          "zh": "https://raw.githubusercontent.com/mount9527/paper-dual-reducer/9c7afc5875ab53b61c0c8b0972bf9537d4d55fb2/README.md"
         },
         "modelExperience": {
           "en": "Not inspected by the automated submission check; inspect the pinned source for model-facing behavior.",
