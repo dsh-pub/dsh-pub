@@ -95,7 +95,7 @@ jobs:
     name: Merge validated submission
     needs: validate
     if: needs.validate.outputs.valid == 'true' && needs.validate.outputs.changed == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
       contents: read
