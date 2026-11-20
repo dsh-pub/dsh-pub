@@ -39,6 +39,9 @@ const submissionError = (code, message) => {
   throw new SubmissionError(code, message);
 };
 
+const canonicalSubmissionContent = (repository) =>
+  `${JSON.stringify({ repository, schemaVersion: 1 }, null, 2)}\n`;
+
 const slugPart = (value) =>
   value
     .toLocaleLowerCase()
@@ -139,6 +142,12 @@ export function parseSubmissionFile(content) {
     submissionError('invalid_submission', 'Submission file schemaVersion must be 1.');
   }
   const repository = normalizeRepository(value.repository);
+  if (content !== canonicalSubmissionContent(repository.repository)) {
+    submissionError(
+      'invalid_submission',
+      'Submission file must match the canonical JSON format with a trailing newline.',
+    );
+  }
   return {
     directory: '',
     ...repository,
