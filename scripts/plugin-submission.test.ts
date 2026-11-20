@@ -131,6 +131,23 @@ describe('GitHub pull request plugin integration', () => {
         }),
       ),
     ).toThrow('only schemaVersion and repository');
+    expect(() =>
+      parseSubmissionFile(
+        '{"repository":"https://github.com/example/dsh-clock","schemaVersion":1}',
+      ),
+    ).toThrow('canonical JSON format');
+    expect(() =>
+      parseSubmissionFile(
+        JSON.stringify(
+          {
+            repository: 'https://github.com/example/dsh-clock',
+            schemaVersion: 1,
+          },
+          null,
+          2,
+        ),
+      ),
+    ).toThrow('trailing newline');
   });
 
   it('pins and machine-validates the bundle without executing repository code', async () => {
