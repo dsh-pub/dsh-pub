@@ -416,6 +416,77 @@ describe('GitHub Topic GraphQL client', () => {
     expect(requests).toBe(2);
   });
 
+  it.each([
+    ['truncated JSON', () => new Response('{"data":{"topic"')],
+    [
+      'interrupted body stream',
+      () =>
+        new Response(
+          new ReadableStream({
+            start: (controller) => controller.error(new TypeError('stream interrupted')),
+          }),
+        ),
+    ],
+  ] as const)('retries the same Topic page after %s', async (_description, badResponse) => {
+    const cursors: Array<string | null> = [];
+    const waits: number[] = [];
+    const client = createGitHubTopicClient({
+      fetch: async (_input, init) => {
+        const { query, variables } = JSON.parse(String(init?.body));
+        if (!query.includes('topic(name: $topic)')) return response({});
+        cursors.push(variables.cursor);
+        if (cursors.length === 2) return badResponse();
+        const first = variables.cursor === null;
+        return response({
+          topic: {
+            repositories: {
+              nodes: [
+                repositoryNode({
+                  commit: (first ? '1' : '2').repeat(40),
+                  nameWithOwner: first ? 'example/one' : 'example/two',
+                  updatedAt: '2026-08-14T00:00:00Z',
+                }),
+              ],
+              pageInfo: { endCursor: first ? 'cursor-1' : null, hasNextPage: first },
+              totalCount: 2,
+            },
+          },
+        });
+      },
+      now: () => new Date('2026-08-14T00:30:00Z'),
+      sleep: async (milliseconds) => {
+        waits.push(milliseconds);
+      },
+      token: 'test-token',
+    });
+
+    const result = await client.discoverTopic('dsh-plugin');
+    expect(result.repositories.map((node) => node.nameWithOwner)).toEqual([
+      'example/one',
+      'example/two',
+    ]);
+    expect(cursors).toEqual([null, 'cursor-1', 'cursor-1']);
+    expect(waits).toEqual([1_000]);
+  });
+
+  it('fails with a sanitized error after bounded retries for persistent invalid JSON', async () => {
+    let requests = 0;
+    const client = createGitHubTopicClient({
+      fetch: async () => {
+        requests += 1;
+        return new Response('secret-like upstream response body');
+      },
+      sleep: async () => {},
+      token: 'test-token',
+    });
+
+    await expect(client.discoverTopic('dsh-plugin')).rejects.toThrow(
+      /^GitHub GraphQL response could not be read as JSON \(status 200\)\.$/,
+    );
+    // Three request attempts per page, within the existing three-pass discovery limit.
+    expect(requests).toBe(9);
+  });
+
   it('retries an HTTP rate limit response and honors Retry-After', async () => {
     let requests = 0;
     const waits: number[] = [];
